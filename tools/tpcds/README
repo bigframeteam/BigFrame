@@ -1,0 +1,7 @@
+Usage: perl gen_data.pl scale_factor num_files host_list local_dir hdfs_dir
+  scale_factor: TPCDS Scale factor (GB of data to generate)
+  num_files:    The number of files to generate for each table
+  host_list:    File containing a list of host machines
+  local_dir:    Local directory to use in the host machines
+  hdfs_dir:     HDFS directory to store the generated data
+
