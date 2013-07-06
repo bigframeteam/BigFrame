@@ -85,34 +85,6 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		// TODO Auto-generated constructor stub
 	}
 
-/*	
-	private void cacheFile(String filename, InputStream input, Configuration mapreduce_config) {
-		try {
-			//Path path = new Path(dir);
-			mapreduce_config.addResource(new Path(conf.getProp().get(Constants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
-			FileSystem fileSystem = FileSystem.get(mapreduce_config);
-
-						
-			Path path = new Path(filename);
-			if (fileSystem.exists(path))
-				fileSystem.delete(path, true);
-			BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileSystem.create(path, true)));
-			//BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileSystem.create(new Path(path+"/"+filename), true)));
-			
-			BufferedReader br = new BufferedReader(new InputStreamReader(input));
-			
-			String line;
-			while ((line = br.readLine()) != null) {
-				bufferedWriter.write(line);
-				//bufferedWriter.newLine();
-			}
-			bufferedWriter.close();
-			
-			DistributedCache.addCacheFile(path.toUri(), mapreduce_config);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-	}*/
 	
 	static JSONObject parseJsonFromFile(InputStream file) {
 		JSONParser parser = new JSONParser();
