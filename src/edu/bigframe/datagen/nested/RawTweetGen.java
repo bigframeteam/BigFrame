@@ -1,6 +1,10 @@
 package edu.bigframe.datagen.nested;
 
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import edu.bigframe.BigFrameDriver;
 import edu.bigframe.datagen.DatagenConf;
@@ -25,6 +29,22 @@ public abstract class RawTweetGen extends NestedDataGen {
 		hdfs_dir = conf.getDataStoredPath().get(Constants.BIGFRAME_DATA_HDFSPATH_NESTED);
 		
 	}
+	
+	protected  Date stringToDate(String date) {
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	    
+	    try {
+			return formatter.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return null;
+	}
+    
+    protected int daysBetween(Date d1, Date d2){
+        return (int)( (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+     }
 	
 	public long getTweetsPerDay(int days_between) {
 		long tweets_per_day = 0;

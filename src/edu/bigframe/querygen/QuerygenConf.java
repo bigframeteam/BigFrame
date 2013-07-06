@@ -3,9 +3,9 @@ package edu.bigframe.querygen;
 import java.util.HashSet;
 import java.util.Set;
 
-import edu.bigframe.util.Configuration;
+import edu.bigframe.util.Config;
 
-public class QuerygenConf extends Configuration {
+public class QuerygenConf extends Config {
 	protected Set<String> queryVariety;
 	protected Set<String> queryVelocity;
 	protected Integer queryVolumn;

@@ -2,7 +2,7 @@ package edu.bigframe.datagen;
 
 import org.apache.log4j.Logger;
 
-import edu.bigframe.util.Configuration;
+import edu.bigframe.util.Config;
 /**
  * 
  * @author andy

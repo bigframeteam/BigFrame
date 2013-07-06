@@ -7,10 +7,10 @@ import java.util.HashSet;
 
 import org.apache.log4j.Logger;
 
-import edu.bigframe.util.Configuration;
+import edu.bigframe.util.Config;
 import edu.bigframe.util.Constants;
 
-public class DatagenConf extends Configuration {
+public class DatagenConf extends Config {
 	private static final Logger LOG = Logger.getLogger(DatagenConf.class);
 	
 	protected Set<String> dataVariety;

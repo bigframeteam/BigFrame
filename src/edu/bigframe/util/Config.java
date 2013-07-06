@@ -10,12 +10,12 @@ import org.apache.log4j.Logger;
  * @author andy
  *
  */
-public abstract class Configuration {
+public abstract class Config {
 	//private static final Logger LOG = Logger.getLogger(Configuration.class);
 	
 	protected Map<String,String> properties;
 	
-	public Configuration() {
+	public Config() {
 		properties = new HashMap<String, String>();
 	}
 	

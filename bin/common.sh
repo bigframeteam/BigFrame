@@ -35,6 +35,7 @@ CONF_DIR=$BASE_DIR/conf
 # Get the user-defined parameters
 . "$BASE_DIR"/conf/config.sh
 
+
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.script=${TPCDS_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.conf.dir=${CONF_DIR}"
 

@@ -16,7 +16,7 @@
 bin=`dirname "$0"`
 . "$bin"/common.sh
 
-# Get the tetrish base dir
+# Get the bigframe base dir
 OLD_PATH=$PWD
 cd $bin
 cd ..
@@ -24,5 +24,15 @@ BASE_PATH=$PWD
 cd $OLD_PATH
 
 JAR_FILE=$JARS_DIR/bigframe-0.1.0.jar
+BIGFRAME_LIB=$BASE_PATH/lib
+BIGFRAME_CLASSPATH=$JAR_FILE
+for jar in `find $HADOOP_HOME/lib -name '*.jar'`; do
+	BIGFRAME_CLASSPATH+=:$jar
+done
 
-java -jar $JAR_FILE -mode datagen $BIGFRAME_OPTS "$@"
+for jar in `find $BIGFRAME_LIB/common -name '*.jar'`; do
+	BIGFRAME_CLASSPATH+=:$jar
+done
+
+echo $BIGFRAME_CLASSPATH
+java -cp "$BIGFRAME_CLASSPATH" edu.bigframe.BigFrameDriver -mode datagen $BIGFRAME_OPTS "$@"

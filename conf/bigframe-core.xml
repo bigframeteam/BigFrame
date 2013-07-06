@@ -3,7 +3,7 @@
 
 		<property>
 		<name>bigframe.datavariety</name>
-		<value>relational, graph, nested</value>
+		<value>relational,graph,nested</value>
 	</property>
 	
 	<property>

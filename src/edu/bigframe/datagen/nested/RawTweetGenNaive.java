@@ -42,21 +42,6 @@ public class RawTweetGenNaive extends RawTweetGen {
 		// TODO Auto-generated constructor stub
 	}
 	
-	private  Date stringToDate(String date) {
-		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-	    
-	    try {
-			return formatter.parse(date);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    return null;
-	}
-    
-    private int daysBetween(Date d1, Date d2){
-        return (int)( (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
-     }
 	
 	private JSONObject parseJsonFromFile(InputStream file) throws org.json.simple.parser.ParseException {
 		JSONParser parser = new JSONParser();
