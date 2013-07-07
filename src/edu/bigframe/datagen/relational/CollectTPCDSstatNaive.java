@@ -101,31 +101,11 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 	}
 
 	
-	/*@Override
-	public void IntialCustTwitterAcc(String hdfs_path, DatagenConf conf) {
-		Configuration config = new Configuration();
-		config.addResource(new Path(conf.getProp().get(Constants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
-		FileSystem fileSystem;
-		//List<Integer> customer_acc = new LinkedList<Integer>();
-		try {
-			fileSystem = FileSystem.get(config);
-            FileStatus[] status = fileSystem.listStatus(new Path(hdfs_path));
-            for (int i=0;i<status.length;i++){
-                    BufferedReader br=new BufferedReader(new InputStreamReader(fileSystem.open(status[i].getPath())));
-                    String line;
-
-                    while ( (line=br.readLine())!= null ){
-                            String account = line.split("\\|")[1];
-                            customer_account.add(Integer.parseInt(account));
-                    }
-                    br.close();
-            }
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
+	public PromotionInfo getPromotInfo(int targetGB) {
+		PromotionInfo promt_info = new PromotionInfo();
+		
+		return promt_info;
+	}
 
 	private  int getScaleSlot(int targetGB) {
 		int i = 0;

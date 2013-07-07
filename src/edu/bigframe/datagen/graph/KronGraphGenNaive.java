@@ -103,7 +103,7 @@ public class KronGraphGenNaive extends KroneckerGraphGen {
 			}
 			if (edges.size() >= chunk_size) {
 				System.out.println("Edges number:"+edges.size());
-				Path stored_path = new Path(hdfs_path);
+				Path stored_path = new Path(hdfs_dir);
 				Configuration config = new Configuration();
 				config.addResource(new Path(conf.getProp().get(Constants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
 				FileSystem fileSystem;
@@ -143,7 +143,7 @@ public class KronGraphGenNaive extends KroneckerGraphGen {
 		//System.out.println(graph.size());
 		
 		if (graph.size() > 0) {
-			Path path = new Path(hdfs_path);
+			Path path = new Path(hdfs_dir);
 			Configuration config = new Configuration();
 			config.addResource(new Path(conf.getProp().get(Constants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
 			FileSystem fileSystem;

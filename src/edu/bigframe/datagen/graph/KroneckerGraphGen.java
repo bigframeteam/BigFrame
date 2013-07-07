@@ -10,26 +10,14 @@ public abstract class KroneckerGraphGen extends GraphDataGen {
 	protected int num_columns;
 	protected double expected_edges;
 	protected int steps;
-	protected String hdfs_path;
+	protected String hdfs_dir;
 	
-	private static final float arScaleVolume [] = 
-		{0.12f, 12, 1200, 120000};
+	private static final float arScaleVolume [] = KnonGraphConstants.arScaleVolume;
 	
 	public KroneckerGraphGen(DatagenConf conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
-		initial_graph = new double[][]{
-				  { 1, 0.3, 0.2, 0, 0, 0, 0, 0.9, 0, 0 },
-				  { 0.4, 1, 0, 0, 0, 0, 0, 0.4, 0, 0 },
-				  { 0, 0, 1, 0, 0, 0, 0.2, 0, 0, 0 },
-				  { 0.5, 0, 0, 1, 0, 0.1, 0, 0, 0, 0 },
-				  { 0, 0, 0.2, 0, 1, 0, 0, 0.5, 0, 0 },
-				  { 0, 0, 0, 0, 0, 1, 0, 0.1, 0, 0 },
-				  { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
-				  { 0, 0.1, 0.2, 0, 0, 0, 0, 1, 0, 0 },
-				  { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 },
-				  { 0, 0, 0.2, 0, 0.1, 0, 0, 0, 0, 1 }
-				};
+		initial_graph = KnonGraphConstants.INITIAL_GRAPH;
 		
 		num_rows = initial_graph.length;
 		num_columns = initial_graph[0].length;
@@ -42,10 +30,30 @@ public abstract class KroneckerGraphGen extends GraphDataGen {
 			}
 		}
 		
-		hdfs_path = conf.getDataStoredPath().get(Constants.BIGFRAME_DATA_HDFSPATH_GRAPH) ;
+		hdfs_dir = conf.getDataStoredPath().get(Constants.BIGFRAME_DATA_HDFSPATH_GRAPH) ;
 		
 	}
 
+	/**
+	 * This method should be consistent with getNodeCount.
+	 * @param targetGB
+	 * @return
+	 */
+	public static float getRealGraphGB(float targetGB) {
+		int i = 0;
+		for(;i<arScaleVolume.length; i++) {
+			if (targetGB < arScaleVolume[i]) {
+				break;
+			}
+		}
+		
+		if (i == 0)
+			return arScaleVolume[0];
+		
+		else
+			return arScaleVolume[i];
+	}
+	
 	public static long getNodeCount(float targetGB) {
 		int i = 0;
 		for(;i<arScaleVolume.length; i++) {

@@ -1,32 +1,24 @@
 package edu.bigframe.datagen.nested;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.filecache.DistributedCache;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 //import javax.xml.soap.Text;
 
 
-import org.apache.hadoop.io.IOUtils;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
@@ -50,7 +42,6 @@ import cern.jet.random.engine.RandomEngine;
 import cern.jet.random.sampling.RandomSampler;
 
 import edu.bigframe.BigFrameDriver;
-import edu.bigframe.datagen.DataGenerator;
 import edu.bigframe.datagen.DatagenConf;
 import edu.bigframe.datagen.graph.KroneckerGraphGen;
 import edu.bigframe.datagen.relational.CollectTPCDSstat;
@@ -68,13 +59,13 @@ public class RawTweetGenHadoop extends RawTweetGen {
 	
 	private static final String TPCDS_TARGET_GB = "mapreduce.rawtweet.tpcds-target-GB";
 	private static final String GRAPH_TARGET_GB = "mapreduce.rawtweet.graph-target-GB";
-	private static final String NESTED_TARGET_GB = "mapreduce.rawtweet.nested-targetGB";
+	//private static final String NESTED_TARGET_GB = "mapreduce.rawtweet.nested-targetGB";
 	
 	private static final String NUM_PRODUCT = "mapreduce.rawtweet.num-product";
 	private static final String NUM_TWITTER_USER = "mapreduce.rawtweet.num-twitter-user";
 	
-	private static final String TWEET_TEMPLATE = "tweet.json";
-	private static final String SENTIMENT_DICT = "sentiment.dict";
+	//private static final String TWEET_TEMPLATE = "tweet.json";
+	//private static final String SENTIMENT_DICT = "sentiment.dict";
 	
 	private static final TweetTextGenSimple TEXT_GEN = new TweetTextGenSimple(null, 0);
 	private static final InputStream TWEET_TEMPLATE_FILE = BigFrameDriver.class.getClassLoader().getResourceAsStream("tweet_template.json");
@@ -152,12 +143,10 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		
 		Configuration mapreduce_config = new Configuration();
 		mapreduce_config.addResource(new Path(conf.getProp().get(Constants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
-		
-		//cacheFile(TWEET_TEMPLATE, tweet_template_file, mapreduce_config);
-		//cacheFile(SENTIMENT_DICT, dictionary_file, mapreduce_config);
+		mapreduce_config.addResource(new Path(conf.getProp().get(Constants.BIGFRAME_HADOOP_HOME)+"/conf/mapred-site.xml"));
 		
 		long tweets_per_day = getTweetsPerDay(days_between);
-		long GBPerMapper = 2;
+		long GBPerMapper = 1;
 		int num_Mapper = (int) Math.ceil(targetGB/GBPerMapper);
 		
 		
@@ -175,6 +164,7 @@ public class RawTweetGenHadoop extends RawTweetGen {
 			
 			Path outputDir = new Path(hdfs_dir);
 			FileOutputFormat.setOutputPath(job, outputDir);
+			job.setJarByClass(RawTweetGenMapper.class);
 			job.setMapperClass(RawTweetGenMapper.class);
 		    job.setNumReduceTasks(0);
 		    job.setOutputKeyClass(NullWritable.class);
@@ -273,8 +263,8 @@ public class RawTweetGenHadoop extends RawTweetGen {
 					"EEE MMM dd HH:mm:ss ZZZZZ yyyy");
 			twitterDateFormat.setLenient(false);
 			
-			RandomEngine twister = new MersenneTwister(RandomSeeds.SEEDS_TABLE[0]);
-			Random randnum = new Random(RandomSeeds.SEEDS_TABLE[0]);
+			RandomEngine twister = new MersenneTwister((int) (RandomSeeds.SEEDS_TABLE[0]+time_begin));
+			Random randnum = new Random(RandomSeeds.SEEDS_TABLE[0]+time_begin);
 			
 			
 			long tweet_id = 0;

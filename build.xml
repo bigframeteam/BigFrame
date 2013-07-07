@@ -123,9 +123,9 @@
 			
 		
 			<fileset dir="${resource.dir}"/>
-			<!--
+			
 			<zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
-			-->
+			
 			<manifest>
 			  <attribute name="Main-Class"
 			             value="edu.bigframe.BigFrameDriver" />

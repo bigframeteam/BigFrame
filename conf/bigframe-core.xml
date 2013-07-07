@@ -1,14 +1,14 @@
 <!--The benchmark specification-->
 <configuration>
 
-		<property>
+	<property>
 		<name>bigframe.datavariety</name>
-		<value>relational,graph,nested</value>
+		<value>nested</value>
 	</property>
 	
 	<property>
 		<name>bigframe.datavolume</name>
-		<value>tiny</value>
+		<value>small</value>
 		<description>
 			tiny: around 10GB
 			small: around 100GB

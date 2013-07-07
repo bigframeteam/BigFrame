@@ -9,6 +9,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import edu.bigframe.datagen.graph.GraphDataGen;
+import edu.bigframe.datagen.graph.KronGraphGenHadoop;
 import edu.bigframe.datagen.graph.KronGraphGenNaive;
 import edu.bigframe.datagen.graph.KroneckerGraphGen;
 import edu.bigframe.datagen.nested.NestedDataGen;
@@ -90,7 +91,8 @@ public class DatagenFactory {
 			}
 			
 			else if (variety.equals("graph")) {				
-				GraphDataGen twitter_graph = new KronGraphGenNaive(conf, dataTargetGBs.get("graph"));
+				//GraphDataGen twitter_graph = new KronGraphGenNaive(conf, dataTargetGBs.get("graph"));
+				GraphDataGen twitter_graph = new KronGraphGenHadoop(conf, dataTargetGBs.get("graph"));
 				//System.out.println(dataTargetGBs.get("graph"));
 				//System.out.println(KroneckerGraphGen.getNodeCount(dataTargetGBs.get("graph")));
 				//System.exit(-1);
