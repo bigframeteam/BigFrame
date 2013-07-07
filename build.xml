@@ -16,7 +16,10 @@
 	<property name="Name" value="BigFrame" />
 	<property name="name" value="bigframe" />
 	<property name="bigframe.version" value="0.1.0" />
+	<!--
 	<property name="final.name" value="${name}-${bigframe.version}" />
+	-->
+	<property name="final.name" value="${name}" />
 	<property name="year" value="2013" />
 
 	<!-- Source directories -->
