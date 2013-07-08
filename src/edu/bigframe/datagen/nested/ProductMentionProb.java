@@ -14,7 +14,8 @@ public class ProductMentionProb{
 	protected double promotion_cust_mention_prob;
 	protected double promotion_non_cust_mention_prob;
 	
-	protected double promoted_product_men_prob;
+	protected double promoted_prod_men_prob_cust;
+	protected double promoted_prod_men_prob_noncust;
 	
 	protected PromotedProduct promoted_products;
 	
@@ -27,7 +28,8 @@ public class ProductMentionProb{
 		
 		promotion_cust_mention_prob  = 0.8;
 		promotion_non_cust_mention_prob = 0.08;
-		promoted_product_men_prob = 0.8;
+		promoted_prod_men_prob_cust = 0.8;
+		promoted_prod_men_prob_noncust = 0.2;
 	}
 	
 	public double getCustMenProb() {
@@ -38,5 +40,11 @@ public class ProductMentionProb{
 		return non_cust_mention_prob;
 	}
 	
+	public double getPromotedProdMenProbCust() {
+		return promoted_prod_men_prob_cust;
+	}
 	
+	public double getPromotedProdMenProbNonCust() {
+		return promoted_prod_men_prob_noncust;
+	}
 }

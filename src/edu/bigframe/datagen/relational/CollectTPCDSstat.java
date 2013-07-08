@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.hadoop.conf.Configuration;
+
 import edu.bigframe.datagen.DatagenConf;
 import edu.bigframe.datagen.nested.PromotedProduct;
 import edu.bigframe.util.Constants;
@@ -57,5 +59,6 @@ public abstract class CollectTPCDSstat {
 	public abstract long[] getCustTwitterAcc(float tpcds_targetGB, float graph_targetGB);
 	public abstract long [] getNonCustTwitterAcc(long[] customer_twitterAcc, int num_twitter_user);
 	
+	public abstract void collectHDFSPromtResult(Configuration mapreduce_config, String tbl_file, PromotionInfo promt_info);
 	
 }

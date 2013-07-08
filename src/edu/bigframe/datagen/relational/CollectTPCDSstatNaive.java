@@ -2,9 +2,14 @@ package edu.bigframe.datagen.relational;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +19,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.log4j.Logger;
 
 import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
@@ -22,11 +28,12 @@ import cern.jet.random.sampling.RandomSampler;
 import edu.bigframe.datagen.DatagenConf;
 import edu.bigframe.datagen.graph.KroneckerGraphGen;
 import edu.bigframe.datagen.nested.PromotedProduct;
+import edu.bigframe.util.Config;
 import edu.bigframe.util.Constants;
 import edu.bigframe.util.RandomSeeds;
 
 public class CollectTPCDSstatNaive extends CollectTPCDSstat {
-	
+	private static final Logger LOG = Logger.getLogger(CollectTPCDSstatNaive.class); 
 	/**
 	 * The valid scale factor used in TPCDS.
 	 */
@@ -100,10 +107,181 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		return null;
 	}
 
+	private void genPromt(Config conf, int targetGB) {
+		String promt_tbl_gen_script = conf.getProp().get(Constants.BIGFRAME_GEN_PROMTTBL_SCRIPT);
+		//System.out.println("gen promotion tbl script:" + promt_tbl_gen_script);
+		String promtgen_script_path = (new File(promt_tbl_gen_script)).getParentFile().getAbsolutePath();
+		
+		String cmd = "perl " + promt_tbl_gen_script + " "  + (int) targetGB;
+ 
+		
+		try {
+         Runtime rt = Runtime.getRuntime();
+         Process proc = rt.exec(cmd, null, new File(promtgen_script_path));
+         proc.waitFor();
+         
+
+		} catch (Exception e) {
+			System.out.println(e.toString());
+			e.printStackTrace();
+		}
+		
+	}
 	
-	public PromotionInfo getPromotInfo(int targetGB) {
+	public void genPromtTBLonHDFS(Config conf, int targetGB) {
+		String promt_tbl_gen_script = conf.getProp().get(Constants.BIGFRAME_GEN_PROMTTBL_SCRIPT);
+		//System.out.println("gen promotion tbl script:" + promt_tbl_gen_script);
+		String promtgen_script_path = (new File(promt_tbl_gen_script)).getParentFile().getAbsolutePath();
+		
+		genPromt(conf, targetGB);
+		
+		String promt_tbl_file = promtgen_script_path + "/" + "dsdgen" + "/" + "promotion.dat";
+		
+		Path local_path = new Path(promt_tbl_file);
+		
+		try {
+			Path hdfs_path = new Path("promotion.dat");
+			Configuration config = new Configuration();
+			config.addResource(new Path(conf.getProp().get(Constants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
+			FileSystem fileSystem = FileSystem.get(config);
+			if (fileSystem.exists(hdfs_path))
+				fileSystem.delete(hdfs_path, true);
+
+			fileSystem.copyFromLocalFile(local_path, hdfs_path);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+		cleanUp(promtgen_script_path, "dsdgen");
+	}
+	
+	private void genPromtTBLlocal(Config conf, int targetGB, PromotionInfo promt_info) {
+		String promt_tbl_gen_script = conf.getProp().get(Constants.BIGFRAME_GEN_PROMTTBL_SCRIPT);
+		//System.out.println("gen promotion tbl script:" + promt_tbl_gen_script);
+		String promtgen_script_path = (new File(promt_tbl_gen_script)).getParentFile().getAbsolutePath();
+		
+		genPromt(conf, targetGB);
+		
+		String promt_tbl_file = promtgen_script_path + "/" + "dsdgen" + "/" + "promotion.dat";
+		
+		collectLocalPromtResult(promt_tbl_file, promt_info);
+		
+		cleanUp(promtgen_script_path, "dsdgen");
+	}
+	
+
+	
+	private void setPromtResult(BufferedReader in, PromotionInfo promt_info) {
+		String line;
+		
+		ArrayList<Integer> promotionSKs = new ArrayList<Integer>();
+		ArrayList<Integer> dateBeginSKs= new ArrayList<Integer>();
+		ArrayList<Integer> dateEndSKs = new ArrayList<Integer>();
+		ArrayList<Integer> productSKs = new ArrayList<Integer>();
+		
+		try {
+			while((line = in.readLine()) != null) {
+				String [] fields = line.split("\\|");
+				
+				String promtSK = (fields[0].equals("") ? "-1" : fields[0]);
+				String datebegSK = (fields[2].equals("") ? "-1" : fields[2]);
+				String dateendSK = (fields[3].equals("") ? "-1" : fields[3]);
+				String prodSK = (fields[4].equals("") ? "-1" : fields[4]);
+				
+				/*System.out.println("promotion SK:" + promtSK);
+				System.out.println("date begin SK:" + datebegSK);
+				System.out.println("date end SK:" + dateendSK);
+				System.out.println("product SK:" + prodSK);*/
+				
+				LOG.info("promotion SK:" + promtSK);
+				LOG.info("date begin SK:" + datebegSK);
+				LOG.info("date end SK:" + dateendSK);
+				LOG.info("product SK:" + prodSK);
+				
+				
+				promotionSKs.add(Integer.parseInt(promtSK));
+				dateBeginSKs.add(Integer.parseInt(datebegSK));
+				dateEndSKs.add(Integer.parseInt(dateendSK));
+				productSKs.add(Integer.parseInt(prodSK));										
+			}
+			
+			promt_info.setDateBeginSK(dateBeginSKs);
+			promt_info.setDateEndSK(dateEndSKs);
+			promt_info.setPromotionSK(promotionSKs);
+			promt_info.setProductSK(productSKs);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void collectLocalPromtResult(String tbl_file, PromotionInfo promt_info) {
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(tbl_file));
+			
+			setPromtResult(in, promt_info);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void collectHDFSPromtResult(Configuration mapreduce_config, String tbl_file, PromotionInfo promt_info) {
+		try {
+			
+			Path hdfs_path = new Path(tbl_file);
+			FileSystem fileSystem = FileSystem.get(mapreduce_config);
+			if (!fileSystem.exists(hdfs_path)) {
+				LOG.error("Cannot find promotion file on HDFS");
+				System.exit(-1);
+			}
+			else
+				LOG.info("Got promotion file on HDFS");
+			
+			BufferedReader in = new BufferedReader(new InputStreamReader(fileSystem.open(hdfs_path)));
+			setPromtResult(in, promt_info);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void cleanUp(String working_dir, String deleted_dir) {
+		String cmd = "rm -r " + deleted_dir;
+		
+		try {
+	         Runtime rt = Runtime.getRuntime();
+	         Process proc = rt.exec(cmd, null, new File(working_dir));
+	         
+	         InputStream stderr =  proc.getErrorStream();
+	         InputStream stdout = proc.getInputStream();
+	         
+	         
+	         InputStreamReader isr = new InputStreamReader(stderr);
+	         BufferedReader br = new BufferedReader(isr);
+	         InputStreamReader isout = new InputStreamReader(stdout);
+	         BufferedReader br1 = new BufferedReader(isout);
+	         
+
+	         String line = null;
+	         
+
+			} catch (Exception e) {
+				System.out.println(e.toString());
+				e.printStackTrace();
+			}
+	}
+	
+	public PromotionInfo getPromotInfo(Config conf, int targetGB) {
 		PromotionInfo promt_info = new PromotionInfo();
 		
+		genPromtTBLlocal(conf, targetGB, promt_info);
+	
 		return promt_info;
 	}
 

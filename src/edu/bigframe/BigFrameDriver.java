@@ -1,5 +1,6 @@
 package edu.bigframe;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -28,6 +29,7 @@ import edu.bigframe.datagen.DatagenFactory;
 import edu.bigframe.datagen.nested.RawTweetGenNaive;
 import edu.bigframe.datagen.relational.CollectTPCDSstat;
 import edu.bigframe.datagen.relational.CollectTPCDSstatNaive;
+import edu.bigframe.datagen.relational.PromotionInfo;
 import edu.bigframe.datagen.relational.TwitterMappingGenNaive;
 import edu.bigframe.util.Constants;
 
