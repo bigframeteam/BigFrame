@@ -23,7 +23,7 @@ cd ..
 BASE_PATH=$PWD
 cd $OLD_PATH
 
-JAR_FILE=$JARS_DIR/bigframe-0.1.0.jar
+JAR_FILE=$JARS_DIR/bigframe.jar
 BIGFRAME_LIB=$BASE_PATH/lib
 BIGFRAME_CLASSPATH=$JAR_FILE
 for jar in `find $HADOOP_HOME/lib -name '*.jar'`; do

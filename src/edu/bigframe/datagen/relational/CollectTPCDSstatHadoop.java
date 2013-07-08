@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.xml.soap.Text;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -60,6 +61,13 @@ public class CollectTPCDSstatHadoop extends CollectTPCDSstat {
 	public long getNumOfItem(int targetGB) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void collectHDFSPromtResult(Configuration mapreduce_config,
+			String tbl_file, PromotionInfo promt_info) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -18,6 +18,7 @@ public class Constants {
 	public static String BIGFRAME_HADOOP_SLAVE = "bigframe.hadoop.slaves";
 	public static String BIGFRAME_TPCDS_LOCAL = "bigframe.tpcds.local";
 	public static String BIGFRAME_TPCDS_SCRIPT = "bigframe.tpcds.script";
+	public static String BIGFRAME_GEN_PROMTTBL_SCRIPT = "bigframe.promttblgen.script";
 	
 	
 	// Constants for Configuration parameters
@@ -76,8 +77,8 @@ public class Constants {
     public static String TPCDS_BEGINDATE = "1900-01-01";
     public static String TPCDS_ENDDATE = "2100-01-01";
     
-    public static String TWEET_BEGINDATE = "1999-01-01";
-    public static String TWEET_ENDDATE = "2000-01-01";
+    public static String TWEET_BEGINDATE = "1997-01-01";
+    public static String TWEET_ENDDATE = "1998-01-01";
    
     
     

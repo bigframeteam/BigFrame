@@ -1,5 +1,6 @@
 package edu.bigframe;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -28,6 +29,7 @@ import edu.bigframe.datagen.DatagenFactory;
 import edu.bigframe.datagen.nested.RawTweetGenNaive;
 import edu.bigframe.datagen.relational.CollectTPCDSstat;
 import edu.bigframe.datagen.relational.CollectTPCDSstatNaive;
+import edu.bigframe.datagen.relational.PromotionInfo;
 import edu.bigframe.datagen.relational.TwitterMappingGenNaive;
 import edu.bigframe.util.Constants;
 
@@ -229,6 +231,19 @@ public class BigFrameDriver {
 		
 		conf.printConf();
 		
+		//CollectTPCDSstatNaive tpcds = new CollectTPCDSstatNaive();
+		//PromotionInfo test = tpcds.getPromotInfo(conf.getDatagenConf(), 1);
+		//tpcds.genPromtTBLonHDFS(conf.getDatagenConf(), 100);
+/*		ArrayList<Integer> dateBeginSK = test.getDateBeginSK();
+		ArrayList<Integer> dateEndSK = test.getDateEndSK();
+		
+		for(int i = 0; i < dateBeginSK.size(); i++) {
+			System.out.println("Date begin: " + test.getDateBySK(dateBeginSK.get(i)) + ";" + "Date end: " + test.getDateBySK(dateEndSK.get(i)));
+		}
+*/
+		
+		
+		//System.exit(-1);
 		
 		//If mode equals datagen, then generate the data we need
 		if ( line.getOptionValue(MODE).equals(MODE_DATAGEN)) {

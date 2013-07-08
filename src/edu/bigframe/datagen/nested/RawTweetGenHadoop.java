@@ -46,58 +46,20 @@ import edu.bigframe.datagen.DatagenConf;
 import edu.bigframe.datagen.graph.KroneckerGraphGen;
 import edu.bigframe.datagen.relational.CollectTPCDSstat;
 import edu.bigframe.datagen.relational.CollectTPCDSstatNaive;
+import edu.bigframe.datagen.relational.PromotionInfo;
 import edu.bigframe.datagen.text.TweetTextGenSimple;
 import edu.bigframe.util.Constants;
 import edu.bigframe.util.RandomSeeds;
 
 public class RawTweetGenHadoop extends RawTweetGen {
 
-	private static final String NUM_MAPPERS = "mapreduce.rawtweet.num-mappers";
-	private static final String TWEETS_PER_DAY = "mapreduce.rawtweet.tweet-per-day";
-	private static final String TIME_BEGIN = "mapreduce.rawtweet.time-begin";
-	private static final String TIME_END = "mapreduce.rawtweet.time-end";
-	
-	private static final String TPCDS_TARGET_GB = "mapreduce.rawtweet.tpcds-target-GB";
-	private static final String GRAPH_TARGET_GB = "mapreduce.rawtweet.graph-target-GB";
-	//private static final String NESTED_TARGET_GB = "mapreduce.rawtweet.nested-targetGB";
-	
-	private static final String NUM_PRODUCT = "mapreduce.rawtweet.num-product";
-	private static final String NUM_TWITTER_USER = "mapreduce.rawtweet.num-twitter-user";
-	
-	//private static final String TWEET_TEMPLATE = "tweet.json";
-	//private static final String SENTIMENT_DICT = "sentiment.dict";
-	
-	private static final TweetTextGenSimple TEXT_GEN = new TweetTextGenSimple(null, 0);
-	private static final InputStream TWEET_TEMPLATE_FILE = BigFrameDriver.class.getClassLoader().getResourceAsStream("tweet_template.json");
-	private static final JSONObject TWEET_JSON = parseJsonFromFile(TWEET_TEMPLATE_FILE);
 	
 	public RawTweetGenHadoop(DatagenConf conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 	}
 
-	
-	static JSONObject parseJsonFromFile(InputStream file) {
-		JSONParser parser = new JSONParser();
-		try {
-			 
-			Object obj = parser.parse(new BufferedReader(new InputStreamReader(file)));
-	 
-			JSONObject jsonObject = (JSONObject) obj;
-	 
-			return jsonObject;
-	
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
+
 	
 	@Override
 	public void generate() {
@@ -109,7 +71,8 @@ public class RawTweetGenHadoop extends RawTweetGen {
 			System.exit(-1);
 		}
 
-		CollectTPCDSstat tpcds_stat_collecter = new CollectTPCDSstatNaive();
+		CollectTPCDSstatNaive tpcds_stat_collecter = new CollectTPCDSstatNaive();
+		tpcds_stat_collecter.genPromtTBLonHDFS(conf, (int)targetGB);
 
 		
 		Date dateBegin = stringToDate(Constants.TWEET_BEGINDATE);
@@ -146,18 +109,18 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		mapreduce_config.addResource(new Path(conf.getProp().get(Constants.BIGFRAME_HADOOP_HOME)+"/conf/mapred-site.xml"));
 		
 		long tweets_per_day = getTweetsPerDay(days_between);
-		long GBPerMapper = 1;
+		long GBPerMapper = RawTweetGenConstants.GB_PER_MAPPER;
 		int num_Mapper = (int) Math.ceil(targetGB/GBPerMapper);
 		
 		
-		mapreduce_config.setLong(TIME_BEGIN, dateBegin_time_sec);
-		mapreduce_config.setLong(TIME_END, dateEnd_time_sec);
-		mapreduce_config.setInt(NUM_MAPPERS, num_Mapper);
-		mapreduce_config.setLong(TWEETS_PER_DAY, tweets_per_day);
-		mapreduce_config.setLong(NUM_PRODUCT, num_products);
-		mapreduce_config.setLong(NUM_TWITTER_USER, num_twitter_user);
-		mapreduce_config.setFloat(TPCDS_TARGET_GB, tpcds_targetGB);
-		mapreduce_config.setFloat(GRAPH_TARGET_GB, graph_targetGB);
+		mapreduce_config.setLong(RawTweetGenConstants.TIME_BEGIN, dateBegin_time_sec);
+		mapreduce_config.setLong(RawTweetGenConstants.TIME_END, dateEnd_time_sec);
+		mapreduce_config.setInt(RawTweetGenConstants.NUM_MAPPERS, num_Mapper);
+		mapreduce_config.setLong(RawTweetGenConstants.TWEETS_PER_DAY, tweets_per_day);
+		mapreduce_config.setLong(RawTweetGenConstants.NUM_PRODUCT, num_products);
+		mapreduce_config.setLong(RawTweetGenConstants.NUM_TWITTER_USER, num_twitter_user);
+		mapreduce_config.setFloat(RawTweetGenConstants.TPCDS_TARGET_GB, tpcds_targetGB);
+		mapreduce_config.setFloat(RawTweetGenConstants.GRAPH_TARGET_GB, graph_targetGB);
 		
 		try {
 			Job job = new Job(mapreduce_config);
@@ -194,27 +157,41 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		@Override
 		protected void map(NullWritable ignored, TweetGenInfoWritable tweet_gen_info, final Context context) 
 				throws IOException, InterruptedException {
-/*			LOG.info("Begin time: "+tweet_gen_info.begin+";"
+			LOG.info("Begin time: "+tweet_gen_info.begin+";"
 				+"End time: " + tweet_gen_info.end + ";" 
-				+ "Tweets per day: " + tweet_gen_info.tweets_per_day);*/
+				+ "Tweets per day: " + tweet_gen_info.tweets_per_day);
 			long time_begin = tweet_gen_info.begin;
 			long time_end = tweet_gen_info.end;
 			long tweets_per_day = tweet_gen_info.tweets_per_day;
 			
 			Configuration mapreduce_config = context.getConfiguration();
 
-			int num_twitter_user = mapreduce_config.getInt(NUM_TWITTER_USER, 0);
-			float tpcds_targetGB = mapreduce_config.getFloat(TPCDS_TARGET_GB, 0);
-			float graph_targetGB = mapreduce_config.getFloat(GRAPH_TARGET_GB, 0);
-			int num_products = mapreduce_config.getInt(NUM_PRODUCT, 0);
+			int num_twitter_user = mapreduce_config.getInt(RawTweetGenConstants.NUM_TWITTER_USER, 0);
+			float tpcds_targetGB = mapreduce_config.getFloat(RawTweetGenConstants.TPCDS_TARGET_GB, 0);
+			float graph_targetGB = mapreduce_config.getFloat(RawTweetGenConstants.GRAPH_TARGET_GB, 0);
+			int num_products = mapreduce_config.getInt(RawTweetGenConstants.NUM_PRODUCT, 0);
 			
+			CollectTPCDSstat tpcds_stat_collecter = new CollectTPCDSstatNaive();
+			PromotionInfo promt_info = new PromotionInfo();
+			tpcds_stat_collecter.collectHDFSPromtResult(mapreduce_config, "promotion.dat", promt_info);
 			
+			/*
+			 * Get the set of promoted products and their promotion period.
+			 */
+			ArrayList<Integer> dateBeginSK = promt_info.getDateBeginSK();
+			ArrayList<Integer> dateEndSK = promt_info.getDateEndSK();
+			ArrayList<Integer> productSK = promt_info.getProductSK();
+			
+			/*
+			 * Set the probability for mentioning products
+			 */
 			ProductMentionProb mention_prob = new ProductMentionProb();
 			
 			double cust_mem_prod = mention_prob.getCustMenProb();
 			double noncust_mem_prod = mention_prob.getNonCustMenProb();
+			double promoted_product_men_prob = mention_prob.getPromotedProdMenProbCust();
+			double promoted_prod_men_prob_noncust = mention_prob.getPromotedProdMenProbNonCust();
 
-			CollectTPCDSstat tpcds_stat_collecter = new CollectTPCDSstatNaive();
 			long [] customer_twitterAcc = tpcds_stat_collecter.getCustTwitterAcc(tpcds_targetGB, graph_targetGB);
 			long [] non_customer_acc = tpcds_stat_collecter.getNonCustTwitterAcc(customer_twitterAcc, num_twitter_user);
 			
@@ -257,7 +234,8 @@ public class RawTweetGenHadoop extends RawTweetGen {
 				exponent++;
 			}
 			
-			JSONObject user_json = (JSONObject) TWEET_JSON.get("user"); 
+			JSONObject tweet_json = RawTweetGenConstants.TWEET_JSON;
+			JSONObject user_json = (JSONObject) tweet_json.get("user"); 
 			
 			SimpleDateFormat twitterDateFormat = new SimpleDateFormat(
 					"EEE MMM dd HH:mm:ss ZZZZZ yyyy");
@@ -279,35 +257,49 @@ public class RawTweetGenHadoop extends RawTweetGen {
 					double flip = randnum.nextDouble();
 					// Get a set of customers talk about the product
 					if (flip <= cust_mem_prod) {
-						int product_id = randnum.nextInt(num_products);
-						String tweet = TEXT_GEN.getNextTweet(product_id);
+						
+						
+						int product_id;
+						
+						double flip2 = randnum.nextDouble();
+						/************************************************************
+						 * mention the promoted products
+						 ***********************************************************/
+						if(flip2 <= promoted_product_men_prob) {
+							product_id = productSK.get(randnum.nextInt(productSK.size()));
+						}
+						
+						else
+							product_id = randnum.nextInt(num_products);
+						
+						String tweet = RawTweetGenConstants.TEXT_GEN.getNextTweet(product_id);
 						String date = twitterDateFormat.format(timestamp*1000);
 						
-						TWEET_JSON.put("created_at", date);
-						TWEET_JSON.put("text", tweet);
-						TWEET_JSON.put("id", String.valueOf(tweet_id));
+						tweet_json.put("created_at", date);
+						tweet_json.put("text", tweet);
+						tweet_json.put("id", String.valueOf(tweet_id));
 						
 						// How to put nested attribute?
 						
 						user_json.put("id", selected_cust[j]);
-						TWEET_JSON.put("user", user_json);
+						tweet_json.put("user", user_json);
 						
-						context.write(null, new Text(TWEET_JSON.toString()));
+						context.write(null, new Text(tweet_json.toString()));
 					}
 					// Get a set of customers not talk about the product
 					else {
-						String tweet = TEXT_GEN.getNextTweet(-1);
+						String tweet = RawTweetGenConstants.TEXT_GEN.getNextTweet(-1);
 						String date = twitterDateFormat.format(timestamp*1000);
 						
-						TWEET_JSON.put("created_at", date);
-						TWEET_JSON.put("text", tweet);
-						TWEET_JSON.put("id", String.valueOf(tweet_id));
+						tweet_json.put("created_at", date);
+						tweet_json.put("text", tweet);
+						tweet_json.put("id", String.valueOf(tweet_id));
 						
 						
 						user_json.put("id", selected_cust[j]);
-						TWEET_JSON.put("user", user_json);
+						tweet_json.put("user", user_json);
 						
-						context.write(null, new Text(TWEET_JSON.toString()));
+						context.write(null, new Text(tweet_json.toString()));
 					}
 				}
 				
@@ -315,33 +307,44 @@ public class RawTweetGenHadoop extends RawTweetGen {
 					double flip = randnum.nextDouble();
 					// Get a set of non-customers talk about the product
 					if (flip <= noncust_mem_prod) {
-						int product_id = randnum.nextInt(num_products);
+						int product_id;
 						
-						String tweet = TEXT_GEN.getNextTweet(product_id);
+						double flip2 = randnum.nextDouble();
+						/************************************************************
+						 * mention the promoted products
+						 ***********************************************************/
+						if(flip2 <= promoted_product_men_prob) {
+							product_id = productSK.get(randnum.nextInt(productSK.size()));
+						}
+						
+						else
+							product_id = randnum.nextInt(num_products);
+						
+						String tweet = RawTweetGenConstants.TEXT_GEN.getNextTweet(product_id);
 						String date = twitterDateFormat.format(timestamp*1000);
 						
-						TWEET_JSON.put("created_at", date);
-						TWEET_JSON.put("text", tweet);
-						TWEET_JSON.put("id_str", String.valueOf(tweet_id));				
+						tweet_json.put("created_at", date);
+						tweet_json.put("text", tweet);
+						tweet_json.put("id_str", String.valueOf(tweet_id));				
 						
 						user_json.put("id", selected_noncust[k]);
-						TWEET_JSON.put("user", user_json);
+						tweet_json.put("user", user_json);
 						
-						context.write(null, new Text(TWEET_JSON.toString()));
+						context.write(null, new Text(tweet_json.toString()));
 					}
 					// Get a set of non-customers not talk about the product
 					else {
-						String tweet = TEXT_GEN.getNextTweet(-1);
+						String tweet = RawTweetGenConstants.TEXT_GEN.getNextTweet(-1);
 						String date = twitterDateFormat.format(timestamp*1000);
 						
-						TWEET_JSON.put("created_at", date);
-						TWEET_JSON.put("text", tweet);
-						TWEET_JSON.put("id", String.valueOf(tweet_id));
+						tweet_json.put("created_at", date);
+						tweet_json.put("text", tweet);
+						tweet_json.put("id", String.valueOf(tweet_id));
 						
 						user_json.put("id", selected_noncust[k]);
-						TWEET_JSON.put("user", user_json);
+						tweet_json.put("user", user_json);
 						
-						context.write(null, new Text(TWEET_JSON.toString()));
+						context.write(null, new Text(tweet_json.toString()));
 					}
 				}
 			
@@ -504,8 +507,8 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		    long time_begin = getTimeBegin(job);
 		    long time_end = getTimeEnd(job);
 		    long total_time = time_end - time_begin;
-		    int numSplits = job.getConfiguration().getInt(NUM_MAPPERS, 1);
-		    int tweets_per_day = job.getConfiguration().getInt(TWEETS_PER_DAY, 1);
+		    int numSplits = job.getConfiguration().getInt(RawTweetGenConstants.NUM_MAPPERS, 1);
+		    int tweets_per_day = job.getConfiguration().getInt(RawTweetGenConstants.TWEETS_PER_DAY, 1);
 		    LOG.info("Generating total seconds " + total_time + " using " + numSplits);
 		    List<InputSplit> splits = new ArrayList<InputSplit>();
 		    long begin = time_begin;
@@ -518,19 +521,19 @@ public class RawTweetGenHadoop extends RawTweetGen {
 	    }
 
 		public long getTimeBegin(JobContext job) {
-			return job.getConfiguration().getLong(TIME_BEGIN, 0);
+			return job.getConfiguration().getLong(RawTweetGenConstants.TIME_BEGIN, 0);
 		}
 			  
 		public void setTimeBegin(Job job, long time_begin) {
-			job.getConfiguration().setLong(TIME_BEGIN, time_begin);
+			job.getConfiguration().setLong(RawTweetGenConstants.TIME_BEGIN, time_begin);
 		}		
 		
 		public long getTimeEnd(JobContext job) {
-			return job.getConfiguration().getLong(TIME_END, 0);
+			return job.getConfiguration().getLong(RawTweetGenConstants.TIME_END, 0);
 		}
 			  
 		public void setTimeEnd(Job job, long time_end) {
-			job.getConfiguration().setLong(TIME_END, time_end);
+			job.getConfiguration().setLong(RawTweetGenConstants.TIME_END, time_end);
 		}	
 	}
 	
