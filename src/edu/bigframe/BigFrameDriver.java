@@ -230,7 +230,7 @@ public class BigFrameDriver {
 		}
 		
 		conf.printConf();
-		
+
 		
 		//If mode equals datagen, then generate the data we need
 		if ( line.getOptionValue(MODE).equals(MODE_DATAGEN)) {
