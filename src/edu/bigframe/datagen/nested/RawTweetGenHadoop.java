@@ -182,6 +182,21 @@ public class RawTweetGenHadoop extends RawTweetGen {
 			ArrayList<Integer> dateEndSK = promt_info.getDateEndSK();
 			ArrayList<Integer> productSK = promt_info.getProductSK();
 			
+			
+			ArrayList<Integer> candidate_promoted_prod = new ArrayList<Integer>();
+			
+			for(int i = 0; i < dateBeginSK.size(); i++) {
+				if(promt_info.getDateBySK(dateBeginSK.get(i)).getTime()/1000 > time_end) {
+					continue;
+				}
+
+				if(promt_info.getDateBySK(dateEndSK.get(i)).getTime()/1000 < time_begin) {
+					continue;
+				}
+				
+				candidate_promoted_prod.add(productSK.get(i));
+			}
+			
 			/*
 			 * Set the probability for mentioning products
 			 */
@@ -266,7 +281,7 @@ public class RawTweetGenHadoop extends RawTweetGen {
 						 * mention the promoted products
 						 ***********************************************************/
 						if(flip2 <= promoted_product_men_prob) {
-							product_id = productSK.get(randnum.nextInt(productSK.size()));
+							product_id = candidate_promoted_prod.get(randnum.nextInt(candidate_promoted_prod.size()));
 						}
 						
 						else
@@ -313,8 +328,8 @@ public class RawTweetGenHadoop extends RawTweetGen {
 						/************************************************************
 						 * mention the promoted products
 						 ***********************************************************/
-						if(flip2 <= promoted_product_men_prob) {
-							product_id = productSK.get(randnum.nextInt(productSK.size()));
+						if(flip2 <= promoted_prod_men_prob_noncust) {
+							product_id = candidate_promoted_prod.get(randnum.nextInt(candidate_promoted_prod.size()));
 						}
 						
 						else

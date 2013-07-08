@@ -9,7 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -107,6 +111,18 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		return null;
 	}
 
+	protected  Date stringToDate(String date) {
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	    
+	    try {
+			return formatter.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return null;
+	}
+	
 	private void genPromt(Config conf, int targetGB) {
 		String promt_tbl_gen_script = conf.getProp().get(Constants.BIGFRAME_GEN_PROMTTBL_SCRIPT);
 		//System.out.println("gen promotion tbl script:" + promt_tbl_gen_script);
@@ -184,15 +200,29 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 			while((line = in.readLine()) != null) {
 				String [] fields = line.split("\\|");
 				
-				String promtSK = (fields[0].equals("") ? "-1" : fields[0]);
+				/*String promtSK = (fields[0].equals("") ? "-1" : fields[0]);
 				String datebegSK = (fields[2].equals("") ? "-1" : fields[2]);
 				String dateendSK = (fields[3].equals("") ? "-1" : fields[3]);
-				String prodSK = (fields[4].equals("") ? "-1" : fields[4]);
+				String prodSK = (fields[4].equals("") ? "-1" : fields[4]);*/
 				
-				/*System.out.println("promotion SK:" + promtSK);
-				System.out.println("date begin SK:" + datebegSK);
-				System.out.println("date end SK:" + dateendSK);
-				System.out.println("product SK:" + prodSK);*/
+				String promtSK = fields[0];
+				String datebegSK = fields[2];
+				String dateendSK = fields[3];
+				String prodSK = fields[4];
+				
+				if(promtSK.equals("") || datebegSK.equals("") 
+						|| dateendSK.equals("") || prodSK.equals(""))
+					continue;
+				
+				if(promt_info.getDateBySK(Integer.parseInt(dateendSK)) !=null &&
+						promt_info.getDateBySK(Integer.parseInt(dateendSK)).before(stringToDate(Constants.TWEET_BEGINDATE))) {
+					continue;
+				}
+				
+				if(promt_info.getDateBySK(Integer.parseInt(datebegSK)) !=null &&
+						promt_info.getDateBySK(Integer.parseInt(datebegSK)).after(stringToDate(Constants.TWEET_ENDDATE))) {
+					continue;
+				}
 				
 				LOG.info("promotion SK:" + promtSK);
 				LOG.info("date begin SK:" + datebegSK);
