@@ -10,14 +10,10 @@ import org.apache.log4j.Logger;
 
 import edu.bigframe.datagen.graph.GraphDataGen;
 import edu.bigframe.datagen.graph.KronGraphGenHadoop;
-import edu.bigframe.datagen.graph.KronGraphGenNaive;
-import edu.bigframe.datagen.graph.KroneckerGraphGen;
 import edu.bigframe.datagen.nested.NestedDataGen;
 import edu.bigframe.datagen.nested.RawTweetGenHadoop;
-import edu.bigframe.datagen.nested.RawTweetGenNaive;
 import edu.bigframe.datagen.relational.RelationalDataGen;
 import edu.bigframe.datagen.relational.TpcdsDataGenNaive;
-import edu.bigframe.datagen.relational.TwitterMappingGenNaive;
 import edu.bigframe.util.Constants;
 
 public class DatagenFactory {

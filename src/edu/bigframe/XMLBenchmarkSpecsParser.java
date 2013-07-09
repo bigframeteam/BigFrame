@@ -10,7 +10,7 @@ import org.w3c.dom.NodeList;
 
 import edu.bigframe.datagen.DatagenConf;
 import edu.bigframe.querygen.QuerygenConf;
-import edu.bigframe.util.XMLBaseParser;;
+import edu.bigframe.util.XMLBaseParser;
 
 
 

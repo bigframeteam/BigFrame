@@ -1,6 +1,5 @@
 package edu.bigframe.datagen.relational;
 
-import edu.bigframe.datagen.DataGenerator;
 import edu.bigframe.datagen.DatagenConf;
 
 public abstract class TwitterMappingGen extends RelationalDataGen {

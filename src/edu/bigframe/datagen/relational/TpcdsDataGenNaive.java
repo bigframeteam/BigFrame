@@ -4,10 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 
 import org.apache.log4j.Logger;
-
 
 import edu.bigframe.datagen.DataGenerator;
 import edu.bigframe.datagen.DatagenConf;

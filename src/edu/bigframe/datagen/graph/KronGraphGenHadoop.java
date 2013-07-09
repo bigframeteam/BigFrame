@@ -86,11 +86,10 @@ public class KronGraphGenHadoop extends KroneckerGraphGen {
 	}
 
 	static class KronGraphGenMapper extends Mapper<NullWritable, KronGraphGenInfoWritable, NullWritable, Text> {
-		private static final Logger LOG = Logger.getLogger(KronGraphGenMapper.class); 
+		//private static final Logger LOG = Logger.getLogger(KronGraphGenMapper.class); 
 		private Random randnum;
 		private int steps;
 		
-		@SuppressWarnings("unchecked")
 		@Override
 		protected void map(NullWritable ignored, KronGraphGenInfoWritable krongrap_gen_info, final Context context) 
 				throws IOException, InterruptedException {

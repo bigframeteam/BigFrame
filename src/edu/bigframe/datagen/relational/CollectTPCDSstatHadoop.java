@@ -1,7 +1,6 @@
 package edu.bigframe.datagen.relational;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.soap.Text;
 
@@ -10,7 +9,6 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 
-import edu.bigframe.datagen.DatagenConf;
 import edu.bigframe.datagen.nested.PromotedProduct;
 
 public class CollectTPCDSstatHadoop extends CollectTPCDSstat {

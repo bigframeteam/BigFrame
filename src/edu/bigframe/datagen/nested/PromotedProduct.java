@@ -1,7 +1,7 @@
 package edu.bigframe.datagen.nested;
 
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PromotedProduct {

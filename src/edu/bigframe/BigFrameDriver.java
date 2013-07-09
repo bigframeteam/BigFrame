@@ -1,18 +1,12 @@
 package edu.bigframe;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-
-import javax.swing.text.html.HTMLDocument.Iterator;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -26,11 +20,6 @@ import org.apache.commons.logging.LogFactory;
 
 import edu.bigframe.datagen.DataGenerator;
 import edu.bigframe.datagen.DatagenFactory;
-import edu.bigframe.datagen.nested.RawTweetGenNaive;
-import edu.bigframe.datagen.relational.CollectTPCDSstat;
-import edu.bigframe.datagen.relational.CollectTPCDSstatNaive;
-import edu.bigframe.datagen.relational.PromotionInfo;
-import edu.bigframe.datagen.relational.TwitterMappingGenNaive;
 import edu.bigframe.util.Constants;
 
 

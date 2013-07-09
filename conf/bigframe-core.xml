@@ -1,9 +1,12 @@
 <!--The benchmark specification-->
 <configuration>
-
+	
 	<property>
 		<name>bigframe.datavariety</name>
-		<value>nested</value>
+		<value>relational, graph, nested</value>
+		<description>
+			only relational, graph, nested data is supported.
+		</description>
 	</property>
 	
 	<property>
@@ -22,7 +25,7 @@
 		<name>bigframe.datavolume.relational.proportion</name>
 		<value>1</value>
 		<description>
-			It is used to determine the proportion of relational dataset
+			It is used to determine the proportion of relational data set
 			in terms of the whole data volume. 
 		</description>
 	</property>
@@ -30,63 +33,93 @@
 	<property>
 		<name>bigframe.datavolume.graph.proportion</name>
 		<value>1</value>
+		<description>
+			It is used to determine the proportion of graph data set
+			in terms of the whole data volume. 
+		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.datavolume.nested.proportion</name>
 		<value>1</value>
+		<description>
+			It is used to determine the proportion of nested data set
+			in terms of the whole data volume. 
+		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.datavolume.text.proportion</name>
 		<value>1</value>
+		<description>
+			It is used to determine the proportion of text data set
+			in terms of the whole data volume. 
+		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.datavelocity.relational</name>
 		<value>0</value>
 		<description>
-			data velocity will only be use in data refreshing phase,
-			only the continuous queries will be affected.
+			It is used to determine the data refresh rate of relational data.
 		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.datavelocity.graph</name>
 		<value>0</value>
+		<description>
+			It is used to determine the data refresh rate of graph data.
+		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.datavelocity.nested</name>
 		<value>0.1</value>
 		<description>
-			The number of tweets each user sent per day.
+			It is used to determine the data refresh rate of nested data.
+			The absolute number represents each user sent per day.
 		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.datavelocity.text</name>
 		<value>0</value>
+		<description>
+			It is used to determine the data refresh rate of text data.
+		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.data.hdfspath.relational</name>
 		<value>tpcds</value>
+		<description>
+			The HDFS path to store relational data.
+		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.data.hdfspath.graph</name>
 		<value>twitter_graph</value>
+		<description>
+			The HDFS path to store graph data.
+		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.data.hdfspath.nested</name>
 		<value>raw_tweets</value>
+		<description>
+			The HDFS path to store nested data.
+		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.data.hdfspath.text</name>
 		<value>text</value>
+		<description>
+			The HDFS path to store text data.
+		</description>
 	</property>
 	
 	<property>

@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 
-import edu.bigframe.datagen.DatagenConf;
 import edu.bigframe.datagen.nested.PromotedProduct;
 import edu.bigframe.util.Constants;
 

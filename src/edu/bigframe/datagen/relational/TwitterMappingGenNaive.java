@@ -4,20 +4,17 @@ import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.util.Random;
 
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import edu.bigframe.datagen.DataGenerator;
+import cern.jet.random.engine.MersenneTwister;
+import cern.jet.random.engine.RandomEngine;
+import cern.jet.random.sampling.RandomSampler;
 import edu.bigframe.datagen.DatagenConf;
 import edu.bigframe.datagen.graph.KroneckerGraphGen;
 import edu.bigframe.util.Constants;
 import edu.bigframe.util.RandomSeeds;
-
-import cern.jet.random.engine.MersenneTwister;
-import cern.jet.random.engine.RandomEngine;
-import cern.jet.random.sampling.RandomSampler;
 
 public class TwitterMappingGenNaive extends TwitterMappingGen {
 	private int tpcds_proportion;
