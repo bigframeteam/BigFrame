@@ -27,8 +27,8 @@ Configuration
 --------
 
 Before running BigFrame, you need to edit the `conf/config.sh` to set the following variables:
-*`HADOOP_HOME`: By default, it try to get it from the environment variables.
-*`TPCDS_LOCAL`: A temp directory to store the imtermediate data for tpcds generator. 
+* `HADOOP_HOME`: By default, it try to get it from the environment variables.
+* `TPCDS_LOCAL`: A temp directory to store the imtermediate data for tpcds generator. 
 
 Bechmark Specification:
 --------
