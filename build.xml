@@ -23,8 +23,9 @@
 	<property name="year" value="2013" />
 
 	<!-- Source directories -->
-	<property name="src.dir" value="${basedir}/src" />
-	<property name="resource.dir" value="${basedir}/src/edu/bigframe/resource" />
+	<property name="src.dir" value="${basedir}/src/main" />
+	<property name="test.dir" value="${basedir}/src/test" />
+	<property name="resource.dir" value="${basedir}/src/resource" />
 
 
 	<!-- Lib directories -->
@@ -34,6 +35,8 @@
 	<!-- Project directories -->
 	<property name="bin.dir" value="${basedir}/bin" />
 	<property name="build.dir" value="${basedir}/build" />
+	<property name="build.dir.main" value="${basedir}/build/main" />
+	<property name="build.dir.test" value="${basedir}/build/test" />
 	<property name="conf.dir" value="${basedir}/conf" />
 	<property name="docs.dir" value="${basedir}/docs" />
 	<property name="tools.dir" value="${basedir}/tools" />
@@ -45,7 +48,7 @@
 	<!-- Javadoc properties -->
 	<property name="javadoc.dir" value="${docs.dir}/api" />
 	<property name="javadoc.link.java" value="http://docs.oracle.com/javase/6/docs/api/" />
-	<property name="javadoc.packages" value="edu.bigframe.*" />
+	<property name="javadoc.packages" value="bigframe.*" />
 
 	<!-- Javac properties -->
 	<property name="javac.debug" value="on" />
@@ -72,7 +75,8 @@
 	<!-- ====================================================== -->
 		
 	<target name="init">
-		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.dir.main}" />
+		<mkdir dir="${build.dir.test}" />
 		<mkdir dir="${jars.dir}" />
 
 	</target>
@@ -96,8 +100,8 @@
 		<javac includeantruntime="false" 
 			encoding="${javac.encoding}" 
 			srcdir="${src.dir}"
-			includes="edu/bigframe/**/*.java" 
-			destdir="${build.dir}" 
+			includes="java/bigframe/**/*.java" 
+			destdir="${build.dir.main}" 
 			debug="${javac.debug}" 
 			optimize="${javac.optimize}" 
 			target="${javac.version}" 
@@ -120,8 +124,8 @@
 
 	<target name="bigframe_jar" depends="compile" description="Creates the profiler jar">
 		<jar jarfile="${bigframe.jar}">		
-			<fileset dir="${build.dir}">
-				<include name="edu/bigframe/**/*.class" />
+			<fileset dir="${build.dir.main}">
+				<include name="bigframe/**/*.class" />
 			</fileset>
 			
 		
@@ -131,7 +135,7 @@
 			
 			<manifest>
 			  <attribute name="Main-Class"
-			             value="edu.bigframe.BigFrameDriver" />
+			             value="bigframe.BigFrameDriver" />
 			</manifest>
 		</jar>
 		<!--
@@ -155,11 +159,28 @@
 	<!-- JUnit Testing                                                      -->
 	<!-- ================================================================== -->
 	
-	<target name="test" depends="compile" description="Performs all junit tests for BigFrame">
+    <target name="compile-test" depends="compile" description="Compile test classes" >
+                <javac includeantruntime="false"
+                        encoding="${javac.encoding}"
+                        srcdir="${test.dir}"
+                        includes="java/bigframe/**/*.java"
+                        destdir="${build.dir.test}"
+                        debug="${javac.debug}"
+                        optimize="${javac.optimize}"
+                        target="${javac.version}"
+                        source="${javac.version}"
+                        deprecation="${javac.deprecation}">
+                        <compilerarg line="${javac.args} ${javac.args.warnings}" />
+                        <classpath refid="bigframe.classpath" />
+                </javac>
+    </target>
+
+	
+	<target name="test" depends="compile-test" description="Performs all junit tests for BigFrame">
   		<junit fork="yes" haltonfailure="yes">
 			<batchtest fork="yes" >
-				<fileset dir="${build.dir}">
-					<include name="edu/bigframe/**/junit/Test*.class" />
+				<fileset dir="${build.dir.test}">
+					<include name="bigframe/**/junit/Test*.class" />
 				</fileset>
 			</batchtest>
 			<formatter type="plain" usefile="false" />
