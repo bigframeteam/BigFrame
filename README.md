@@ -19,7 +19,7 @@ Building
 Currently, BigFrame uses ant builder. To build Spark, just run ant at the root directory.  
 
 BigFrame requires:
-* JDK 1.6
+* JDK 1.6 is needed, JDK 1.7 is recommended.
 * Hadoop 1.0.4 (other versions are not tested)
 
 
