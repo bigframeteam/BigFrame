@@ -7,13 +7,14 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import bigframe.BigConfConstants;
 import bigframe.util.Config;
-import bigframe.util.Constants;
 
 
 public class DatagenConf extends Config {
 	private static final Logger LOG = Logger.getLogger(DatagenConf.class);
-	
+
+	protected String app_domain;
 	protected Set<String> dataVariety;
 	protected Integer dataVolume; // Not used in this version
 	protected Map<String, Float> dataVelocity;
@@ -41,7 +42,11 @@ public class DatagenConf extends Config {
 	public void addDataScaleFactors(String type, Integer sf) {
 		dataScalePortions.put(type, sf);
 	}
-	*/
+	 */
+	public String getAppDomain() {
+		return app_domain;
+	}
+
 	public Set<String> getDataVariety() {
 		return dataVariety;
 	}
@@ -61,7 +66,56 @@ public class DatagenConf extends Config {
 	public Map<String, String> getDataStoredPath() {
 		return dataStoredPath;
 	}
-	
+
+	public float getTargetGB(String dataType) {
+		float targetGB;
+
+		/**
+		 * Get the portion of each data type in terms of the whole volume
+		 */
+		float sum = 0;
+		for (String type : dataVariety) {
+			if (type.equals("relational")) {
+				sum += dataScaleProportions
+						.get(BigConfConstants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION);
+			}
+
+			else if (type.equals("graph")) {
+				sum += dataScaleProportions
+						.get(BigConfConstants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION);
+			}
+
+			else if (type.equals("nested")) {
+				sum += dataScaleProportions
+						.get(BigConfConstants.BIGFRAME_DATAVOLUME_NESTED_PROPORTION);
+			}
+		}
+
+
+		if (dataType.equals("relational")) {
+			targetGB = dataScaleProportions
+					.get(BigConfConstants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION)
+					/ sum * dataVolume;
+		}
+
+		else if (dataType.equals("graph")) {
+			targetGB = dataScaleProportions
+					.get(BigConfConstants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION)
+					/ sum * dataVolume;
+		}
+
+		else if (dataType.equals("nested")) {
+			targetGB = dataScaleProportions
+					.get(BigConfConstants.BIGFRAME_DATAVOLUME_NESTED_PROPORTION)
+					/ sum * dataVolume;
+		}
+
+		else
+			targetGB = 0;
+
+		return targetGB;
+	}
+
 	/*
 	public void setDataVariety(Set<String> dVariety) {
 		dataVariety = dVariety;
@@ -78,31 +132,60 @@ public class DatagenConf extends Config {
 	public void setDataScaleFactors(Map<String, Integer> dSF) {
 		dataScalePortions = dSF;
 	}
-	*/
+	 */
+
+	private boolean containDataType(String property) {
+		boolean flag = false;
+
+		for (String value : dataVariety) {
+			if (property.contains(value)) {
+				flag = true;
+			}
+		}
+
+		return flag;
+	}
+
 	@Override
 	public void printConf() {
 		// TODO Auto-generated method stub
-		
+
 		System.out.println("Data generation configuration:");
+		System.out.println("Application Domain:");
+		System.out.println("\t" + app_domain);
+
+
 		System.out.println("Data variety:");
 		for (String value : dataVariety) {
-			System.out.println(value);
+			System.out.println("\t" + value);
+
 		}
-		
+
 		System.out.println("Data velocity:");
 		for (Map.Entry<String, Float> entry : dataVelocity.entrySet()) {
-			System.out.println(entry.getKey()+":"+entry.getValue());
+			if (containDataType(entry.getKey())) {
+				System.out.println("\t" + entry.getKey() + ":"
+						+ entry.getValue());
+			}
 		}
-		
-		System.out.println("Data relative ratio:");
+
+		System.out.println("Data proportions:");
 		for (Map.Entry<String, Integer> entry : dataScaleProportions.entrySet()) {
-			System.out.println(entry.getKey()+":"+entry.getValue());
+			if (containDataType(entry.getKey())) {
+				System.out.println("\t" + entry.getKey() + ":"
+						+ entry.getValue());
+			}
 		}
-		
+
+
 		System.out.println("Data hdfs storage path:");
 		for (Map.Entry<String, String> entry : dataStoredPath.entrySet()) {
-			System.out.println(entry.getKey()+":"+entry.getValue());
+			if (containDataType(entry.getKey())) {
+				System.out.println("\t" + entry.getKey() + ":"
+						+ entry.getValue());
+			}
 		}
+
 	}
 
 	@Override
@@ -117,47 +200,41 @@ public class DatagenConf extends Config {
 			String key = entry.getKey().trim();
 			String value = entry.getValue();
 
-			
-			if (key.equals(Constants.BIGFRAME_DATAVARIETY)) {
+
+			if (key.equals(BigConfConstants.BIGFRAME_DATAVARIETY)) {
 				String[] varieties = value.split(",");
 
 				for (String variety : varieties) {
-					if (Constants.DATAVARIETY.contains(variety.trim())) {
+					if (BigConfConstants.DATAVARIETY.contains(variety.trim())) {
 						dataVariety.add(variety.trim());
-					} else
+					} else {
 						LOG.warn("Unsupported data type: " + value);
+					}
 				}
 			}
 
-			else if (key.equals(Constants.BIGFRAME_DATAVOLUME)) {
-				dataVolume = Constants.DATAVOLUME_MAP.get(value);
+			else if (key.equals(BigConfConstants.BIGFRAME_APP_DOMAIN)) {
+				app_domain = value;
 			}
-			
-			else if (Constants.BIGFRAME_DATAVOLUME_PORTION_SET.contains(key)) {
+
+			else if (key.equals(BigConfConstants.BIGFRAME_DATAVOLUME)) {
+				dataVolume = BigConfConstants.DATAVOLUME_MAP.get(value);
+			}
+
+			else if (BigConfConstants.BIGFRAME_DATAVOLUME_PORTION_SET.contains(key)) {
 				Integer portion = Integer.parseInt(value);
-/*				if (key.equals(Constants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION)) {
-					if(!Constants.VALID_RELATIONAL_SF.contains(sf)) {
-						LOG.error("Unvalid scale factor for relational data set: "+sf);
-						System.exit(-1);
-					}
-				}
-				else if (key.equals(Constants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION)) {
-					if(!Constants.VALID_GRAPH_SF.contains(sf)) {
-						LOG.error("Unvalid scale factor for graph data set: "+sf);
-						System.exit(-1);
-					}
-				}*/
-				
+
 				dataScaleProportions.put(key, portion);
 			}
 
-			else if (Constants.BIGFRAME_DATAVELOCITY.contains(key)) {
+			else if (BigConfConstants.BIGFRAME_DATAVELOCITY.contains(key)) {
 				dataVelocity.put(key, Float.parseFloat(value));
 			}
 
-			else if (Constants.BIGFRAME_DATA_HDFSPATH.contains(key)) {
+			else if (BigConfConstants.BIGFRAME_DATA_HDFSPATH.contains(key)) {
 				dataStoredPath.put(key, value);
 			}
+
 		}
 	}
 

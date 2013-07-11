@@ -34,5 +34,4 @@ for jar in `find $BIGFRAME_LIB/common -name '*.jar'`; do
 	BIGFRAME_CLASSPATH+=:$jar
 done
 
-echo $BIGFRAME_CLASSPATH
 java -cp "$BIGFRAME_CLASSPATH" bigframe.BigFrameDriver -mode datagen $BIGFRAME_OPTS "$@"

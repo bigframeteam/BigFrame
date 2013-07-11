@@ -8,9 +8,9 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
+import bigframe.BigConfConstants;
 import bigframe.datagen.DatagenConf;
 import bigframe.datagen.graph.KroneckerGraphGen;
-import bigframe.util.Constants;
 import bigframe.util.RandomSeeds;
 
 import cern.jet.random.engine.MersenneTwister;
@@ -29,8 +29,8 @@ public class TwitterMappingGenNaive extends TwitterMappingGen {
 	public TwitterMappingGenNaive(DatagenConf conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
-		tpcds_proportion = conf.getDataScaleProportions().get(Constants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION);
-		twitter_graph_proportion = conf.getDataScaleProportions().get(Constants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION);
+		tpcds_proportion = conf.getDataScaleProportions().get(BigConfConstants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION);
+		twitter_graph_proportion = conf.getDataScaleProportions().get(BigConfConstants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION);
 		
 		float graph_targetGB = (float) (twitter_graph_proportion * 1.0 /tpcds_proportion * targetGB);
 		
@@ -47,7 +47,7 @@ public class TwitterMappingGenNaive extends TwitterMappingGen {
 			System.exit(-1);
 		}
 		
-		hdfs_path = conf.getDataStoredPath().get(Constants.BIGFRAME_DATA_HDFSPATH_RELATIONAL) + "/" + "twitter_mapping";
+		hdfs_path = conf.getDataStoredPath().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_RELATIONAL) + "/" + "twitter_mapping";
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class TwitterMappingGenNaive extends TwitterMappingGen {
 		try {
 			Path path = new Path(hdfs_path);
 			Configuration config = new Configuration();
-			config.addResource(new Path(conf.getProp().get(Constants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
+			config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
 			FileSystem fileSystem = FileSystem.get(config);
 			
 			if (!fileSystem.exists(path))

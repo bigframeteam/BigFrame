@@ -7,9 +7,9 @@ import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
 
+import bigframe.BigConfConstants;
 import bigframe.datagen.DataGenerator;
 import bigframe.datagen.DatagenConf;
-import bigframe.util.Constants;
 
 
 public class TpcdsDataGenNaive extends TpcdsDataGen {
@@ -31,10 +31,10 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 			num_files = 2;
 		}
 
-		hdfs_dir = conf.getDataStoredPath().get(Constants.BIGFRAME_DATA_HDFSPATH_RELATIONAL);
-		local_dir = conf.getProp().get(Constants.BIGFRAME_TPCDS_LOCAL);
-		datagen_script = conf.getProp().get(Constants.BIGFRAME_TPCDS_SCRIPT);
-		hadoop_slaves = conf.getProp().get(Constants.BIGFRAME_HADOOP_SLAVE);
+		hdfs_dir = conf.getDataStoredPath().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_RELATIONAL);
+		local_dir = conf.getProp().get(BigConfConstants.BIGFRAME_TPCDS_LOCAL);
+		datagen_script = conf.getProp().get(BigConfConstants.BIGFRAME_TPCDS_SCRIPT);
+		hadoop_slaves = conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_SLAVE);
 		
 		dagegen_script_path = (new File(datagen_script)).getParentFile().getAbsolutePath();
 	}

@@ -6,11 +6,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import bigframe.BigConfConstants;
 import bigframe.BigFrameDriver;
 import bigframe.datagen.DatagenConf;
 import bigframe.datagen.text.TweetTextGen;
 import bigframe.datagen.text.TweetTextGenSimple;
-import bigframe.util.Constants;
 
 
 public abstract class RawTweetGen extends NestedDataGen {
@@ -27,7 +27,7 @@ public abstract class RawTweetGen extends NestedDataGen {
 		tweet_template_file = BigFrameDriver.class.getClassLoader().getResourceAsStream("tweet_template.json");
 		textgen = new TweetTextGenSimple(conf, 0);
 		
-		hdfs_dir = conf.getDataStoredPath().get(Constants.BIGFRAME_DATA_HDFSPATH_NESTED);
+		hdfs_dir = conf.getDataStoredPath().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_NESTED);
 		
 	}
 	

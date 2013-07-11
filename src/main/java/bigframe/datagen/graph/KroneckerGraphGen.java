@@ -1,7 +1,7 @@
 package bigframe.datagen.graph;
 
+import bigframe.BigConfConstants;
 import bigframe.datagen.DatagenConf;
-import bigframe.util.Constants;
 
 public abstract class KroneckerGraphGen extends GraphDataGen {
 
@@ -30,7 +30,7 @@ public abstract class KroneckerGraphGen extends GraphDataGen {
 			}
 		}
 		
-		hdfs_dir = conf.getDataStoredPath().get(Constants.BIGFRAME_DATA_HDFSPATH_GRAPH) ;
+		hdfs_dir = conf.getDataStoredPath().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_GRAPH) ;
 		
 	}
 

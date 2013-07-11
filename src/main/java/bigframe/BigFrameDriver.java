@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 
 import bigframe.datagen.DataGenerator;
 import bigframe.datagen.DatagenFactory;
-import bigframe.util.Constants;
 
 
 
@@ -151,23 +150,23 @@ public class BigFrameDriver {
 		
 		Properties properties = line.getOptionProperties("D");
 		
-		if (properties.getProperty(Constants.BIGFRAME_HADOOP_HOME) == null) {
+		if (properties.getProperty(BigConfConstants.BIGFRAME_HADOOP_HOME) == null) {
 			failAndExit("HADOOP_HOME is not set");
 		}
 		
-		if (properties.getProperty(Constants.BIGFRAME_HADOOP_SLAVE) == null) {
+		if (properties.getProperty(BigConfConstants.BIGFRAME_HADOOP_SLAVE) == null) {
 			failAndExit("HADOOP_SLAVES is not set");
 		}
 		
-		if (properties.getProperty(Constants.BIGFRAME_TPCDS_LOCAL) == null) {
+		if (properties.getProperty(BigConfConstants.BIGFRAME_TPCDS_LOCAL) == null) {
 			failAndExit("TPCDS_LOCAL is not set");
 		}
 		
-		if (properties.getProperty(Constants.BIGFRAME_TPCDS_SCRIPT) == null) {
+		if (properties.getProperty(BigConfConstants.BIGFRAME_TPCDS_SCRIPT) == null) {
 			failAndExit("TPCDS_SCRIPT is not set");
 		}
 		
-		if (properties.getProperty(Constants.BIGFRAME_CONF_DIR) == null) {
+		if (properties.getProperty(BigConfConstants.BIGFRAME_CONF_DIR) == null) {
 			failAndExit("CONF_DIR is not set");
 		}
 		
@@ -193,7 +192,7 @@ public class BigFrameDriver {
 		XMLBenchmarkSpecsParser parser = new XMLBenchmarkSpecsParser();
 		BenchmarkConf conf = parser.importXML(default_conf_file);
 		
-		File user_conf_file = new File(line.getOptionProperties("D").getProperty(Constants.BIGFRAME_CONF_DIR)+"/"+"bigframe-core.xml");
+		File user_conf_file = new File(line.getOptionProperties("D").getProperty(BigConfConstants.BIGFRAME_CONF_DIR)+"/"+"bigframe-core.xml");
 		BenchmarkConf user_conf = parser.importXML(user_conf_file);
 		
 

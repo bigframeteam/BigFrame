@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -27,14 +28,13 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 
+import bigframe.BigConfConstants;
 import bigframe.datagen.DatagenConf;
 import bigframe.datagen.graph.KroneckerGraphGen;
 import bigframe.datagen.relational.CollectTPCDSstat;
 import bigframe.datagen.relational.CollectTPCDSstatNaive;
 import bigframe.datagen.relational.PromotionInfo;
-import bigframe.util.Constants;
 import bigframe.util.RandomSeeds;
-
 import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
 import cern.jet.random.sampling.RandomSampler;
@@ -46,6 +46,20 @@ public class RawTweetGenHadoop extends RawTweetGen {
 	public RawTweetGenHadoop(DatagenConf conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
+	}
+
+	private void cleanUP(Configuration mapreduce_config) {
+		Path hdfs_path = new Path(RawTweetGenConstants.PROMOTION_TBL);
+
+		try {
+			FileSystem fileSystem = FileSystem.get(mapreduce_config);
+			if (fileSystem.exists(hdfs_path)) {
+				fileSystem.delete(hdfs_path, true);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -61,27 +75,20 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		CollectTPCDSstatNaive tpcds_stat_collecter = new CollectTPCDSstatNaive();
 		tpcds_stat_collecter.genPromtTBLonHDFS(conf, (int) targetGB);
 
-		Date dateBegin = stringToDate(Constants.TWEET_BEGINDATE);
-		Date dateEnd = stringToDate(Constants.TWEET_ENDDATE);
+		Date dateBegin = stringToDate(RawTweetGenConstants.TWEET_BEGINDATE);
+		Date dateEnd = stringToDate(RawTweetGenConstants.TWEET_ENDDATE);
 
 		int days_between = daysBetween(dateBegin, dateEnd);
 
 		// Separate twitter account into customer and non customer
 		//
-		//
-		// String customer_acc_path =
-		// conf.getDataStoredPath().get(Constants.BIGFRAME_DATA_HDFSPATH_RELATIONAL)
-		// + "/" + "twitter_mapping";
-		// tpcds_stat_collecter.IntialCustTwitterAcc(customer_acc_path, conf);
-		// long [] customer_acc = tpcds_stat_collecter.getCustTwitterAcc();
-
 		// Calculate the number twitter account based on the graph volume in GB
 		int nested_proportion = conf.getDataScaleProportions().get(
-				Constants.BIGFRAME_DATAVOLUME_NESTED_PROPORTION);
+				BigConfConstants.BIGFRAME_DATAVOLUME_NESTED_PROPORTION);
 		int twitter_graph_proportion = conf.getDataScaleProportions().get(
-				Constants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION);
+				BigConfConstants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION);
 		int tpcds_proportion = conf.getDataScaleProportions().get(
-				Constants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION);
+				BigConfConstants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION);
 
 		float graph_targetGB = (float) (twitter_graph_proportion * 1.0
 				/ nested_proportion * targetGB);
@@ -99,10 +106,10 @@ public class RawTweetGenHadoop extends RawTweetGen {
 
 		Configuration mapreduce_config = new Configuration();
 		mapreduce_config.addResource(new Path(conf.getProp().get(
-				Constants.BIGFRAME_HADOOP_HOME)
+				BigConfConstants.BIGFRAME_HADOOP_HOME)
 				+ "/conf/core-site.xml"));
 		mapreduce_config.addResource(new Path(conf.getProp().get(
-				Constants.BIGFRAME_HADOOP_HOME)
+				BigConfConstants.BIGFRAME_HADOOP_HOME)
 				+ "/conf/mapred-site.xml"));
 
 		long tweets_per_day = getTweetsPerDay(days_between);
@@ -117,7 +124,7 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		mapreduce_config.setLong(RawTweetGenConstants.TWEETS_PER_DAY,
 				tweets_per_day);
 		mapreduce_config
-				.setLong(RawTweetGenConstants.NUM_PRODUCT, num_products);
+		.setLong(RawTweetGenConstants.NUM_PRODUCT, num_products);
 		mapreduce_config.setLong(RawTweetGenConstants.NUM_TWITTER_USER,
 				num_twitter_user);
 		mapreduce_config.setFloat(RawTweetGenConstants.TPCDS_TARGET_GB,
@@ -139,6 +146,8 @@ public class RawTweetGenHadoop extends RawTweetGen {
 			job.setOutputFormatClass(TextOutputFormat.class);
 
 			job.waitForCompletion(true);
+
+			cleanUP(mapreduce_config);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -152,7 +161,7 @@ public class RawTweetGenHadoop extends RawTweetGen {
 	}
 
 	static class RawTweetGenMapper extends
-			Mapper<NullWritable, TweetGenInfoWritable, NullWritable, Text> {
+	Mapper<NullWritable, TweetGenInfoWritable, NullWritable, Text> {
 		private static final Logger LOG = Logger
 				.getLogger(RawTweetGenMapper.class);
 
@@ -160,7 +169,7 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		@Override
 		protected void map(NullWritable ignored,
 				TweetGenInfoWritable tweet_gen_info, final Context context)
-				throws IOException, InterruptedException {
+						throws IOException, InterruptedException {
 			LOG.info("Begin time: " + tweet_gen_info.begin + ";" + "End time: "
 					+ tweet_gen_info.end + ";" + "Tweets per day: "
 					+ tweet_gen_info.tweets_per_day);
@@ -182,7 +191,7 @@ public class RawTweetGenHadoop extends RawTweetGen {
 			CollectTPCDSstat tpcds_stat_collecter = new CollectTPCDSstatNaive();
 			PromotionInfo promt_info = new PromotionInfo();
 			tpcds_stat_collecter.collectHDFSPromtResult(mapreduce_config,
-					"promotion.dat", promt_info);
+					RawTweetGenConstants.PROMOTION_TBL, promt_info);
 
 			/*
 			 * Get the set of promoted products and their promotion period.
@@ -262,10 +271,10 @@ public class RawTweetGenHadoop extends RawTweetGen {
 			while (tweets_customer_perunit == 0) {
 				tweets_customer_perunit = (int) (tweets_per_timeunit
 						* num_cust_acc * 1.0 / num_twitter_user * Math.pow(10,
-						exponent));
+								exponent));
 				tweets_noncustomer_perunit = (int) (tweets_per_timeunit
 						* num_noncust_acc * 1.0 / num_twitter_user * Math.pow(
-						10, exponent));
+								10, exponent));
 				timeunit = timeunit * 10;
 				exponent++;
 			}
@@ -443,7 +452,7 @@ public class RawTweetGenHadoop extends RawTweetGen {
 	}
 
 	static class RangeInputFormat extends
-			InputFormat<NullWritable, TweetGenInfoWritable> {
+	InputFormat<NullWritable, TweetGenInfoWritable> {
 		/**
 		 * An input split consisting of a range of time.
 		 */
@@ -493,7 +502,7 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		}
 
 		static class RangeRecordReader extends
-				RecordReader<NullWritable, TweetGenInfoWritable> {
+		RecordReader<NullWritable, TweetGenInfoWritable> {
 
 			long begin;
 			long end;

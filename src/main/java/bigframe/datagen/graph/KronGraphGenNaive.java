@@ -12,8 +12,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
+import bigframe.BigConfConstants;
 import bigframe.datagen.DatagenConf;
-import bigframe.util.Constants;
 import bigframe.util.RandomSeeds;
 
 
@@ -105,7 +105,7 @@ public class KronGraphGenNaive extends KroneckerGraphGen {
 				System.out.println("Edges number:"+edges.size());
 				Path stored_path = new Path(hdfs_dir);
 				Configuration config = new Configuration();
-				config.addResource(new Path(conf.getProp().get(Constants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
+				config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
 				FileSystem fileSystem;
 				try {
 					fileSystem = FileSystem.get(config);
@@ -145,7 +145,7 @@ public class KronGraphGenNaive extends KroneckerGraphGen {
 		if (graph.size() > 0) {
 			Path path = new Path(hdfs_dir);
 			Configuration config = new Configuration();
-			config.addResource(new Path(conf.getProp().get(Constants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
+			config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
 			FileSystem fileSystem;
 			try {
 				fileSystem = FileSystem.get(config);
