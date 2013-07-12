@@ -13,6 +13,8 @@ larger volumes and variety of data; but with the volume of unstructured data dom
 by orders of magnitude. A third category of enterprises may be interested in understanding reference architectures 
 for data analytics applications that need to deal with large rates of streaming data (i.e., large velocity of data).
 
+### For more information about BigFrame, please refer to the [wiki](https://github.com/bigframeteam/BigFrame/wiki).
+
 Building
 --------
 
