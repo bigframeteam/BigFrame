@@ -18,7 +18,7 @@ for data analytics applications that need to deal with large rates of streaming 
 Building
 --------
 
-Currently, BigFrame uses ant builder. To build Spark, just run ant at the root directory.  
+Currently, BigFrame uses ant builder. To build BigFrame, just run ant at the root directory.  
 
 BigFrame requires:
 * JDK 1.6 is needed, JDK 1.7 is recommended.
@@ -29,7 +29,7 @@ Configuration
 --------
 
 Before running BigFrame, you need to edit the `conf/config.sh` to set the following variables:
-* `HADOOP_HOME`: By default, it try to get it from the environment variables.
+* `HADOOP_HOME`: By default, it tries to get it from the environment variables.
 * `TPCDS_LOCAL`: A temp directory to store the imtermediate data for tpcds generator. 
 
 Bechmark Specification:
