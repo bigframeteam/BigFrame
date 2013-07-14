@@ -22,23 +22,23 @@ import bigframe.util.RandomSeeds;
 public class TweetTextGenSimple extends TweetTextGen {
 	private List<String> sentiment_words;
 	private int num_words;
-	
+
 	private Random randnum;
-	
+
 	public TweetTextGenSimple(DatagenConf conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
-		
+
 		//System.out.println(new File(".").getAbsolutePath());
 		InputStream dictionary_file = BigFrameDriver.class.getClassLoader().getResourceAsStream("AFINN-111.txt");
 		sentiment_words = new ArrayList<String>();
 		randnum = new Random();
 		randnum.setSeed(RandomSeeds.SEEDS_TABLE[0]);
-		
+
 		try {
 			BufferedReader br;
 			br = new BufferedReader(new BufferedReader(new InputStreamReader(dictionary_file)));
-			
+
 			String line;
 			while ((line = br.readLine()) != null) {
 				String word = line.split("\t")[0];
@@ -46,8 +46,8 @@ public class TweetTextGenSimple extends TweetTextGen {
 					sentiment_words.add(word);
 				}
 
-			}	
-			
+			}
+
 			num_words = sentiment_words.size();
 			br.close();
 		}
@@ -58,11 +58,15 @@ public class TweetTextGenSimple extends TweetTextGen {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 
 	}
 
-	
+	@Override
+	public void setRandomSeed(long seed) {
+		randnum.setSeed(seed);
+	}
+
 	@Override
 	public void generate() {
 		// TODO Auto-generated method stub
@@ -82,7 +86,7 @@ public class TweetTextGenSimple extends TweetTextGen {
 		} catch( ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
-		
+
 		return tweet;
 	}
 

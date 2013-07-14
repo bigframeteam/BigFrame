@@ -29,6 +29,7 @@ public class BigConfConstants {
 	public static final Map<String, Integer> DATAVOLUME_MAP;
 	static {
 		DATAVOLUME_MAP = new HashMap<String, Integer>();
+		DATAVOLUME_MAP.put("test", 3);
 		DATAVOLUME_MAP.put("tiny", 10);
 		DATAVOLUME_MAP.put("small", 100);
 		DATAVOLUME_MAP.put("medium", 1000);

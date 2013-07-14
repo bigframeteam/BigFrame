@@ -4,6 +4,12 @@ package bigframe;
 import bigframe.datagen.DatagenConf;
 import bigframe.querygen.QuerygenConf;
 
+/**
+ * Class for recording the BigFrame input specification.
+ * 
+ * @author andy
+ * 
+ */
 public class BenchmarkConf {
 
 	private DatagenConf datagenConf;
