@@ -14,6 +14,7 @@ import bigframe.BigConfConstants;
 import bigframe.datagen.DatagenConf;
 
 
+
 /**
  * Use hadoop to generate the Kronecker Graph.
  * 

@@ -20,10 +20,6 @@ public class RawTweetGenConstants {
 	public static final String TIME_END = "mapreduce.rawtweet.time-end";
 
 
-
-
-
-
 	public static final String TWEETGEN_NAME = "mapreduce.rawtweet.textgen";
 
 

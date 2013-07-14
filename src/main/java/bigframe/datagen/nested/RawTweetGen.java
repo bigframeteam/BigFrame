@@ -11,6 +11,8 @@ import bigframe.BigFrameDriver;
 import bigframe.datagen.DatagenConf;
 
 
+
+
 /**
  * Abstract class for all raw tweet generator.
  * 
@@ -47,11 +49,13 @@ public abstract class RawTweetGen extends NestedDataGen {
 			e.printStackTrace();
 		}
 		return null;
+
 	}
 
 	protected int daysBetween(Date d1, Date d2){
 		return (int)( (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
 	}
+
 
 	public long getTweetsPerDay(int days_between) {
 		long tweets_per_day = 0;
