@@ -40,6 +40,7 @@ import cern.jet.random.sampling.RandomSampler;
 public class RawTweetGenNaive extends RawTweetGen {
 
 
+
 	public RawTweetGenNaive(DatagenConf conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub

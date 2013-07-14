@@ -46,7 +46,6 @@ public class RawTweetGenHadoop extends RawTweetGen {
 	}
 
 
-
 	@Override
 	public void generate() {
 		// TODO Auto-generated method stub

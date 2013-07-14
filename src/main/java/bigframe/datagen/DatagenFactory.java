@@ -42,7 +42,6 @@ public class DatagenFactory {
 					//GraphDataGen twitter_graph = new KronGraphGenNaive(conf, dataTargetGBs.get("graph"));
 					GraphDataGen twitter_graph = new KronGraphGenHadoop(conf,
 							conf.getDataTypeTargetGB("graph"));
-
 					datagen_list.add(twitter_graph);
 				}
 

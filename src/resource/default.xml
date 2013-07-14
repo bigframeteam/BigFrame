@@ -91,6 +91,8 @@
 		</description>
 	</property>
 	
+
+	
 	<property>
 		<name>bigframe.data.hdfspath.relational</name>
 		<value>relational_data</value>
@@ -133,3 +135,4 @@
 	
 	
 </configuration>
+
