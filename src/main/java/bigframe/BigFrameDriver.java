@@ -25,8 +25,9 @@ import bigframe.datagen.DatagenFactory;
 
 /**
  * The entrance of BigFrame.
+ * 
  * @author andy
- *
+ * 
  */
 
 public class BigFrameDriver {
@@ -40,8 +41,8 @@ public class BigFrameDriver {
 
 	private static final Log LOG = LogFactory.getLog(BigFrameDriver.class);
 
-	
-	
+
+
 	// Main parsing options
 	private static String MODE = "mode";
 	private static String CONF = "conf";
@@ -49,10 +50,10 @@ public class BigFrameDriver {
 	private static String MODE_DATAGEN = "datagen";
 	private static String MODE_REFRESH = "refresh";
 
-	
 
 
-	
+
+
 	private static void printUsage(PrintStream out) {
 
 		out.println();
@@ -78,13 +79,13 @@ public class BigFrameDriver {
 
 		Option confOption = OptionBuilder.withArgName(CONF).hasArg()
 				.withDescription("The benchmark configuration file").create(CONF);
-		
+
 		Option property  = OptionBuilder.withArgName("property=value")
-                .hasArgs(2)
-                .withValueSeparator()
-                .withDescription( "use value for given property" )
-                .create( "D" );
-		
+				.hasArgs(2)
+				.withValueSeparator()
+				.withDescription( "use value for given property" )
+				.create( "D" );
+
 		Option helpOption = OptionBuilder.withArgName(HELP).create(HELP);
 
 		// Declare the options
@@ -96,7 +97,7 @@ public class BigFrameDriver {
 
 		return opts;
 	}
-	
+
 	private static void failAndExit(String msg) {
 		System.err.println();
 		System.err.println(msg);
@@ -104,7 +105,7 @@ public class BigFrameDriver {
 		printUsage(System.err);
 		System.exit(-1);
 	}
-	
+
 	private static CommandLine parseAndValidateInput(String[] args) {
 
 		// Make sure we have some
@@ -140,43 +141,43 @@ public class BigFrameDriver {
 
 		if (!line.hasOption(MODE)) {
 			failAndExit("The 'mode' option is required");
-		}		
-		
+		}
+
 		String mode = line.getOptionValue(MODE);
-		
+
 		if (! (mode.equals(MODE_DATAGEN) || mode.equals(MODE_REFRESH))) {
 			failAndExit("Only support modes:"+MODE_DATAGEN+","+MODE_REFRESH);
 		}
-		
+
 		Properties properties = line.getOptionProperties("D");
-		
+
 		if (properties.getProperty(BigConfConstants.BIGFRAME_HADOOP_HOME) == null) {
 			failAndExit("HADOOP_HOME is not set");
 		}
-		
+
 		if (properties.getProperty(BigConfConstants.BIGFRAME_HADOOP_SLAVE) == null) {
 			failAndExit("HADOOP_SLAVES is not set");
 		}
-		
+
 		if (properties.getProperty(BigConfConstants.BIGFRAME_TPCDS_LOCAL) == null) {
 			failAndExit("TPCDS_LOCAL is not set");
 		}
-		
+
 		if (properties.getProperty(BigConfConstants.BIGFRAME_TPCDS_SCRIPT) == null) {
 			failAndExit("TPCDS_SCRIPT is not set");
 		}
-		
+
 		if (properties.getProperty(BigConfConstants.BIGFRAME_CONF_DIR) == null) {
 			failAndExit("CONF_DIR is not set");
 		}
-		
-		
+
+
 		return line;
 	}
-	
-	
-	
-	
+
+
+
+
 	public static void main(String[] args) {
 		// Get the input arguments
 		CommandLine line = parseAndValidateInput(args);
@@ -186,51 +187,51 @@ public class BigFrameDriver {
 			printUsage(System.out);
 			System.exit(0);
 		}
-		
+
 		//System.out.println(new File(".").getAbsolutePath());
 		InputStream default_conf_file = BigFrameDriver.class.getClassLoader().getResourceAsStream("default.xml");
 		XMLBenchmarkSpecsParser parser = new XMLBenchmarkSpecsParser();
 		BenchmarkConf conf = parser.importXML(default_conf_file);
-		
+
 		File user_conf_file = new File(line.getOptionProperties("D").getProperty(BigConfConstants.BIGFRAME_CONF_DIR)+"/"+"bigframe-core.xml");
 		BenchmarkConf user_conf = parser.importXML(user_conf_file);
-		
+
 
 		// Replace conf with user define parameter
 		Map<String,String> user_datagen_conf = user_conf.getDatagenConf().getProp();
 		Map<String,String> user_querygen_conf = user_conf.getQuerygenConf().getProp();
-		
+
 		for (Map.Entry<String, String> entry : user_datagen_conf.entrySet()) {
 			conf.getDatagenConf().set(entry.getKey(), entry.getValue());
 		}
-		
+
 		for (Map.Entry<String, String> entry : user_querygen_conf.entrySet()) {
 			conf.getQuerygenConf().set(entry.getKey(), entry.getValue());
 		}
-		
+
 		// System global variables
 		Properties properties = line.getOptionProperties("D");
-		Set<Object> states = properties.keySet(); // get set-view of keys 
+		Set<Object> states = properties.keySet(); // get set-view of keys
 		for (Object object : states) {
 			String key = (String) object;
 			String value = properties.getProperty(key);
 			conf.getDatagenConf().set(key, value);
 
 		}
-		
+
 		conf.printConf();
 
-		
+
 		//If mode equals datagen, then generate the data we need
 		if ( line.getOptionValue(MODE).equals(MODE_DATAGEN)) {
 			DatagenFactory datagen_factory = new DatagenFactory(conf.getDatagenConf());
-			
+
 			List<DataGenerator> datagen_list = datagen_factory.createGenerators();
-			
+
 			for(DataGenerator datagen : datagen_list) {
 				datagen.generate();
 			}
 		}
-		
+
 	}
 }

@@ -11,7 +11,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import bigframe.BigFrameDriver;
-import bigframe.datagen.text.TweetTextGenSimple;
 
 
 public class RawTweetGenConstants {
@@ -19,6 +18,10 @@ public class RawTweetGenConstants {
 	public static final String TWEETS_PER_DAY = "mapreduce.rawtweet.tweet-per-day";
 	public static final String TIME_BEGIN = "mapreduce.rawtweet.time-begin";
 	public static final String TIME_END = "mapreduce.rawtweet.time-end";
+
+
+	public static final String TWEETGEN_NAME = "mapreduce.rawtweet.textgen";
+
 
 	public static final String TPCDS_TARGET_GB = "mapreduce.rawtweet.tpcds-target-GB";
 	public static final String GRAPH_TARGET_GB = "mapreduce.rawtweet.graph-target-GB";
@@ -32,7 +35,7 @@ public class RawTweetGenConstants {
 	//public static final String TWEET_TEMPLATE = "tweet.json";
 	//public static final String SENTIMENT_DICT = "sentiment.dict";
 
-	public static final TweetTextGenSimple TEXT_GEN = new TweetTextGenSimple(null, 0);
+
 	public static final InputStream TWEET_TEMPLATE_FILE = BigFrameDriver.class.getClassLoader().getResourceAsStream("tweet_template.json");
 	public static final JSONObject TWEET_JSON = parseJsonFromFile(TWEET_TEMPLATE_FILE);
 

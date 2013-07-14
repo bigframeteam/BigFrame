@@ -41,20 +41,21 @@ public class DatagenFactory {
 				if (variety.equals("graph")) {
 					//GraphDataGen twitter_graph = new KronGraphGenNaive(conf, dataTargetGBs.get("graph"));
 					GraphDataGen twitter_graph = new KronGraphGenHadoop(conf,
-							conf.getTargetGB("graph"));
+							conf.getDataTypeTargetGB("graph"));
+
 					datagen_list.add(twitter_graph);
 				}
 
 				else if (variety.equals("nested")) {
 					//NestedDataGen tweets = new RawTweetGenNaive(conf, dataTargetGBs.get("nested"));
 					NestedDataGen tweets = new RawTweetGenHadoop(conf,
-							conf.getTargetGB("nested"));
+							conf.getDataTypeTargetGB("nested"));
 					datagen_list.add(tweets);
 				}
 
 				else if (variety.equals("relational")) {
 					RelationalDataGen tpcds = new TpcdsDataGenNaive(conf,
-							conf.getTargetGB("relational"));
+							conf.getDataTypeTargetGB("relational"));
 					datagen_list.add(tpcds);
 				}
 			}

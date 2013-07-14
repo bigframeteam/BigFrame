@@ -24,12 +24,21 @@ import bigframe.datagen.DatagenConf;
 import bigframe.datagen.graph.KroneckerGraphGen;
 import bigframe.datagen.relational.CollectTPCDSstat;
 import bigframe.datagen.relational.CollectTPCDSstatNaive;
+import bigframe.datagen.text.TextGenFactory;
+import bigframe.datagen.text.TweetTextGen;
 import bigframe.util.RandomSeeds;
 import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
 import cern.jet.random.sampling.RandomSampler;
 
+/**
+ * Single machine raw tweet generator.
+ * 
+ * @author andy
+ * 
+ */
 public class RawTweetGenNaive extends RawTweetGen {
+
 
 	public RawTweetGenNaive(DatagenConf conf, float targetGB) {
 		super(conf, targetGB);
@@ -82,6 +91,10 @@ public class RawTweetGenNaive extends RawTweetGen {
 	public void generate() {
 
 		System.out.println("Generating raw tweets data");
+
+
+		TweetTextGen textgen = TextGenFactory.getTextGenByName(textgen_name);
+
 
 		if (textgen == null) {
 			System.out.println("Please set the tweet text generator first!");

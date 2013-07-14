@@ -10,7 +10,12 @@ import org.apache.log4j.Logger;
 import bigframe.BigConfConstants;
 import bigframe.util.Config;
 
-
+/**
+ * Class for recording data generation related configuration.
+ * 
+ * @author andy
+ * 
+ */
 public class DatagenConf extends Config {
 	private static final Logger LOG = Logger.getLogger(DatagenConf.class);
 
@@ -67,7 +72,9 @@ public class DatagenConf extends Config {
 		return dataStoredPath;
 	}
 
-	public float getTargetGB(String dataType) {
+
+	public float getDataTypeTargetGB(String dataType) {
+
 		float targetGB;
 
 		/**

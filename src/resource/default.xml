@@ -92,16 +92,8 @@
 	</property>
 	
 	<property>
-		<name>bigframe.datavelocity.text</name>
-		<value>0</value>
-		<description>
-			It is used to determine the data refresh rate of text data.
-		</description>
-	</property>
-	
-	<property>
 		<name>bigframe.data.hdfspath.relational</name>
-		<value>tpcds</value>
+		<value>relational_data</value>
 		<description>
 			The HDFS path to store relational data.
 		</description>
@@ -109,7 +101,7 @@
 	
 	<property>
 		<name>bigframe.data.hdfspath.graph</name>
-		<value>twitter_graph</value>
+		<value>graph_data</value>
 		<description>
 			The HDFS path to store graph data.
 		</description>
@@ -117,19 +109,12 @@
 	
 	<property>
 		<name>bigframe.data.hdfspath.nested</name>
-		<value>raw_tweets</value>
+		<value>nested_data</value>
 		<description>
 			The HDFS path to store nested data.
 		</description>
 	</property>
 	
-	<property>
-		<name>bigframe.data.hdfspath.text</name>
-		<value>text</value>
-		<description>
-			The HDFS path to store text data.
-		</description>
-	</property>
 	
 	<property>
 		<name>bigframe.queryvariety</name>
