@@ -39,12 +39,9 @@ public class RawTweetGenConstants {
 	//public static final String TWEET_TEMPLATE = "tweet.json";
 	//public static final String SENTIMENT_DICT = "sentiment.dict";
 
-<<<<<<< HEAD
 
-=======
 	// public static final TweetTextGenSimple TEXT_GEN = new
 	// TweetTextGenSimple(null, 0);
->>>>>>> refs/heads/make_tweets_distribution_pluggable
 	public static final InputStream TWEET_TEMPLATE_FILE = BigFrameDriver.class.getClassLoader().getResourceAsStream("tweet_template.json");
 	public static final JSONObject TWEET_JSON = parseJsonFromFile(TWEET_TEMPLATE_FILE);
 
