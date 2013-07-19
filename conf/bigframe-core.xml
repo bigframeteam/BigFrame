@@ -12,7 +12,11 @@
 	
 	<property>
 		<name>bigframe.datavariety</name>
+<<<<<<< HEAD
 		<value>relational, nested, graph</value>
+=======
+		<value>nested</value>
+>>>>>>> refs/heads/make_tweets_distribution_pluggable
 		<description>
 			only relational, graph, nested data is supported.
 		</description>

@@ -24,7 +24,7 @@ public abstract class RawTweetGen extends NestedDataGen {
 	protected String textgen_name;
 
 	protected String hdfs_dir;
-	private final int single_tweet_inByte = 1379;
+	
 
 	public RawTweetGen(DatagenConf conf, float targetGB) {
 		super(conf, targetGB);
@@ -57,14 +57,23 @@ public abstract class RawTweetGen extends NestedDataGen {
 	}
 
 
+	public long getTotalNumTweets() {		
+		long targetByte = (long) (targetGB*1024*1024*1024);
+
+		return targetByte / RawTweetGenConstants.SINGLE_TWEET_INBYTES;
+	}
+	
+	public long getNumTweetsBySize(int sizeInGB) {
+		return sizeInGB*1024*1024*1024/RawTweetGenConstants.SINGLE_TWEET_INBYTES; 
+	}
+	
+
 	public long getTweetsPerDay(int days_between) {
 		long tweets_per_day = 0;
 
-
-
 		long targetByte = (long) (targetGB*1024*1024*1024);
 
-		tweets_per_day = (long) (targetByte*1.0/days_between/single_tweet_inByte);
+		tweets_per_day = (long) (targetByte*1.0/days_between/RawTweetGenConstants.SINGLE_TWEET_INBYTES);
 
 		if(tweets_per_day <=0) {
 			System.out.println("Tweets sent per day is less than 0, please increase the data volumn " +
