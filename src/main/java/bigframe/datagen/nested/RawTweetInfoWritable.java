@@ -15,15 +15,17 @@ import org.apache.hadoop.io.Writable;
 public class RawTweetInfoWritable implements Writable {
 	public Long begin;
 	public Long end;
-	public Long tweets_per_day;
+	public Long tweets_per_mapper;
+	public Long tweet_start_ID;
 
 	public RawTweetInfoWritable() {
 	}
 
-	public RawTweetInfoWritable(Long begin, Long end, Long tweets_per_day) {
+	public RawTweetInfoWritable(Long begin, Long end, Long tweets_per_mapper, Long tweet_start_ID) {
 		this.begin = begin;
 		this.end = end;
-		this.tweets_per_day = tweets_per_day;
+		this.tweets_per_mapper = tweets_per_mapper;
+		this.tweet_start_ID = tweet_start_ID;
 	}
 
 	@Override
@@ -33,7 +35,8 @@ public class RawTweetInfoWritable implements Writable {
 
 		begin = in.readLong();
 		end = in.readLong();
-		tweets_per_day = in.readLong();
+		tweets_per_mapper = in.readLong();
+		tweet_start_ID = in.readLong();
 
 	}
 
@@ -43,12 +46,15 @@ public class RawTweetInfoWritable implements Writable {
 			throw new IllegalArgumentException("out cannot be null");
 		out.writeLong(begin);
 		out.writeLong(end);
-		out.writeLong(tweets_per_day);
+		out.writeLong(tweets_per_mapper);
+		out.writeLong(tweet_start_ID);
 	}
 
 	@Override
 	public String toString() {
 		return "Time begin: " + begin + "\n" + "Time end: " + end + "\n"
-				+ "Tweets per day: " + tweets_per_day;
+				+ "Tweets per mapper: " + tweets_per_mapper + "\n"
+				+ "Tweet start ID" + tweet_start_ID + "\n";
+	
 	}
 }

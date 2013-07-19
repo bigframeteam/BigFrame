@@ -16,6 +16,7 @@ import bigframe.BigFrameDriver;
 public class RawTweetGenConstants {
 	public static final String NUM_MAPPERS = "mapreduce.rawtweet.num-mappers";
 	public static final String TWEETS_PER_DAY = "mapreduce.rawtweet.tweet-per-day";
+	public static final String TWEETS_PER_MAPPER = "mapreduce.rawtweet.tweet-per-mapper";
 	public static final String TIME_BEGIN = "mapreduce.rawtweet.time-begin";
 	public static final String TIME_END = "mapreduce.rawtweet.time-end";
 
@@ -31,7 +32,7 @@ public class RawTweetGenConstants {
 	public static final String NUM_TWITTER_USER = "mapreduce.rawtweet.num-twitter-user";
 
 	public static final String PROMOTION_TBL = "promotion.dat";
-
+	public static final int SINGLE_TWEET_INBYTES = 1379;
 	//public static final String TWEET_TEMPLATE = "tweet.json";
 	//public static final String SENTIMENT_DICT = "sentiment.dict";
 

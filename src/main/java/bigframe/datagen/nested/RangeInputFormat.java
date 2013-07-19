@@ -34,15 +34,17 @@ InputFormat<NullWritable, RawTweetInfoWritable> {
 	static class RangeInputSplit extends InputSplit implements Writable {
 		long begin;
 		long end;
-		long tweets_per_day;
+		long tweets_per_mapper;
+		long tweet_start_ID;
 
 		public RangeInputSplit() {
 		}
 
-		public RangeInputSplit(long begin, long end, long tweets_per_day) {
+		public RangeInputSplit(long begin, long end, long tweets_per_mapper, long tweet_start_ID) {
 			this.begin = begin;
 			this.end = end;
-			this.tweets_per_day = tweets_per_day;
+			this.tweets_per_mapper = tweets_per_mapper;
+			this.tweet_start_ID = tweet_start_ID;
 		}
 
 		@Override
@@ -60,8 +62,8 @@ InputFormat<NullWritable, RawTweetInfoWritable> {
 			// TODO Auto-generated method stub
 			begin = WritableUtils.readVLong(in);
 			end = WritableUtils.readVLong(in);
-			tweets_per_day = WritableUtils.readVLong(in);
-
+			tweets_per_mapper = WritableUtils.readVLong(in);
+			tweet_start_ID = WritableUtils.readVLong(in);
 		}
 
 		@Override
@@ -69,7 +71,8 @@ InputFormat<NullWritable, RawTweetInfoWritable> {
 			// TODO Auto-generated method stub
 			WritableUtils.writeVLong(out, begin);
 			WritableUtils.writeVLong(out, end);
-			WritableUtils.writeVLong(out, tweets_per_day);
+			WritableUtils.writeVLong(out, tweets_per_mapper);
+			WritableUtils.writeVLong(out, tweet_start_ID);
 		}
 	}
 
@@ -78,7 +81,8 @@ InputFormat<NullWritable, RawTweetInfoWritable> {
 
 		long begin;
 		long end;
-		long tweets_per_day;
+		long tweets_per_mapper;
+		long tweet_start_ID;
 		NullWritable key = null;
 		RawTweetInfoWritable value = null;
 
@@ -90,8 +94,8 @@ InputFormat<NullWritable, RawTweetInfoWritable> {
 				throws IOException, InterruptedException {
 			begin = ((RangeInputSplit) split).begin;
 			end = ((RangeInputSplit) split).end;
-			;
-			tweets_per_day = ((RangeInputSplit) split).tweets_per_day;
+			tweets_per_mapper = ((RangeInputSplit) split).tweets_per_mapper;
+			tweet_start_ID = ((RangeInputSplit) split).tweet_start_ID;
 		}
 
 		@Override
@@ -117,7 +121,7 @@ InputFormat<NullWritable, RawTweetInfoWritable> {
 		@Override
 		public boolean nextKeyValue() {
 			if (key == null && value == null) {
-				value = new RawTweetInfoWritable(begin, end, tweets_per_day);
+				value = new RawTweetInfoWritable(begin, end, tweets_per_mapper, tweet_start_ID);
 				return true;
 			} else
 				return false;
@@ -145,17 +149,19 @@ InputFormat<NullWritable, RawTweetInfoWritable> {
 		long total_time = time_end - time_begin;
 		int numSplits = job.getConfiguration().getInt(
 				RawTweetGenConstants.NUM_MAPPERS, 1);
-		int tweets_per_day = job.getConfiguration().getInt(
-				RawTweetGenConstants.TWEETS_PER_DAY, 1);
+		int tweets_per_mapper = job.getConfiguration().getInt(
+				RawTweetGenConstants.TWEETS_PER_MAPPER, 1);
 		// LOG.info("Generating total seconds " + total_time + " using "
 		// + numSplits);
 		List<InputSplit> splits = new ArrayList<InputSplit>();
 		long begin = time_begin;
+		long tweet_start_ID = 1;
 		long duration = (long) Math.ceil(total_time * 1.0 / numSplits);
 		for (int split = 0; split < numSplits; ++split) {
 			splits.add(new RangeInputSplit(begin, duration + begin,
-					tweets_per_day));
+					tweets_per_mapper, tweet_start_ID));
 			begin += duration;
+			tweet_start_ID += tweets_per_mapper;
 		}
 		return splits;
 	}

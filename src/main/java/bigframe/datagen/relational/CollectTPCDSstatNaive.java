@@ -290,11 +290,11 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 						.after(stringToDate(RawTweetGenConstants.TWEET_ENDDATE))) {
 					continue;
 				}
-
-				LOG.info("promotion SK:" + promtSK);
-				LOG.info("date begin SK:" + datebegSK);
-				LOG.info("date end SK:" + dateendSK);
-				LOG.info("product SK:" + prodSK);
+//
+//				LOG.info("promotion SK:" + promtSK);
+//				LOG.info("date begin SK:" + datebegSK);
+//				LOG.info("date end SK:" + dateendSK);
+//				LOG.info("product SK:" + prodSK);
 
 				promotionSKs.add(Integer.parseInt(promtSK));
 				promotionIDs.add(promtID);

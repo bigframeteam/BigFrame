@@ -12,7 +12,6 @@ import bigframe.BigConfConstants;
 import bigframe.datagen.DatagenConf;
 import bigframe.datagen.graph.KroneckerGraphGen;
 import bigframe.util.RandomSeeds;
-
 import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
 import cern.jet.random.sampling.RandomSampler;

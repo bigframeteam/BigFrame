@@ -11,6 +11,7 @@ import bigframe.datagen.graph.GraphDataGen;
 import bigframe.datagen.graph.KronGraphGenHadoop;
 import bigframe.datagen.nested.NestedDataGen;
 import bigframe.datagen.nested.RawTweetGenHadoop;
+import bigframe.datagen.nested.RawTweetGenNaive;
 import bigframe.datagen.relational.RelationalDataGen;
 import bigframe.datagen.relational.TpcdsDataGenNaive;
 
@@ -46,9 +47,9 @@ public class DatagenFactory {
 				}
 
 				else if (variety.equals("nested")) {
-					//NestedDataGen tweets = new RawTweetGenNaive(conf, dataTargetGBs.get("nested"));
-					NestedDataGen tweets = new RawTweetGenHadoop(conf,
-							conf.getDataTypeTargetGB("nested"));
+					NestedDataGen tweets = new RawTweetGenNaive(conf, conf.getDataTypeTargetGB("nested"));
+					//NestedDataGen tweets = new RawTweetGenHadoop(conf,
+					//		conf.getDataTypeTargetGB("nested"));
 					datagen_list.add(tweets);
 				}
 

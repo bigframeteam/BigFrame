@@ -57,7 +57,6 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		Date dateBegin = stringToDate(RawTweetGenConstants.TWEET_BEGINDATE);
 		Date dateEnd = stringToDate(RawTweetGenConstants.TWEET_ENDDATE);
 
-		int days_between = daysBetween(dateBegin, dateEnd);
 
 		// Separate twitter account into customer and non customer
 		//
@@ -91,17 +90,22 @@ public class RawTweetGenHadoop extends RawTweetGen {
 				BigConfConstants.BIGFRAME_HADOOP_HOME)
 				+ "/conf/mapred-site.xml"));
 
-		long tweets_per_day = getTweetsPerDay(days_between);
-		long GBPerMapper = RawTweetGenConstants.GB_PER_MAPPER;
-		int num_Mapper = (int) Math.ceil(targetGB / GBPerMapper);
+		//long tweets_per_day = getTweetsPerDay(days_between);
+		int GBPerMapper = RawTweetGenConstants.GB_PER_MAPPER;
+		long tweets_per_mapper = getNumTweetsBySize(GBPerMapper);
+		long total_tweets = getTotalNumTweets();
 
+		int num_Mapper = (int) Math.ceil(total_tweets * 1.0 / tweets_per_mapper);
+		
 		mapreduce_config.setLong(RawTweetGenConstants.TIME_BEGIN,
 				dateBegin_time_sec);
 		mapreduce_config.setLong(RawTweetGenConstants.TIME_END,
 				dateEnd_time_sec);
 		mapreduce_config.setInt(RawTweetGenConstants.NUM_MAPPERS, num_Mapper);
-		mapreduce_config.setLong(RawTweetGenConstants.TWEETS_PER_DAY,
-				tweets_per_day);
+//		mapreduce_config.setLong(RawTweetGenConstants.TWEETS_PER_DAY,
+//				tweets_per_day);
+		mapreduce_config.setLong(RawTweetGenConstants.TWEETS_PER_MAPPER,
+				tweets_per_mapper);
 		mapreduce_config
 		.setLong(RawTweetGenConstants.NUM_PRODUCT, num_products);
 		mapreduce_config.setLong(RawTweetGenConstants.NUM_TWITTER_USER,
