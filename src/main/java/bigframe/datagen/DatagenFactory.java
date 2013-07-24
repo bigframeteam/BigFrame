@@ -47,9 +47,9 @@ public class DatagenFactory {
 				}
 
 				else if (variety.equals("nested")) {
-					NestedDataGen tweets = new RawTweetGenNaive(conf, conf.getDataTypeTargetGB("nested"));
-					//NestedDataGen tweets = new RawTweetGenHadoop(conf,
-					//		conf.getDataTypeTargetGB("nested"));
+					//NestedDataGen tweets = new RawTweetGenNaive(conf, conf.getDataTypeTargetGB("nested"));
+					NestedDataGen tweets = new RawTweetGenHadoop(conf,
+							conf.getDataTypeTargetGB("nested"));
 					datagen_list.add(tweets);
 				}
 

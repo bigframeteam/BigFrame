@@ -1,37 +1,24 @@
 package bigframe.datagen.nested;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Text;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import bigframe.BigConfConstants;
 import bigframe.datagen.DatagenConf;
 import bigframe.datagen.graph.KroneckerGraphGen;
-import bigframe.datagen.relational.CollectTPCDSstat;
 import bigframe.datagen.relational.CollectTPCDSstatNaive;
 import bigframe.datagen.relational.PromotionInfo;
 import bigframe.datagen.text.TextGenFactory;
 import bigframe.datagen.text.TweetTextGen;
 import bigframe.util.RandomSeeds;
-import cern.jet.random.engine.MersenneTwister;
-import cern.jet.random.engine.RandomEngine;
-import cern.jet.random.sampling.RandomSampler;
 
 /**
  * Single machine raw tweet generator.
@@ -135,7 +122,7 @@ public class RawTweetGenNaive extends RawTweetGen {
 		int chunk = 0;
 		for(int i = 0; i < total_tweets; i++) {
 			tweet_list.add(tweet_gen_dist.getNextTweet().toString());
-			if(tweet_list.size()>100000) {
+			if(tweet_list.size()>1000000) {
 				String filename = "tweets.dat." + String.valueOf(chunk);
 				writeToHDFS(hdfs_dir, filename, tweet_list);
 

@@ -223,6 +223,8 @@ for ($host = 0; $host < $num_hosts; $host++)
       system qq(ssh $ssh_opts $hosts[$host] ).
              qq(\"cd $LOCAL_DIR; ./gen_and_load.sh >& gen_and_load.out\");
       println qq(Data generation completed at host: $hosts[$host]\n);
+      system qq(ssh $ssh_opts $hosts[$host] ).
+             qq(\"cd ..; rm -r $LOCAL_DIR\");
       exit(0);
    }
 

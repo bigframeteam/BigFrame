@@ -33,7 +33,7 @@ Before running BigFrame, you need to edit the `conf/config.sh` to set the follow
 
 Bechmark Specification:
 --------
-To customize the benchmark you want to generate, you can change the propoerties inside the `conf/bigframe-core.xml`.
+To customize the benchmark you want to generate, you can change the properties inside the `conf/bigframe-core.xml`.
 
 
 Run
