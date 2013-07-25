@@ -25,8 +25,8 @@
 			tiny: around 10GB
 			small: around 100GB
 			medium: around 1TB
-			large: around 100TB
-			extra large: around 1PB 
+			large: around 10TB
+			extra large: around 100TB 
 		</description>
 	</property>
 	

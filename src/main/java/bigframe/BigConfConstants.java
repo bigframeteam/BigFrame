@@ -33,8 +33,8 @@ public class BigConfConstants {
 		DATAVOLUME_MAP.put("tiny", 10);
 		DATAVOLUME_MAP.put("small", 100);
 		DATAVOLUME_MAP.put("medium", 1000);
-		DATAVOLUME_MAP.put("large", 100000);
-		DATAVOLUME_MAP.put("extra large", 1000000);
+		DATAVOLUME_MAP.put("large", 10000);
+		DATAVOLUME_MAP.put("extra large", 100000);
 	}
 
 	// BigFrame specification related properties
