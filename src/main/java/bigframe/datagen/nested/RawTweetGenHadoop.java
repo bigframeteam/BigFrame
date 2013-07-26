@@ -1,9 +1,12 @@
 package bigframe.datagen.nested;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
@@ -32,7 +35,12 @@ public class RawTweetGenHadoop extends RawTweetGen {
 	}
 
 	private void cleanUP(Configuration mapreduce_config) {
-		Path hdfs_path = new Path(RawTweetGenConstants.PROMOTION_TBL);
+		deleteFileOnHDFS(mapreduce_config, RawTweetGenConstants.PROMOTION_TBL + ".dat");
+		deleteFileOnHDFS(mapreduce_config, RawTweetGenConstants.ITEM_TBL + ".dat");
+	}
+
+	private void deleteFileOnHDFS(Configuration mapreduce_config, String filename) {
+		Path hdfs_path = new Path(filename);
 
 		try {
 			FileSystem fileSystem = FileSystem.get(mapreduce_config);
@@ -45,14 +53,14 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		}
 	}
 
-
 	@Override
 	public void generate() {
 		// TODO Auto-generated method stub
 		System.out.println("Generating raw tweets data");
 
 		CollectTPCDSstatNaive tpcds_stat_collecter = new CollectTPCDSstatNaive();
-		tpcds_stat_collecter.genPromtTBLonHDFS(conf, (int) targetGB);
+		tpcds_stat_collecter.genTBLonHDFS(conf, (int) targetGB, RawTweetGenConstants.PROMOTION_TBL);
+		tpcds_stat_collecter.genTBLonHDFS(conf, (int) targetGB, RawTweetGenConstants.ITEM_TBL);
 
 		Date dateBegin = stringToDate(RawTweetGenConstants.TWEET_BEGINDATE);
 		Date dateEnd = stringToDate(RawTweetGenConstants.TWEET_ENDDATE);
@@ -90,6 +98,16 @@ public class RawTweetGenHadoop extends RawTweetGen {
 				BigConfConstants.BIGFRAME_HADOOP_HOME)
 				+ "/conf/mapred-site.xml"));
 
+		try {
+			DistributedCache.addCacheFile(new URI(RawTweetGenConstants.PROMOTION_TBL+".dat"), 
+					mapreduce_config);
+			DistributedCache.addCacheFile(new URI(RawTweetGenConstants.ITEM_TBL+".dat"), 
+					mapreduce_config);
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		//long tweets_per_day = getTweetsPerDay(days_between);
 		int GBPerMapper = RawTweetGenConstants.GB_PER_MAPPER;
 		long tweets_per_mapper = getNumTweetsBySize(GBPerMapper);

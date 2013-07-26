@@ -1,0 +1,13 @@
+SELECT p.p_promo_id, p.p_item_sk, sum(w.ws_sales_price * w.ws_quantity) as totalsales
+FROM 
+	( SELECT p_promo_id, p_item_sk, p_start_date_sk, p_end_date_sk
+	FROM promotion
+	WHERE p_promo_id IN ("AAAAAAAABAAAAAAA", "AAAAAAAACAAAAAAA") ) p
+	JOIN web_sales w
+	ON (p.p_item_sk = w.ws_item_sk)
+WHERE 
+	p_start_date_sk <= ws_sold_date_sk 
+	AND
+	ws_sold_date_sk <= p_end_date_sk
+GROUP BY
+	p.p_promo_id, p.p_item_sk

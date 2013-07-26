@@ -2,8 +2,11 @@ package bigframe.datagen.nested;
 
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import bigframe.datagen.text.TweetTextGen;
 
@@ -42,6 +45,7 @@ public class SimpleTweetGenDist extends TweetGenDist {
 		//Random choose a time stamp
 		long timestamp = time_begin + random.nextInt((int)(time_end - time_begin + 1));
 		
+
 		
 		double flip;
 		flip = random.nextDouble();
@@ -59,12 +63,12 @@ public class SimpleTweetGenDist extends TweetGenDist {
 				flip = random.nextDouble();
 				// If yes, she will mention the promoted product
 				if(flip <= promoted_prod_men_prob_cust) {
-					int p_index = random.nextInt(promt_prods.getProductSK().size());
-					prod_id = promt_prods.getProductSK().get(p_index);
+					int p_index = random.nextInt(promt_info.getProductSK().size());
+					prod_id = promt_info.getProductSK().get(p_index);
 				}
 				else {
 					int p_index = random.nextInt(totalnum_prods);
-					prod_id = p_index;
+					prod_id = p_index + 1;
 				}
 			}
 			else {
@@ -80,12 +84,12 @@ public class SimpleTweetGenDist extends TweetGenDist {
 			if(flip <= noncust_mention_prob) {	
 				flip = random.nextDouble();
 				if(flip <= promoted_prod_men_prob_noncust) {
-					int p_index = random.nextInt(promt_prods.getProductSK().size());
-					prod_id = promt_prods.getProductSK().get(p_index);
+					int p_index = random.nextInt(promt_info.getProductSK().size());
+					prod_id = promt_info.getProductSK().get(p_index);
 				}
 				else {
 					int p_index = random.nextInt(totalnum_prods);
-					prod_id = p_index;
+					prod_id = p_index + 1;
 				}
 			}
 			else {
@@ -109,6 +113,25 @@ public class SimpleTweetGenDist extends TweetGenDist {
 		JSONObject user_json = (JSONObject) tweet_json.get("user");
 		user_json.put("id", user_id);
 		tweet_json.put("user", user_json);
+		
+		JSONObject entities_json = (JSONObject) tweet_json.get("entities");
+
+		
+		if(prod_id != -1) {
+			 assert prod_id > 0;
+			 String prod_name = item_info.getProdName().get(prod_id-1);
+			 JSONArray list = new JSONArray();
+			 list.add(prod_name);
+			 entities_json.put("hashtags", list);
+		}
+		else {
+			 JSONArray list = new JSONArray();
+			 list.add("No product mentioned");
+			 entities_json.put("hashtags", list);
+		}
+		
+		System.out.println("entities: "+entities_json);
+		tweet_json.put("entities", entities_json);
 		
 		return tweet_json.toString();
 	}

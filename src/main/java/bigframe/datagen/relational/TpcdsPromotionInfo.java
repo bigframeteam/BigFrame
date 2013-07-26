@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class PromotionInfo {
+public class TpcdsPromotionInfo {
 
 	private ArrayList<Integer> promotionSK;
 	private ArrayList<Integer> dateBeginSK;
@@ -12,7 +12,7 @@ public class PromotionInfo {
 	private ArrayList<Integer> productSK;
 	private ArrayList<String> promotionID;
 
-	public PromotionInfo() {
+	public TpcdsPromotionInfo() {
 
 	}
 

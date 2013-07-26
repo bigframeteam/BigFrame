@@ -12,7 +12,7 @@
 	
 	<property>
 		<name>bigframe.datavariety</name>
-		<value>relational, nested, graph</value>
+		<value>nested</value>
 		<description>
 			only relational, graph, nested data is supported.
 		</description>

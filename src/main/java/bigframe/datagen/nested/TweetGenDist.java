@@ -4,7 +4,8 @@ import java.util.Random;
 
 import org.json.simple.JSONObject;
 
-import bigframe.datagen.relational.PromotionInfo;
+import bigframe.datagen.relational.TpcdsItemInfo;
+import bigframe.datagen.relational.TpcdsPromotionInfo;
 import bigframe.datagen.text.TweetTextGen;
 
 public abstract class TweetGenDist extends NestedGenDist {
@@ -17,7 +18,8 @@ public abstract class TweetGenDist extends NestedGenDist {
 	protected long[] noncust_twitter_acc;
 	protected long time_begin;
 	protected long time_end;
-	protected PromotionInfo promt_prods;
+	protected TpcdsPromotionInfo promt_info;
+	protected TpcdsItemInfo item_info;
 	protected int totalnum_prods;
 	protected JSONObject tweet_json;
 	
@@ -29,12 +31,14 @@ public abstract class TweetGenDist extends NestedGenDist {
 	}
 	
 	public void init(long[] cust_acc, long[] noncust_acc, long time_begin, long time_end, 
-			PromotionInfo promt_prods, int totalnum_prods, JSONObject tweet_json) {
+			TpcdsPromotionInfo promt_info, TpcdsItemInfo item_info,
+			int totalnum_prods, JSONObject tweet_json) {
 		this.cust_twitter_acc = cust_acc;
 		this.noncust_twitter_acc = noncust_acc;
 		this.time_begin = time_begin;
 		this.time_end = time_end;
-		this.promt_prods = promt_prods;
+		this.promt_info = promt_info;
+		this.item_info = item_info;
 		this.totalnum_prods = totalnum_prods;
 		this.tweet_json = tweet_json;
 		

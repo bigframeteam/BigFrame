@@ -29,7 +29,7 @@ cd $CURRENT_DIR;
 JARS_DIR=$BASE_DIR/jars
 
 TPCDS_SCRIPT=$BASE_DIR/tools/tpcds/gen_data.pl
-GEN_PROMTTBL_SCRIPT=$BASE_DIR/tools/tpcds/gen_promt_tbl.pl
+GEN_PROMTTBL_SCRIPT=$BASE_DIR/tools/tpcds/gen_single_tbl.pl
 
 CONF_DIR=$BASE_DIR/conf
 
@@ -37,7 +37,7 @@ CONF_DIR=$BASE_DIR/conf
 . "$BASE_DIR"/conf/config.sh
 
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.script=${TPCDS_SCRIPT}"
-BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.promttblgen.script=${GEN_PROMTTBL_SCRIPT}"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.singletblgen.script=${GEN_PROMTTBL_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.conf.dir=${CONF_DIR}"
 
 

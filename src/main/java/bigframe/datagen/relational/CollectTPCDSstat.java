@@ -1,5 +1,6 @@
 package bigframe.datagen.relational;
 
+import java.io.BufferedReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,7 +11,6 @@ import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 
-import bigframe.datagen.nested.PromotedProduct;
 
 
 
@@ -22,7 +22,7 @@ public abstract class CollectTPCDSstat {
 		customer_account = new HashSet<Integer>();
 	}
 
-	public abstract List<PromotedProduct> getPromotedProds();
+	public abstract List<TpcdsPromotedProduct> getPromotedProds();
 
 	//public abstract void IntialCustTwitterAcc(String hdfs_path, DatagenConf conf);
 
@@ -58,6 +58,10 @@ public abstract class CollectTPCDSstat {
 	public abstract long[] getCustTwitterAcc(float tpcds_targetGB, float graph_targetGB);
 	public abstract long [] getNonCustTwitterAcc(long[] customer_twitterAcc, int num_twitter_user);
 
-	public abstract void collectHDFSPromtResult(Configuration mapreduce_config, String tbl_file, PromotionInfo promt_info);
-
+	public abstract void setItemResult(BufferedReader in, TpcdsItemInfo item_info);
+	public abstract void setPromtResult(BufferedReader in, TpcdsPromotionInfo promt_info);
+	
+	public abstract void collectHDFSPromtTBL(Configuration mapreduce_config, String tbl_file, TpcdsPromotionInfo promt_info);
+	public abstract void collectHDFSItemTBL(Configuration mapreduce_config,
+			String tbl_file, TpcdsItemInfo item_info);
 }
