@@ -1,3 +1,4 @@
+DROP TABLE web_sales;
 create external table web_sales
 (
     ws_sold_date_sk           int,
@@ -36,8 +37,9 @@ create external table web_sales
     ws_net_profit             float                  
 )
 row format delimited fields terminated by '|' 
-location '/user/andy/relational_data/store_sales';
+location '/user/andy/relational_data/web_sales';
 
+DROP TABLE item;
 create external table item
 (
     i_item_sk                 int,
@@ -66,6 +68,7 @@ create external table item
 row format delimited fields terminated by '|' 
 location '/user/andy/relational_data/item';
 
+DROP TABLE customer;
 create external table customer
 (
     c_customer_sk             int,
@@ -90,6 +93,7 @@ create external table customer
 row format delimited fields terminated by '|' 
 location '/user/andy/relational_data/customer';
 
+DROP TABLE promotion;
 create external table promotion
 (
     p_promo_sk                int,

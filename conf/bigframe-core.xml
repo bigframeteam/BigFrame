@@ -12,15 +12,15 @@
 	
 	<property>
 		<name>bigframe.datavariety</name>
-		<value>nested</value>
+		<value>relational, nested, graph</value>
 		<description>
-			only relational, graph, nested data is supported.
+			only relational, graph, nested data are supported.
 		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.datavolume</name>
-		<value>test</value>
+		<value>tiny</value>
 		<description>
 			tiny: around 10GB
 			small: around 100GB

@@ -1,13 +1,22 @@
-SELECT p.p_promo_id, p.p_item_sk, sum(w.ws_sales_price * w.ws_quantity) as totalsales
-FROM 
-	( SELECT p_promo_id, p_item_sk, p_start_date_sk, p_end_date_sk
-	FROM promotion
-	WHERE p_promo_id IN ("AAAAAAAABAAAAAAA", "AAAAAAAACAAAAAAA") ) p
-	JOIN web_sales w
-	ON (p.p_item_sk = w.ws_item_sk)
-WHERE 
-	p_start_date_sk <= ws_sold_date_sk 
-	AND
-	ws_sold_date_sk <= p_end_date_sk
-GROUP BY
-	p.p_promo_id, p.p_item_sk
+DROP TABLE RptSalesByProdCmpn;
+CREATE TABLE RptSalesByProdCmpn (p_promo_id 	string,
+								i_item_sk		int,
+								totalsales		float); 
+
+INSERT INTO TABLE RptSalesByProdCmpn
+SELECT p_promo_id, i_item_sk, totalsales
+FROM
+	( SELECT p_promo_id, p_item_sk, sum(ws_sales_price * ws_quantity) as totalsales
+	FROM 
+		( SELECT p_promo_id, p_item_sk, p_start_date_sk, p_end_date_sk
+		FROM promotion) p
+		JOIN web_sales w
+		ON (p.p_item_sk = w.ws_item_sk)
+	WHERE 
+		p_start_date_sk <= ws_sold_date_sk 
+		AND
+		ws_sold_date_sk <= p_end_date_sk
+	GROUP BY
+		p_promo_id, p_item_sk ) s
+	JOIN item i
+	ON (s.p_item_sk = i.i_item_sk);
