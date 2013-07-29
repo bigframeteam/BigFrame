@@ -15,7 +15,8 @@ import bigframe.BigConfConstants;
 import bigframe.datagen.DatagenConf;
 import bigframe.datagen.graph.KroneckerGraphGen;
 import bigframe.datagen.relational.CollectTPCDSstatNaive;
-import bigframe.datagen.relational.PromotionInfo;
+import bigframe.datagen.relational.TpcdsItemInfo;
+import bigframe.datagen.relational.TpcdsPromotionInfo;
 import bigframe.datagen.text.TextGenFactory;
 import bigframe.datagen.text.TweetTextGen;
 import bigframe.util.RandomSeeds;
@@ -74,7 +75,8 @@ public class RawTweetGenNaive extends RawTweetGen {
 
 		JSONObject tweet_json = RawTweetGenConstants.TWEET_JSON;
 		CollectTPCDSstatNaive tpcds_stat_collecter = new CollectTPCDSstatNaive();
-		tpcds_stat_collecter.genPromtTBLonHDFS(conf, (int) targetGB);
+		tpcds_stat_collecter.genTBLonHDFS(conf, (int) targetGB, RawTweetGenConstants.PROMOTION_TBL);
+		tpcds_stat_collecter.genTBLonHDFS(conf, (int) targetGB, RawTweetGenConstants.ITEM_TBL);
 
 		Date dateBegin = stringToDate(RawTweetGenConstants.TWEET_BEGINDATE);
 		Date dateEnd = stringToDate(RawTweetGenConstants.TWEET_ENDDATE);
@@ -108,21 +110,25 @@ public class RawTweetGenNaive extends RawTweetGen {
 		mapreduce_config.addResource(new Path(conf.getProp().get(
 				BigConfConstants.BIGFRAME_HADOOP_HOME)
 				+ "/conf/core-site.xml"));
-		PromotionInfo promt_info = new PromotionInfo();
-		tpcds_stat_collecter.collectHDFSPromtResult(mapreduce_config,
-				RawTweetGenConstants.PROMOTION_TBL, promt_info);
+		TpcdsPromotionInfo promt_info = new TpcdsPromotionInfo();
+		tpcds_stat_collecter.collectHDFSPromtTBL(mapreduce_config,
+				RawTweetGenConstants.PROMOTION_TBL+".dat", promt_info);
+		
+		TpcdsItemInfo item_info = new TpcdsItemInfo();
+		tpcds_stat_collecter.collectHDFSItemTBL(mapreduce_config, 
+				RawTweetGenConstants.ITEM_TBL+".dat", item_info);
 
 		TweetGenDist tweet_gen_dist = new SimpleTweetGenDist(RandomSeeds.SEEDS_TABLE[0], tweet_textGen, 1);
 		// The conversion from int to long for time_begin and time_end will lost precision. 
 		tweet_gen_dist.init(customer_twitterAcc, non_customer_acc, time_begin, 
-				time_end, promt_info, num_products, tweet_json);
+				time_end, promt_info, item_info, num_products, tweet_json);
 		
 		
 		List<String> tweet_list = new LinkedList<String>();
 		int chunk = 0;
 		for(int i = 0; i < total_tweets; i++) {
 			tweet_list.add(tweet_gen_dist.getNextTweet().toString());
-			if(tweet_list.size()>1000000) {
+			if(tweet_list.size()>100000) {
 				String filename = "tweets.dat." + String.valueOf(chunk);
 				writeToHDFS(hdfs_dir, filename, tweet_list);
 

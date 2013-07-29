@@ -1,11 +1,15 @@
 package bigframe.datagen.nested;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.filecache.DistributedCache;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -13,7 +17,8 @@ import org.json.simple.JSONObject;
 
 import bigframe.datagen.relational.CollectTPCDSstat;
 import bigframe.datagen.relational.CollectTPCDSstatNaive;
-import bigframe.datagen.relational.PromotionInfo;
+import bigframe.datagen.relational.TpcdsItemInfo;
+import bigframe.datagen.relational.TpcdsPromotionInfo;
 import bigframe.datagen.text.TextGenFactory;
 import bigframe.datagen.text.TweetTextGen;
 import bigframe.util.RandomSeeds;
@@ -56,11 +61,26 @@ Mapper<NullWritable, RawTweetInfoWritable, NullWritable, Text> {
 				RawTweetGenConstants.NUM_PRODUCT, 0);
 
 		CollectTPCDSstat tpcds_stat_collecter = new CollectTPCDSstatNaive();
-		PromotionInfo promt_info = new PromotionInfo();
-		tpcds_stat_collecter.collectHDFSPromtResult(mapreduce_config,
-				RawTweetGenConstants.PROMOTION_TBL, promt_info);
-
-
+		
+		TpcdsPromotionInfo promt_info = new TpcdsPromotionInfo();
+		TpcdsItemInfo item_info = new TpcdsItemInfo();
+		Path[] uris = DistributedCache.getLocalCacheFiles(mapreduce_config);
+		for(int i = 0; i < uris.length; i++) {
+			BufferedReader in = new BufferedReader(new FileReader(uris[i].toString()));
+			if (uris[i].toString().contains(RawTweetGenConstants.PROMOTION_TBL)) {
+				tpcds_stat_collecter.setPromtResult(in, promt_info);
+			}
+			else if (uris[i].toString().contains(RawTweetGenConstants.ITEM_TBL)) {
+				tpcds_stat_collecter.setItemResult(in, item_info);
+			}
+		}
+//		tpcds_stat_collecter.collectHDFSPromtTBL(mapreduce_config,
+//				RawTweetGenConstants.PROMOTION_TBL+".dat", promt_info);
+//
+//		
+//		tpcds_stat_collecter.collectHDFSItemTBL(mapreduce_config, 
+//				RawTweetGenConstants.ITEM_TBL+".dat", item_info);
+		
 		long[] customer_twitterAcc = tpcds_stat_collecter
 				.getCustTwitterAcc(tpcds_targetGB, graph_targetGB);
 		long[] non_customer_acc = tpcds_stat_collecter
@@ -86,7 +106,7 @@ Mapper<NullWritable, RawTweetInfoWritable, NullWritable, Text> {
 				+ time_begin, tweet_textGen, tweet_start_ID);
 		// The conversion from int to long for time_begin and time_end will lost precision. 
 		tweet_gen_dist.init(customer_twitterAcc, non_customer_acc, time_begin, 
-				time_end, promt_info, num_products, tweet_json);
+				time_end, promt_info, item_info, num_products, tweet_json);
 		
 		for(int i = 0; i < tweets_per_mapper; i++) {
 			context.write(null, new Text(tweet_gen_dist.getNextTweet().toString()));

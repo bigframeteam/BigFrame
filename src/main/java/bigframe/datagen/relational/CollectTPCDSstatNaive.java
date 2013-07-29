@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 
 import bigframe.BigConfConstants;
 import bigframe.datagen.graph.KroneckerGraphGen;
-import bigframe.datagen.nested.PromotedProduct;
 import bigframe.datagen.nested.RawTweetGenConstants;
 import bigframe.util.Config;
 import bigframe.util.RandomSeeds;
@@ -146,7 +145,7 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 													430, 480, 480, 480, 480, 480, 480, 480, 480, 480, 480, 480, } };
 
 	@Override
-	public List<PromotedProduct> getPromotedProds() {
+	public List<TpcdsPromotedProduct> getPromotedProds() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -163,45 +162,79 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		return null;
 	}
 
-	private void genPromt(Config conf, int targetGB) {
-		String promt_tbl_gen_script = conf.getProp().get(
-				BigConfConstants.BIGFRAME_GEN_PROMTTBL_SCRIPT);
+//	private void genPromt(Config conf, int targetGB) {
+//		String promt_tbl_gen_script = conf.getProp().get(
+//				BigConfConstants.BIGFRAME_GEN_SINGLETBL_SCRIPT);
+//		// System.out.println("gen promotion tbl script:" +
+//		// promt_tbl_gen_script);
+//		String promtgen_script_path = (new File(promt_tbl_gen_script))
+//				.getParentFile().getAbsolutePath();
+//
+//		String cmd = "perl " + promt_tbl_gen_script + " " + targetGB;
+//
+//		try {
+//			Runtime rt = Runtime.getRuntime();
+//			Process proc = rt.exec(cmd, null, new File(promtgen_script_path));
+//			proc.waitFor();
+//
+//		} catch (Exception e) {
+//			System.out.println(e.toString());
+//			e.printStackTrace();
+//		}
+//
+//	}
+//
+//	private void genTable(Config conf, int targetGB, String table_name) {
+//		String single_tbl_gen_script = conf.getProp().get(
+//				BigConfConstants.BIGFRAME_GEN_SINGLETBL_SCRIPT);
+//		// System.out.println("gen promotion tbl script:" +
+//		// promt_tbl_gen_script);
+//		String singleTBLgen_script_path = (new File(single_tbl_gen_script))
+//				.getParentFile().getAbsolutePath();
+//
+//		String cmd = "perl " + single_tbl_gen_script + " " + targetGB + " " + table_name;
+//
+//		try {
+//			Runtime rt = Runtime.getRuntime();
+//			Process proc = rt.exec(cmd, null, new File(singleTBLgen_script_path));
+//			proc.waitFor();
+//
+//		} catch (Exception e) {
+//			System.out.println(e.toString());
+//			e.printStackTrace();
+//		}
+//
+//	}
+	
+	public void genTBLonHDFS(Config conf, int targetGB, String table_name) {
+		String single_tbl_gen_script = conf.getProp().get(
+				BigConfConstants.BIGFRAME_GEN_SINGLETBL_SCRIPT);
 		// System.out.println("gen promotion tbl script:" +
 		// promt_tbl_gen_script);
-		String promtgen_script_path = (new File(promt_tbl_gen_script))
+		String singleTBLgen_script_path = (new File(single_tbl_gen_script))
 				.getParentFile().getAbsolutePath();
 
-		String cmd = "perl " + promt_tbl_gen_script + " " + targetGB;
+		String cmd = "perl " + single_tbl_gen_script + " " + targetGB + " " + table_name;
 
 		try {
 			Runtime rt = Runtime.getRuntime();
-			Process proc = rt.exec(cmd, null, new File(promtgen_script_path));
+			Process proc = rt.exec(cmd, null, new File(singleTBLgen_script_path));
 			proc.waitFor();
 
 		} catch (Exception e) {
 			System.out.println(e.toString());
 			e.printStackTrace();
 		}
+		
+		//genTable(conf, targetGB, table_name);
 
-	}
+		String tbl_file = singleTBLgen_script_path + "/" + "dsdgen" + "/"
+				+ table_name + ".dat";
 
-	public void genPromtTBLonHDFS(Config conf, int targetGB) {
-		String promt_tbl_gen_script = conf.getProp().get(
-				BigConfConstants.BIGFRAME_GEN_PROMTTBL_SCRIPT);
-		// System.out.println("gen promotion tbl script:" +
-		// promt_tbl_gen_script);
-		String promtgen_script_path = (new File(promt_tbl_gen_script))
-				.getParentFile().getAbsolutePath();
-
-		genPromt(conf, targetGB);
-
-		String promt_tbl_file = promtgen_script_path + "/" + "dsdgen" + "/"
-				+ RawTweetGenConstants.PROMOTION_TBL;
-
-		Path local_path = new Path(promt_tbl_file);
+		Path local_path = new Path(tbl_file);
 
 		try {
-			Path hdfs_path = new Path(RawTweetGenConstants.PROMOTION_TBL);
+			Path hdfs_path = new Path(table_name + ".dat");
 			Configuration config = new Configuration();
 			config.addResource(new Path(conf.getProp().get(
 					BigConfConstants.BIGFRAME_HADOOP_HOME)
@@ -217,29 +250,57 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 			e.printStackTrace();
 		}
 
-		cleanUp(promtgen_script_path, "dsdgen");
+		cleanUp(singleTBLgen_script_path, "dsdgen");
 	}
 
-	private void genPromtTBLlocal(Config conf, int targetGB,
-			PromotionInfo promt_info) {
-		String promt_tbl_gen_script = conf.getProp().get(
-				BigConfConstants.BIGFRAME_GEN_PROMTTBL_SCRIPT);
-		// System.out.println("gen promotion tbl script:" +
-		// promt_tbl_gen_script);
-		String promtgen_script_path = (new File(promt_tbl_gen_script))
-				.getParentFile().getAbsolutePath();
+//	private void genPromtTBLlocal(Config conf, int targetGB,
+//			PromotionInfo promt_info) {
+//		String promt_tbl_gen_script = conf.getProp().get(
+//				BigConfConstants.BIGFRAME_GEN_SINGLETBL_SCRIPT);
+//		// System.out.println("gen promotion tbl script:" +
+//		// promt_tbl_gen_script);
+//		String promtgen_script_path = (new File(promt_tbl_gen_script))
+//				.getParentFile().getAbsolutePath();
+//
+//		genPromt(conf, targetGB);
+//
+//		String promt_tbl_file = promtgen_script_path + "/" + "dsdgen" + "/"
+//				+ RawTweetGenConstants.PROMOTION_TBL;
+//
+//		collectLocalPromtResult(promt_tbl_file, promt_info);
+//
+//		cleanUp(promtgen_script_path, "dsdgen");
+//	}
 
-		genPromt(conf, targetGB);
+	public void setItemResult(BufferedReader in, TpcdsItemInfo item_info) {
+		String line;
 
-		String promt_tbl_file = promtgen_script_path + "/" + "dsdgen" + "/"
-				+ RawTweetGenConstants.PROMOTION_TBL;
+		ArrayList<String> item_ids = new ArrayList<String>();
+		ArrayList<String> prod_names = new ArrayList<String>();
 
-		collectLocalPromtResult(promt_tbl_file, promt_info);
+		try {
+			while ((line = in.readLine()) != null) {
+				String[] fields = line.split("\\|", -1);
 
-		cleanUp(promtgen_script_path, "dsdgen");
+				String item_id = fields[1];
+				String prod_name = fields[21];
+				
+				
+
+				item_ids.add(item_id);
+				prod_names.add(prod_name);
+			}
+
+			item_info.setItemIDs(item_ids);
+			item_info.setProdNames(prod_names);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
-	private void setPromtResult(BufferedReader in, PromotionInfo promt_info) {
+	
+	public void setPromtResult(BufferedReader in, TpcdsPromotionInfo promt_info) {
 		String line;
 
 		ArrayList<Integer> promotionSKs = new ArrayList<Integer>();
@@ -250,21 +311,7 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 
 		try {
 			while ((line = in.readLine()) != null) {
-				String[] fields = line.split("\\|");
-
-				/*
-				 * System.out.println("promotion SK:" + promtSK);
-				 * System.out.println("date begin SK:" + datebegSK);
-				 * System.out.println("date end SK:" + dateendSK);
-				 * System.out.println("product SK:" + prodSK);
-				 */
-
-				/*
-				 * String promtSK = (fields[0].equals("") ? "-1" : fields[0]);
-				 * String datebegSK = (fields[2].equals("") ? "-1" : fields[2]);
-				 * String dateendSK = (fields[3].equals("") ? "-1" : fields[3]);
-				 * String prodSK = (fields[4].equals("") ? "-1" : fields[4]);
-				 */
+				String[] fields = line.split("\\|", -1);
 
 				String promtSK = fields[0];
 				String promtID = fields[1];
@@ -290,11 +337,6 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 						.after(stringToDate(RawTweetGenConstants.TWEET_ENDDATE))) {
 					continue;
 				}
-//
-//				LOG.info("promotion SK:" + promtSK);
-//				LOG.info("date begin SK:" + datebegSK);
-//				LOG.info("date end SK:" + dateendSK);
-//				LOG.info("product SK:" + prodSK);
 
 				promotionSKs.add(Integer.parseInt(promtSK));
 				promotionIDs.add(promtID);
@@ -315,35 +357,61 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		}
 	}
 
-	private void collectLocalPromtResult(String tbl_file,
-			PromotionInfo promt_info) {
-		try {
-			BufferedReader in = new BufferedReader(new FileReader(tbl_file));
-
-			setPromtResult(in, promt_info);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	private void collectLocalPromtResult(String tbl_file,
+//			PromotionInfo promt_info) {
+//		try {
+//			BufferedReader in = new BufferedReader(new FileReader(tbl_file));
+//
+//			setPromtResult(in, promt_info);
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 	@Override
-	public void collectHDFSPromtResult(Configuration mapreduce_config,
-			String tbl_file, PromotionInfo promt_info) {
+	public void collectHDFSPromtTBL(Configuration mapreduce_config,
+			String tbl_file, TpcdsPromotionInfo promt_info) {
 		try {
 
 			Path hdfs_path = new Path(tbl_file);
 			FileSystem fileSystem = FileSystem.get(mapreduce_config);
 			if (!fileSystem.exists(hdfs_path)) {
-				LOG.error("Cannot find promotion file on HDFS");
+				LOG.error("Cannot find " + tbl_file + " on HDFS");
 				System.exit(-1);
 			} else {
-				LOG.info("Got promotion file on HDFS");
+				LOG.info("Got " + tbl_file + " on HDFS");
 			}
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					fileSystem.open(hdfs_path)));
 			setPromtResult(in, promt_info);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void collectHDFSItemTBL(Configuration mapreduce_config,
+			String tbl_file, TpcdsItemInfo item_info) {
+		try {
+
+			Path hdfs_path = new Path(tbl_file);
+			FileSystem fileSystem = FileSystem.get(mapreduce_config);
+			if (!fileSystem.exists(hdfs_path)) {
+				LOG.error("Cannot find " + tbl_file + " on HDFS");
+				System.exit(-1);
+			} else {
+				LOG.info("Got " + tbl_file + " on HDFS");
+			}
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					fileSystem.open(hdfs_path)));
+			setItemResult(in, item_info);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -380,13 +448,13 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		}
 	}
 
-	public PromotionInfo getPromotInfo(Config conf, int targetGB) {
-		PromotionInfo promt_info = new PromotionInfo();
-
-		genPromtTBLlocal(conf, targetGB, promt_info);
-
-		return promt_info;
-	}
+//	public PromotionInfo getPromotInfo(Config conf, int targetGB) {
+//		PromotionInfo promt_info = new PromotionInfo();
+//
+//		genPromtTBLlocal(conf, targetGB, promt_info);
+//
+//		return promt_info;
+//	}
 
 	private int getScaleSlot(int targetGB) {
 		int i = 0;

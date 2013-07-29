@@ -31,7 +31,8 @@ public class RawTweetGenConstants {
 	public static final String NUM_PRODUCT = "mapreduce.rawtweet.num-product";
 	public static final String NUM_TWITTER_USER = "mapreduce.rawtweet.num-twitter-user";
 
-	public static final String PROMOTION_TBL = "promotion.dat";
+	public static final String PROMOTION_TBL = "promotion";
+	public static final String ITEM_TBL = "item";
 	public static final int SINGLE_TWEET_INBYTES = 1379;
 	//public static final String TWEET_TEMPLATE = "tweet.json";
 	//public static final String SENTIMENT_DICT = "sentiment.dict";

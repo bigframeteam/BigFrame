@@ -13,7 +13,7 @@ public class BigConfConstants {
 	public static final String BIGFRAME_HADOOP_SLAVE = "bigframe.hadoop.slaves";
 	public static final String BIGFRAME_TPCDS_LOCAL = "bigframe.tpcds.local";
 	public static final String BIGFRAME_TPCDS_SCRIPT = "bigframe.tpcds.script";
-	public static final String BIGFRAME_GEN_PROMTTBL_SCRIPT = "bigframe.promttblgen.script";
+	public static final String BIGFRAME_GEN_SINGLETBL_SCRIPT = "bigframe.singletblgen.script";
 
 	// Constants for Configuration parameters
 	static final String[] DATATYPES = new String[] { "relational", "graph",

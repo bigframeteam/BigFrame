@@ -1,4 +1,4 @@
-package bigframe.datagen.nested;
+package bigframe.datagen.relational;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,12 +11,12 @@ import java.util.List;
  * @author andy
  * 
  */
-public class PromotedProduct {
+public class TpcdsPromotedProduct {
 	private Date dateBegin;
 	private Date dateEnd;
 	private List<Integer> products;
 
-	public PromotedProduct() {
+	public TpcdsPromotedProduct() {
 		products = new ArrayList<Integer>();
 	}
 

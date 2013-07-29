@@ -3,6 +3,8 @@ package bigframe.datagen.nested;
 import java.util.ArrayList;
 import java.util.List;
 
+import bigframe.datagen.relational.TpcdsPromotedProduct;
+
 
 public class ProductMentionProb{
 	protected List<Integer> customers;
@@ -17,7 +19,7 @@ public class ProductMentionProb{
 	protected double promoted_prod_men_prob_cust;
 	protected double promoted_prod_men_prob_noncust;
 	
-	protected PromotedProduct promoted_products;
+	protected TpcdsPromotedProduct promoted_products;
 	
 	public ProductMentionProb() {
 		customers = new ArrayList<Integer>();
