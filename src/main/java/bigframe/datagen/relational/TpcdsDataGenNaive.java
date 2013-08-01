@@ -26,7 +26,7 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 		
-		num_files = (int) (targetGB/2);
+		num_files = (int) (targetGB/2) + 1;
 		if (num_files < 2) {
 			num_files = 2;
 		}
