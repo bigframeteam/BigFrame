@@ -1,0 +1,86 @@
+#!/bin/bash
+
+SCALA_VERSION=2.9.3
+
+# Enable extended globbing
+shopt -s extglob
+
+# Figure out where the Scala framework is installed
+FWDIR="$(cd `dirname $0`; pwd)"
+
+
+if [ `command -v java` ]; then
+    RUNNER="java"
+else
+    if [ -z "$JAVA_HOME" ]; then
+      echo "JAVA_HOME is not set" >&2
+      exit 1
+    fi
+    RUNNER="${JAVA_HOME}/bin/java"
+fi
+if [ -z "$SCALA_LIBRARY_PATH" ]; then
+    if [ -z "$SCALA_HOME" ]; then
+      echo "SCALA_HOME is not set" >&2
+      exit 1
+    fi
+    SCALA_LIBRARY_PATH="$SCALA_HOME/lib"
+fi
+
+
+# Exit if the user hasn't compiled Bigframe
+if [ ! -e "$FWDIR/target" ]; then
+  echo "Failed to find classes in $FWDIR/target" >&2
+  echo "You need to compile Bigframe before running this program" >&2
+  exit 1
+fi
+
+# Build up classpath
+CLASSPATH=""
+CLASSPATH+=":$FWDIR/target/scala-$SCALA_VERSION/classes"
+if [ -e "$FWDIR/lib" ]; then
+  CLASSPATH+=":$FWDIR/lib/*"
+  if [ -e "$FWDIR/lib/sentiment_jars" ]; then
+    CLASSPATH+=":$FWDIR/lib/sentiment_jars/*"
+  fi
+fi
+
+# Scala libraries
+CLASSPATH+=":$SCALA_LIBRARY_PATH/scala-library.jar"
+CLASSPATH+=":$SCALA_LIBRARY_PATH/scala-compiler.jar"
+CLASSPATH+=":$SCALA_LIBRARY_PATH/jline.jar"
+
+# Jar for BigFrame
+if [ -e "$FWDIR/target/scala-$SCALA_VERSION/bigframe-spark_"!(*sources|*javadoc) ]; then
+  # Use the JAR from the SBT build
+  export BIGFRAME_JAR=`ls "$FWDIR/target/scala-$SCALA_VERSION/bigframe-spark_"!(*sources|*javadoc).jar`
+fi
+if [ -e "$FWDIR/target/bigframe-spark_"!(*sources|*javadoc).jar ]; then
+  # Use the JAR from the Maven build
+  export BIGFRAME_JAR=`ls "$FWDIR/target/bigframe-spark_"!(*sources|*javadoc).jar`
+fi
+
+#if [ -e "$FWDIR/target/scala-$SCALA_VERSION/bigframe-spark-assembly-"!(*sources|*javadoc).jar ]; then
+#  export BIGFRAME_JAR=`ls "$FWDIR/target/scala-$SCALA_VERSION/bigframe-spark-assembly-"!(*sources|*javadoc).jar`
+#fi
+
+# Load environment variables from conf/spark-env.sh, if it exists
+if [ -e $FWDIR/conf/spark-env.sh ] ; then
+  . $FWDIR/conf/spark-env.sh
+fi
+
+# Figure out how much memory to use per executor and set it as an environment
+# variable so that our process sees it and can report it to Mesos
+if [ -z "$SPARK_MEM" ] ; then
+  SPARK_MEM="512m"
+fi
+export SPARK_MEM
+
+# java options
+JAVA_OPTS=" -Xms$SPARK_MEM -Xmx$SPARK_MEM"
+# Load extra JAVA_OPTS from conf/java-opts, if it exists
+if [ -e $FWDIR/conf/java-opts ] ; then
+  JAVA_OPTS+=" `cat $FWDIR/conf/java-opts`"
+fi
+export JAVA_OPTS
+
+exec "$RUNNER" $JAVA_OPTS -cp "$CLASSPATH" "$@"

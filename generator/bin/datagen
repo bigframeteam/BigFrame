@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###################################################################
+# The Datagen command script
+#
+#
+# The user should not need to modify this script. All user-defined
+# parameters can be set in 'conf/config.sh'.
+#
+# Author: Andy He
+# Date:   Jun 17, 2013
+###################################################################
+
+
+# Perform common tasks like Load configurations and initializations
+bin=`dirname "$0"`
+. "$bin"/common.sh
+
+# Get the bigframe base dir
+OLD_PATH=$PWD
+cd $bin
+cd ..
+BASE_PATH=$PWD
+cd $OLD_PATH
+
+JAR_FILE=$JARS_DIR/bigframe-generator_$SCALA_VERSION-$VERSION.jar
+BIGFRAME_LIB=$BASE_PATH/lib
+BIGFRAME_CLASSPATH=$JAR_FILE
+for jar in `find $HADOOP_HOME/lib -name '*.jar'`; do
+	BIGFRAME_CLASSPATH+=:$jar
+done
+
+for jar in `find $BIGFRAME_LIB/common -name '*.jar'`; do
+	BIGFRAME_CLASSPATH+=:$jar
+done
+
+echo $BIGFRAME_OPTS
+
+MAIN_CLASS=bigframe.generator.BigFrameDriver
+
+java -cp "$BIGFRAME_CLASSPATH" $MAIN_CLASS -mode datagen $BIGFRAME_OPTS "$@"
