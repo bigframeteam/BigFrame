@@ -1,2 +1,7 @@
 README.md
 target/
+lib_managed/
+.project
+.classpath
+.cache
+.settings

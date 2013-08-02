@@ -38,10 +38,16 @@ fi
 CLASSPATH=""
 CLASSPATH+=":$FWDIR/target/scala-$SCALA_VERSION/classes"
 if [ -e "$FWDIR/lib" ]; then
-  CLASSPATH+=":$FWDIR/lib/*"
-  if [ -e "$FWDIR/lib/sentiment_jars" ]; then
-    CLASSPATH+=":$FWDIR/lib/sentiment_jars/*"
-  fi
+  for jar in `find $FWDIR/lib -name '*.jar'`; do
+    CLASSPATH+=:$jar
+  done
+fi
+
+# Add libraries managed by sbt
+if [ -e "$FWDIR/../lib_managed" ]; then
+  for jar in `find $FWDIR/../lib_managed -name '*.jar'`; do
+    CLASSPATH+=:$jar
+  done
 fi
 
 # Scala libraries
@@ -82,5 +88,7 @@ if [ -e $FWDIR/conf/java-opts ] ; then
   JAVA_OPTS+=" `cat $FWDIR/conf/java-opts`"
 fi
 export JAVA_OPTS
+
+echo $CLASSPATH
 
 exec "$RUNNER" $JAVA_OPTS -cp "$CLASSPATH" "$@"
