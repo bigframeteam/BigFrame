@@ -5,7 +5,7 @@ import sbtassembly.Plugin.AssemblyKeys._
 
 object BigFrameBuild extends Build {
 
- lazy val root = Project(id = "BigFrame", base = file("."), settings = rootSettings) aggregate(generator, spark, hadoop, sentiment)
+ lazy val root = Project(id = "BigFrame", base = file("."), settings = rootSettings) aggregate(generator, spark, hadoop, sentiment, launcher)
 
  lazy val generator = Project(id = "bigframe-generator", base = file("generator"), settings = generatorSettings)
 
@@ -14,6 +14,8 @@ object BigFrameBuild extends Build {
  lazy val hadoop = Project(id = "bigframe-hadoop", base = file("hadoop"), settings = hadoopSettings)
 
  lazy val sentiment = Project(id = "bigframe-sentiment", base = file("sentiment"), settings = sentimentSettings)
+
+ lazy val launcher = Project(id = "bigframe-launcher", base = file("launcher"), settings = launcherSettings) dependsOn (generator, spark, hadoop)
 
  def sharedSettings = Defaults.defaultSettings ++ Seq(
    version := "0.1",
@@ -52,6 +54,10 @@ object BigFrameBuild extends Build {
 
  def sentimentSettings = sharedSettings ++ Seq(
    name := "bigframe-sentiment"
+ ) ++ assemblySettings
+
+ def launcherSettings = sharedSettings ++ Seq(
+   name := "bigframe-launcher"
  ) ++ assemblySettings
 
 }

@@ -23,6 +23,7 @@ cd ..
 BASE_PATH=$PWD
 cd $OLD_PATH
 
+echo "scala "$SCALA_VERSION
 JAR_FILE=$JARS_DIR/bigframe-generator_$SCALA_VERSION-$VERSION.jar
 BIGFRAME_LIB=$BASE_PATH/lib
 BIGFRAME_CLASSPATH=$JAR_FILE
@@ -33,8 +34,6 @@ done
 for jar in `find $BIGFRAME_LIB/common -name '*.jar'`; do
 	BIGFRAME_CLASSPATH+=:$jar
 done
-
-echo $BIGFRAME_OPTS
 
 MAIN_CLASS=bigframe.generator.BigFrameDriver
 

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# This script loads data and query configuration into spark by copying it from
+# launcher's CONF directory to spark's CONF directory and launches run in 
+# spark's bin. Spark should run appropriate workload.
+
+FWDIR="$(cd `dirname "$0"`; pwd)"
+SPARK_BASE_DIR="$FWDIR/../../spark"
+
+LAUNCHER_CONF_DIR="$FWDIR/../conf"
+SPARK_CONF_DIR="$SPARK_BASE_DIR/conf"
+
+CORE_CONF_FILE="bigframe-core.xml"
+SPARK_ENV_FILE="spark-env.sh"
+
+# TODO: Make spark read configuration from core file and use it to decide workload
+#cp "$LAUNCHER_CONF_DIR/$CORE_CONF_FILE" "$SPARK_CONF_DIR"
+cp "$LAUNCHER_CONF_DIR/$SPARK_ENV_FILE" "$SPARK_CONF_DIR"
+
+cd $SPARK_BASE_DIR
+. "run"
+
+

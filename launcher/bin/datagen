@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# This script simply copies relevant configuration files from launcher's CONF 
+# directory to generator's CONF directory and launches datagen in generator's 
+# bin.
+
+FWDIR="$(cd `dirname "$0"`; pwd)"
+GENERATOR_BASE_DIR="$FWDIR/../../generator"
+
+LAUNCHER_CONF_DIR="$FWDIR/../conf"
+GENERATOR_CONF_DIR="$GENERATOR_BASE_DIR/conf"
+
+CORE_CONF_FILE="bigframe-core.xml"
+BIGFRAME_ENV_FILE="config.sh"
+
+cp "$LAUNCHER_CONF_DIR/$CORE_CONF_FILE" "$GENERATOR_CONF_DIR"
+cp "$LAUNCHER_CONF_DIR/$BIGFRAME_ENV_FILE" "$GENERATOR_CONF_DIR"
+
+cd $GENERATOR_BASE_DIR
+. "bin/datagen"
+

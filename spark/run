@@ -89,6 +89,4 @@ if [ -e $FWDIR/conf/java-opts ] ; then
 fi
 export JAVA_OPTS
 
-echo $CLASSPATH
-
 exec "$RUNNER" $JAVA_OPTS -cp "$CLASSPATH" "$@"
