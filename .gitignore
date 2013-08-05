@@ -1,1 +1,6 @@
 README.md
+target/
+.project
+.classpath
+.cache
+.settings
