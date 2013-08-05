@@ -1,0 +1,80 @@
+{
+  "coordinates": null,
+  "created_at": null,
+  "favorited": null,
+  "truncated": null,
+  "id_str": null,
+  "entities": {
+    "urls": [
+      {
+        "expanded_url": null,
+        "url": null,
+        "indices": [
+        
+        ]
+      }
+    ],
+    "hashtags": [
+ 
+    ],
+    "user_mentions": [
+      {
+        "name": null,
+        "id_str": null,
+        "id": null,
+        "indices": [
+
+        ],
+        "screen_name": null
+      }
+    ]
+  },
+  "in_reply_to_user_id_str": null,
+  "text": null,
+  "contributors": null,
+  "id": null,
+  "retweet_count": null,
+  "in_reply_to_status_id_str": null,
+  "geo": null,
+  "retweeted": null,
+  "in_reply_to_user_id": null,
+  "user": {
+    "profile_sidebar_border_color": null,
+    "name": null,
+    "profile_sidebar_fill_color": null,
+    "profile_background_tile": null,
+    "profile_image_url": null,
+    "location": null,
+    "created_at": null,
+    "id_str": null,
+    "follow_request_sent": null,
+    "profile_link_color": null,
+    "favourites_count": null,
+    "url": null,
+    "contributors_enabled": null,
+    "utc_offset": null,
+    "id": null,
+    "profile_use_background_image": null,
+    "listed_count": null,
+    "protected": null,
+    "lang": null,
+    "profile_text_color": null,
+    "followers_count": null,
+    "time_zone": null,
+    "verified": null,
+    "geo_enabled": null,
+    "profile_background_color": null,
+    "notifications": null,
+    "description": null,
+    "friends_count": null,
+    "profile_background_image_url": null,
+    "statuses_count": null,
+    "screen_name": null,
+    "following": null,
+    "show_all_inline_media": null
+  },
+  "in_reply_to_screen_name": null,
+  "source": null,
+  "place": null,
+  "in_reply_to_status_id": null
+}
