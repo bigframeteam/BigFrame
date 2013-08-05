@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="ivy-report.xsl"?>
+<ivy-report version="1.0">
+	<info
+		organisation="bigframe-team"
+		module="bigframe-generator_2.9.3"
+		revision="0.1.0-SNAPSHOT"
+		conf="compile-internal"
+		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom"
+		date="20130805210013"/>
+	<dependencies>
+		<module organisation="bigframe-team" name="bigframe-common_2.9.3">
+			<revision name="0.1.0-SNAPSHOT" status="integration" pubdate="20130805210013" resolver="inter-project" artresolver="inter-project" downloaded="false" searched="false" default="false" conf="default(compile), compile" position="0">
+				<metadata-artifact status="failed" details="" size="0" time="0" searched="false"/>
+				<caller organisation="bigframe-team" name="bigframe-generator_2.9.3" conf="optional, compile, provided, compile-internal" rev="0.1.0-SNAPSHOT" rev-constraint-default="0.1.0-SNAPSHOT" rev-constraint-dynamic="0.1.0-SNAPSHOT" callerrev="0.1.0-SNAPSHOT"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="log4j" name="log4j">
+			<revision name="1.2.14" status="release" pubdate="20130506201553" resolver="Typesafe Repository" artresolver="Typesafe Repository" homepage="http://logging.apache.org/log4j/docs/" downloaded="false" searched="false" default="false" conf="default(compile), default, compile, runtime, master" position="34">
+				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="no" details="" size="2352" time="0" location="/home/andy/.ivy2/cache/log4j/log4j/ivy-1.2.14.xml" searched="false" origin-is-local="false" origin-location="http://repo.typesafe.com/typesafe/releases/log4j/log4j/1.2.14/log4j-1.2.14.pom"/>
+				<caller organisation="bigframe-team" name="bigframe-generator_2.9.3" conf="optional, compile, provided, compile-internal" rev="1.2.14" rev-constraint-default="1.2.14" rev-constraint-dynamic="1.2.14" callerrev="0.1.0-SNAPSHOT"/>
+				<artifacts>
+					<artifact name="log4j" type="jar" ext="jar" status="no" details="" size="367444" time="0" location="/home/andy/.ivy2/cache/log4j/log4j/jars/log4j-1.2.14.jar">
+						<origin-location is-local="false" location="http://repo.typesafe.com/typesafe/releases/log4j/log4j/1.2.14/log4j-1.2.14.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.apache.hadoop" name="hadoop-core">
+			<revision name="1.0.4" status="release" pubdate="20121005044131" resolver="public" artresolver="public" homepage="" downloaded="false" searched="false" default="false" conf="default(compile), default, compile, runtime, master" position="2">
+				<metadata-artifact status="no" details="" size="5001" time="0" location="/home/andy/.ivy2/cache/org.apache.hadoop/hadoop-core/ivy-1.0.4.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/apache/hadoop/hadoop-core/1.0.4/hadoop-core-1.0.4.pom"/>
+				<caller organisation="bigframe-team" name="bigframe-generator_2.9.3" conf="optional, compile, provided, compile-internal" rev="1.0.4" rev-constraint-default="1.0.4" rev-constraint-dynamic="1.0.4" callerrev="0.1.0-SNAPSHOT"/>
+				<artifacts>
+					<artifact name="hadoop-core" type="jar" ext="jar" status="no" details="" size="3929148" time="0" location="/home/andy/.ivy2/cache/org.apache.hadoop/hadoop-core/jars/hadoop-core-1.0.4.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/org/apache/hadoop/hadoop-core/1.0.4/hadoop-core-1.0.4.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.codehaus.jackson" name="jackson-mapper-asl">
+			<revision name="1.0.1" status="release" pubdate="20090605095550" resolver="public" artresolver="public" homepage="http://jackson.codehaus.org" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="32">
+				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="no" details="" size="2653" time="0" location="/home/andy/.ivy2/cache/org.codehaus.jackson/jackson-mapper-asl/ivy-1.0.1.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/1.0.1/jackson-mapper-asl-1.0.1.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="1.0.1" rev-constraint-default="1.0.1" rev-constraint-dynamic="1.0.1" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="jackson-mapper-asl" type="jar" ext="jar" status="no" details="" size="270781" time="0" location="/home/andy/.ivy2/cache/org.codehaus.jackson/jackson-mapper-asl/jars/jackson-mapper-asl-1.0.1.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/1.0.1/jackson-mapper-asl-1.0.1.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.codehaus.jackson" name="jackson-core-asl">
+			<revision name="1.0.1" status="release" pubdate="20090605095528" resolver="public" artresolver="public" homepage="http://jackson.codehaus.org" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="33">
+				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="no" details="" size="2437" time="0" location="/home/andy/.ivy2/cache/org.codehaus.jackson/jackson-core-asl/ivy-1.0.1.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/codehaus/jackson/jackson-core-asl/1.0.1/jackson-core-asl-1.0.1.pom"/>
+				<caller organisation="org.codehaus.jackson" name="jackson-mapper-asl" conf="compile, runtime" rev="1.0.1" rev-constraint-default="1.0.1" rev-constraint-dynamic="1.0.1" callerrev="1.0.1"/>
+				<artifacts>
+					<artifact name="jackson-core-asl" type="jar" ext="jar" status="no" details="" size="136059" time="0" location="/home/andy/.ivy2/cache/org.codehaus.jackson/jackson-core-asl/jars/jackson-core-asl-1.0.1.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/org/codehaus/jackson/jackson-core-asl/1.0.1/jackson-core-asl-1.0.1.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="hsqldb" name="hsqldb">
+			<revision name="1.8.0.10" status="release" pubdate="20090520052027" resolver="public" artresolver="public" homepage="http://hsqldb.org/" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="31">
+				<license name="HSQLDB License" url="http://hsqldb.org/web/hsqlLicense.html"/>
+				<metadata-artifact status="no" details="" size="2340" time="0" location="/home/andy/.ivy2/cache/hsqldb/hsqldb/ivy-1.8.0.10.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/hsqldb/hsqldb/1.8.0.10/hsqldb-1.8.0.10.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="1.8.0.10" rev-constraint-default="1.8.0.10" rev-constraint-dynamic="1.8.0.10" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="hsqldb" type="jar" ext="jar" status="no" details="" size="706710" time="0" location="/home/andy/.ivy2/cache/hsqldb/hsqldb/jars/hsqldb-1.8.0.10.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/hsqldb/hsqldb/1.8.0.10/hsqldb-1.8.0.10.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="net.sf.kosmosfs" name="kfs">
+			<revision name="0.3" status="release" pubdate="20090520052051" resolver="public" artresolver="public" homepage="http://kosmosfs.sourceforge.net/" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="30">
+				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="no" details="" size="2445" time="0" location="/home/andy/.ivy2/cache/net.sf.kosmosfs/kfs/ivy-0.3.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/net/sf/kosmosfs/kfs/0.3/kfs-0.3.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="0.3" rev-constraint-default="0.3" rev-constraint-dynamic="0.3" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="kfs" type="jar" ext="jar" status="no" details="" size="11981" time="0" location="/home/andy/.ivy2/cache/net.sf.kosmosfs/kfs/jars/kfs-0.3.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/net/sf/kosmosfs/kfs/0.3/kfs-0.3.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="net.java.dev.jets3t" name="jets3t">
+			<revision name="0.7.1" status="release" pubdate="20090510132320" resolver="public" artresolver="public" homepage="http://jets3t.s3.amazonaws.com/index.html" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="29">
+				<license name="Apache License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0"/>
+				<metadata-artifact status="no" details="" size="3056" time="0" location="/home/andy/.ivy2/cache/net.java.dev.jets3t/jets3t/ivy-0.7.1.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/net/java/dev/jets3t/jets3t/0.7.1/jets3t-0.7.1.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="0.7.1" rev-constraint-default="0.7.1" rev-constraint-dynamic="0.7.1" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="jets3t" type="jar" ext="jar" status="no" details="" size="377780" time="0" location="/home/andy/.ivy2/cache/net.java.dev.jets3t/jets3t/jars/jets3t-0.7.1.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/net/java/dev/jets3t/jets3t/0.7.1/jets3t-0.7.1.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-el" name="commons-el">
+			<revision name="1.0" status="release" pubdate="20051109062050" resolver="public" artresolver="public" homepage="http://jakarta.apache.org/commons/el/" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="28">
+				<license name="The Apache Software License, Version 2.0" url="/LICENSE.txt"/>
+				<metadata-artifact status="no" details="" size="2907" time="0" location="/home/andy/.ivy2/cache/commons-el/commons-el/ivy-1.0.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/commons-el/commons-el/1.0/commons-el-1.0.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="1.0" rev-constraint-default="1.0" rev-constraint-dynamic="1.0" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="commons-el" type="jar" ext="jar" status="no" details="" size="112341" time="0" location="/home/andy/.ivy2/cache/commons-el/commons-el/jars/commons-el-1.0.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/commons-el/commons-el/1.0/commons-el-1.0.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.mortbay.jetty" name="jsp-2.1">
+			<revision name="6.1.14" status="release" pubdate="20081114085031" resolver="public" artresolver="public" homepage="" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="25">
+				<license name="CDDL 1.0" url="https://glassfish.dev.java.net/public/CDDLv1.0.html"/>
+				<metadata-artifact status="no" details="" size="6744" time="0" location="/home/andy/.ivy2/cache/org.mortbay.jetty/jsp-2.1/ivy-6.1.14.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/mortbay/jetty/jsp-2.1/6.1.14/jsp-2.1-6.1.14.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="6.1.14" rev-constraint-default="6.1.14" rev-constraint-dynamic="6.1.14" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="jsp-2.1" type="jar" ext="jar" status="no" details="" size="1024680" time="0" location="/home/andy/.ivy2/cache/org.mortbay.jetty/jsp-2.1/jars/jsp-2.1-6.1.14.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/org/mortbay/jetty/jsp-2.1/6.1.14/jsp-2.1-6.1.14.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.eclipse.jdt" name="core">
+			<revision name="3.1.1" status="release" pubdate="20060901013226" resolver="public" artresolver="public" homepage="http://www.eclipse.org/jdt/" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="26">
+				<license name="Eclipse Public License v1.0" url="http://www.eclipse.org/org/documents/epl-v10.php"/>
+				<metadata-artifact status="no" details="" size="2315" time="0" location="/home/andy/.ivy2/cache/org.eclipse.jdt/core/ivy-3.1.1.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/eclipse/jdt/core/3.1.1/core-3.1.1.pom"/>
+				<caller organisation="org.mortbay.jetty" name="jsp-2.1" conf="compile, runtime" rev="3.1.1" rev-constraint-default="3.1.1" rev-constraint-dynamic="3.1.1" callerrev="6.1.14"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="3.1.1" rev-constraint-default="3.1.1" rev-constraint-dynamic="3.1.1" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="core" type="jar" ext="jar" status="no" details="" size="3566844" time="0" location="/home/andy/.ivy2/cache/org.eclipse.jdt/core/jars/core-3.1.1.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/org/eclipse/jdt/core/3.1.1/core-3.1.1.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.mortbay.jetty" name="jsp-api-2.1">
+			<revision name="6.1.14" status="release" pubdate="20081114085002" resolver="public" artresolver="public" homepage="" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="23">
+				<metadata-artifact status="no" details="" size="5951" time="0" location="/home/andy/.ivy2/cache/org.mortbay.jetty/jsp-api-2.1/ivy-6.1.14.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/mortbay/jetty/jsp-api-2.1/6.1.14/jsp-api-2.1-6.1.14.pom"/>
+				<caller organisation="org.mortbay.jetty" name="jsp-2.1" conf="compile, runtime" rev="6.1.14" rev-constraint-default="6.1.14" rev-constraint-dynamic="6.1.14" callerrev="6.1.14"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="6.1.14" rev-constraint-default="6.1.14" rev-constraint-dynamic="6.1.14" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="jsp-api-2.1" type="jar" ext="jar" status="no" details="" size="134910" time="0" location="/home/andy/.ivy2/cache/org.mortbay.jetty/jsp-api-2.1/jars/jsp-api-2.1-6.1.14.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/org/mortbay/jetty/jsp-api-2.1/6.1.14/jsp-api-2.1-6.1.14.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.mortbay.jetty" name="servlet-api-2.5">
+			<revision name="6.1.14" status="release" pubdate="20081114084905" resolver="public" artresolver="public" homepage="" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="24">
+				<license name="CDDL 1.0" url="https://glassfish.dev.java.net/public/CDDLv1.0.html"/>
+				<metadata-artifact status="no" details="" size="5157" time="0" location="/home/andy/.ivy2/cache/org.mortbay.jetty/servlet-api-2.5/ivy-6.1.14.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/mortbay/jetty/servlet-api-2.5/6.1.14/servlet-api-2.5-6.1.14.pom"/>
+				<caller organisation="org.mortbay.jetty" name="jsp-api-2.1" conf="compile, runtime" rev="6.1.14" rev-constraint-default="6.1.14" rev-constraint-dynamic="6.1.14" callerrev="6.1.14"/>
+				<artifacts>
+					<artifact name="servlet-api-2.5" type="jar" ext="jar" status="no" details="" size="132368" time="0" location="/home/andy/.ivy2/cache/org.mortbay.jetty/servlet-api-2.5/jars/servlet-api-2.5-6.1.14.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/org/mortbay/jetty/servlet-api-2.5/6.1.14/servlet-api-2.5-6.1.14.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="tomcat" name="jasper-compiler">
+			<revision name="5.5.12" status="release" pubdate="20051114093108" resolver="public" artresolver="public" homepage="" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="22">
+				<metadata-artifact status="no" details="" size="2198" time="0" location="/home/andy/.ivy2/cache/tomcat/jasper-compiler/ivy-5.5.12.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/tomcat/jasper-compiler/5.5.12/jasper-compiler-5.5.12.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="5.5.12" rev-constraint-default="5.5.12" rev-constraint-dynamic="5.5.12" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="jasper-compiler" type="jar" ext="jar" status="no" details="" size="405086" time="0" location="/home/andy/.ivy2/cache/tomcat/jasper-compiler/jars/jasper-compiler-5.5.12.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/tomcat/jasper-compiler/5.5.12/jasper-compiler-5.5.12.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="tomcat" name="jasper-runtime">
+			<revision name="5.5.12" status="release" pubdate="20051114093108" resolver="public" artresolver="public" homepage="" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="21">
+				<metadata-artifact status="no" details="" size="2196" time="0" location="/home/andy/.ivy2/cache/tomcat/jasper-runtime/ivy-5.5.12.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/tomcat/jasper-runtime/5.5.12/jasper-runtime-5.5.12.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="5.5.12" rev-constraint-default="5.5.12" rev-constraint-dynamic="5.5.12" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="jasper-runtime" type="jar" ext="jar" status="no" details="" size="76698" time="0" location="/home/andy/.ivy2/cache/tomcat/jasper-runtime/jars/jasper-runtime-5.5.12.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/tomcat/jasper-runtime/5.5.12/jasper-runtime-5.5.12.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.mortbay.jetty" name="jetty">
+			<revision name="6.1.26" status="release" pubdate="20101111054054" resolver="public" artresolver="public" homepage="" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="18">
+				<metadata-artifact status="no" details="" size="7201" time="0" location="/home/andy/.ivy2/cache/org.mortbay.jetty/jetty/ivy-6.1.26.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="6.1.26" rev-constraint-default="6.1.26" rev-constraint-dynamic="6.1.26" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="jetty" type="jar" ext="jar" status="no" details="" size="539912" time="0" location="/home/andy/.ivy2/cache/org.mortbay.jetty/jetty/jars/jetty-6.1.26.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.mortbay.jetty" name="jetty-util">
+			<revision name="6.1.26" status="release" pubdate="20101111053810" resolver="public" artresolver="public" homepage="" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="19">
+				<metadata-artifact status="no" details="" size="7138" time="0" location="/home/andy/.ivy2/cache/org.mortbay.jetty/jetty-util/ivy-6.1.26.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/mortbay/jetty/jetty-util/6.1.26/jetty-util-6.1.26.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="6.1.26" rev-constraint-default="6.1.26" rev-constraint-dynamic="6.1.26" callerrev="1.0.4"/>
+				<caller organisation="org.mortbay.jetty" name="jetty" conf="compile, runtime" rev="6.1.26" rev-constraint-default="6.1.26" rev-constraint-dynamic="6.1.26" callerrev="6.1.26"/>
+				<artifacts>
+					<artifact name="jetty-util" type="jar" ext="jar" status="no" details="" size="177131" time="0" location="/home/andy/.ivy2/cache/org.mortbay.jetty/jetty-util/jars/jetty-util-6.1.26.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/org/mortbay/jetty/jetty-util/6.1.26/jetty-util-6.1.26.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.mortbay.jetty" name="servlet-api">
+			<revision name="2.5-20081211" status="release" pubdate="20081212013400" resolver="public" artresolver="public" homepage="" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="20">
+				<metadata-artifact status="no" details="" size="2759" time="0" location="/home/andy/.ivy2/cache/org.mortbay.jetty/servlet-api/ivy-2.5-20081211.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211.pom"/>
+				<caller organisation="org.mortbay.jetty" name="jetty" conf="compile, runtime" rev="2.5-20081211" rev-constraint-default="2.5-20081211" rev-constraint-dynamic="2.5-20081211" callerrev="6.1.26"/>
+				<artifacts>
+					<artifact name="servlet-api" type="jar" ext="jar" status="no" details="" size="134133" time="0" location="/home/andy/.ivy2/cache/org.mortbay.jetty/servlet-api/jars/servlet-api-2.5-20081211.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-net" name="commons-net">
+			<revision name="1.4.1" status="release" pubdate="20051221202333" resolver="public" artresolver="public" homepage="http://jakarta.apache.org/commons/${pom.artifactId.substring(8)}/" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="16">
+				<license name="The Apache Software License, Version 2.0" url="/LICENSE.txt"/>
+				<metadata-artifact status="no" details="" size="2585" time="0" location="/home/andy/.ivy2/cache/commons-net/commons-net/ivy-1.4.1.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/commons-net/commons-net/1.4.1/commons-net-1.4.1.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="1.4.1" rev-constraint-default="1.4.1" rev-constraint-dynamic="1.4.1" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="commons-net" type="jar" ext="jar" status="no" details="" size="180792" time="0" location="/home/andy/.ivy2/cache/commons-net/commons-net/jars/commons-net-1.4.1.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/commons-net/commons-net/1.4.1/commons-net-1.4.1.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="oro" name="oro">
+			<revision name="2.0.8" status="release" pubdate="20051109062901" resolver="public" artresolver="public" homepage="" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="17">
+				<metadata-artifact status="no" details="" size="2170" time="0" location="/home/andy/.ivy2/cache/oro/oro/ivy-2.0.8.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8.pom"/>
+				<caller organisation="commons-net" name="commons-net" conf="compile, runtime" rev="2.0.8" rev-constraint-default="2.0.8" rev-constraint-dynamic="2.0.8" callerrev="1.4.1"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="2.0.8" rev-constraint-default="2.0.8" rev-constraint-dynamic="2.0.8" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="oro" type="jar" ext="jar" status="no" details="" size="65261" time="0" location="/home/andy/.ivy2/cache/oro/oro/jars/oro-2.0.8.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-configuration" name="commons-configuration">
+			<revision name="1.6" status="release" pubdate="20090205034444" resolver="public" artresolver="public" homepage="http://commons.apache.org/${pom.artifactId.substring(8)}/" downloaded="false" searched="false" default="false" conf="default(compile), default, compile, master(*), runtime, compile(*), runtime(*), master" position="10">
+				<license name="The Apache Software License, Version 2.0" url="/LICENSE.txt"/>
+				<metadata-artifact status="no" details="" size="5546" time="0" location="/home/andy/.ivy2/cache/commons-configuration/commons-configuration/ivy-1.6.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/commons-configuration/commons-configuration/1.6/commons-configuration-1.6.pom"/>
+				<caller organisation="bigframe-team" name="bigframe-generator_2.9.3" conf="optional, compile, provided, compile-internal" rev="1.6" rev-constraint-default="1.6" rev-constraint-dynamic="1.6" callerrev="0.1.0-SNAPSHOT"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="1.6" rev-constraint-default="1.6" rev-constraint-dynamic="1.6" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="commons-configuration" type="jar" ext="jar" status="no" details="" size="298829" time="0" location="/home/andy/.ivy2/cache/commons-configuration/commons-configuration/jars/commons-configuration-1.6.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/commons-configuration/commons-configuration/1.6/commons-configuration-1.6.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="ant" name="ant">
+			<revision name="1.6.5" status="release" pubdate="20101015204825" resolver="public" artresolver="public" homepage="" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="27">
+				<metadata-artifact status="no" details="" size="2540" time="0" location="/home/andy/.ivy2/cache/ant/ant/ivy-1.6.5.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/ant/ant/1.6.5/ant-1.6.5.pom"/>
+				<caller organisation="org.mortbay.jetty" name="jsp-2.1" conf="compile, runtime" rev="1.6.5" rev-constraint-default="1.6.5" rev-constraint-dynamic="1.6.5" callerrev="6.1.14"/>
+				<artifacts>
+					<artifact name="ant" type="jar" ext="jar" status="no" details="" size="1034049" time="0" location="/home/andy/.ivy2/cache/ant/ant/jars/ant-1.6.5.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/ant/ant/1.6.5/ant-1.6.5.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-beanutils" name="commons-beanutils-core">
+			<revision name="1.8.0" status="release" pubdate="20080901021344" resolver="public" artresolver="public" homepage="http://commons.apache.org/beanutils/" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="15">
+				<metadata-artifact status="no" details="" size="2550" time="0" location="/home/andy/.ivy2/cache/commons-beanutils/commons-beanutils-core/ivy-1.8.0.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.pom"/>
+				<caller organisation="commons-configuration" name="commons-configuration" conf="compile, runtime" rev="1.8.0" rev-constraint-default="1.8.0" rev-constraint-dynamic="1.8.0" callerrev="1.6"/>
+				<artifacts>
+					<artifact name="commons-beanutils-core" type="jar" ext="jar" status="no" details="" size="206035" time="0" location="/home/andy/.ivy2/cache/commons-beanutils/commons-beanutils-core/jars/commons-beanutils-core-1.8.0.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-digester" name="commons-digester">
+			<revision name="1.8" status="release" pubdate="20061204023311" resolver="public" artresolver="public" homepage="http://jakarta.apache.org/commons/digester/" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="13">
+				<license name="The Apache Software License, Version 2.0" url="/LICENSE.txt"/>
+				<metadata-artifact status="no" details="" size="3201" time="0" location="/home/andy/.ivy2/cache/commons-digester/commons-digester/ivy-1.8.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/commons-digester/commons-digester/1.8/commons-digester-1.8.pom"/>
+				<caller organisation="commons-configuration" name="commons-configuration" conf="compile, runtime" rev="1.8" rev-constraint-default="1.8" rev-constraint-dynamic="1.8" callerrev="1.6"/>
+				<artifacts>
+					<artifact name="commons-digester" type="jar" ext="jar" status="no" details="" size="143602" time="0" location="/home/andy/.ivy2/cache/commons-digester/commons-digester/jars/commons-digester-1.8.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/commons-digester/commons-digester/1.8/commons-digester-1.8.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-beanutils" name="commons-beanutils">
+			<revision name="1.7.0" status="release" pubdate="20051109062021" resolver="public" artresolver="public" homepage="" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="14">
+				<metadata-artifact status="no" details="" size="2388" time="0" location="/home/andy/.ivy2/cache/commons-beanutils/commons-beanutils/ivy-1.7.0.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.pom"/>
+				<caller organisation="commons-digester" name="commons-digester" conf="compile, runtime" rev="1.7.0" rev-constraint-default="1.7.0" rev-constraint-dynamic="1.7.0" callerrev="1.8"/>
+				<artifacts>
+					<artifact name="commons-beanutils" type="jar" ext="jar" status="no" details="" size="188671" time="0" location="/home/andy/.ivy2/cache/commons-beanutils/commons-beanutils/jars/commons-beanutils-1.7.0.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-logging" name="commons-logging">
+			<revision name="1.1.1" status="release" pubdate="20071127042410" resolver="public" artresolver="public" homepage="http://commons.apache.org/logging" downloaded="false" searched="false" default="false" conf="default(compile), default, compile, master(*), runtime, compile(*), runtime(*), master" position="7">
+				<metadata-artifact status="no" details="" size="3941" time="0" location="/home/andy/.ivy2/cache/commons-logging/commons-logging/ivy-1.1.1.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.pom"/>
+				<caller organisation="commons-el" name="commons-el" conf="compile, runtime" rev="1.0.3" rev-constraint-default="1.0.3" rev-constraint-dynamic="1.0.3" callerrev="1.0"/>
+				<caller organisation="commons-beanutils" name="commons-beanutils-core" conf="compile, runtime" rev="1.1.1" rev-constraint-default="1.1.1" rev-constraint-dynamic="1.1.1" callerrev="1.8.0"/>
+				<caller organisation="commons-beanutils" name="commons-beanutils" conf="compile, runtime" rev="1.0.3" rev-constraint-default="1.0.3" rev-constraint-dynamic="1.0.3" callerrev="1.7.0"/>
+				<caller organisation="commons-configuration" name="commons-configuration" conf="compile, runtime" rev="1.1.1" rev-constraint-default="1.1.1" rev-constraint-dynamic="1.1.1" callerrev="1.6"/>
+				<caller organisation="bigframe-team" name="bigframe-generator_2.9.3" conf="optional, compile, provided, compile-internal" rev="1.1.1" rev-constraint-default="1.1.1" rev-constraint-dynamic="1.1.1" callerrev="0.1.0-SNAPSHOT"/>
+				<caller organisation="commons-httpclient" name="commons-httpclient" conf="compile, runtime" rev="1.0.3" rev-constraint-default="1.0.3" rev-constraint-dynamic="1.0.3" callerrev="3.0.1"/>
+				<caller organisation="net.java.dev.jets3t" name="jets3t" conf="compile, runtime" rev="1.1.1" rev-constraint-default="1.1.1" rev-constraint-dynamic="1.1.1" callerrev="0.7.1"/>
+				<caller organisation="commons-digester" name="commons-digester" conf="compile, runtime" rev="1.1" rev-constraint-default="1.1" rev-constraint-dynamic="1.1" callerrev="1.8"/>
+				<artifacts>
+					<artifact name="commons-logging" type="jar" ext="jar" status="no" details="" size="60686" time="0" location="/home/andy/.ivy2/cache/commons-logging/commons-logging/jars/commons-logging-1.1.1.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+			<revision name="1.1" evicted="latest-revision" evicted-reason="" downloaded="false" searched="false" conf="compile, master(*), runtime, compile(*), runtime(*), master, default(compile)" position="-1">
+				<evicted-by rev="1.1.1"/>
+				<caller organisation="commons-beanutils" name="commons-beanutils" conf="compile, runtime" rev="1.0.3" rev-constraint-default="1.0.3" rev-constraint-dynamic="1.0.3" callerrev="1.7.0"/>
+				<caller organisation="bigframe-team" name="bigframe-generator_2.9.3" conf="optional, compile, provided, compile-internal" rev="1.1.1" rev-constraint-default="1.1.1" rev-constraint-dynamic="1.1.1" callerrev="0.1.0-SNAPSHOT"/>
+				<caller organisation="commons-httpclient" name="commons-httpclient" conf="compile, runtime" rev="1.0.3" rev-constraint-default="1.0.3" rev-constraint-dynamic="1.0.3" callerrev="3.0.1"/>
+				<caller organisation="commons-digester" name="commons-digester" conf="compile, runtime" rev="1.1" rev-constraint-default="1.1" rev-constraint-dynamic="1.1" callerrev="1.8"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+			<revision name="1.0.3" evicted="latest-revision" evicted-reason="" downloaded="false" searched="false" conf="compile, master(*), runtime, compile(*), runtime(*), master, default(compile)" position="-1">
+				<evicted-by rev="1.1.1"/>
+				<caller organisation="commons-el" name="commons-el" conf="compile, runtime" rev="1.0.3" rev-constraint-default="1.0.3" rev-constraint-dynamic="1.0.3" callerrev="1.0"/>
+				<caller organisation="commons-beanutils" name="commons-beanutils" conf="compile, runtime" rev="1.0.3" rev-constraint-default="1.0.3" rev-constraint-dynamic="1.0.3" callerrev="1.7.0"/>
+				<caller organisation="bigframe-team" name="bigframe-generator_2.9.3" conf="optional, compile, provided, compile-internal" rev="1.1.1" rev-constraint-default="1.1.1" rev-constraint-dynamic="1.1.1" callerrev="0.1.0-SNAPSHOT"/>
+				<caller organisation="commons-httpclient" name="commons-httpclient" conf="compile, runtime" rev="1.0.3" rev-constraint-default="1.0.3" rev-constraint-dynamic="1.0.3" callerrev="3.0.1"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-lang" name="commons-lang">
+			<revision name="2.4" status="release" pubdate="20080319134228" resolver="public" artresolver="public" homepage="http://commons.apache.org/lang/" downloaded="false" searched="false" default="false" conf="default(compile), default, compile, master(*), runtime, compile(*), runtime(*), master" position="12">
+				<metadata-artifact status="no" details="" size="4638" time="0" location="/home/andy/.ivy2/cache/commons-lang/commons-lang/ivy-2.4.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/commons-lang/commons-lang/2.4/commons-lang-2.4.pom"/>
+				<caller organisation="commons-configuration" name="commons-configuration" conf="compile, runtime" rev="2.4" rev-constraint-default="2.4" rev-constraint-dynamic="2.4" callerrev="1.6"/>
+				<caller organisation="bigframe-team" name="bigframe-generator_2.9.3" conf="optional, compile, provided, compile-internal" rev="2.4" rev-constraint-default="2.4" rev-constraint-dynamic="2.4" callerrev="0.1.0-SNAPSHOT"/>
+				<artifacts>
+					<artifact name="commons-lang" type="jar" ext="jar" status="no" details="" size="261809" time="0" location="/home/andy/.ivy2/cache/commons-lang/commons-lang/jars/commons-lang-2.4.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/commons-lang/commons-lang/2.4/commons-lang-2.4.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-collections" name="commons-collections">
+			<revision name="3.2.1" status="release" pubdate="20080415090924" resolver="public" artresolver="public" homepage="http://commons.apache.org/collections/" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="11">
+				<metadata-artifact status="no" details="" size="4584" time="0" location="/home/andy/.ivy2/cache/commons-collections/commons-collections/ivy-3.2.1.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.pom"/>
+				<caller organisation="commons-configuration" name="commons-configuration" conf="compile, runtime" rev="3.2.1" rev-constraint-default="3.2.1" rev-constraint-dynamic="3.2.1" callerrev="1.6"/>
+				<artifacts>
+					<artifact name="commons-collections" type="jar" ext="jar" status="no" details="" size="575389" time="0" location="/home/andy/.ivy2/cache/commons-collections/commons-collections/jars/commons-collections-3.2.1.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.apache.commons" name="commons-math">
+			<revision name="2.1" status="release" pubdate="20100328104801" resolver="public" artresolver="public" homepage="http://commons.apache.org/math/" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="9">
+				<metadata-artifact status="no" details="" size="5887" time="0" location="/home/andy/.ivy2/cache/org.apache.commons/commons-math/ivy-2.1.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/apache/commons/commons-math/2.1/commons-math-2.1.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="2.1" rev-constraint-default="2.1" rev-constraint-dynamic="2.1" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="commons-math" type="jar" ext="jar" status="no" details="" size="832410" time="0" location="/home/andy/.ivy2/cache/org.apache.commons/commons-math/jars/commons-math-2.1.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/org/apache/commons/commons-math/2.1/commons-math-2.1.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-codec" name="commons-codec">
+			<revision name="1.4" status="release" pubdate="20090810052217" resolver="public" artresolver="public" homepage="http://commons.apache.org/codec/" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="8">
+				<metadata-artifact status="no" details="" size="4984" time="0" location="/home/andy/.ivy2/cache/commons-codec/commons-codec/ivy-1.4.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/commons-codec/commons-codec/1.4/commons-codec-1.4.pom"/>
+				<caller organisation="commons-httpclient" name="commons-httpclient" conf="compile, runtime" rev="1.2" rev-constraint-default="1.2" rev-constraint-dynamic="1.2" callerrev="3.0.1"/>
+				<caller organisation="net.java.dev.jets3t" name="jets3t" conf="compile, runtime" rev="1.3" rev-constraint-default="1.3" rev-constraint-dynamic="1.3" callerrev="0.7.1"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="1.4" rev-constraint-default="1.4" rev-constraint-dynamic="1.4" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="commons-codec" type="jar" ext="jar" status="no" details="" size="58160" time="0" location="/home/andy/.ivy2/cache/commons-codec/commons-codec/jars/commons-codec-1.4.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/commons-codec/commons-codec/1.4/commons-codec-1.4.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+			<revision name="1.3" evicted="latest-revision" evicted-reason="" downloaded="false" searched="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="-1">
+				<evicted-by rev="1.4"/>
+				<caller organisation="net.java.dev.jets3t" name="jets3t" conf="compile, runtime" rev="1.3" rev-constraint-default="1.3" rev-constraint-dynamic="1.3" callerrev="0.7.1"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+			<revision name="1.2" evicted="latest-revision" evicted-reason="" downloaded="false" searched="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="-1">
+				<evicted-by rev="1.4"/>
+				<caller organisation="commons-httpclient" name="commons-httpclient" conf="compile, runtime" rev="1.2" rev-constraint-default="1.2" rev-constraint-dynamic="1.2" callerrev="3.0.1"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="1.4" rev-constraint-default="1.4" rev-constraint-dynamic="1.4" callerrev="1.0.4"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-httpclient" name="commons-httpclient">
+			<revision name="3.0.1" status="release" pubdate="20060508043159" resolver="public" artresolver="public" homepage="http://jakarta.apache.org/commons/httpclient/" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="5">
+				<license name="Apache License" url="http://www.apache.org/licenses/LICENSE-2.0"/>
+				<metadata-artifact status="no" details="" size="3167" time="0" location="/home/andy/.ivy2/cache/commons-httpclient/commons-httpclient/ivy-3.0.1.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/commons-httpclient/commons-httpclient/3.0.1/commons-httpclient-3.0.1.pom"/>
+				<caller organisation="net.java.dev.jets3t" name="jets3t" conf="compile, runtime" rev="3.1" rev-constraint-default="3.1" rev-constraint-dynamic="3.1" callerrev="0.7.1"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="3.0.1" rev-constraint-default="3.0.1" rev-constraint-dynamic="3.0.1" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="commons-httpclient" type="jar" ext="jar" status="no" details="" size="279781" time="0" location="/home/andy/.ivy2/cache/commons-httpclient/commons-httpclient/jars/commons-httpclient-3.0.1.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/commons-httpclient/commons-httpclient/3.0.1/commons-httpclient-3.0.1.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+			<revision name="3.1" evicted="latest-revision" evicted-reason="" downloaded="false" searched="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="-1">
+				<evicted-by rev="3.0.1"/>
+				<caller organisation="net.java.dev.jets3t" name="jets3t" conf="compile, runtime" rev="3.1" rev-constraint-default="3.1" rev-constraint-dynamic="3.1" callerrev="0.7.1"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="xmlenc" name="xmlenc">
+			<revision name="0.52" status="release" pubdate="20061124102444" resolver="public" artresolver="public" homepage="http://xmlenc.sourceforge.net" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="4">
+				<license name="The BSD License" url="http://www.opensource.org/licenses/bsd-license.php"/>
+				<metadata-artifact status="no" details="" size="2333" time="0" location="/home/andy/.ivy2/cache/xmlenc/xmlenc/ivy-0.52.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/xmlenc/xmlenc/0.52/xmlenc-0.52.pom"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="0.52" rev-constraint-default="0.52" rev-constraint-dynamic="0.52" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="xmlenc" type="jar" ext="jar" status="no" details="" size="15010" time="0" location="/home/andy/.ivy2/cache/xmlenc/xmlenc/jars/xmlenc-0.52.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/xmlenc/xmlenc/0.52/xmlenc-0.52.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-cli" name="commons-cli">
+			<revision name="1.2" status="release" pubdate="20090320040832" resolver="public" artresolver="public" homepage="http://commons.apache.org/cli/" downloaded="false" searched="false" default="false" conf="default(compile), default, compile, master(*), runtime, compile(*), runtime(*), master" position="3">
+				<metadata-artifact status="no" details="" size="4450" time="0" location="/home/andy/.ivy2/cache/commons-cli/commons-cli/ivy-1.2.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.pom"/>
+				<caller organisation="bigframe-team" name="bigframe-generator_2.9.3" conf="optional, compile, provided, compile-internal" rev="1.2" rev-constraint-default="1.2" rev-constraint-dynamic="1.2" callerrev="0.1.0-SNAPSHOT"/>
+				<caller organisation="org.apache.hadoop" name="hadoop-core" conf="default, compile, runtime, master" rev="1.2" rev-constraint-default="1.2" rev-constraint-dynamic="1.2" callerrev="1.0.4"/>
+				<artifacts>
+					<artifact name="commons-cli" type="jar" ext="jar" status="no" details="" size="41123" time="0" location="/home/andy/.ivy2/cache/commons-cli/commons-cli/jars/commons-cli-1.2.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="junit" name="junit">
+			<revision name="3.8.1" status="release" pubdate="20070515053418" resolver="public" artresolver="public" homepage="http://junit.org" downloaded="false" searched="false" default="false" conf="compile, master(*), runtime, compile(*), runtime(*), master" position="6">
+				<license name="Common Public License Version 1.0" url="http://www.opensource.org/licenses/cpl1.0.txt"/>
+				<metadata-artifact status="no" details="" size="2457" time="0" location="/home/andy/.ivy2/cache/junit/junit/ivy-3.8.1.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/junit/junit/3.8.1/junit-3.8.1.pom"/>
+				<caller organisation="commons-httpclient" name="commons-httpclient" conf="compile, runtime" rev="3.8.1" rev-constraint-default="3.8.1" rev-constraint-dynamic="3.8.1" callerrev="3.0.1"/>
+				<artifacts>
+					<artifact name="junit" type="jar" ext="jar" status="no" details="" size="121070" time="0" location="/home/andy/.ivy2/cache/junit/junit/jars/junit-3.8.1.jar">
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/junit/junit/3.8.1/junit-3.8.1.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.scala-lang" name="scala-library">
+			<revision name="2.9.3" status="release" pubdate="20130301012533" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.scala-lang.org/" downloaded="false" searched="false" default="false" conf="default(compile), default, compile, runtime, master" position="1">
+				<license name="BSD-like" url="http://www.scala-lang.org/downloads/license.html          "/>
+				<metadata-artifact status="no" details="" size="2391" time="0" location="/home/andy/.ivy2/cache/org.scala-lang/scala-library/ivy-2.9.3.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/scala-lang/scala-library/2.9.3/scala-library-2.9.3.pom"/>
+				<caller organisation="bigframe-team" name="bigframe-common_2.9.3" conf="compile" rev="2.9.3" rev-constraint-default="2.9.3" rev-constraint-dynamic="2.9.3" callerrev="0.1.0-SNAPSHOT"/>
+				<caller organisation="bigframe-team" name="bigframe-generator_2.9.3" conf="optional, compile, provided, compile-internal" rev="2.9.3" rev-constraint-default="2.9.3" rev-constraint-dynamic="2.9.3" callerrev="0.1.0-SNAPSHOT"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+	</dependencies>
+</ivy-report>
