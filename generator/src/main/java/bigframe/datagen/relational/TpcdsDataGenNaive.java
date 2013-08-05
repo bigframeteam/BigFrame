@@ -7,9 +7,9 @@ import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
 
-import bigframe.BigConfConstants;
+import bigframe.bigif.BigConfConstants;
+import bigframe.bigif.DatagenConf;
 import bigframe.datagen.DataGenerator;
-import bigframe.datagen.DatagenConf;
 
 
 public class TpcdsDataGenNaive extends TpcdsDataGen {

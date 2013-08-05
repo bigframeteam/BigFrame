@@ -26,7 +26,6 @@ BIN_DIR=`cd "$BIN_DIR"; pwd`
 BASE_DIR=`cd "$BIN_DIR/../"; pwd`
 cd $CURRENT_DIR;
 
-JARS_DIR=$BASE_DIR/jars
 
 TPCDS_SCRIPT=$BASE_DIR/tools/tpcds/gen_data.pl
 GEN_PROMTTBL_SCRIPT=$BASE_DIR/tools/tpcds/gen_single_tbl.pl
@@ -40,5 +39,9 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.script=${TPCDS_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.singletblgen.script=${GEN_PROMTTBL_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.conf.dir=${CONF_DIR}"
 
+COMMON_JAR=`ls $BASE_DIR/common/target/scala-2.9.3/bigframe-common-assembly*.jar`
 
+GENERATOR_JAR=`ls $BASE_DIR/generator/target/scala-2.9.3/bigframe-generator-assembly*.jar`
+
+WORKFLOWS_JAR=`ls $BASE_DIR/workflows/target/scala-2.9.3/bigframe-workflows-assembly*.jar`
 

@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import bigframe.BigFrameDriver;
-import bigframe.datagen.DatagenConf;
-import bigframe.util.RandomSeeds;
+import bigframe.bigif.DatagenConf;
+import bigframe.datagen.DataGenDriver;
+import bigframe.datagen.util.RandomSeeds;
 
 
 
@@ -30,7 +30,7 @@ public class TweetTextGenSimple extends TweetTextGen {
 		// TODO Auto-generated constructor stub
 
 		//System.out.println(new File(".").getAbsolutePath());
-		InputStream dictionary_file = BigFrameDriver.class.getClassLoader().getResourceAsStream("AFINN-111.txt");
+		InputStream dictionary_file = DataGenDriver.class.getClassLoader().getResourceAsStream("AFINN-111.txt");
 		sentiment_words = new ArrayList<String>();
 		randnum = new Random();
 		randnum.setSeed(RandomSeeds.SEEDS_TABLE[0]);

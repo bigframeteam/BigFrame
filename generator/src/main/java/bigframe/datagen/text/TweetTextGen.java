@@ -1,6 +1,6 @@
 package bigframe.datagen.text;
 
-import bigframe.datagen.DatagenConf;
+import bigframe.bigif.DatagenConf;
 
 /**
  * Abstract class for all tweet text generator.

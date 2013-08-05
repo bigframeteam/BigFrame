@@ -1,7 +1,7 @@
 package bigframe.datagen.graph;
 
-import bigframe.BigConfConstants;
-import bigframe.datagen.DatagenConf;
+import bigframe.bigif.BigConfConstants;
+import bigframe.bigif.DatagenConf;
 
 /**
  * Abstract class for all knonecker graph generator.

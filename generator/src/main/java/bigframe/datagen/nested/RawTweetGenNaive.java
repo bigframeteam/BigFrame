@@ -11,15 +11,15 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.json.simple.JSONObject;
 
-import bigframe.BigConfConstants;
-import bigframe.datagen.DatagenConf;
+import bigframe.bigif.BigConfConstants;
+import bigframe.bigif.DatagenConf;
 import bigframe.datagen.graph.KroneckerGraphGen;
 import bigframe.datagen.relational.CollectTPCDSstatNaive;
 import bigframe.datagen.relational.TpcdsItemInfo;
 import bigframe.datagen.relational.TpcdsPromotionInfo;
 import bigframe.datagen.text.TextGenFactory;
 import bigframe.datagen.text.TweetTextGen;
-import bigframe.util.RandomSeeds;
+import bigframe.datagen.util.RandomSeeds;
 
 /**
  * Single machine raw tweet generator.

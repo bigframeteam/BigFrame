@@ -2,7 +2,7 @@ package bigframe.datagen.relational;
 
 
 
-import bigframe.datagen.DatagenConf;
+import bigframe.bigif.DatagenConf;
 
 
 public abstract class TpcdsDataGen extends RelationalDataGen {

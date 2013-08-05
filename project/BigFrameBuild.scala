@@ -22,7 +22,7 @@ object BigFrameBuild extends Build {
 		organization := "bigframe-team",
 		version := "0.1.0-SNAPSHOT",
 		scalaVersion := "2.9.3",
-		scalacOptions := Seq("-unchecked", "-optimized", "-deprecation"),
+		scalacOptions := Seq("-unchecked", "-optimize", "-deprecation"),
 		unmanagedJars in Compile <<= baseDirectory map { base => (base / "lib" ** "*.jar").classpath },
 
 		// Fork new JVMs for tests and set Java options for those

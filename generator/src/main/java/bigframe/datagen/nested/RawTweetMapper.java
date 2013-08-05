@@ -21,7 +21,7 @@ import bigframe.datagen.relational.TpcdsItemInfo;
 import bigframe.datagen.relational.TpcdsPromotionInfo;
 import bigframe.datagen.text.TextGenFactory;
 import bigframe.datagen.text.TweetTextGen;
-import bigframe.util.RandomSeeds;
+import bigframe.datagen.util.RandomSeeds;
 import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
 import cern.jet.random.sampling.RandomSampler;

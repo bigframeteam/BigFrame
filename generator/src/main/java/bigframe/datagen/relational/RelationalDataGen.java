@@ -1,7 +1,7 @@
 package bigframe.datagen.relational;
 
+import bigframe.bigif.DatagenConf;
 import bigframe.datagen.DataGenerator;
-import bigframe.datagen.DatagenConf;
 
 public abstract class RelationalDataGen extends DataGenerator {
 

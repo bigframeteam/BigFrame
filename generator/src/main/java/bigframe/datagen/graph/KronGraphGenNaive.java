@@ -12,9 +12,9 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import bigframe.BigConfConstants;
-import bigframe.datagen.DatagenConf;
-import bigframe.util.RandomSeeds;
+import bigframe.bigif.BigConfConstants;
+import bigframe.bigif.DatagenConf;
+import bigframe.datagen.util.RandomSeeds;
 
 
 /**

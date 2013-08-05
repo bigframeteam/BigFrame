@@ -1,7 +1,7 @@
 package bigframe.datagen.graph;
 
+import bigframe.bigif.DatagenConf;
 import bigframe.datagen.DataGenerator;
-import bigframe.datagen.DatagenConf;
 
 /**
  * Abstract class for all graph generator.

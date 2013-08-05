@@ -10,8 +10,8 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
-import bigframe.BigConfConstants;
-import bigframe.datagen.DatagenConf;
+import bigframe.bigif.BigConfConstants;
+import bigframe.bigif.DatagenConf;
 
 
 

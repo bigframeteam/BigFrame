@@ -23,15 +23,15 @@ cd ..
 BASE_PATH=$PWD
 cd $OLD_PATH
 
-JAR_FILE=$JARS_DIR/bigframe.jar
-BIGFRAME_LIB=$BASE_PATH/lib
-BIGFRAME_CLASSPATH=$JAR_FILE
+GENERATOR_CLASSPATH=$GENERATOR_JAR
+
+for jar in `find $HADOOP_HOME -name '*.jar'`; do
+	GENERATOR_CLASSPATH+=:$jar
+done
+
+
 for jar in `find $HADOOP_HOME/lib -name '*.jar'`; do
-	BIGFRAME_CLASSPATH+=:$jar
+	GENERATOR_CLASSPATH+=:$jar
 done
 
-for jar in `find $BIGFRAME_LIB/common -name '*.jar'`; do
-	BIGFRAME_CLASSPATH+=:$jar
-done
-
-java -cp "$BIGFRAME_CLASSPATH" bigframe.BigFrameDriver -mode datagen $BIGFRAME_OPTS "$@"
+java -cp "$GENERATOR_CLASSPATH" bigframe.datagen.DataGenDriver -mode datagen $BIGFRAME_OPTS "$@"

@@ -6,9 +6,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import bigframe.BigConfConstants;
-import bigframe.BigFrameDriver;
-import bigframe.datagen.DatagenConf;
+
+import bigframe.bigif.BigConfConstants;
+import bigframe.bigif.DatagenConf;
+import bigframe.datagen.DataGenDriver;
 
 
 
@@ -30,7 +31,7 @@ public abstract class RawTweetGen extends NestedDataGen {
 		super(conf, targetGB);
 
 		// TODO Auto-generated constructor stub
-		tweet_template_file = BigFrameDriver.class.getClassLoader().getResourceAsStream("tweet_template.json");
+		tweet_template_file = DataGenDriver.class.getClassLoader().getResourceAsStream("tweet_template.json");
 
 		textgen_name = "simple";
 

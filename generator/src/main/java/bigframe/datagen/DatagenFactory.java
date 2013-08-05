@@ -6,7 +6,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import bigframe.BigConfConstants;
+import bigframe.bigif.BigConfConstants;
+import bigframe.bigif.DatagenConf;
+
 import bigframe.datagen.graph.GraphDataGen;
 import bigframe.datagen.graph.KronGraphGenHadoop;
 import bigframe.datagen.nested.NestedDataGen;
@@ -20,8 +22,8 @@ public class DatagenFactory {
 	private static final Logger LOG = Logger.getLogger(DatagenFactory.class);
 	private DatagenConf conf;
 
-	public DatagenFactory(DatagenConf conf) {
-		this.conf = conf;
+	public DatagenFactory(DatagenConf datagenConf) {
+		this.conf = datagenConf;
 	}
 
 

@@ -1,4 +1,4 @@
-package bigframe;
+package bigframe.bigif;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,8 +8,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import bigframe.datagen.DatagenConf;
-import bigframe.querygen.QuerygenConf;
 import bigframe.util.XMLBaseParser;
 
 

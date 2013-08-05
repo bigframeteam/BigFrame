@@ -1,6 +1,5 @@
 package bigframe.bigif;
 
-
 /**
  * Class for recording the BigFrame input specification.
  * 

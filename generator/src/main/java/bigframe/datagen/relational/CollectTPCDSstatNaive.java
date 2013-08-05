@@ -20,11 +20,11 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
 
-import bigframe.BigConfConstants;
+import bigframe.bigif.BigConfConstants;
 import bigframe.datagen.graph.KroneckerGraphGen;
 import bigframe.datagen.nested.RawTweetGenConstants;
 import bigframe.util.Config;
-import bigframe.util.RandomSeeds;
+import bigframe.datagen.util.RandomSeeds;
 import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
 import cern.jet.random.sampling.RandomSampler;

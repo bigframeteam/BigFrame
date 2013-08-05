@@ -10,7 +10,7 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-import bigframe.util.RandomSeeds;
+import bigframe.datagen.util.RandomSeeds;
 
 /**
  * Mapper for generate each sub part of the kronecker graph.

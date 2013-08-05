@@ -8,10 +8,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import bigframe.BigConfConstants;
-import bigframe.datagen.DatagenConf;
+import bigframe.bigif.BigConfConstants;
+import bigframe.bigif.DatagenConf;
 import bigframe.datagen.graph.KroneckerGraphGen;
-import bigframe.util.RandomSeeds;
+import bigframe.datagen.util.RandomSeeds;
 import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
 import cern.jet.random.sampling.RandomSampler;

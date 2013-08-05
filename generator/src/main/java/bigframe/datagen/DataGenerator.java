@@ -2,6 +2,8 @@ package bigframe.datagen;
 
 import org.apache.log4j.Logger;
 
+import bigframe.bigif.DatagenConf;
+
 /**
  * The abstract class for data generator.
  * 
