@@ -1,11 +1,11 @@
 package bigframe.workflows;
 
-import bigframe.bigif.BenchmarkConf;
+import bigframe.bigif.BigFrameInputFormat;
 
 public abstract class Workflows {
-    protected BenchmarkConf conf;
+    protected BigFrameInputFormat conf;
 	
-	public Workflows(BenchmarkConf conf) {
+	public Workflows(BigFrameInputFormat conf) {
 		this.conf = conf;
 	}
 	

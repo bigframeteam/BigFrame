@@ -1,6 +1,6 @@
 package bigframe.datagen.nested;
 
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.DataGenerator;
 
 /**
@@ -11,7 +11,7 @@ import bigframe.datagen.DataGenerator;
  */
 public abstract class NestedDataGen extends DataGenerator {
 
-	public NestedDataGen(DatagenConf conf, float targetGB) {
+	public NestedDataGen(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 	}

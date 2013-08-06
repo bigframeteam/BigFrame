@@ -1,6 +1,6 @@
 package bigframe.datagen.text;
 
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 
 /**
  * Abstract class for all tweet text generator.
@@ -10,7 +10,7 @@ import bigframe.bigif.DatagenConf;
  */
 public abstract class TweetTextGen extends TextGen {
 
-	public TweetTextGen(DatagenConf conf, float targetGB) {
+	public TweetTextGen(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 	}

@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import org.apache.log4j.Logger;
 
 import bigframe.bigif.BigConfConstants;
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.DataGenerator;
 
 
@@ -22,7 +22,7 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 	private String hadoop_slaves;
 	private String dagegen_script_path;
 	
-	public TpcdsDataGenNaive(DatagenConf conf, float targetGB) {
+	public TpcdsDataGenNaive(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 		

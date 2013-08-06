@@ -1,7 +1,7 @@
 package bigframe.datagen.graph;
 
 import bigframe.bigif.BigConfConstants;
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 
 /**
  * Abstract class for all knonecker graph generator.
@@ -20,7 +20,7 @@ public abstract class KroneckerGraphGen extends GraphDataGen {
 
 	private static final float arScaleVolume [] = KnonGraphConstants.arScaleVolume;
 
-	public KroneckerGraphGen(DatagenConf conf, float targetGB) {
+	public KroneckerGraphGen(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 		initial_graph = KnonGraphConstants.INITIAL_GRAPH;

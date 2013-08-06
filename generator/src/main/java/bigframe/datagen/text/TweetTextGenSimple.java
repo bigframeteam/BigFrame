@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.DataGenDriver;
 import bigframe.datagen.util.RandomSeeds;
 
@@ -25,7 +25,7 @@ public class TweetTextGenSimple extends TweetTextGen {
 
 	private Random randnum;
 
-	public TweetTextGenSimple(DatagenConf conf, float targetGB) {
+	public TweetTextGenSimple(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 

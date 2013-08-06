@@ -6,12 +6,12 @@ import java.util.Set;
 import bigframe.util.Config;
 
 
-public class QuerygenConf extends Config {
+public class BigQueryInputFormat extends Config {
 	protected Set<String> queryVariety;
 	protected Set<String> queryVelocity;
 	protected Integer queryVolumn;
 	
-	public QuerygenConf() {
+	public BigQueryInputFormat() {
 		super();
 		queryVariety = new HashSet<String>();
 		queryVelocity = new HashSet<String>();

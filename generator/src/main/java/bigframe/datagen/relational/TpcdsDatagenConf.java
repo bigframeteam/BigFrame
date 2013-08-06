@@ -1,8 +1,8 @@
 package bigframe.datagen.relational;
 
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 
-public class TpcdsDatagenConf extends DatagenConf {
+public class TpcdsDatagenConf extends BigDataInputFormat {
 
 	@Override
 	public void printConf() {

@@ -16,7 +16,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import bigframe.bigif.BigConfConstants;
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.graph.KroneckerGraphGen;
 import bigframe.datagen.relational.CollectTPCDSstatNaive;
 
@@ -29,7 +29,7 @@ import bigframe.datagen.relational.CollectTPCDSstatNaive;
  */
 public class RawTweetGenHadoop extends RawTweetGen {
 
-	public RawTweetGenHadoop(DatagenConf conf, float targetGB) {
+	public RawTweetGenHadoop(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 	}

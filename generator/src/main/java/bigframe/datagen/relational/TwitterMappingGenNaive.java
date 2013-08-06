@@ -9,7 +9,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import bigframe.bigif.BigConfConstants;
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.graph.KroneckerGraphGen;
 import bigframe.datagen.util.RandomSeeds;
 import cern.jet.random.engine.MersenneTwister;
@@ -25,7 +25,7 @@ public class TwitterMappingGenNaive extends TwitterMappingGen {
 	
 	private String hdfs_path; 
 		
-	public TwitterMappingGenNaive(DatagenConf conf, float targetGB) {
+	public TwitterMappingGenNaive(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 		tpcds_proportion = conf.getDataScaleProportions().get(BigConfConstants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION);

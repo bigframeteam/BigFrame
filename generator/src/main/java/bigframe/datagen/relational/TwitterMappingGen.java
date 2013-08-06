@@ -1,10 +1,10 @@
 package bigframe.datagen.relational;
 
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 
 public abstract class TwitterMappingGen extends RelationalDataGen {
 
-	public TwitterMappingGen(DatagenConf conf, float targetGB) {
+	public TwitterMappingGen(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 	}

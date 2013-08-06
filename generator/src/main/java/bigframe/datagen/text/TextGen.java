@@ -1,6 +1,6 @@
 package bigframe.datagen.text;
 
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.DataGenerator;
 
 /**
@@ -11,7 +11,7 @@ import bigframe.datagen.DataGenerator;
  */
 public abstract class TextGen extends DataGenerator {
 
-	public TextGen(DatagenConf conf, float targetGB) {
+	public TextGen(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 	}

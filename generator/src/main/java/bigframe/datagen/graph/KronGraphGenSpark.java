@@ -1,10 +1,10 @@
 package bigframe.datagen.graph;
 
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 
 public class KronGraphGenSpark extends KroneckerGraphGen {
 
-	public KronGraphGenSpark(DatagenConf conf, float targetGB) {
+	public KronGraphGenSpark(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 	}

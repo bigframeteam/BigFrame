@@ -8,7 +8,7 @@ import java.util.Date;
 
 
 import bigframe.bigif.BigConfConstants;
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.DataGenDriver;
 
 
@@ -27,7 +27,7 @@ public abstract class RawTweetGen extends NestedDataGen {
 	protected String hdfs_dir;
 	
 
-	public RawTweetGen(DatagenConf conf, float targetGB) {
+	public RawTweetGen(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 
 		// TODO Auto-generated constructor stub

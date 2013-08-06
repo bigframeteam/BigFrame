@@ -15,8 +15,8 @@ import bigframe.util.Config;
  * @author andy
  * 
  */
-public class DatagenConf extends Config {
-	private static final Logger LOG = Logger.getLogger(DatagenConf.class);
+public class BigDataInputFormat extends Config {
+	private static final Logger LOG = Logger.getLogger(BigDataInputFormat.class);
 
 	protected String app_domain;
 	protected Set<String> dataVariety;
@@ -25,7 +25,7 @@ public class DatagenConf extends Config {
 	protected Map<String, Integer> dataScaleProportions;
 	protected Map<String, String> dataStoredPath;
 
-	public DatagenConf() {
+	public BigDataInputFormat() {
 		super();
 
 		dataVariety = new HashSet<String>();

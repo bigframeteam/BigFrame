@@ -12,7 +12,7 @@ import org.apache.hadoop.fs.Path;
 import org.json.simple.JSONObject;
 
 import bigframe.bigif.BigConfConstants;
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.graph.KroneckerGraphGen;
 import bigframe.datagen.relational.CollectTPCDSstatNaive;
 import bigframe.datagen.relational.TpcdsItemInfo;
@@ -31,7 +31,7 @@ public class RawTweetGenNaive extends RawTweetGen {
 
 
 
-	public RawTweetGenNaive(DatagenConf conf, float targetGB) {
+	public RawTweetGenNaive(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 	}

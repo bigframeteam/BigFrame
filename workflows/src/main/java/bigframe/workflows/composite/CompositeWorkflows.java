@@ -1,13 +1,21 @@
-package bigframe.workflows.hadoop;
+package bigframe.workflows.composite;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.workflows.Workflows;
 
-public class HadoopWorkflows extends Workflows {
+public class CompositeWorkflows extends Workflows {
 
-	public HadoopWorkflows(BigFrameInputFormat conf) {
+	private List<Workflows> workflows;
+	
+	public CompositeWorkflows(BigFrameInputFormat conf) {
 		super(conf);
 		// TODO Auto-generated constructor stub
+		
+		workflows = new ArrayList<Workflows>();
+		
 	}
 
 	@Override

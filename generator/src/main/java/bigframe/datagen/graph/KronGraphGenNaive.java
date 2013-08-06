@@ -13,7 +13,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import bigframe.bigif.BigConfConstants;
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.util.RandomSeeds;
 
 
@@ -27,7 +27,7 @@ public class KronGraphGenNaive extends KroneckerGraphGen {
 	private int chunk_count;
 	private Random randnum;
 	
-	public KronGraphGenNaive(DatagenConf conf, float targetGB) {
+	public KronGraphGenNaive(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 		

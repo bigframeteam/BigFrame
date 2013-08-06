@@ -18,7 +18,7 @@ import bigframe.util.XMLBaseParser;
  * @author andy
  * 
  */
-public class XMLBenchmarkIfParser extends XMLBaseParser<BenchmarkConf> {
+public class XMLBenchmarkIfParser extends XMLBaseParser<BigFrameInputFormat> {
 
 	private static final String CONF = "configuration";
 	private static final String PROP = "property";
@@ -27,7 +27,7 @@ public class XMLBenchmarkIfParser extends XMLBaseParser<BenchmarkConf> {
 
 
 	@Override
-	protected BenchmarkConf importXML(Document doc) {
+	protected BigFrameInputFormat importXML(Document doc) {
 		// TODO Auto-generated method stub
 
 		Element root = doc.getDocumentElement();
@@ -35,8 +35,8 @@ public class XMLBenchmarkIfParser extends XMLBaseParser<BenchmarkConf> {
 			throw new RuntimeException(
 					"ERROR: Bad XML File: top-level element not <configuration>");
 
-		DatagenConf datagenConf = new DatagenConf();
-		QuerygenConf querygenConf = new QuerygenConf();
+		BigDataInputFormat datagenConf = new BigDataInputFormat();
+		BigQueryInputFormat querygenConf = new BigQueryInputFormat();
 
 		NodeList properties = root.getElementsByTagName(PROP);
 
@@ -53,7 +53,7 @@ public class XMLBenchmarkIfParser extends XMLBaseParser<BenchmarkConf> {
 		datagenConf.set(prop_map);
 		querygenConf.set(prop_map);
 
-		BenchmarkConf benchmarkConf = new BenchmarkConf(datagenConf, querygenConf);
+		BigFrameInputFormat benchmarkConf = new BigFrameInputFormat(datagenConf, querygenConf);
 		return benchmarkConf;
 	}
 
@@ -65,7 +65,7 @@ public class XMLBenchmarkIfParser extends XMLBaseParser<BenchmarkConf> {
 
 
 	@Override
-	protected void exportXML(BenchmarkConf object, Document doc) {
+	protected void exportXML(BigFrameInputFormat object, Document doc) {
 		// TODO Auto-generated method stub
 
 	}

@@ -18,7 +18,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import bigframe.bigif.BenchmarkConf;
+import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.XMLBenchmarkIfParser;
 
@@ -192,22 +192,22 @@ public class DataGenDriver {
 		//System.out.println(new File(".").getAbsolutePath());
 		InputStream default_conf_file = DataGenDriver.class.getClassLoader().getResourceAsStream("default.xml");
 		XMLBenchmarkIfParser parser = new XMLBenchmarkIfParser();
-		BenchmarkConf conf = parser.importXML(default_conf_file);
+		BigFrameInputFormat conf = parser.importXML(default_conf_file);
 
 		File user_conf_file = new File(line.getOptionProperties("D").getProperty(BigConfConstants.BIGFRAME_CONF_DIR)+"/"+"bigframe-core.xml");
-		BenchmarkConf user_conf = parser.importXML(user_conf_file);
+		BigFrameInputFormat user_conf = parser.importXML(user_conf_file);
 
 
 		// Replace conf with user define parameter
-		Map<String,String> user_datagen_conf = user_conf.getDatagenConf().getProp();
-		Map<String,String> user_querygen_conf = user_conf.getQuerygenConf().getProp();
+		Map<String,String> user_datagen_conf = user_conf.getBigDataInputFormat().getProp();
+		Map<String,String> user_querygen_conf = user_conf.getBigQueryInputFormat().getProp();
 
 		for (Map.Entry<String, String> entry : user_datagen_conf.entrySet()) {
-			conf.getDatagenConf().set(entry.getKey(), entry.getValue());
+			conf.getBigDataInputFormat().set(entry.getKey(), entry.getValue());
 		}
 
 		for (Map.Entry<String, String> entry : user_querygen_conf.entrySet()) {
-			conf.getQuerygenConf().set(entry.getKey(), entry.getValue());
+			conf.getBigQueryInputFormat().set(entry.getKey(), entry.getValue());
 		}
 
 		// System global variables
@@ -216,7 +216,7 @@ public class DataGenDriver {
 		for (Object object : states) {
 			String key = (String) object;
 			String value = properties.getProperty(key);
-			conf.getDatagenConf().set(key, value);
+			conf.getBigDataInputFormat().set(key, value);
 
 		}
 
@@ -225,7 +225,7 @@ public class DataGenDriver {
 
 		//If mode equals datagen, then generate the data we need
 		if ( line.getOptionValue(MODE).equals(MODE_DATAGEN)) {
-			DatagenFactory datagen_factory = new DatagenFactory(conf.getDatagenConf());
+			DatagenFactory datagen_factory = new DatagenFactory(conf.getBigDataInputFormat());
 
 			List<DataGenerator> datagen_list = datagen_factory.createGenerators();
 

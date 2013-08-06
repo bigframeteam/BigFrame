@@ -11,7 +11,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import bigframe.bigif.BigConfConstants;
-import bigframe.bigif.DatagenConf;
+import bigframe.bigif.BigDataInputFormat;
 
 
 
@@ -25,7 +25,7 @@ public class KronGraphGenHadoop extends KroneckerGraphGen {
 
 
 
-	public KronGraphGenHadoop(DatagenConf conf, float targetGB) {
+	public KronGraphGenHadoop(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 	}
