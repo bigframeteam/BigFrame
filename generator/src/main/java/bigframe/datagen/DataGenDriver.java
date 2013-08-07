@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.BigConfConstants;
-import bigframe.bigif.XMLBenchmarkIfParser;
+import bigframe.bigif.XMLBigFrameInputParser;
 
 
 
@@ -191,7 +191,7 @@ public class DataGenDriver {
 
 		//System.out.println(new File(".").getAbsolutePath());
 		InputStream default_conf_file = DataGenDriver.class.getClassLoader().getResourceAsStream("default.xml");
-		XMLBenchmarkIfParser parser = new XMLBenchmarkIfParser();
+		XMLBigFrameInputParser parser = new XMLBigFrameInputParser();
 		BigFrameInputFormat conf = parser.importXML(default_conf_file);
 
 		File user_conf_file = new File(line.getOptionProperties("D").getProperty(BigConfConstants.BIGFRAME_CONF_DIR)+"/"+"bigframe-core.xml");

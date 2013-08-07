@@ -9,13 +9,13 @@ object BigFrameBuild extends Build {
 	// Hadoop version to build against.
 	val HADOOP_VERSION = "1.0.4"
 
-	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, generator, workflows)
+	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, generator, workflow)
 
 	lazy val common = Project(id = "common", base = file("common"), settings = commonSettings)
 
 	lazy val generator = Project(id = "generator", base = file("generator"), settings = generatorSettings) dependsOn(common)
 
-	lazy val workflows = Project(id = "workflows", base = file("workflows"), settings = workflowsSettings) dependsOn(common)
+	lazy val workflow = Project(id = "workflow", base = file("workflow"), settings = workflowSettings) dependsOn(common)
 
 	def sharedSettings = Defaults.defaultSettings ++ Seq(
 		name := "bigframe",
@@ -55,8 +55,8 @@ object BigFrameBuild extends Build {
 		name := "bigframe-generator"
 	) ++ extraAssemblySettings
 
-	def workflowsSettings = assemblySettings ++ sharedSettings ++ Seq(
-		name := "bigframe-workflows"
+	def workflowSettings = assemblySettings ++ sharedSettings ++ Seq(
+		name := "bigframe-workflow"
 	) ++ extraAssemblySettings
 
 	def extraAssemblySettings() = Seq(

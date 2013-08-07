@@ -146,5 +146,24 @@
 		<value>1</value>
 	</property>
 	
+	<property>
+		<name>bigframe.queryengine.relational</name>
+		<value>hadoop</value>
+	</property>
 	
+	<property>
+		<name>bigframe.queryengine.graph</name>
+		<value>hadoop</value>
+	</property>
+	
+	<property>
+		<name>bigframe.queryengine.nested</name>
+		<value>hadoop</value>
+	</property>
+
+	<property>
+		<name>bigframe.queryengine.text</name>
+		<value>hadoop</value>
+	</property>
+
 </configuration>

@@ -8,6 +8,7 @@ import java.util.Set;
 
 public class BigConfConstants {
 
+	// Properties not related to data and query
 	public static final String BIGFRAME_CONF_DIR = "bigframe.conf.dir";
 	public static final String BIGFRAME_HADOOP_HOME = "bigframe.hadoop.home";
 	public static final String BIGFRAME_HADOOP_SLAVE = "bigframe.hadoop.slaves";
@@ -15,29 +16,11 @@ public class BigConfConstants {
 	public static final String BIGFRAME_TPCDS_SCRIPT = "bigframe.tpcds.script";
 	public static final String BIGFRAME_GEN_SINGLETBL_SCRIPT = "bigframe.singletblgen.script";
 
-	// Constants for Configuration parameters
-	static final String[] DATATYPES = new String[] { "relational", "graph",
-		"nested", "text" };
-	public static final Set<String> DATAVARIETY = new HashSet<String>(
-			Arrays.asList(DATATYPES));
 
-	static final String[] QUERYTYPES = new String[] { "historical",
-		"repeated_batch", "continuous" };
-	public static final Set<String> QUERYVELOCITY = new HashSet<String>(
-			Arrays.asList(QUERYTYPES));
-
-	public static final Map<String, Integer> DATAVOLUME_MAP;
-	static {
-		DATAVOLUME_MAP = new HashMap<String, Integer>();
-		DATAVOLUME_MAP.put("test", 3);
-		DATAVOLUME_MAP.put("tiny", 10);
-		DATAVOLUME_MAP.put("small", 100);
-		DATAVOLUME_MAP.put("medium", 1000);
-		DATAVOLUME_MAP.put("large", 10000);
-		DATAVOLUME_MAP.put("extra large", 100000);
-	}
-
-	// BigFrame specification related properties
+	// BigFrame input format related properties
+	public static final String BIGFRAME_APP_DOMAIN = "bigframe.application.domain";
+	public static final String APPLICATION_BI = "BI";
+	
 	public static final String BIGFRAME_DATAVARIETY = "bigframe.datavariety";
 	public static final String BIGFRAME_DATAVOLUME = "bigframe.datavolume";
 
@@ -77,7 +60,29 @@ public class BigConfConstants {
 	public static final String BIGFRAME_QUERYVELOCITY = "bigframe.queryvelocity";
 	public static final String BIGFRAME_QUERYVOLUME = "bigframe.queryvolume";
 
-	public static final String BIGFRAME_APP_DOMAIN = "bigframe.application.domain";
-	public static final String APPLICATION_BI = "BI";
+	public static final String BIGFRAME_QUERYENGINE_RELATIONAL = "bigframe.queryengine.relational";
+	public static final String BIGFRAME_QUERYENGINE_GRAPH = "bigframe.queryengine.graph";
+	public static final String BIGFRAME_QUERYENGINE_NESTED = "bigframe.queryengine.nested";
+	public static final String BIGFRAME_QUERYENGINE_TEXT = "bigframe.queryengine.text";
+	
+	// Constants for Configuration parameters
+	static final String[] DATATYPES = new String[] { "relational", "graph",
+		"nested", "text" };
+	public static final Set<String> DATAVARIETY = new HashSet<String>(
+			Arrays.asList(DATATYPES));
 
+	static final String[] QUERYTYPES = new String[] { "exploratory", "continuous" };
+	public static final Set<String> QUERYVELOCITY = new HashSet<String>(
+			Arrays.asList(QUERYTYPES));
+
+	public static final Map<String, Integer> DATAVOLUME_MAP;
+	static {
+		DATAVOLUME_MAP = new HashMap<String, Integer>();
+		DATAVOLUME_MAP.put("test", 3);
+		DATAVOLUME_MAP.put("tiny", 10);
+		DATAVOLUME_MAP.put("small", 100);
+		DATAVOLUME_MAP.put("medium", 1000);
+		DATAVOLUME_MAP.put("large", 10000);
+		DATAVOLUME_MAP.put("extra large", 100000);
+	}
 }
