@@ -29,7 +29,7 @@ class TweetReader(val sc:SparkContext, val path:String) {
     */
    def addSentimentScore(tweets: Array[Tweet]): Array[Tweet] = {
        val extractor = new NaiveSentimentExtractor()
-       return tweets.map( t => new Tweet(t.text, t.created_at, extractor.extract(t.text)) )
+       return tweets.map( t => new Tweet(t.text, t.created_at, t.user, extractor.extract(t.text)) )
    }
    
    /**
@@ -47,6 +47,8 @@ class TweetReader(val sc:SparkContext, val path:String) {
 
 	   val filteredTweets = allTweets filter (t => (1 until 100 contains t.product_id.toInt))
 
+	   println("size of filtered tweets: " + filteredTweets.length)
+	   
 	   val scoredTweets = makeRDD(addSentimentScore(filteredTweets))
 
 	   // add sentiment scores

@@ -27,7 +27,7 @@ BigFrame requires:
 * JDK 1.6 is needed, JDK 1.7 is recommended.
 * Hadoop 1.0.4 (other versions are not tested)
 * Spark 0.7.3
-
+* Scala 2.9.3 (required by Spark)
 
 
 Configuration

@@ -40,9 +40,10 @@ object BigFrameBuild extends Build {
 
  def sparkSettings = sharedSettings ++ Seq(
    name := "bigframe-spark",
-   resolvers ++= Seq("repo.codahale.com" at "http://repo.codahale.com"),
+//   resolvers ++= Seq("repo.codahale.com" at "http://repo.codahale.com"),
    libraryDependencies ++= Seq(
-     "com.codahale" % "jerkson_2.9.1" % "0.5.0",
+//     "com.codahale" % "jerkson_2.9.1" % "0.5.0",
+     "io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
      "org.spark-project" % "spark-core_2.9.3" % "0.7.3"
    )
  ) ++ assemblySettings ++ extraAssemblySettings
