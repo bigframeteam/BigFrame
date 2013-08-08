@@ -1,4 +1,4 @@
-package bigframe.spark
+package bigframe.spark.text
 
 /*
  Class to represent relevant attributes of a tweet as a tuple.

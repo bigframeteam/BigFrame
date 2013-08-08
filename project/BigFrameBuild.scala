@@ -1,7 +1,7 @@
 import sbt._
 import Keys._
 import sbtassembly.Plugin._
-import sbtassembly.Plugin.AssemblyKeys._
+import AssemblyKeys._
 
 object BigFrameBuild extends Build {
 
@@ -22,8 +22,7 @@ object BigFrameBuild extends Build {
    scalaVersion := "2.9.3",
    scalacOptions := Seq("-unchecked", "-optimize", "-deprecation"),
    unmanagedJars in Compile <<= baseDirectory map { base => (base / "lib" ** "*.jar").classpath },
-   retrieveManaged := true,
-
+   
    libraryDependencies ++= Seq(
       "org.eclipse.jetty" % "jetty-server" % "7.6.8.v20121106",
       "org.scalatest" %% "scalatest" % "1.9.1" % "test",
@@ -37,16 +36,16 @@ object BigFrameBuild extends Build {
 
  def generatorSettings = sharedSettings ++ Seq(
    name := "bigframe-generator"
- ) ++ assemblySettings
+ )
 
  def sparkSettings = sharedSettings ++ Seq(
    name := "bigframe-spark",
    resolvers ++= Seq("repo.codahale.com" at "http://repo.codahale.com"),
    libraryDependencies ++= Seq(
      "com.codahale" % "jerkson_2.9.1" % "0.5.0",
-     "org.spark-project" % "spark-core_2.9.3" % "0.7.2"
+     "org.spark-project" % "spark-core_2.9.3" % "0.7.3"
    )
- ) ++ assemblySettings
+ ) ++ assemblySettings ++ extraAssemblySettings
 
  def hadoopSettings = sharedSettings ++ Seq(
    name := "bigframe-hadoop"
@@ -54,10 +53,19 @@ object BigFrameBuild extends Build {
 
  def sentimentSettings = sharedSettings ++ Seq(
    name := "bigframe-sentiment"
- ) ++ assemblySettings
+ )
 
  def launcherSettings = sharedSettings ++ Seq(
    name := "bigframe-launcher"
- ) ++ assemblySettings
+ )
+
+  def extraAssemblySettings() = Seq(test in assembly := {}) ++ Seq(
+    mergeStrategy in assembly := {
+      case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
+      case m if m.toLowerCase.matches("meta-inf.*\\.sf$") => MergeStrategy.discard
+      case "reference.conf" => MergeStrategy.concat
+      case _ => MergeStrategy.first
+    }
+  )
 
 }

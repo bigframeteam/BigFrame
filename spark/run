@@ -8,6 +8,10 @@ shopt -s extglob
 # Figure out where the Scala framework is installed
 FWDIR="$(cd `dirname $0`; pwd)"
 
+# Load environment variables from conf/spark-env.sh, if it exists
+if [ -e $FWDIR/conf/spark-env.sh ] ; then
+  . $FWDIR/conf/spark-env.sh
+fi
 
 if [ `command -v java` ]; then
     RUNNER="java"
@@ -56,23 +60,19 @@ CLASSPATH+=":$SCALA_LIBRARY_PATH/scala-compiler.jar"
 CLASSPATH+=":$SCALA_LIBRARY_PATH/jline.jar"
 
 # Jar for BigFrame
-if [ -e "$FWDIR/target/scala-$SCALA_VERSION/bigframe-spark_"!(*sources|*javadoc) ]; then
+if [ -e "$FWDIR/target/scala-$SCALA_VERSION/bigframe-spark-assembly-"!(*sources|*javadoc) ]; then
   # Use the JAR from the SBT build
-  export BIGFRAME_JAR=`ls "$FWDIR/target/scala-$SCALA_VERSION/bigframe-spark_"!(*sources|*javadoc).jar`
+  export BIGFRAME_JAR=`ls "$FWDIR/target/scala-$SCALA_VERSION/bigframe-spark-assembly-"!(*sources|*javadoc).jar`
 fi
-if [ -e "$FWDIR/target/bigframe-spark_"!(*sources|*javadoc).jar ]; then
+if [ -e "$FWDIR/target/bigframe-spark-assembly-"!(*sources|*javadoc).jar ]; then
   # Use the JAR from the Maven build
-  export BIGFRAME_JAR=`ls "$FWDIR/target/bigframe-spark_"!(*sources|*javadoc).jar`
+  export BIGFRAME_JAR=`ls "$FWDIR/target/bigframe-spark-assembly-"!(*sources|*javadoc).jar`
 fi
 
+CLASSPATH+=":$BIGFRAME_JAR"
 #if [ -e "$FWDIR/target/scala-$SCALA_VERSION/bigframe-spark-assembly-"!(*sources|*javadoc).jar ]; then
 #  export BIGFRAME_JAR=`ls "$FWDIR/target/scala-$SCALA_VERSION/bigframe-spark-assembly-"!(*sources|*javadoc).jar`
 #fi
-
-# Load environment variables from conf/spark-env.sh, if it exists
-if [ -e $FWDIR/conf/spark-env.sh ] ; then
-  . $FWDIR/conf/spark-env.sh
-fi
 
 # Figure out how much memory to use per executor and set it as an environment
 # variable so that our process sees it and can report it to Mesos
@@ -89,4 +89,6 @@ if [ -e $FWDIR/conf/java-opts ] ; then
 fi
 export JAVA_OPTS
 
-exec "$RUNNER" $JAVA_OPTS -cp "$CLASSPATH" "$@"
+export MAIN_CLASS="bigframe.spark.WorkflowDriver"
+
+exec "$RUNNER" $JAVA_OPTS -cp "$CLASSPATH" "$MAIN_CLASS" "$@"
