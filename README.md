@@ -17,25 +17,38 @@ for data analytics applications that need to deal with large rates of streaming 
 Building
 --------
 
-Currently, BigFrame uses ant builder. To build BigFrame, just run ant at the root directory.  
+To build BigFrame, run following commands from BigFrame home directory
+1. `sbt/sbt compile`
+2. `sbt/sbt package`
+3. `sbt/sbt assembly`
 
 BigFrame requires:
 * JDK 1.6 is needed, JDK 1.7 is recommended.
 * Hadoop 1.0.4 (other versions are not tested)
+* Spark 0.7.3
+
 
 
 Configuration
 --------
 
-Before running BigFrame, you need to edit the `conf/config.sh` to set the following variables:
-* `HADOOP_HOME`: By default, it tries to get it from the environment variables.
-* `TPCDS_LOCAL`: A temp directory to store the imtermediate data for tpcds generator. 
+`/launcher/conf` directory contains following configuration files:
+1. `bigframe-core.xml` : Specification of benchmark goes here. 
+2. `config.sh` : A set of parameters required for data generation.
+3. `spark-env.sh` : A set of parameters required for Spark execution.
 
-Bechmark Specification:
+Data Generation
 --------
-To customize the benchmark you want to generate, you can change the properties inside the `conf/bigframe-core.xml`.
+
+Use command `./launcher/bin/datagen` to generate the data you need.
 
 
-Run
+Spark Workflow
 --------
-Use command `./bin/datagen` to generate the data you need.
+
+Run `./launcher/bin/run` without any arguments. The command usage will be printed out.
+
+Three workflows are supported at present:
+1. "Relational only": It runs a query to find out total sales of products within each promotion.
+2. "Text only": It runs a script to find out sentiment values for certain products by summing over all available tweets.
+3. "Mixed": It runs a workflow involving relational, text and graph processing to generate a report specifying total sales and average sentiment for products that are promoted.
