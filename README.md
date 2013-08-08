@@ -18,6 +18,7 @@ Building
 --------
 
 To build BigFrame, run following commands from BigFrame home directory
+
 1. `sbt/sbt compile`
 2. `sbt/sbt package`
 3. `sbt/sbt assembly`
@@ -33,6 +34,7 @@ Configuration
 --------
 
 `/launcher/conf` directory contains following configuration files:
+
 1. `bigframe-core.xml` : Specification of benchmark goes here. 
 2. `config.sh` : A set of parameters required for data generation.
 3. `spark-env.sh` : A set of parameters required for Spark execution.
@@ -49,6 +51,7 @@ Spark Workflow
 Run `./launcher/bin/run` without any arguments. The command usage will be printed out.
 
 Three workflows are supported at present:
+
 1. "Relational only": It runs a query to find out total sales of products within each promotion.
 2. "Text only": It runs a script to find out sentiment values for certain products by summing over all available tweets.
 3. "Mixed": It runs a workflow involving relational, text and graph processing to generate a report specifying total sales and average sentiment for products that are promoted.
