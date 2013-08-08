@@ -48,7 +48,7 @@ Use command `./launcher/bin/datagen` to generate the data you need.
 Spark Workflow
 --------
 
-Run `./launcher/bin/run` without any arguments. The command usage will be printed out.
+Run `./launcher/bin/run_spark` without any arguments. The command usage will be printed out.
 
 Three workflows are supported at present:
 
