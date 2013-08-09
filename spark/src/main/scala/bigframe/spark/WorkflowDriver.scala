@@ -1,5 +1,6 @@
 package bigframe.spark
 
+import spark.RDD
 import spark.SparkContext
 import SparkContext._
 
@@ -52,9 +53,9 @@ object WorkflowDriver {
 		if(OUTPUT_KEY.equals(key)) {
 		  try {
 		    val file = new File(value)
-			if (file.getParentFile().exists() & file.getParentFile().isDirectory()) {
+//			if (file.getParentFile().exists() & file.getParentFile().isDirectory()) {
 			  output_path = value
-		  	}
+//		  	}
 		  } catch {
 		    case e:Exception => println("ERROR: output path invalid, using \\tmp instead")
 		  }
@@ -107,23 +108,24 @@ object WorkflowDriver {
 	  
 	}
 
-	def runWorkflow(sc: SparkContext) = {
+	def runWorkflow (sc: SparkContext):RDD[_] = {
 		if (variety.equals(MIXED_VARIETY)) {
 			println("Going to run mixed workflow")
 			val promotion = new PromotionWorkflow(sc, tpcds_path_string, text_path_string, 
 					graph_path_string)
-			promotion.runWorkflow()
+			return promotion.runWorkflow()
 		}
 		if(variety.equals(RELATIONAL_VARIETY)) {
 			println("Going to run relational workflow")
 			val executor = new MicroQueries(sc, tpcds_path_string)
-			executor.microBench()
+			return executor.microBench()
 		}
 		if (variety.equals(TEXT_VARIETY)) {
 			println("Going to run text workflow")
 			val textExecutor = new TweetReader(sc, text_path_string)
-			textExecutor.microBench()
+			return textExecutor.microBench()
 		}
+		sc makeRDD Array("redundant")
 	}
 	
 	/*
@@ -149,9 +151,9 @@ object WorkflowDriver {
 		println("Set the context: " + sc)
 
 		val output = runWorkflow(sc)
-		// TODO: save the output
-		
-//		output.saveAsTextFile(output_path)
+
+		println("Workflow executed, writing the output to: " + output_path)
+		output.saveAsTextFile(output_path)
 
 		// unstructured part
 //		val reader = new TweetReader(sc, text_path_string)

@@ -52,15 +52,15 @@ class TweetReader(val sc:SparkContext, val path:String) {
 	   val scoredTweets = makeRDD(addSentimentScore(filteredTweets))
 
 	   // add sentiment scores
-	   scoredTweets.reduceByKey((a, b) => (a._1, a._2 + b._2)).mapValues(t => t._2)
+	   val report = scoredTweets.reduceByKey((a, b) => (a._1, a._2 + b._2)).mapValues(t => t._2)
 
 	  // TODO: remove this part
 	   println("**************RESULT**************")
-	   val result = scoredTweets.collect()
-	   println("size: " + result.length)
-	   println("contents: \n" + result)
+//	   val result = report.collect()
+//	   println("size: " + result.length)
+//	   println("contents: \n" + result)
 	   
-	   scoredTweets
+	   report
    }
 }
 

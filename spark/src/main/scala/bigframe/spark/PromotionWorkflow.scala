@@ -58,10 +58,9 @@ class PromotionWorkflow(val sc:SparkContext, val tpcds_path: String,
 
 	  // TODO: remove this part
 	  println("**************RESULT**************")
-	  val result = joinedResult.collect()
-	  println("size: " + result.length)
-	  println("contents: \n" + result)
-	  result
+//	  val result = joinedResult.collect()
+//	  println("size: " + result.length)
+//	  println("contents: \n" + result)
 	  
 	  joinedResult
 	}
