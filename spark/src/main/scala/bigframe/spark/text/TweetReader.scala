@@ -5,13 +5,21 @@ import com.codahale.jerkson.Json._
 import spark.SparkContext
 import SparkContext._
 
-import bigframe.sentiment.NaiveSentimentExtractor
+//import bigframe.sentiment.NaiveSentimentExtractor
+import com.hp.hpl.sentimentanalysis.main.SentimentExtractor;
 
 /*
  Class to read tweets in JSon format.
 */
 class TweetReader(val sc:SparkContext, val path:String) {
 
+   /**
+    * Selectivity constraints
+    * TODO: Find a way to specify them
+    */
+   val productStart = 1
+   val productEnd = 100
+  
    /**
     * Reads tweets from specified path
     * Returns: RDD of all tweets 
@@ -28,8 +36,10 @@ class TweetReader(val sc:SparkContext, val path:String) {
     * Run sentiment analysis on all tweets
     */
    def addSentimentScore(tweets: Array[Tweet]): Array[Tweet] = {
-       val extractor = new NaiveSentimentExtractor()
-       return tweets.map( t => new Tweet(t.text, t.created_at, t.user, extractor.extract(t.text)) )
+//       val extractor = new NaiveSentimentExtractor()
+       val extractor = new SentimentExtractor()
+       return tweets.map( t => new Tweet(t.text, t.created_at, t.user, 
+           try{ extractor.extract(t.text).toDouble } catch { case e: Exception => 0.0 }))
    }
    
    /**
@@ -45,7 +55,8 @@ class TweetReader(val sc:SparkContext, val path:String) {
    def microBench() = {
 	   val allTweets = read()
 
-	   val filteredTweets = allTweets filter (t => (1 until 100 contains t.product_id.toInt))
+	   val selected = productStart until productEnd
+	   val filteredTweets = allTweets filter (t => (selected contains t.product_id.toInt))
 
 	   println("size of filtered tweets: " + filteredTweets.length)
 	   

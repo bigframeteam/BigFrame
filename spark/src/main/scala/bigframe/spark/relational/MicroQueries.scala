@@ -9,49 +9,102 @@ import SparkContext._
 
 class MicroQueries(val sc: SparkContext, val tpcds_path: String) {
 
-  def readFile(name: String) = {
+   /**
+    * Selectivity constraints
+    * TODO: Find a way to specify them
+    */
+   val promotionStart:Int = 1
+   val promotionEnd:Int = 10
+
+  private def readFile(name: String) = {
       sc.textFile(tpcds_path + "/" + name).map(t => t.split('|'))
   }
   
-  def promotionsMappedByItems() = {
+  private def throwException(e: Exception) {
+    throw new IllegalStateException("Exiting due to ill-formatted data\n" + e)
+  }
+  
+  /**
+   * Select promotions within a list of ids
+   */
+  private def applySelectivity(promotion: RDD[Array[String]]) = {
+    val selected = promotionStart until promotionEnd
+    promotion filter (t => selected contains t(0).toInt)
+  }
+  
+  def promotionsMappedByItems(): RDD[(String, Array[String])] = {
+    try {
 	  // Read promotion table, tokenize it, and filter out promotions not in the given list of promo_ids
 	  val promotion = readFile(Constants.PromotionTableName)
 
 	  // Create a mapping from item_sk to promotion tuple
-	  promotion map { t => (t(4), t.slice(0,5)) }   
+	  applySelectivity (promotion) map { t => (t(4), t.slice(0,5)) }
+    } catch {
+      case e:Exception => {
+        throwException(e)
+        sc makeRDD Array(("redundant", Array("0")))
+      }
+    }
   }
   
-  def storeSalesPerItem() = {
-    // Read sales table and tokenize it
-    val sales = readFile(Constants.StoreSalesTableName)
+  private def storeSalesPerItem(): RDD[(String, Array[String])] = {
+    try {
+    	// Read sales table and tokenize it
+    	val sales = readFile(Constants.StoreSalesTableName)
 
-    // Create a mapping from item_sk to sales tuple (sold_date, item_sk, ticket_number, quantity, sales_price)
-    sales map { t => (t(2), Array(t(0), t(2), t(9), t(10), t(13))) }    
+    	// Create a mapping from item_sk to sales tuple (sold_date, item_sk, ticket_number, quantity, sales_price)
+    	sales map { t => (t(2), Array(t(0), t(2), t(9), 
+    	    try {t(10)} catch { case e: Exception => "0" }, 
+    	    try {t(13)} catch { case e: Exception => "0" })) }
+    } catch {
+      case e:Exception => { 
+        throwException(e)
+        sc makeRDD Array(("redundant", Array("0")))
+      }
+    }
   }
   
-  def catalogSalesPerItem() = {
-    // Read sales table and tokenize it
-    val sales = readFile(Constants.CatalogSalesTableName)
+  private def catalogSalesPerItem(): RDD[(String, Array[String])] = {
+    try {
+    	// Read sales table and tokenize it
+    	val sales = readFile(Constants.CatalogSalesTableName)
 
-    // Create a mapping from item_sk to sales tuple (sold_date, item_sk, order_number, quantity, sales_price)
-    sales map { t => (t(15), Array(t(0), t(15), t(17), t(18), t(21))) }        
+    	// Create a mapping from item_sk to sales tuple (sold_date, item_sk, order_number, quantity, sales_price)
+    	sales map { t => (t(15), Array(t(0), t(15), t(17), 
+    			try {t(18)} catch { case e: Exception => "0" }, 
+    			try {t(21)} catch { case e: Exception => "0" })) }
+    } catch {
+      case e:Exception => {
+        throwException(e)
+        sc makeRDD Array(("redundant", Array("0")))
+      }
+    }
   }
   
-  def webSalesPerItem() = {
-    // Read sales table and tokenize it
-    val sales = readFile(Constants.WebSalesTableName)
+  private def webSalesPerItem(): RDD[(String, Array[String])] = {
+    try {
+    	// Read sales table and tokenize it
+    	val sales = readFile(Constants.WebSalesTableName)
 
-    // Create a mapping from item_sk to sales tuple (sold_date, item_sk, order_number, quantity, sales_price)
-    sales map { t => (t(3), Array(t(0), t(3), t(17), t(18), t(21))) }    
+    	// Create a mapping from item_sk to sales tuple (sold_date, item_sk, order_number, quantity, sales_price)
+    	sales map { t => (t(3), Array(t(0), t(3), t(17), 
+    			try{t(18)} catch { case e: Exception => "0" }, 
+    			try{t(21)} catch { case e: Exception => "0" })) }
+    } catch {
+      case e:Exception => {
+        throwException(e)
+        sc makeRDD Array(("redundant", Array("0")))
+      }
+    }
   }
 
   /**
    * Joins promotions with supplied sales channel
    * Returns (item_sk, (promotion_id, sales))
    */
-  def promoJoinSales(promotions: RDD[(String, Array[String])], sales: RDD[(String, Array[String])]) = {
+  private def promoJoinSales(promotions: RDD[(String, Array[String])], sales: RDD[(String, Array[String])]) = {
       // join promotions with sales, filter irrelevant attributes, and filter sales not within promotion dates.
-	  promotions.join(sales).mapValues(t => (t._1(1), t._1(2), t._1(3), t._2(0), 
+	  promotions.join(sales, 420).mapValues(t => (t._1(1), t._1(2), t._1(3), t._2(0), 
 			  ( try{t._2(3).toDouble*t._2(4).toDouble} catch{case e:Exception => 0} )))
 			  .filter(t => (t._2._2 <= t._2._4 & t._2._4 <= t._2._3)).mapValues(t => (t._1, t._5))
   }
