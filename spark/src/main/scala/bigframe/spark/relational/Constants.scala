@@ -9,5 +9,6 @@ object Constants {
 	val StoreSalesTableName = "store_sales"
 	val CatalogSalesTableName = "catalog_sales"
 	val ItemTableName = "item"
+	val DateTableName = "date_dim"
 
 }

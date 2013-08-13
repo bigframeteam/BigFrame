@@ -41,18 +41,18 @@ fi
 # Build up classpath
 CLASSPATH=""
 CLASSPATH+=":$FWDIR/target/scala-$SCALA_VERSION/classes"
-if [ -e "$FWDIR/lib" ]; then
-  for jar in `find $FWDIR/lib -name '*.jar'`; do
-    CLASSPATH+=:$jar
-  done
-fi
+#if [ -e "$FWDIR/lib" ]; then
+#  for jar in `find $FWDIR/lib -name '*.jar'`; do
+#    CLASSPATH+=:$jar
+#  done
+#fi
 
 # Add libraries managed by sbt
-if [ -e "$FWDIR/../lib_managed" ]; then
-  for jar in `find $FWDIR/../lib_managed -name '*.jar'`; do
-    CLASSPATH+=:$jar
-  done
-fi
+#if [ -e "$FWDIR/../lib_managed" ]; then
+#  for jar in `find $FWDIR/../lib_managed -name '*.jar'`; do
+#    CLASSPATH+=:$jar
+#  done
+#fi
 
 # Scala libraries
 CLASSPATH+=":$SCALA_LIBRARY_PATH/scala-library.jar"

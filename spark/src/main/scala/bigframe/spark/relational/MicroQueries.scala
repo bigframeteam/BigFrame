@@ -14,9 +14,10 @@ class MicroQueries(val sc: SparkContext, val tpcds_path: String) {
     * TODO: Find a way to specify them
     */
    val promotionStart:Int = 1
-   val promotionEnd:Int = 10
+   val promotionEnd:Int = 100
 
   private def readFile(name: String) = {
+      println("Reading file: " + name)
       sc.textFile(tpcds_path + "/" + name).map(t => t.split('|'))
   }
   
@@ -30,6 +31,18 @@ class MicroQueries(val sc: SparkContext, val tpcds_path: String) {
   private def applySelectivity(promotion: RDD[Array[String]]) = {
     val selected = promotionStart until promotionEnd
     promotion filter (t => selected contains t(0).toInt)
+  }
+  
+  def dateTuples(): RDD[(String, String)] = {
+    try {
+      val dates = readFile(Constants.DateTableName)
+      dates map {t => (t(0), t(2))}
+    } catch {
+      case e:Exception => {
+        throwException(e)
+        sc makeRDD Array(("redundant", "0"))
+      }
+    }
   }
   
   def promotionsMappedByItems(): RDD[(String, Array[String])] = {
@@ -104,7 +117,7 @@ class MicroQueries(val sc: SparkContext, val tpcds_path: String) {
    */
   private def promoJoinSales(promotions: RDD[(String, Array[String])], sales: RDD[(String, Array[String])]) = {
       // join promotions with sales, filter irrelevant attributes, and filter sales not within promotion dates.
-	  promotions.join(sales, 420).mapValues(t => (t._1(1), t._1(2), t._1(3), t._2(0), 
+	  promotions.join(sales).mapValues(t => (t._1(1), t._1(2), t._1(3), t._2(0), 
 			  ( try{t._2(3).toDouble*t._2(4).toDouble} catch{case e:Exception => 0} )))
 			  .filter(t => (t._2._2 <= t._2._4 & t._2._4 <= t._2._3)).mapValues(t => (t._1, t._5))
   }
@@ -122,15 +135,19 @@ class MicroQueries(val sc: SparkContext, val tpcds_path: String) {
     
     // join promotions with sales
     val promo_store_sales = promoJoinSales(promotions, store_sales)
+//    println("Number of tuples joining store sales: " + promo_store_sales.count())
     val promo_catalog_sales = promoJoinSales(promotions, catalog_sales)
+//    println("Number of tuples joining catalog sales: " + promo_catalog_sales.count())
     val promo_web_sales = promoJoinSales(promotions, web_sales)
+//    println("Number of tuples joining web sales: " + promo_web_sales.count())
     
     // TODO: Watch out order of operations. Which one is most optimized?
     // TODO: Can we print schedule used by Spark?
     
     // union three join results
     val promo_sales = promo_store_sales union promo_catalog_sales union promo_web_sales
-    
+//    println("Number of tuples in union: " + promo_sales.count())
+
     // group items together, sum up the sales
     promo_sales.reduceByKey( (a, b) => (a._1, a._2 + b._2) )
   }
@@ -153,12 +170,6 @@ class MicroQueries(val sc: SparkContext, val tpcds_path: String) {
 
 	  // join total_sales with item_mapped
 	  val report = total_sales.join(item_mapped).map { t => (t._2._1._1, t._2._2, t._2._1._2) } 
-
-	  // TODO: remove this part
-	  println("**************RESULT**************")
-//	  val result = report.collect()    
-//      println("size: " + result.length)
-//	  println("contents: \n" + result)
 	  
 	  report
   }

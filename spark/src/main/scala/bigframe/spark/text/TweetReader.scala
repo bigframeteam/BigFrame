@@ -29,6 +29,7 @@ class TweetReader(val sc:SparkContext, val path:String) {
 
        val tweetsRDD = tweetFile.map(line => parse[Tweet](line))
 
+       //FIXME: Try to do without collect
        tweetsRDD.collect()
    }
 
@@ -50,7 +51,8 @@ class TweetReader(val sc:SparkContext, val path:String) {
    }
    
    /**
-    * Reads all tweets, filters out tweets that do not talk about first 100 products, runs sentiment analysis on the rest
+    * Reads all tweets, filters out tweets that do not mention specified products, runs sentiment analysis on the rest
+    * Assumption: Tweet text is prepended with product id
     */
    def microBench() = {
 	   val allTweets = read()
@@ -62,14 +64,10 @@ class TweetReader(val sc:SparkContext, val path:String) {
 	   
 	   val scoredTweets = makeRDD(addSentimentScore(filteredTweets))
 
+	   println("All tweets: \n" + scoredTweets.collect())
+	   
 	   // add sentiment scores
 	   val report = scoredTweets.reduceByKey((a, b) => (a._1, a._2 + b._2)).mapValues(t => t._2)
-
-	  // TODO: remove this part
-	   println("**************RESULT**************")
-//	   val result = report.collect()
-//	   println("size: " + result.length)
-//	   println("contents: \n" + result)
 	   
 	   report
    }
