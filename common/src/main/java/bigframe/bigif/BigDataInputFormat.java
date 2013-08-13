@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 
 import bigframe.util.Config;
+import bigframe.util.Constants;
 
 /**
  * Class for recording data generation related configuration.
@@ -16,22 +16,17 @@ import bigframe.util.Config;
  * 
  */
 public class BigDataInputFormat extends Config {
-	private static final Logger LOG = Logger.getLogger(BigDataInputFormat.class);
+	//private static final Logger LOG = Logger.getLogger(BigDataInputFormat.class);
 
 	protected String app_domain;
-	protected Set<String> dataVariety;
+	protected Set<String> dataVariety = new HashSet<String>();
 	protected Integer dataVolume; // Not used in this version
-	protected Map<String, Float> dataVelocity;
-	protected Map<String, Integer> dataScaleProportions;
-	protected Map<String, String> dataStoredPath;
+	protected Map<String, Float> dataVelocity = new HashMap<String, Float>();
+	protected Map<String, Integer> dataScaleProportions = new HashMap<String, Integer>();
+	protected Map<String, String> dataStoredPath = new HashMap<String, String>();
 
 	public BigDataInputFormat() {
 		super();
-
-		dataVariety = new HashSet<String>();
-		dataVelocity = new HashMap<String, Float>();
-		dataScaleProportions = new HashMap<String, Integer>();
-		dataStoredPath = new HashMap<String, String>();
 	}
 
 	/*
@@ -81,36 +76,36 @@ public class BigDataInputFormat extends Config {
 		 */
 		float sum = 0;
 		for (String type : dataVariety) {
-			if (type.equals("relational")) {
+			if (type.equals(Constants.RELATIONAL)) {
 				sum += dataScaleProportions
 						.get(BigConfConstants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION);
 			}
 
-			else if (type.equals("graph")) {
+			else if (type.equals(Constants.GRAPH)) {
 				sum += dataScaleProportions
 						.get(BigConfConstants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION);
 			}
 
-			else if (type.equals("nested")) {
+			else if (type.equals(Constants.NESTED)) {
 				sum += dataScaleProportions
 						.get(BigConfConstants.BIGFRAME_DATAVOLUME_NESTED_PROPORTION);
 			}
 		}
 
 
-		if (dataType.equals("relational")) {
+		if (dataType.equals(Constants.RELATIONAL)) {
 			targetGB = dataScaleProportions
 					.get(BigConfConstants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION)
 					/ sum * dataVolume;
 		}
 
-		else if (dataType.equals("graph")) {
+		else if (dataType.equals(Constants.GRAPH)) {
 			targetGB = dataScaleProportions
 					.get(BigConfConstants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION)
 					/ sum * dataVolume;
 		}
 
-		else if (dataType.equals("nested")) {
+		else if (dataType.equals(Constants.NESTED)) {
 			targetGB = dataScaleProportions
 					.get(BigConfConstants.BIGFRAME_DATAVOLUME_NESTED_PROPORTION)
 					/ sum * dataVolume;
@@ -198,24 +193,25 @@ public class BigDataInputFormat extends Config {
 	protected void reloadConf() {
 		// TODO Auto-generated method stub
 
+		// Avoid inconsistent configuration
 		dataVariety = new HashSet<String>();
-		dataVelocity = new HashMap<String, Float>();
-		dataScaleProportions = new HashMap<String, Integer>();
+		//dataVelocity = new HashMap<String, Float>();
+		//dataScaleProportions = new HashMap<String, Integer>();
 
 		for (Map.Entry<String, String> entry : properties.entrySet()) {
 			String key = entry.getKey().trim();
-			String value = entry.getValue();
+			String value = entry.getValue().trim();
 
 
 			if (key.equals(BigConfConstants.BIGFRAME_DATAVARIETY)) {
 				String[] varieties = value.split(",");
 
 				for (String variety : varieties) {
-					if (BigConfConstants.DATAVARIETY.contains(variety.trim())) {
+//					if (BigConfConstants.DATAVARIETY.contains(variety.trim())) {
 						dataVariety.add(variety.trim());
-					} else {
-						LOG.warn("Unsupported data type: " + value);
-					}
+//					} else {
+//						LOG.warn("Unsupported data type: " + variety);
+//					}
 				}
 			}
 

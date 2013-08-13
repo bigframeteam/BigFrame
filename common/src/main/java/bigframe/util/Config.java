@@ -11,10 +11,14 @@ import java.util.Map;
 public abstract class Config {
 	//private static final Logger LOG = Logger.getLogger(Configuration.class);
 	
-	protected Map<String,String> properties;
+	protected Map<String,String> properties = new HashMap<String, String>();
 	
 	public Config() {
-		properties = new HashMap<String, String>();
+		
+	}
+	
+	public Config(Map<String,String> properties) {
+		this.properties = properties;
 	}
 	
 	public void set(String key, String value) {

@@ -10,8 +10,17 @@ public class BigConfConstants {
 
 	// Properties not related to data and query
 	public static final String BIGFRAME_CONF_DIR = "bigframe.conf.dir";
+	
+	// Properties for the home dir of each engine
 	public static final String BIGFRAME_HADOOP_HOME = "bigframe.hadoop.home";
+	public static final String BIGFRAME_HDFS_ROOTDIR = "bigframe.hdfs.root.dir";
 	public static final String BIGFRAME_HADOOP_SLAVE = "bigframe.hadoop.slaves";
+	public static final String BIGFRAME_HIVE_HOME = "bigframe.hive.home";
+	public static final String BIGFRAME_HIVE_JDBC_SERVER = "bigframe.hive.jdbc.server";
+	public static final String BIGFRAME_SHARK_HOME = "bigframe.shark.home";
+	public static final String BIGFRAME_SPARK_HOME = "bigframe.spark.home";
+	
+	// Properties for external scripts
 	public static final String BIGFRAME_TPCDS_LOCAL = "bigframe.tpcds.local";
 	public static final String BIGFRAME_TPCDS_SCRIPT = "bigframe.tpcds.script";
 	public static final String BIGFRAME_GEN_SINGLETBL_SCRIPT = "bigframe.singletblgen.script";

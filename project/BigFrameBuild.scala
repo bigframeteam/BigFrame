@@ -9,13 +9,17 @@ object BigFrameBuild extends Build {
 	// Hadoop version to build against.
 	val HADOOP_VERSION = "1.0.4"
 
-	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, generator, workflow)
+	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, queries, interface)
 
 	lazy val common = Project(id = "common", base = file("common"), settings = commonSettings)
 
-	lazy val generator = Project(id = "generator", base = file("generator"), settings = generatorSettings) dependsOn(common)
+	lazy val datagen = Project(id = "datagen", base = file("datagen"), settings = datagenSettings) dependsOn(common)
 
-	lazy val workflow = Project(id = "workflow", base = file("workflow"), settings = workflowSettings) dependsOn(common)
+	lazy val queries = Project(id = "queries", base = file("queries"), settings = queriesSettings) dependsOn(common)
+
+	lazy val qgen = Project(id = "qgen", base = file("qgen"), settings = qgenSettings) dependsOn(common, queries)
+
+	lazy val interface = Project(id = "interface", base = file("interface"), settings = interfaceSettings) dependsOn(common)
 
 	def sharedSettings = Defaults.defaultSettings ++ Seq(
 		name := "bigframe",
@@ -51,13 +55,22 @@ object BigFrameBuild extends Build {
 		name := "bigframe-common"
 	) ++ extraAssemblySettings 
 
-	def generatorSettings = assemblySettings ++ sharedSettings ++ Seq(
-		name := "bigframe-generator"
+	def datagenSettings = assemblySettings ++ sharedSettings ++ Seq(
+		name := "bigframe-datagen"
 	) ++ extraAssemblySettings
 
-	def workflowSettings = assemblySettings ++ sharedSettings ++ Seq(
-		name := "bigframe-workflow"
+	def queriesSettings = assemblySettings ++ sharedSettings ++ Seq(
+		name := "bigframe-queries"
 	) ++ extraAssemblySettings
+
+	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(
+		name := "bigframe-qgen"
+	) ++ extraAssemblySettings
+
+	def interfaceSettings = assemblySettings ++ sharedSettings ++ Seq(
+		name := "bigframe-interface"
+	) ++ extraAssemblySettings
+
 
 	def extraAssemblySettings() = Seq(
 		

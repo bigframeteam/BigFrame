@@ -23,15 +23,15 @@ cd ..
 BASE_PATH=$PWD
 cd $OLD_PATH
 
-GENERATOR_CLASSPATH=$GENERATOR_JAR
+DATAGEN_CLASSPATH=$DATAGEN_JAR
 
 for jar in `find $HADOOP_HOME -name '*.jar'`; do
-	GENERATOR_CLASSPATH+=:$jar
+	DATAGEN_CLASSPATH+=:$jar
 done
 
 
 for jar in `find $HADOOP_HOME/lib -name '*.jar'`; do
-	GENERATOR_CLASSPATH+=:$jar
+	DATAGEN_CLASSPATH+=:$jar
 done
 
-java -cp "$GENERATOR_CLASSPATH" bigframe.datagen.DataGenDriver -mode datagen $BIGFRAME_OPTS "$@"
+java -cp "$DATAGEN_CLASSPATH" bigframe.datagen.DataGenDriver -mode datagen $BIGFRAME_OPTS #"$@"

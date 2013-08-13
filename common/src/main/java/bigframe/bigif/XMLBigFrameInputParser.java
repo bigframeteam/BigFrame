@@ -53,7 +53,7 @@ public class XMLBigFrameInputParser extends XMLBaseParser<BigFrameInputFormat> {
 		datagenConf.set(prop_map);
 		querygenConf.set(prop_map);
 
-		BigFrameInputFormat benchmarkConf = new BigFrameInputFormat(datagenConf, querygenConf);
+		BigFrameInputFormat benchmarkConf = new BigFrameInputFormat(datagenConf, querygenConf, new WorkflowInputFormat());
 		return benchmarkConf;
 	}
 

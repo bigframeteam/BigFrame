@@ -8,42 +8,53 @@ package bigframe.bigif;
  */
 public class BigFrameInputFormat {
 
-	private BigDataInputFormat dataInputFormat;
-	private BigQueryInputFormat queryInputFormat;
-
+	private BigDataInputFormat dataIF;
+	private BigQueryInputFormat queryIF;
+	private WorkflowInputFormat workflowIF;
 
 	public BigFrameInputFormat() {
-		dataInputFormat = new BigDataInputFormat();
-		queryInputFormat = new BigQueryInputFormat();
-
+		dataIF = new BigDataInputFormat();
+		queryIF = new BigQueryInputFormat();
+		workflowIF = new WorkflowInputFormat();
 	}
 
-	public BigFrameInputFormat(BigDataInputFormat dc, BigQueryInputFormat qc) {
-		dataInputFormat = dc;
-		queryInputFormat = qc;
+	public BigFrameInputFormat(BigDataInputFormat dif, BigQueryInputFormat qif, WorkflowInputFormat wif) {
+		dataIF = dif;
+		queryIF = qif;
+		workflowIF = wif;
 	}
 
 	public BigDataInputFormat getBigDataInputFormat() {
-		return dataInputFormat;
+		return dataIF;
 	}
 
 	public BigQueryInputFormat getBigQueryInputFormat() {
-		return queryInputFormat;
+		return queryIF;
 	}
 
-	public void setBigDataInputFormat(BigDataInputFormat dc) {
-		dataInputFormat = dc;
+	public WorkflowInputFormat getWorkflowInputFormat() {
+		return workflowIF;
+	}
+	
+	public void setBigDataInputFormat(BigDataInputFormat dif) {
+		dataIF = dif;
 	}
 
-	public void setBigQueryInputFormat(BigQueryInputFormat qc) {
-		queryInputFormat = qc;
+	public void setBigQueryInputFormat(BigQueryInputFormat qif) {
+		queryIF = qif;
 	}
 
+	public void setWorkflowInputFormat(WorkflowInputFormat wif) {
+		workflowIF = wif;
+	}
+	
 	public void printConf() {
 		System.out.println("Benchmark specification:");
 		System.out.println("-------------------------------------");
-		dataInputFormat.printConf();
+		dataIF.printConf();
 		System.out.println("-------------------------------------");
-		queryInputFormat.printConf();
+		queryIF.printConf();
+		System.out.println("-------------------------------------");
+		workflowIF.printConf();
 	}
 }

@@ -133,12 +133,12 @@
 	
 	<property>
 		<name>bigframe.queryvariety</name>
-		<value>simple</value>
+		<value>micro</value>
 	</property>
 	
 	<property>
 		<name>bigframe.queryvelocity</name>
-		<value>historical</value>
+		<value>exploratory</value>
 	</property>
 	
 	<property>
