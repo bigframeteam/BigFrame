@@ -23,7 +23,6 @@ class PromotionWorkflow(val sc:SparkContext, val tpcds_path: String,
 	  
 	  // read all tweets
 	  val allTweets = textExecutor.read()
-	  println("No. of all tweets = " + allTweets.length)
 	  
 	  /**
 	   *  TODO: Do graph processing on all the tweets
@@ -31,14 +30,13 @@ class PromotionWorkflow(val sc:SparkContext, val tpcds_path: String,
 	   */  
 	  
 	  // filter tweets by items relevant to promotions
-      //FIXME: Try to do without collect
-	  val extractedPromotions = promotions.collect()
-	  val itemList = extractedPromotions map (t => t._1)
-	  val relevantTweets = allTweets filter (t => itemList.contains(t.product_id) )
-	  println("No. of relevant tweets = " + relevantTweets.length)
+	  val relevantTweets = (allTweets map (t => (t.product_id, t))).join(
+	      promotions map (t => (t._1, t))).map(t => t._2._1)
+//	  println("Relevant tweets: " + relevantTweets + ", count: " + relevantTweets.count())
 	  
 	  // run sentiment analysis
-	  val scoredTweets = textExecutor makeRDD (textExecutor addSentimentScore relevantTweets)
+	  val scoredTweets = textExecutor addSentimentScore relevantTweets map (
+	      t => (t.product_id, (t.created_at, t.sentiment)))
 	  
 	  // TODO: Use influence scores to weigh sentiment scores
 	  
@@ -50,8 +48,8 @@ class PromotionWorkflow(val sc:SparkContext, val tpcds_path: String,
 	  // join promotion with tweets, filter tweets not within promotion dates
 	  val sentimentsPerPromotion = promotions.join(scoredTweets)
 	  .mapValues (t => (t._1(1), t._1(2), t._1(3), t._2._1, t._2._2))
-	  .filter (t => (dateUtils.isDateWithin(t._2._4, t._2._2, t._2._3, tpcdsDates)))
-//	  .filter (t => true)
+//	  .filter (t => (dateUtils.isDateWithin(t._2._4, t._2._2, t._2._3, tpcdsDates)))
+	  .filter (t => true)
 	  .mapValues (t => (t._1, t._5))
 	  
 	  // aggregate sentiment values for every promotion

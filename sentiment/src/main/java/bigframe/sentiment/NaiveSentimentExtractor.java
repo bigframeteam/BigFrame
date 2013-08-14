@@ -4,13 +4,14 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.*;
 
 /*
  Uses a mapping of word to sentiment score provided in a text file.
  Sentiment of a tweet is simply the sum of sentiment scores of constituent words.
 */
-public class NaiveSentimentExtractor extends SentimentExtractor {
+public class NaiveSentimentExtractor extends SentimentExtractor implements Serializable {
 
 	private static final String RESOURCE_FILE = "AFINN-111.txt";
 
