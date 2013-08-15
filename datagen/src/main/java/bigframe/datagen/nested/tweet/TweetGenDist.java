@@ -9,6 +9,12 @@ import bigframe.datagen.relational.tpcds.TpcdsItemInfo;
 import bigframe.datagen.relational.tpcds.TpcdsPromotionInfo;
 import bigframe.datagen.text.tweet.TweetTextGen;
 
+/**
+ * An abstract class for tweet distribution control.
+ * 
+ * @author andy
+ *
+ */
 public abstract class TweetGenDist extends NestedGenDist {
 
 	protected Random random;

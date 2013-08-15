@@ -1,5 +1,11 @@
 package bigframe.datagen.graph.kroneckerGraph;
 
+/**
+ * Some constants used by knongraph generator.
+ * 
+ * @author andy
+ *
+ */
 public class KnonGraphConstants {
 
 	public static final String NUM_MAPPERS = "mapreduce.graph.num-mappers";
@@ -13,7 +19,9 @@ public class KnonGraphConstants {
 	public static final int NUM_ROWS = 10;
 	public static final int NUM_COLUMNS = 10;
 	
-	
+	/**
+	 * The initial graph for knonecker graph generator 
+	 */
 	public static final double[][] INITIAL_GRAPH = new double[][]{
 			  { 1, 0.3, 0.2, 0, 0, 0, 0, 0.9, 0, 0 },
 			  { 0.4, 1, 0, 0, 0, 0, 0, 0.4, 0, 0 },

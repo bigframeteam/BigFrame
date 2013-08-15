@@ -9,6 +9,12 @@ import java.util.List;
 import bigframe.bigif.WorkflowInputFormat;
 import bigframe.queries.HiveRunnable;
 
+/**
+ * A class to control the workflow running on hvie system.
+ * 
+ * @author andy
+ *
+ */
 public class HiveWorkflow extends Workflow {
 	private Connection connection;
 	private List<HiveRunnable> queries = new ArrayList<HiveRunnable>();

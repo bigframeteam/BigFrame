@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A abstract class for for storing configuration.
  * 
  * @author andy
  *
@@ -11,6 +12,9 @@ import java.util.Map;
 public abstract class Config {
 	//private static final Logger LOG = Logger.getLogger(Configuration.class);
 	
+	/**
+	 * A map contains a set of properties and their corresponding values.
+	 */
 	protected Map<String,String> properties = new HashMap<String, String>();
 	
 	public Config() {
@@ -35,6 +39,13 @@ public abstract class Config {
 		reloadConf();
 	}
 	
+	/**
+	 * Reload the configuration.
+	 */
 	protected abstract void reloadConf();
+	
+	/**
+	 * Print out the configuration.
+	 */
 	public abstract void printConf();
 }

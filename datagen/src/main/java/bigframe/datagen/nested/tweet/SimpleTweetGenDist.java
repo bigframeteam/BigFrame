@@ -8,6 +8,16 @@ import org.json.simple.JSONObject;
 
 import bigframe.datagen.text.tweet.TweetTextGen;
 
+/**
+ * A simple distribution to control tweet generation.
+ * Including:
+ * 1. Which twitter user mention this tweet.
+ * 2. If a product is mentioned in the tweet
+ * 3. If a promoted product is mentioned. 
+ * 
+ * @author andy
+ *
+ */
 public class SimpleTweetGenDist extends TweetGenDist {
 
 	private double cust_mention_prob;

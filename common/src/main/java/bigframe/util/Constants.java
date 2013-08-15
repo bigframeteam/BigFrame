@@ -1,5 +1,11 @@
 package bigframe.util;
 
+/**
+ * Contain some widely used constant string.
+ * 
+ * @author andy
+ *
+ */
 public class Constants {
 	
 	public static String RELATIONAL = "relational";

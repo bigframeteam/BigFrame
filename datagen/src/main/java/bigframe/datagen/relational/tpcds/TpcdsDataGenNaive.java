@@ -13,7 +13,14 @@ import bigframe.datagen.DataGenerator;
 import bigframe.datagen.relational.RelationalDataGen;
 import bigframe.datagen.relational.twittermapping.TwitterMappingGenNaive;
 
-
+/**
+ * A naive parallel implementation of tpcds data generator. 
+ * The main idea is to call a external script, which will finally, delegate
+ * the real generation procedure to the tpcds generation program.
+ *  
+ * @author andy
+ *
+ */
 public class TpcdsDataGenNaive extends TpcdsDataGen {
 	private static final Logger LOG = Logger.getLogger(DataGenerator.class);
 	

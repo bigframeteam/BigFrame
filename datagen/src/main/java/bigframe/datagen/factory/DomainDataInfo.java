@@ -9,6 +9,14 @@ import java.util.Set;
 import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.DataGenerator;
 
+/**
+ * A class encapsulates all the data generation restraint for 
+ * an application domain. 
+ * Every extended application domain needs to inherit this class.	 
+ * 
+ * @author andy
+ *
+ */
 public abstract class DomainDataInfo {
 
 	protected Set<String> dataVariety;

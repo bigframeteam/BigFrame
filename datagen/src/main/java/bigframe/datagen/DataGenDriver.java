@@ -24,7 +24,7 @@ import bigframe.datagen.factory.DatagenFactory;
 
 
 /**
- * The entrance of BigFrame.
+ * The entrance of BigFrame data generator.
  * 
  * @author andy
  * 

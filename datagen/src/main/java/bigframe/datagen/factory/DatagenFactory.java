@@ -8,7 +8,13 @@ import bigframe.bigif.BigDataInputFormat;
 
 import bigframe.datagen.DataGenerator;
 
-
+/**
+ * A factory class to collect all the data generator for a 
+ * specific application domain.
+ * 
+ * @author andy
+ *
+ */
 public class DatagenFactory {
 	//private static final Logger LOG = Logger.getLogger(DatagenFactory.class);
 	private BigDataInputFormat datainputformat;

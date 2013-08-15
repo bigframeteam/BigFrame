@@ -9,6 +9,9 @@ object BigFrameBuild extends Build {
 	// Hadoop version to build against.
 	val HADOOP_VERSION = "1.0.4"
 
+	// Spark version to build againt.
+	val SPARK_VERSION = "0.7.3"
+
 	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, queries, interface)
 
 	lazy val common = Project(id = "common", base = file("common"), settings = commonSettings)
@@ -34,11 +37,13 @@ object BigFrameBuild extends Build {
 		javaOptions += "-Xmx2500m",
 
     	resolvers ++= Seq(
-	    	"Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
+	    	"Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+			"spray" at "http://repo.spray.io/"
 		),
 
 		libraryDependencies ++= Seq(
 			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
+			"org.spark-project" % "spark-core_2.9.3" % SPARK_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
 			"log4j" % "log4j" % "1.2.14" % "provided",
@@ -61,6 +66,7 @@ object BigFrameBuild extends Build {
 
 	def queriesSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-queries"
+
 	) ++ extraAssemblySettings
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(

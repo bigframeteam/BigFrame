@@ -22,7 +22,13 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
+/**
+ * The base XML parser. 
+ * 
+ * @author andy
+ *
+ * @param <T>
+ */
 public abstract class XMLBaseParser <T>{
 	private static final Log LOG = LogFactory.getLog(XMLBaseParser.class);	
 	

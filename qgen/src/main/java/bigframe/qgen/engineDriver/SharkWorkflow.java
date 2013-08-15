@@ -2,18 +2,17 @@ package bigframe.qgen.engineDriver;
 
 import bigframe.bigif.WorkflowInputFormat;
 
+public class SharkWorkflow extends Workflow {
 
-/**
- * A class to control the workflow running on multiple systems.
- * 
- * @author andy
- *
- */
-public class CompositeWorkflow extends Workflow {
-
-	public CompositeWorkflow(WorkflowInputFormat conf) {
-		super(conf);
+	public SharkWorkflow(WorkflowInputFormat workIF) {
+		super(workIF);
 		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public int numOfQueries() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
@@ -32,12 +31,6 @@ public class CompositeWorkflow extends Workflow {
 	public void cleanup() {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public int numOfQueries() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 }

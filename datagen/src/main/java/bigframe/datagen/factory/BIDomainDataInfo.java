@@ -17,6 +17,13 @@ import bigframe.datagen.relational.RelationalDataGen;
 import bigframe.datagen.relational.tpcds.TpcdsDataGenNaive;
 import bigframe.util.Constants;
 
+/**
+ * A class encapsulates all the data generation restraint for 
+ * the Business Intelligence application domain.  
+ * 
+ * @author andy
+ *
+ */
 public class BIDomainDataInfo extends DomainDataInfo {
 	
 

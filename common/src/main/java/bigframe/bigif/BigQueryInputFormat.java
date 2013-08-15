@@ -6,7 +6,13 @@ import java.util.Map;
 import bigframe.util.Config;
 import bigframe.util.Constants;
 
-
+/**
+ * A class contains all the information about the query specification 
+ * input by users. 
+ * 
+ * @author andy
+ *
+ */
 public class BigQueryInputFormat extends Config {
 	protected String app_domain;
 	
@@ -20,15 +26,6 @@ public class BigQueryInputFormat extends Config {
 
 	}
 	
-	/*
-	public void addQueryVariety(String type) {
-		queryVariety.add(type);
-	}
-	
-	public void addQueryVelocity(String type) {
-		queryVelocity.add(type);
-	}
-	*/
 	
 	public String getQueryVariety() {
 		return queryVariety;
@@ -45,21 +42,7 @@ public class BigQueryInputFormat extends Config {
 	public Map<String, String> getQueryRunningEngine() {
 		return queryRunningEngine;
 	}
-	
-	/*
-	public void setQueryVariety(Set<String> qVariety) {
-		queryVariety = qVariety;
-	}
 
-	
-	public void setQueryVolumn(Integer qVolumn) {
-		queryVolumn = qVolumn;
-	}
-	
-	public void setQueryVelocity(Set<String> qVelocity) {
-		queryVelocity = qVelocity;
-	}
-	*/
 	@Override
 	public void printConf() {
 		System.out.println("Query Generation configuration:");

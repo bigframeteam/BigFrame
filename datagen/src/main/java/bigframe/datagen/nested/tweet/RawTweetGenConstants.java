@@ -12,7 +12,12 @@ import org.json.simple.parser.ParseException;
 
 import bigframe.datagen.DataGenDriver;
 
-
+/**
+ * Some constants used by the raw tweet generator.
+ *  
+ * @author andy
+ *
+ */
 public class RawTweetGenConstants {
 	public static final String NUM_MAPPERS = "mapreduce.rawtweet.num-mappers";
 	public static final String TWEETS_PER_DAY = "mapreduce.rawtweet.tweet-per-day";

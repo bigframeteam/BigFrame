@@ -1,46 +1,39 @@
 package bigframe.queries.BusinessIntelligence.relational.exploratory;
 
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.SQLException
+import java.sql.Statement
 
-import bigframe.queries.BaseTablePath;
-import bigframe.queries.Query;
+import bigframe.queries.BaseTablePath
+import bigframe.queries.Query
 
-public abstract class Q1_HiveDialect extends Query {
+/**
+ * Q1 for BI domain, the SQL are specified in hive.
+ * @author andy
+ *
+ */
+abstract class Q1_HiveDialect(basePath : BaseTablePath) extends Query {
 
-	protected String itemHDFSPath;
-	protected String web_salesHDFSPath;
-	protected String promotionHDFSPath;
-	protected String customerHDFSPath;
-
-	//protected Connection connection;
+	protected var itemHDFSPath = basePath.relational_path + "/item"
+	protected var web_salesHDFSPath = basePath.relational_path + "/web_sales"
+	protected var promotionHDFSPath = basePath.relational_path + "/promotion"
+	protected var customerHDFSPath =  basePath.relational_path + "/customer"
 	
-	protected String hiveServer;
-	protected String username;
-	protected String password;
 	
-	public Q1_HiveDialect(BaseTablePath basePath) {
-		super();
-		itemHDFSPath = basePath.getRelationalPath() + "/item";
-		web_salesHDFSPath =  basePath.getRelationalPath() + "/web_sales";
-		promotionHDFSPath = basePath.getRelationalPath() + "/promotion";
-		customerHDFSPath = basePath.getRelationalPath() + "/customer";
-	}
-	
-	public void prepareBaseTable(Statement stmt) throws SQLException {
-		String dropTable1 = "DROP TABLE web_sales";
-		String dropTable2 = "DROP TABLE item";
-		String dropTable3 = "DROP TABLE promotion";
-		String dropTable4 = "DROP TABLE customer";
-		String dropTable5 = "DROP TABLE RptSalesByProdCmpn";
+	@throws(classOf[SQLException])
+	def prepareBaseTable(stmt : Statement ): Unit = {
+		val dropTable1 = "DROP TABLE web_sales"
+		val dropTable2 = "DROP TABLE item";
+		val dropTable3 = "DROP TABLE promotion"
+		val dropTable4 = "DROP TABLE customer"
+		val dropTable5 = "DROP TABLE RptSalesByProdCmpn"
 		
-		stmt.execute(dropTable1);
-		stmt.execute(dropTable2);
-		stmt.execute(dropTable3);
-		stmt.execute(dropTable4);
-		stmt.execute(dropTable5);
+		stmt.execute(dropTable1)
+		stmt.execute(dropTable2)
+		stmt.execute(dropTable3)
+		stmt.execute(dropTable4)
+		stmt.execute(dropTable5)
 		
-		String createTable1 = "create external table web_sales" + "\n" +
+		val createTable1 = "create external table web_sales" + "\n" +
 					"(" + 
 					    "ws_sold_date_sk           int," + 
 					    "ws_sold_time_sk           int," + 
@@ -78,9 +71,9 @@ public abstract class Q1_HiveDialect extends Query {
 					    "ws_net_profit             float" +                 
 					")" + "\n" +
 					"row format delimited fields terminated by \'|\' " + "\n" +
-					"location " + "\'" + web_salesHDFSPath + "\'";
+					"location " + "\'" + web_salesHDFSPath + "\'"
 		
-		String createTable2 = "create external table item" + "\n" +
+		val createTable2 = "create external table item" + "\n" +
 					"(" +
 					    "i_item_sk                 int," + 
 					    "i_item_id                 string," + 
@@ -106,9 +99,9 @@ public abstract class Q1_HiveDialect extends Query {
 					    "i_product_name            string" +
 					")" + "\n" +
 					"row format delimited fields terminated by \'|\' " + "\n" +
-					"location " + "\'" + itemHDFSPath + "\'";
+					"location " + "\'" + itemHDFSPath + "\'"
 		
-		String createTable3 = "create external table customer" + "\n" +
+		val createTable3 = "create external table customer" + "\n" +
 				"(" +
 					    "c_customer_sk             int," +
 					    "c_customer_id             string," +
@@ -130,9 +123,9 @@ public abstract class Q1_HiveDialect extends Query {
 					    "c_last_review_date        string" +
 					")" + "\n" +
 					"row format delimited fields terminated by \'|\' " + "\n" +
-					"location " + "\'" + customerHDFSPath + "\'";
+					"location " + "\'" + customerHDFSPath + "\'"
 		
-		String createTable4 = "create external table promotion" + "\n" +
+		val createTable4 = "create external table promotion" + "\n" +
 					"(" +
 					    "p_promo_sk                int," +
 					    "p_promo_id                string," +
@@ -155,21 +148,21 @@ public abstract class Q1_HiveDialect extends Query {
 					    "p_discount_active         string " +
 					")" + "\n" +
 					"row format delimited fields terminated by \'|\' " + "\n" +
-					"location " + "\'" + promotionHDFSPath + "\'";
+					"location " + "\'" + promotionHDFSPath + "\'"
 		
-		String createTable5 = "CREATE TABLE RptSalesByProdCmpn (p_promo_id 	string," 
-							+ "i_item_sk		int,"
-							+ "totalsales		float)"; 
+		val createTable5 = "CREATE TABLE RptSalesByProdCmpn (p_promo_id string, " +
+							"i_item_sk int, totalsales float)"
 		
-		stmt.execute(createTable1);
-		stmt.execute(createTable2);
-		stmt.execute(createTable3);
-		stmt.execute(createTable4);
-		stmt.execute(createTable5);
+		stmt.execute(createTable1)
+		stmt.execute(createTable2)
+		stmt.execute(createTable3)
+		stmt.execute(createTable4)
+		stmt.execute(createTable5)
 	}
 	
-	public void runBenchQuery(Statement stmt) throws SQLException {
-		String benchmarkQuery = "INSERT INTO TABLE RptSalesByProdCmpn" + "\n" +
+	@throws(classOf[SQLException])
+	def runBenchQuery(stmt: Statement) : Unit = {
+		val benchmarkQuery = "INSERT INTO TABLE RptSalesByProdCmpn" + "\n" +
 				"SELECT p_promo_id, i_item_sk, totalsales " + "\n" +
 				"FROM" + "\n" +
 					"( SELECT p_promo_id, p_item_sk, sum(ws_sales_price * ws_quantity) as totalsales" + "\n" +
@@ -185,8 +178,8 @@ public abstract class Q1_HiveDialect extends Query {
 					"GROUP BY" + "\n" +
 					"	p_promo_id, p_item_sk ) s" + "\n" +
 					"JOIN item i" + "\n" +
-					"ON (s.p_item_sk = i.i_item_sk)";
+					"ON (s.p_item_sk = i.i_item_sk)"
 		
-		stmt.execute(benchmarkQuery);
+		stmt.execute(benchmarkQuery)
 	}
 }

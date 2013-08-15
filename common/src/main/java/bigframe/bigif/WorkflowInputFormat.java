@@ -19,6 +19,7 @@ public class WorkflowInputFormat extends Config {
 	
 	private String SHARK_HOME = "";
 	private String SPARK_HOME = "";
+	private String SPARK_MASTER = "";
 	
 	public WorkflowInputFormat() {
 	}
@@ -45,6 +46,10 @@ public class WorkflowInputFormat extends Config {
 	
 	public String getSparkHome() {
 		return SPARK_HOME;
+	}
+	
+	public String getSparkMaster() {
+		return SPARK_MASTER;
 	}
 	
 	public void reload() {
@@ -82,6 +87,10 @@ public class WorkflowInputFormat extends Config {
 			else if (key.equals(BigConfConstants.BIGFRAME_SPARK_HOME)) {
 				SPARK_HOME = value;
 			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_SPARK_MASTER)) {
+				SPARK_MASTER = value;
+			}
 		}
 		
 	}
@@ -94,5 +103,6 @@ public class WorkflowInputFormat extends Config {
 		System.out.println("Hive Home: " + HIVE_HOME);
 		System.out.println("Shark Home: " + SHARK_HOME);
 		System.out.println("Spark Home: " + SPARK_HOME);
+		System.out.println("Spark MASTER: " + SPARK_MASTER);
 	}
 }

@@ -6,19 +6,33 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A class contain some constants used for identifying configuration properties.
+ * 
+ * @author andy
+ *
+ */
 public class BigConfConstants {
 
 	// Properties not related to data and query
 	public static final String BIGFRAME_CONF_DIR = "bigframe.conf.dir";
 	
 	// Properties for the home dir of each engine
+	/**
+	 * Hadoop specific
+	 */
 	public static final String BIGFRAME_HADOOP_HOME = "bigframe.hadoop.home";
 	public static final String BIGFRAME_HDFS_ROOTDIR = "bigframe.hdfs.root.dir";
 	public static final String BIGFRAME_HADOOP_SLAVE = "bigframe.hadoop.slaves";
 	public static final String BIGFRAME_HIVE_HOME = "bigframe.hive.home";
 	public static final String BIGFRAME_HIVE_JDBC_SERVER = "bigframe.hive.jdbc.server";
+	
+	/**
+	 * Spark specific
+	 */
 	public static final String BIGFRAME_SHARK_HOME = "bigframe.shark.home";
 	public static final String BIGFRAME_SPARK_HOME = "bigframe.spark.home";
+	public static final String BIGFRAME_SPARK_MASTER = "bigframe.spark.master";
 	
 	// Properties for external scripts
 	public static final String BIGFRAME_TPCDS_LOCAL = "bigframe.tpcds.local";

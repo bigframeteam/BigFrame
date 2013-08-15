@@ -8,7 +8,12 @@ import org.apache.log4j.Logger;
 import bigframe.bigif.WorkflowInputFormat;
 import bigframe.queries.HadoopRunnable;
 
-
+/**
+ * A class to control the workflow running on hadoop system.
+ * 
+ * @author andy
+ *
+ */
 public class HadoopWorkflow extends Workflow {
 	private static final Logger LOG = Logger.getLogger(HadoopWorkflow.class);
 	private List<HadoopRunnable> queries = new ArrayList<HadoopRunnable>();

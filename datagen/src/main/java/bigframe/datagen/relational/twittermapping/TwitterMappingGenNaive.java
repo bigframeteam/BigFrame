@@ -18,6 +18,11 @@ import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
 import cern.jet.random.sampling.RandomSampler;
 
+/**
+ * A single machine implementation for the twitter mapping generation.
+ * @author andy
+ *
+ */
 public class TwitterMappingGenNaive extends TwitterMappingGen {
 	private int tpcds_proportion;
 	private int twitter_graph_proportion;

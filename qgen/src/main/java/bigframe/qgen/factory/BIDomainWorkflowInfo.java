@@ -10,16 +10,17 @@ import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.qgen.engineDriver.HadoopWorkflow;
 import bigframe.qgen.engineDriver.HiveWorkflow;
+import bigframe.qgen.engineDriver.SharkWorkflow;
+import bigframe.qgen.engineDriver.SparkWorkflow;
 import bigframe.qgen.engineDriver.Workflow;
 import bigframe.queries.BaseTablePath;
-import bigframe.queries.BusinessIntelligence.relational.exploratory.hadoop.Q1;
+import bigframe.queries.BusinessIntelligence.relational.exploratory.Q1;
 import bigframe.util.Constants;
 
 
-import org.apache.commons.lang.StringUtils;
-
 import com.sun.org.apache.commons.logging.Log;
 import com.sun.org.apache.commons.logging.LogFactory;
+
 /**
  * Encapsulate all information of the workflow of a BI domain.
  * 
@@ -84,7 +85,8 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 		 */
 		HiveWorkflow hiveWorkflow = new HiveWorkflow(workflowIF);
 		HadoopWorkflow hadoopWorkflow = new HadoopWorkflow(workflowIF);
-		
+		SharkWorkflow sharkWorkflow = new SharkWorkflow(workflowIF);
+		SparkWorkflow sparkWorkflow = new SparkWorkflow(workflowIF);
 
 		
 		/**
@@ -105,11 +107,9 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 		String nested_path = HADOOP_ROOT_DIR+"/"+bigdataIF.getDataStoredPath()
 				.get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_NESTED);
 		
-		basePath.setRelationalPath(relational_path);
-		basePath.setGraphPath(graph_path);
-		basePath.setNestedPath(nested_path);
-
-		
+		basePath.relational_path_$eq(relational_path);
+		basePath.graph_path_$eq(graph_path);
+		basePath.nested_path_$eq(nested_path);
 		
 		/**
 		 * Collect the set of micro queries
@@ -187,6 +187,10 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 			workflows.add(hiveWorkflow);
 		if(hadoopWorkflow.numOfQueries() > 0)
 			workflows.add(hadoopWorkflow);
+		if(sharkWorkflow.numOfQueries() > 0)
+			workflows.add(sharkWorkflow);
+		if(sparkWorkflow.numOfQueries() > 0)
+			workflows.add(sparkWorkflow);
 		
 		return workflows;
 	}

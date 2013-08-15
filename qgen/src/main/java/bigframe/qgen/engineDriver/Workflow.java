@@ -3,7 +3,12 @@ package bigframe.qgen.engineDriver;
 import bigframe.bigif.WorkflowInputFormat;
 
 
-
+/**
+ * A abstract class to control the workflow running on a possible system.
+ * 
+ * @author andy
+ *
+ */
 public abstract class Workflow {
     protected WorkflowInputFormat workIF;
 	

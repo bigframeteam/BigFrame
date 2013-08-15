@@ -2,7 +2,8 @@ package bigframe.datagen;
 
 
 /**
- * 
+ * A class to capture the generation distribution.
+ *  
  * @author andy
  *
  */

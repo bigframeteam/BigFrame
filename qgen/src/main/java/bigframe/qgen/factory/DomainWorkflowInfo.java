@@ -19,6 +19,9 @@ import bigframe.qgen.engineDriver.Workflow;
  * 2. query velocity supported
  * 3. query engine supported
  * 4. and the set of queries
+ * 
+ * To implement the set of queries for a new application, developer needs to first
+ * create a new concrete class for that applcaiton by inherit this abstract class.
  *  
  * @author andy
  *
