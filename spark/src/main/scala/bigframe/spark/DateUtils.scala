@@ -50,24 +50,13 @@ class DateUtils extends Serializable {
      * Returns true if tweet is created within promotion duration
      */
     def isDateWithin(tweet_date_string: String, from_date_string: String, 
-        to_date_string: String, tpcds_dates: RDD[(String, String)]):Boolean = {
+        to_date_string: String): Boolean = {
       println("Trying to find whether " + tweet_date_string + " is within " + from_date_string + " and " + to_date_string)
       val tweet_date = fromTweetToDate(tweet_date_string)
-      val from_date = try {
-        fromTpcdsToDate(tpcds_dates.filter(
-            t => t._1.equals(from_date_string)).map(t => t._2).first())
-      } catch {
-        case e: Exception => new Date(0)
-      }
-      val to_date = try {
-        fromTpcdsToDate(tpcds_dates.filter(
-            t => t._1.equals(to_date_string)).map(t => t._2).first())
-      } catch {
-        case e: Exception => new Date(0)
-      }
-//      val to_date = fromTpcdsToDate(tpcds_dates.getOrElse(to_date_string, "0000-00-00"))
+      val from_date = fromTpcdsToDate(from_date_string)
+      val to_date = fromTpcdsToDate(to_date_string)
+
       (tweet_date after from_date) & (tweet_date before to_date)
-//      (from_date_string < to_date_string)
     }
 
 }

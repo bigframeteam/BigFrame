@@ -33,6 +33,9 @@ class MicroQueries(val sc: SparkContext, val tpcds_path: String) {
     promotion filter (t => selected contains t(0).toInt)
   }
   
+  /**
+   * Reads date_dim and returns an RDD of (d_date_sk, date)
+   */
   def dateTuples(): RDD[(String, String)] = {
     try {
       val dates = readFile(Constants.DateTableName)
@@ -45,6 +48,11 @@ class MicroQueries(val sc: SparkContext, val tpcds_path: String) {
     }
   }
   
+  /**
+   * Reads promotion table, applies selectivity parameters.
+   * Returns an RDD of (p_item_sk, Array(p_promo_sk, p_promo_id, 
+   * p_start_date_sk, p_end_date_sk, p_item_sk))
+   */
   def promotionsMappedByItems(): RDD[(String, Array[String])] = {
     try {
 	  // Read promotion table, tokenize it, and filter out promotions not in the given list of promo_ids
@@ -58,6 +66,25 @@ class MicroQueries(val sc: SparkContext, val tpcds_path: String) {
         sc makeRDD Array(("redundant", Array("0")))
       }
     }
+  }
+  
+  /**
+   * Given a promotions RDD mapped by p_item_sk and dates RDD (d_date_sk, date),
+   * returns promotions RDD with p_start_date_sk and p_end_date_sk replaced with
+   * actual dates.
+   * @see promotionsMappedByItems()
+   * @see dateTuples()
+   */
+  def promotionsWithDates(promotions: RDD[(String, Array[String])], 
+      dates: RDD[(String, String)]): RDD[(String, Array[String])] = {
+      val promoStartDates = promotions.map(t => (t._2(2), t._2)).join(dates)
+	  .mapValues(t => Array(t._1(0), t._1(1), t._2, t._1(3), t._1(4)))
+	  
+	  val promoDates = promoStartDates.map(t => (t._2(3), t._2)).join(dates)
+	  .mapValues(t => Array(t._1(0), t._1(1), t._1(2), t._2, t._1(4)))
+	  .map(t => (t._2(4), t._2))
+	  
+	  promoDates
   }
   
   private def storeSalesPerItem(): RDD[(String, Array[String])] = {

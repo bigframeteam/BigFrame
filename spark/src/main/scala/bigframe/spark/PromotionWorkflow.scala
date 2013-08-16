@@ -40,18 +40,22 @@ class PromotionWorkflow(val sc:SparkContext, val tpcds_path: String,
 	  
 	  // TODO: Use influence scores to weigh sentiment scores
 	  
-	  // read date_dim
+	  // read date_dim and cache it
 	  val tpcdsDates = tpcdsExecutor.dateTuples().cache()
+	  
+	  // replace date_sk fields in promotions with actual dates
+	  val promoDates = tpcdsExecutor.promotionsWithDates(promotions, tpcdsDates)
 	  
 	  val dateUtils = new DateUtils()
 	  
 	  // join promotion with tweets, filter tweets not within promotion dates
-	  val sentimentsPerPromotion = promotions.join(scoredTweets)
+	  val sentimentsPerPromotion = promoDates.join(scoredTweets)
 	  .mapValues (t => (t._1(1), t._1(2), t._1(3), t._2._1, t._2._2))
-//	  .filter (t => (dateUtils.isDateWithin(t._2._4, t._2._2, t._2._3, tpcdsDates)))
-	  .filter (t => true)
+	  .filter (t => (dateUtils.isDateWithin(t._2._4, t._2._2, t._2._3)))
+//	  .filter (t => true)
 	  .mapValues (t => (t._1, t._5))
 	  
+  
 	  // aggregate sentiment values for every promotion
 	  val aggSentiments = sentimentsPerPromotion.reduceByKey( (a, b) => (a._1, a._2 + b._2) )
 	  

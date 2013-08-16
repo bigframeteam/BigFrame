@@ -9,6 +9,7 @@ import SparkContext._
 import bigframe.sentiment.NaiveSentimentExtractor
 //import com.hp.hpl.sentimentanalysis.main.SentimentExtractor;
 
+
 /*
  Class to read tweets in JSon format.
 */
@@ -48,14 +49,18 @@ class TweetReader(val sc:SparkContext, val path:String) {
     * Assumption: Tweet text is prepended with product id
     */
    def microBench() = {
+       // read all tweets
 	   val allTweets = read()
 
+	   // filter tweets not talking about specified products
 	   val selected = productStart until productEnd
-
 	   val filteredTweets = allTweets filter (t => (selected contains t.product_id.toInt))
 
-	   val scoredTweets = addSentimentScore(filteredTweets) map (t => (t.product_id, (t.created_at, t.sentiment)))
+	   // extract sentiment for all filtered tweets
+	   val scoredTweets = addSentimentScore(filteredTweets) map (
+	       t => (t.product_id, (t.created_at, t.sentiment)))
 
+	   // sum up the sentiment scores for each product
 	   val report = scoredTweets.reduceByKey((a, b) => (a._1, a._2 + b._2)).mapValues(t => t._2)
 	   
 	   report
