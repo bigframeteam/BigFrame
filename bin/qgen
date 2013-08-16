@@ -12,14 +12,6 @@
 ###################################################################
 
 
-if [ $# = 0 ]; then
-  echo "qgen Usage:"
-  echo "    $0 <runqueries>"
-  exit 1
-fi 
-
-MODE=$1
-
 # Perform common tasks like Load configurations and initializations
 bin=`dirname "$0"`
 . "$bin"/common.sh
@@ -51,6 +43,6 @@ if [ -n "$HIVE_HOME" ]; then
 	done
 fi
 
-if [ "$MODE" == "runqueries" ]; then
-	java -cp "$QGEN_CLASSPATH" bigframe.qgen.QGenDriver -mode runqueries $BIGFRAME_OPTS
-fi
+
+java -cp "$QGEN_CLASSPATH" bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
+

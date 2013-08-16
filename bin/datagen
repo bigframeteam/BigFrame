@@ -34,4 +34,4 @@ for jar in `find $HADOOP_HOME/lib -name '*.jar'`; do
 	DATAGEN_CLASSPATH+=:$jar
 done
 
-java -cp "$DATAGEN_CLASSPATH" bigframe.datagen.DataGenDriver -mode datagen $BIGFRAME_OPTS #"$@"
+java -cp "$DATAGEN_CLASSPATH" bigframe.datagen.DataGenDriver $BIGFRAME_OPTS "$@"

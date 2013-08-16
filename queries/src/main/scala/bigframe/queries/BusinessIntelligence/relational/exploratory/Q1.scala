@@ -6,6 +6,7 @@ import java.sql.Statement;
 
 import bigframe.queries.BaseTablePath
 import bigframe.queries.HiveRunnable
+import bigframe.queries.SharkRunnable
 import bigframe.util.Constants
 
 /**
@@ -16,7 +17,7 @@ import bigframe.util.Constants
  * @author andy
  *
  */
-class Q1(basePath : BaseTablePath) extends Q1_HiveDialect(basePath : BaseTablePath) with HiveRunnable {
+class Q1(basePath : BaseTablePath) extends Q1_HiveDialect(basePath : BaseTablePath) with HiveRunnable with SharkRunnable {
 	
 	override def printDescription(): Unit = {
 		// TODO Auto-generated method stub
@@ -40,7 +41,6 @@ class Q1(basePath : BaseTablePath) extends Q1_HiveDialect(basePath : BaseTablePa
 	
 	
 	override def run(connection: Connection): Unit = {
-		// TODO Auto-generated method stub
 		try {
 			val stmt = connection.createStatement();
 			
