@@ -14,28 +14,3 @@ for data analytics applications that need to deal with large rates of streaming 
 
 ### For more information about BigFrame, please refer to the [wiki](https://github.com/bigframeteam/BigFrame/wiki).
 
-Building
---------
-
-Currently, BigFrame uses ant builder. To build BigFrame, just run ant at the root directory.  
-
-BigFrame requires:
-* JDK 1.6 is needed, JDK 1.7 is recommended.
-* Hadoop 1.0.4 (other versions are not tested)
-
-
-Configuration
---------
-
-Before running BigFrame, you need to edit the `conf/config.sh` to set the following variables:
-* `HADOOP_HOME`: By default, it tries to get it from the environment variables.
-* `TPCDS_LOCAL`: A temp directory to store the imtermediate data for tpcds generator. 
-
-Bechmark Specification:
---------
-To customize the benchmark you want to generate, you can change the properties inside the `conf/bigframe-core.xml`.
-
-
-Run
---------
-Use command `./bin/datagen` to generate the data you need.
