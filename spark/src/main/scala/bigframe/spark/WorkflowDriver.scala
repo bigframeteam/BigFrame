@@ -1,7 +1,7 @@
 package bigframe.spark
 
-import spark.RDD
-import spark.SparkContext
+import org.apache.spark.rdd.RDD
+import org.apache.spark.SparkContext
 import SparkContext._
 
 import bigframe.spark.text._

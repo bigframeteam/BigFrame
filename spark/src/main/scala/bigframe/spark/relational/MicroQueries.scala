@@ -3,8 +3,8 @@
  */
 package bigframe.spark.relational
 
-import spark.RDD
-import spark.SparkContext
+import org.apache.spark.rdd.RDD
+import org.apache.spark.SparkContext
 import SparkContext._
 
 class MicroQueries(val sc: SparkContext, val tpcds_path: String) {

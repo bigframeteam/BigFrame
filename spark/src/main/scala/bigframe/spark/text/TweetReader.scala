@@ -2,8 +2,8 @@ package bigframe.spark.text
 
 import com.codahale.jerkson.Json._
 
-import spark.RDD
-import spark.SparkContext
+import org.apache.spark.rdd.RDD
+import org.apache.spark.SparkContext
 import SparkContext._
 
 import bigframe.sentiment.NaiveSentimentExtractor

@@ -1,7 +1,7 @@
 package bigframe.spark
 
-import spark.SparkContext
-import SparkContext._
+import org.apache.spark.rdd.RDD
+import org.apache.spark.SparkContext
 import bigframe.spark.relational.MicroQueries
 import bigframe.spark.text.TweetReader
 

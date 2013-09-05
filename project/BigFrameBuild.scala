@@ -23,7 +23,7 @@ object BigFrameBuild extends Build {
    scalacOptions := Seq("-unchecked", "-optimize", "-deprecation"),
    unmanagedJars in Compile <<= baseDirectory map { base => (base / "lib" ** "*.jar").classpath },
    
-   resolvers += "spray repo" at "http://repo.spray.io",
+//   resolvers += "spray repo" at "http://repo.spray.io",
 
    libraryDependencies ++= Seq(
       "org.eclipse.jetty" % "jetty-server" % "7.6.8.v20121106",
@@ -46,7 +46,7 @@ object BigFrameBuild extends Build {
    libraryDependencies ++= Seq(
 //     "com.codahale" % "jerkson_2.9.1" % "0.5.0",
      "io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
-     "org.spark-project" % "spark-core_2.9.3" % "0.7.3"
+     "org.apache.spark" % "spark-core_2.9.3" % "0.8.0-SNAPSHOT"
    )
  ) ++ assemblySettings ++ extraAssemblySettings
 

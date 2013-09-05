@@ -1,6 +1,6 @@
 package bigframe.spark
 
-import spark.RDD
+import org.apache.spark.rdd.RDD
 import java.text.SimpleDateFormat
 import java.util.Date
 
