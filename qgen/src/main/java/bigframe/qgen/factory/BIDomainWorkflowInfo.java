@@ -14,7 +14,7 @@ import bigframe.qgen.engineDriver.SharkWorkflow;
 import bigframe.qgen.engineDriver.SparkWorkflow;
 import bigframe.qgen.engineDriver.Workflow;
 import bigframe.queries.BaseTablePath;
-import bigframe.queries.BusinessIntelligence.relational.exploratory.Q1;
+import bigframe.queries.BusinessIntelligence.relational.exploratory.Q1_HiveDialect;
 import bigframe.util.Constants;
 
 
@@ -46,7 +46,9 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 		Set<String> nested_supportedEngine = new HashSet<String>();
 		Set<String> text_supportedEngine = new HashSet<String>();
 		
-		relational_supportedEngine.add(Constants.HADOOP);
+		relational_supportedEngine.add(Constants.HIVE);
+		relational_supportedEngine.add(Constants.SHARK);
+		
 		graph_supportedEngine.add(Constants.HADOOP);
 		nested_supportedEngine.add(Constants.HADOOP);
 		text_supportedEngine.add(Constants.HADOOP);		
@@ -146,8 +148,11 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 				
 				if(dataVariety.contains(Constants.RELATIONAL)) {
 					
-					if(relationalEngine.equals(Constants.HADOOP)) {
-						hiveWorkflow.addQuery(new Q1(basePath));
+					if(relationalEngine.equals(Constants.HIVE)) {
+						hiveWorkflow.addQuery(new Q1_HiveDialect(basePath));
+					}
+					else if(relationalEngine.equals(Constants.SHARK)) {
+						sharkWorkflow.addQuery(new Q1_HiveDialect(basePath));
 					}
 				}
 				

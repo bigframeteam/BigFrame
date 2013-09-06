@@ -11,8 +11,8 @@ import bigframe.datagen.text.tweet.TweetTextGen;
 /**
  * A simple distribution to control tweet generation.
  * Including:
- * 1. Which twitter user mention this tweet.
- * 2. If a product is mentioned in the tweet
+ * 1. Which twitter user mention this tweet;
+ * 2. If a product is mentioned in the tweet;
  * 3. If a promoted product is mentioned. 
  * 
  * @author andy

@@ -148,7 +148,7 @@
 	
 	<property>
 		<name>bigframe.queryengine.relational</name>
-		<value>hadoop</value>
+		<value>hive</value>
 	</property>
 	
 	<property>

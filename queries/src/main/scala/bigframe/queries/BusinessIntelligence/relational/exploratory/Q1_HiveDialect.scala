@@ -1,39 +1,54 @@
-package bigframe.queries.BusinessIntelligence.relational.exploratory;
+package bigframe.queries.BusinessIntelligence.relational.exploratory
 
+
+import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
 
 import bigframe.queries.BaseTablePath
 import bigframe.queries.Query
+import bigframe.queries.HiveRunnable
+import bigframe.queries.SharkRunnable
 
 /**
  * Q1 for BI domain, the SQL are specified in hive.
  * @author andy
  *
  */
-abstract class Q1_HiveDialect(basePath : BaseTablePath) extends Query {
+class Q1_HiveDialect(basePath : BaseTablePath) extends Query with HiveRunnable with SharkRunnable {
 
 	protected var itemHDFSPath = basePath.relational_path + "/item"
 	protected var web_salesHDFSPath = basePath.relational_path + "/web_sales"
+	protected var catalog_salesHDFSPath = basePath.relational_path + "/catalog_sales"
+	protected var store_salesHDFSPath = basePath.relational_path + "/store_sales"
 	protected var promotionHDFSPath = basePath.relational_path + "/promotion"
 	protected var customerHDFSPath =  basePath.relational_path + "/customer"
 	
 	
+	override def printDescription(): Unit = {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	@throws(classOf[SQLException])
 	def prepareBaseTable(stmt : Statement ): Unit = {
-		val dropTable1 = "DROP TABLE web_sales"
-		val dropTable2 = "DROP TABLE item";
-		val dropTable3 = "DROP TABLE promotion"
-		val dropTable4 = "DROP TABLE customer"
-		val dropTable5 = "DROP TABLE RptSalesByProdCmpn"
+		val dropWebSales = "DROP TABLE web_sales"
+		val dropStoreSales = "DROP TABLE store_sales"  
+		val dropCatalogSales = "DROP TABLE catalog_sales"
+		val dropItem = "DROP TABLE item"
+		val dropPromot = "DROP TABLE promotion"
+		val dropCust = "DROP TABLE customer"
+		val dropRptSales = "DROP TABLE RptSalesByProdCmpn"
 		
-		stmt.execute(dropTable1)
-		stmt.execute(dropTable2)
-		stmt.execute(dropTable3)
-		stmt.execute(dropTable4)
-		stmt.execute(dropTable5)
+		stmt.execute(dropWebSales)
+		stmt.execute(dropCatalogSales)
+		stmt.execute(dropStoreSales)
+		stmt.execute(dropItem)
+		stmt.execute(dropPromot)
+		stmt.execute(dropCust)
+		stmt.execute(dropRptSales)
 		
-		val createTable1 = "create external table web_sales" + "\n" +
+		val createWebSales = "create external table web_sales" + 
 					"(" + 
 					    "ws_sold_date_sk           int," + 
 					    "ws_sold_time_sk           int," + 
@@ -69,11 +84,82 @@ abstract class Q1_HiveDialect(basePath : BaseTablePath) extends Query {
 					    "ws_net_paid_inc_ship      float," + 
 					    "ws_net_paid_inc_ship_tax  float," + 
 					    "ws_net_profit             float" +                 
-					")" + "\n" +
+					")" +
 					"row format delimited fields terminated by \'|\' " + "\n" +
 					"location " + "\'" + web_salesHDFSPath + "\'"
 		
-		val createTable2 = "create external table item" + "\n" +
+		val createCatalogSales = "create external table catalog_sales" +
+					"(" +
+					    "cs_sold_date_sk           int                       ," +
+					    "cs_sold_time_sk           int                       ," +
+					    "cs_ship_date_sk           int                       ," +
+					    "cs_bill_customer_sk       int                       ," +
+					    "cs_bill_cdemo_sk          int                       ," +
+					    "cs_bill_hdemo_sk          int                       ," +
+					    "cs_bill_addr_sk           int                       ," +
+					    "cs_ship_customer_sk       int                       ," +
+					    "cs_ship_cdemo_sk          int                       ," +
+					    "cs_ship_hdemo_sk          int                       ," +
+					    "cs_ship_addr_sk           int                       ," +
+					    "cs_call_center_sk         int                       ," +
+					    "cs_catalog_page_sk        int                       ," +
+					    "cs_ship_mode_sk           int                       ," +
+					    "cs_warehouse_sk           int                       ," +
+					    "cs_item_sk                int               		," +
+					    "cs_promo_sk               int                       ," +
+					    "cs_order_number           int               		," +
+					    "cs_quantity               int                       ," +
+					    "cs_wholesale_cost         float                  ," +
+					    "cs_list_price             float                  ," +
+					    "cs_sales_price            float                  ," +
+					    "cs_ext_discount_amt       float                  ," +
+					    "cs_ext_sales_price        float                  ," +
+					    "cs_ext_wholesale_cost     float                  ," +
+					    "cs_ext_list_price         float                  ," +
+					    "cs_ext_tax                float                  ," +
+					    "cs_coupon_amt             float                  ," +
+					    "cs_ext_ship_cost          float                  ," +
+					    "cs_net_paid               float                  ," +
+					    "cs_net_paid_inc_tax       float                  ," +
+					    "cs_net_paid_inc_ship      float                  ," +
+					    "cs_net_paid_inc_ship_tax  float                  ," +
+					    "cs_net_profit             float                  " +
+					")" +
+					"row format delimited fields terminated by \'|\' " + "\n" + 
+					"location " + "\'" + catalog_salesHDFSPath + "\'"
+		
+					
+		val createStoreSales = "create table store_sales" +
+					"(" +
+					    "ss_sold_date_sk           int                       ," +
+					    "ss_sold_time_sk           int                       ," +
+					    "ss_item_sk                int               		," +
+					    "ss_customer_sk            int                       ," +
+					    "ss_cdemo_sk               int                       ," +
+					    "ss_hdemo_sk               int                       ," +
+					    "ss_addr_sk                int                       ," +
+					    "ss_store_sk               int                       ," +
+					    "ss_promo_sk               int                       ," +
+					    "ss_ticket_number          int               		," +
+					    "ss_quantity               int                       ," +
+					    "ss_wholesale_cost         float                  ," +
+					    "ss_list_price             float                  ," +
+					    "ss_sales_price            float                  ," +
+					    "ss_ext_discount_amt       float                  ," +
+					    "ss_ext_sales_price        float                  ," +
+					    "ss_ext_wholesale_cost     float                  ," +
+					    "ss_ext_list_price         float                  ," +
+					    "ss_ext_tax                float                  ," +
+					    "ss_coupon_amt             float                  ," +
+					    "ss_net_paid               float                  ," +
+					    "ss_net_paid_inc_tax       float                  ," +
+					    "ss_net_profit             float                  " +
+					")" +
+					"row format delimited fields terminated by \'|\' " + "\n" +
+					"location" + "\'" + store_salesHDFSPath + "\'"
+
+					
+		val createItem = "create external table item" + 
 					"(" +
 					    "i_item_sk                 int," + 
 					    "i_item_id                 string," + 
@@ -97,11 +183,11 @@ abstract class Q1_HiveDialect(basePath : BaseTablePath) extends Query {
 					    "i_container               string," +
 					    "i_manager_id              int," +
 					    "i_product_name            string" +
-					")" + "\n" +
+					")"  +
 					"row format delimited fields terminated by \'|\' " + "\n" +
 					"location " + "\'" + itemHDFSPath + "\'"
 		
-		val createTable3 = "create external table customer" + "\n" +
+		val createCust = "create external table customer" + 
 				"(" +
 					    "c_customer_sk             int," +
 					    "c_customer_id             string," +
@@ -121,11 +207,11 @@ abstract class Q1_HiveDialect(basePath : BaseTablePath) extends Query {
 					    "c_login                   string," +
 					    "c_email_address           string," +
 					    "c_last_review_date        string" +
-					")" + "\n" +
+					")" + 
 					"row format delimited fields terminated by \'|\' " + "\n" +
 					"location " + "\'" + customerHDFSPath + "\'"
 		
-		val createTable4 = "create external table promotion" + "\n" +
+		val createPromot = "create external table promotion" + 
 					"(" +
 					    "p_promo_sk                int," +
 					    "p_promo_id                string," +
@@ -146,40 +232,78 @@ abstract class Q1_HiveDialect(basePath : BaseTablePath) extends Query {
 					    "p_channel_details         string," +
 					    "p_purpose                 string," +
 					    "p_discount_active         string " +
-					")" + "\n" +
+					")" + 
 					"row format delimited fields terminated by \'|\' " + "\n" +
 					"location " + "\'" + promotionHDFSPath + "\'"
 		
-		val createTable5 = "CREATE TABLE RptSalesByProdCmpn (p_promo_id string, " +
-							"i_item_sk int, totalsales float)"
+		val createRptSales = "CREATE TABLE RptSalesByProdCmpn (p_promo_id string, " +
+							"i_item_sk int, i_product_name, totalsales float)"
 		
-		stmt.execute(createTable1)
-		stmt.execute(createTable2)
-		stmt.execute(createTable3)
-		stmt.execute(createTable4)
-		stmt.execute(createTable5)
+		stmt.execute(createWebSales)
+		stmt.execute(createCatalogSales)
+		stmt.execute(createStoreSales)
+		stmt.execute(createItem)
+		stmt.execute(createCust)
+		stmt.execute(createPromot)
+		stmt.execute(createRptSales)
 	}
 	
 	@throws(classOf[SQLException])
 	def runBenchQuery(stmt: Statement) : Unit = {
 		val benchmarkQuery = "INSERT INTO TABLE RptSalesByProdCmpn" + "\n" +
-				"SELECT p_promo_id, i_item_sk, totalsales " + "\n" +
-				"FROM" + "\n" +
-					"( SELECT p_promo_id, p_item_sk, sum(ws_sales_price * ws_quantity) as totalsales" + "\n" +
-					"FROM " + "\n" +
-					"	( SELECT p_promo_id, p_item_sk, p_start_date_sk, p_end_date_sk" + "\n" +
-					"	FROM promotion) p" + "\n" +
-					"	JOIN web_sales w" + "\n" +
-					"	ON (p.p_item_sk = w.ws_item_sk)" + "\n" +
-					"WHERE " + "\n" +
-					"	p_start_date_sk <= ws_sold_date_sk " + "\n" +
-					"	AND" + "\n" +
-					"	ws_sold_date_sk <= p_end_date_sk" + "\n" +
-					"GROUP BY" + "\n" +
-					"	p_promo_id, p_item_sk ) s" + "\n" +
-					"JOIN item i" + "\n" +
-					"ON (s.p_item_sk = i.i_item_sk)"
+								"SELECT p_promo_id, i_item_sk, i_product_name, totalsales" + "\n" +
+								"FROM (" + "\n" +
+								"	SELECT p_promo_id, p_item_sk, sum(price*quantity) as totalsales" + "\n" +
+								"	FROM" + "\n" +
+									"	(SELECT ws_sold_date_sk as sold_date_sk, ws_item_sk as item_sk, ws_sales_price as price, ws_quantity as quantity" + "\n" +
+									"	FROM web_sales" + "\n" +
+									"	UNION ALL" + "\n" +
+									"	SELECT ss_sold_date_sk as sold_date_sk, ss_item_sk as item_sk, ss_sales_price as price, ss_quantity as quantity" + "\n" +
+									"	FROM store_sales" + "\n" +
+									"	UNION ALL" + "\n" +
+									"	SELECT cs_sold_date_sk as sold_date_sk, cs_item_sk as item_sk, cs_sales_price as price, cs_quantity as quantity" + "\n" +
+									"	FROM catalog_sales) sales" + "\n" +
+									"	JOIN promotion p " + "\n" +
+									"	ON (sales.item_sk = p.p_item_sk)" + "\n" +
+									"WHERE " + "\n" +
+									"	p_start_date_sk <= sold_date_sk " + "\n" +
+									"	AND" + "\n" +
+									"	sold_date_sk <= p_end_date_sk" + "\n" +
+									"GROUP BY" + "\n" +
+									"	p_promo_id, p_item_sk " + "\n" +
+									") s" + "\n" +
+									"JOIN item i" + "\n" +
+									"ON (s.p_item_sk = i.i_item_sk)"
 		
 		stmt.execute(benchmarkQuery)
 	}
+	
+	override def prepareTables(connection: Connection): Unit = {
+		try {
+			val stmt = connection.createStatement()
+			
+			prepareBaseTable(stmt)
+			
+		} catch {
+		  
+		  case sqle :SQLException => sqle.printStackTrace()
+
+		}
+		
+	}
+	
+	
+	override def run(connection: Connection): Unit = {
+		try {
+			val stmt = connection.createStatement();
+			
+			runBenchQuery(stmt);
+			
+		} catch {
+		  
+		  case sqle :SQLException => sqle.printStackTrace()
+
+		}
+	}
+	
 }

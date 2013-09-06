@@ -56,7 +56,7 @@ public class RawTweetGenHadoop extends RawTweetGen {
 	@Override
 	public void generate() {
 		// TODO Auto-generated method stub
-		System.out.println("Generating raw tweets data");
+		System.out.println("Generating raw tweets data!");
 
 		CollectTPCDSstatNaive tpcds_stat_collecter = new CollectTPCDSstatNaive();
 		tpcds_stat_collecter.genTBLonHDFS(conf, (int) targetGB, RawTweetGenConstants.PROMOTION_TBL);
@@ -90,19 +90,19 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		long dateBegin_time_sec = dateBegin.getTime() / 1000;
 		long dateEnd_time_sec = dateEnd.getTime() / 1000;
 
-		Configuration mapreduce_config = new Configuration();
-		mapreduce_config.addResource(new Path(conf.getProp().get(
+		Configuration mapred_config = new Configuration();
+		mapred_config.addResource(new Path(conf.getProp().get(
 				BigConfConstants.BIGFRAME_HADOOP_HOME)
 				+ "/conf/core-site.xml"));
-		mapreduce_config.addResource(new Path(conf.getProp().get(
+		mapred_config.addResource(new Path(conf.getProp().get(
 				BigConfConstants.BIGFRAME_HADOOP_HOME)
 				+ "/conf/mapred-site.xml"));
 
 		try {
 			DistributedCache.addCacheFile(new URI(RawTweetGenConstants.PROMOTION_TBL+".dat"), 
-					mapreduce_config);
+					mapred_config);
 			DistributedCache.addCacheFile(new URI(RawTweetGenConstants.ITEM_TBL+".dat"), 
-					mapreduce_config);
+					mapred_config);
 		} catch (URISyntaxException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -115,27 +115,27 @@ public class RawTweetGenHadoop extends RawTweetGen {
 
 		int num_Mapper = (int) Math.ceil(total_tweets * 1.0 / tweets_per_mapper);
 		
-		mapreduce_config.setLong(RawTweetGenConstants.TIME_BEGIN,
+		mapred_config.setLong(RawTweetGenConstants.TIME_BEGIN,
 				dateBegin_time_sec);
-		mapreduce_config.setLong(RawTweetGenConstants.TIME_END,
+		mapred_config.setLong(RawTweetGenConstants.TIME_END,
 				dateEnd_time_sec);
-		mapreduce_config.setInt(RawTweetGenConstants.NUM_MAPPERS, num_Mapper);
+		mapred_config.setInt(RawTweetGenConstants.NUM_MAPPERS, num_Mapper);
 //		mapreduce_config.setLong(RawTweetGenConstants.TWEETS_PER_DAY,
 //				tweets_per_day);
-		mapreduce_config.setLong(RawTweetGenConstants.TWEETS_PER_MAPPER,
+		mapred_config.setLong(RawTweetGenConstants.TWEETS_PER_MAPPER,
 				tweets_per_mapper);
-		mapreduce_config
+		mapred_config
 		.setLong(RawTweetGenConstants.NUM_PRODUCT, num_products);
-		mapreduce_config.setLong(RawTweetGenConstants.NUM_TWITTER_USER,
+		mapred_config.setLong(RawTweetGenConstants.NUM_TWITTER_USER,
 				num_twitter_user);
-		mapreduce_config.setFloat(RawTweetGenConstants.TPCDS_TARGET_GB,
+		mapred_config.setFloat(RawTweetGenConstants.TPCDS_TARGET_GB,
 				tpcds_targetGB);
-		mapreduce_config.setFloat(RawTweetGenConstants.GRAPH_TARGET_GB,
+		mapred_config.setFloat(RawTweetGenConstants.GRAPH_TARGET_GB,
 				graph_targetGB);
-		mapreduce_config.set(RawTweetGenConstants.TWEETGEN_NAME, textgen_name);
+		mapred_config.set(RawTweetGenConstants.TWEETGEN_NAME, textgen_name);
 
 		try {
-			Job job = new Job(mapreduce_config);
+			Job job = new Job(mapred_config);
 
 			Path outputDir = new Path(hdfs_dir);
 			FileOutputFormat.setOutputPath(job, outputDir);
@@ -149,7 +149,7 @@ public class RawTweetGenHadoop extends RawTweetGen {
 
 			job.waitForCompletion(true);
 
-			cleanUP(mapreduce_config);
+			cleanUP(mapred_config);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

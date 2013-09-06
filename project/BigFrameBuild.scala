@@ -12,6 +12,9 @@ object BigFrameBuild extends Build {
 	// Spark version to build againt.
 	val SPARK_VERSION = "0.7.3"
 
+	// Scala version
+	val SCALA_VERSION = "2.9.3"
+	
 	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, queries, interface)
 
 	lazy val common = Project(id = "common", base = file("common"), settings = commonSettings)
@@ -28,13 +31,13 @@ object BigFrameBuild extends Build {
 		name := "bigframe",
 		organization := "bigframe-team",
 		version := "0.1.0-SNAPSHOT",
-		scalaVersion := "2.9.3",
+		scalaVersion := SCALA_VERSION,
 		scalacOptions := Seq("-unchecked", "-optimize", "-deprecation"),
 		unmanagedJars in Compile <<= baseDirectory map { base => (base / "lib" ** "*.jar").classpath },
 
 		// Fork new JVMs for tests and set Java options for those
-		fork := true,
-		javaOptions += "-Xmx2500m",
+		fork := false,
+		javaOptions += "-Xmx1024m",
 
     	resolvers ++= Seq(
 	    	"Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
@@ -42,13 +45,16 @@ object BigFrameBuild extends Build {
 		),
 
 		libraryDependencies ++= Seq(
-			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
+      		"org.scalatest" %% "scalatest" % "1.9.1" % "test",
+	        "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
 			"org.spark-project" % "spark-core_2.9.3" % SPARK_VERSION % "provided",
+			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
 			"log4j" % "log4j" % "1.2.14" % "provided",
 			"commons-configuration" % "commons-configuration" % "1.6" % "provided",
-			"commons-logging" % "commons-logging" % "1.1.1" % "provided"
+			"commons-logging" % "commons-logging" % "1.1.1" % "provided",
+			"com.novocode" % "junit-interface" % "0.10-M2" % "test"
 		)
 	)	
 
@@ -67,6 +73,7 @@ object BigFrameBuild extends Build {
 	def queriesSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-queries"
 
+	//	libraryDependencies ++= Seq("org.spark-project" %% "spark-core" % SPARK_VERSION)
 	) ++ extraAssemblySettings
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(

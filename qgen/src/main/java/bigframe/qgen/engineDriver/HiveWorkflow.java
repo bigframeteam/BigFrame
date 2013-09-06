@@ -64,7 +64,6 @@ public class HiveWorkflow extends Workflow {
 	public void run() {
 		System.out.println("Running Hive Query");
 		
-		// TODO Auto-generated method stub
 		for(HiveRunnable query : queries) {
 			query.run(connection);
 		}
