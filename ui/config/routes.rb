@@ -1,5 +1,13 @@
 Ui::Application.routes.draw do
+  get "datagen/index"
+  get "execution/index"
+  get "spark/workloads"
+  get "spark/visualize"
+  get "hive/workloads"
+  get "hive/visualize"
+  get "bigframe/about"
   get "bigframe/index"
+  get "bigframe/test"
   root to: "bigframe#index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

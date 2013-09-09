@@ -47,6 +47,7 @@
   </head>
   <body>
 
+
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -55,13 +56,25 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">BigFrame</a>
+          <a class="brand" href="/">BigFrame</a>
           <div class="container nav-collapse">
+        
+            <!-- Change this part as you add more menus on the navigation bar -->
+
             <ul class="nav">
-              <li><%= link_to "Data Generation", "/path1"  %></li>
-              <li><%= link_to "Execution", "/path2"  %></li>
-              <li><%= link_to "About", "/path3"  %></li>
+              <li id = "datagen"><%= link_to "Data Generation", :controller=>"datagen", :action=>"index" %></li>
+              <li id = "execution"><%= link_to "Execution", :controller=>"execution", :action=>"index"  %></li>
+              <li id = "workload" class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Running Workloads<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><%= link_to "Hive", :controller=>"hive", :action=>"workloads" %></li>
+                  <li><%= link_to "Spark", :controller=>"spark", :action=>"workloads" %></li>
+                </ul>
+              </li>
+              <li><%= link_to "About", :controller=>"bigframe", :action=>"about" %></li>
             </ul>
+
+            <!-- Drop Down Sing-in form -->
 
             <ul class="nav pull-right">
               <li class="divider-vertical"></li>
