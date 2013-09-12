@@ -237,7 +237,7 @@ class Q1_HiveDialect(basePath : BaseTablePath) extends Query with HiveRunnable w
 					"location " + "\'" + promotionHDFSPath + "\'"
 		
 		val createRptSales = "CREATE TABLE RptSalesByProdCmpn (p_promo_id string, " +
-							"i_item_sk int, i_product_name, totalsales float)"
+							"i_item_sk int, i_product_name string, totalsales float)"
 		
 		stmt.execute(createWebSales)
 		stmt.execute(createCatalogSales)
