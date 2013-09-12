@@ -38,14 +38,16 @@ public class HiveWorkflow extends Workflow {
         }
 
 		try {
+			System.out.println("Before connection!!!");
 			connection = DriverManager.getConnection(workIF.getHiveJDBCServer(), "", "");
-    	  
+			System.out.println("After connection!!!");
 			if(connection == null) {
 				System.out.println("Cannot connect to JDBC server! " +
 						"Make sure the HiveServer is running!");
 				System.exit(1);
 			}
 			for(HiveRunnable query : queries) {
+				System.out.println("Prepare tables!!!");
 				query.prepareTables(connection);
 			}
 		

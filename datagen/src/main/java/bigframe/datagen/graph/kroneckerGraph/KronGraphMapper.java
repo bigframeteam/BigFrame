@@ -25,7 +25,7 @@ Mapper<NullWritable, KronGraphInfoWritable, NullWritable, Text> {
 	private Random randnum;
 	private int steps;
 
-	@Override
+	//@Override
 	protected void map(NullWritable ignored,
 			KronGraphInfoWritable krongrap_gen_info, final Context context)
 					throws IOException, InterruptedException {

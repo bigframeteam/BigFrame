@@ -71,9 +71,13 @@ object BigFrameBuild extends Build {
 	) ++ extraAssemblySettings
 
 	def queriesSettings = assemblySettings ++ sharedSettings ++ Seq(
-		name := "bigframe-queries"
+		name := "bigframe-queries",
 
-	//	libraryDependencies ++= Seq("org.spark-project" %% "spark-core" % SPARK_VERSION)
+		resolvers ++= Seq(
+			"repo.codahale.com" at "http://repo.codahale.com"
+		),	
+
+		libraryDependencies ++= Seq("com.codahale" % "jerkson_2.9.1" % "0.5.0")
 	) ++ extraAssemblySettings
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(

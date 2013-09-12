@@ -161,7 +161,9 @@ public class BigDataInputFormat extends Config {
 			System.out.println("\t" + value);
 
 		}
-
+		
+		System.out.println("Data volume: " + " around " + dataVolume + "G");
+		
 		System.out.println("Data velocity:");
 		for (Map.Entry<String, Float> entry : dataVelocity.entrySet()) {
 			if (containDataType(entry.getKey())) {

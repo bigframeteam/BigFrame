@@ -3,8 +3,9 @@ package bigframe.qgen.factory;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigFrameInputFormat;
@@ -14,9 +15,7 @@ import bigframe.qgen.engineDriver.SharkWorkflow;
 import bigframe.qgen.engineDriver.SparkWorkflow;
 import bigframe.qgen.engineDriver.Workflow;
 import bigframe.queries.BaseTablePath;
-import bigframe.queries.BusinessIntelligence.relational.exploratory.Q1_HiveDialect;
 import bigframe.util.Constants;
-
 
 import com.sun.org.apache.commons.logging.Log;
 import com.sun.org.apache.commons.logging.LogFactory;
@@ -48,6 +47,7 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 		
 		relational_supportedEngine.add(Constants.HIVE);
 		relational_supportedEngine.add(Constants.SHARK);
+		relational_supportedEngine.add(Constants.HADOOP);
 		
 		graph_supportedEngine.add(Constants.HADOOP);
 		nested_supportedEngine.add(Constants.HADOOP);
@@ -149,10 +149,16 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 				if(dataVariety.contains(Constants.RELATIONAL)) {
 					
 					if(relationalEngine.equals(Constants.HIVE)) {
-						hiveWorkflow.addQuery(new Q1_HiveDialect(basePath));
+						hiveWorkflow.addQuery(new 
+								bigframe.queries.BusinessIntelligence.relational.exploratory.Q1(basePath));
 					}
 					else if(relationalEngine.equals(Constants.SHARK)) {
-						sharkWorkflow.addQuery(new Q1_HiveDialect(basePath));
+						sharkWorkflow.addQuery(new 
+								bigframe.queries.BusinessIntelligence.relational.exploratory.Q1(basePath));
+					}
+					else if(relationalEngine.equals(Constants.HADOOP)) {
+						hadoopWorkflow.addQuery(new 
+								bigframe.queries.BusinessIntelligence.relational.exploratory.Q1(basePath));
 					}
 				}
 				
@@ -215,20 +221,12 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 			return false;
 		}
 		
-		else if (workflowIF.getHiveHome().equals("")) {
-			LOG.error("Hive Home is needed, please set!");
-			return false;
-		}
 		
 		else if (workflowIF.getHDFSRootDIR().equals("")) {
 			LOG.error("HDFS root DIR is needed, please set!");
 			return false;
 		}
 		
-		else if (workflowIF.getHiveJDBCServer().equals("")) {
-			LOG.error("Hive JDBC Server Address is needed, please set!");
-			return false;
-		}
 		
 		else if (!queryVelocity.contains(bigqueryIF.getQueryVelocity())) {
 			LOG.error("unsupported query velocity type!");
@@ -290,6 +288,19 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 				System.out.println(engine);
 			}
 			return false;
+		}
+		
+		for (Entry<String, String> entry : bigqueryIF.getQueryRunningEngine().entrySet()) {
+			if(entry.getValue().equals(Constants.HIVE)) {
+				if (workflowIF.getHiveHome().equals("")) {
+					LOG.error("Hive Home is needed, please set!");
+					return false;
+				}
+				else if (workflowIF.getHiveJDBCServer().equals("")) {
+					LOG.error("Hive JDBC Server Address is needed, please set!");
+					return false;
+				}
+			}
 		}
 		
 		return true;
