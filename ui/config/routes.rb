@@ -8,6 +8,9 @@ Ui::Application.routes.draw do
   get "bigframe/about"
   get "bigframe/index"
   get "bigframe/test"
+  post "sessions/destroy"
+#resources :users
+resources :sessions
   root to: "bigframe#index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

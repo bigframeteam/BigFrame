@@ -74,24 +74,30 @@
               <li><%= link_to "About", :controller=>"bigframe", :action=>"about" %></li>
             </ul>
 
-            <!-- Drop Down Sing-in form -->
-
-            <ul class="nav pull-right">
+<% if current_user.nil?%>
+<ul class="nav pull-right">
               <li class="divider-vertical"></li>
               <li class="dropdown">
                 <a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
                 <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
-                <form method="post" action="login" accept-charset="UTF-8">
-                <input style="margin-bottom: 15px;" type="text" placeholder="Username" id="username" name="username">
-                <input style="margin-bottom: 15px;" type="password" placeholder="Password" id="password" name="password">
-                <input style="float: left; margin-right: 10px;" type="checkbox" name="remember-me" id="remember-me" value="1">
-                <label class="string optional" for="user_remember_me"> Remember me</label>
-                <input class="btn btn-primary btn-block" type="submit" id="sign-in" value="Sign In">
-                </form>
+
+                <%= form_tag url_for(:controller=>"sessions", :action=>"create") do %> 
+                    <%= text_field_tag :name, nil, {:placeholder=>"Username", :style=>"margin-bottom: 15px;"} %>  
+                    <%= password_field_tag :password, nil, {:placeholder=>"Password", :style=>"margin-bottom: 15px;"}%>  
+                  <%= submit_tag "Log in",{:class=>"btn btn-primary btn-block"} %>
+                <% end %>  
+
+
                 </div>
               </li>
             </ul>
+ 
+              <%else%>
 
+                <%= form_tag url_for(:controller=>"sessions", :action=>"destroy"), {:class => 'navbar-form pull-right'} do %> 
+                    <%= submit_tag "Logout "+current_user.name,{:class=>"btn btn-danger"} %>
+                <%end%>
+              <%end%>
 
 
           </div><!--/.nav-collapse -->
