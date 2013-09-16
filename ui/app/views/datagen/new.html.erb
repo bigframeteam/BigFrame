@@ -1,1 +1,41 @@
-<h1>Data Generation</h1>
+<%= form_tag("/home/submit") do %>
+
+<h3>System Settings</h3>
+  <%=label_tag :slide, '$HADOOP_HOME'%>
+  <%= text_field_tag(:hadoop_home, @hadoop_home, :size => 50) %>
+  <%=label_tag :range, '$TPCHDS_LOCAL'%>
+  <%= text_field_tag(:tpchds_local, @tpchds_local) %>
+ <hr>
+
+<h3>Data Specification</h3>
+	<h4>Data Volume</h4>
+  <%= select_tag(:datasize, options_for_select(['Tiny - around 10GB','Small - around 100GB','Medium - around 1TB','Large - around 10TB']) ) %>
+  <br>
+  <h4>Data Variety</h4>
+  <%=label_tag :groupfield, 'Select one or more type(s) of data you want to create.' %>
+
+  <%= check_box_tag :relational%> Relational <br>
+  <%= check_box_tag :text%> Text  <br>
+  <%= check_box_tag :graph %> Graph  
+
+  <br>
+  <h4>Data Velocity</h4>
+
+  <%=label_tag :relvel, 'Relational'%>
+  <%= text_field_tag(:relvel, @relvel) %>
+  <%=label_tag :textvel, 'Text'%>
+  <%= text_field_tag(:textvel, @textvel) %>
+  <%=label_tag :arrayvel, 'Graph'%>
+  <%= text_field_tag(:tpchds_local, @tpchds_local) %>
+
+  <hr>
+
+<h3>Data Outputs</h3>
+
+  <%=label_tag :hadoop_output, 'The HDFS path to store data'%>
+  <%= text_field_tag(:hadoop_home, @hadoop_home, :size => 50) %>
+<br>
+<br>
+
+  <%= submit_tag("Generate Data", :name => 'submit', :class=>"btn btn-large btn-primary" ) %>
+<% end %>

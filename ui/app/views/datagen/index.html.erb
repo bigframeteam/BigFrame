@@ -17,7 +17,7 @@
         <td>1</td>
         <td>Testdddddddddd</td>
         <td><div class="progress"> <div class="bar" style="width: 61.16%;"></div></div></td> 
-        <td> <%= link_to 'Detail',:class => 'btn btn-mini' %> <%= link_to 'Destroy',:class => 'btn btn-mini btn-danger' %>
+        <td> <%= link_to 'Detail',{},:class => 'btn btn-mini' %> <%= link_to 'Destroy',{},:class => 'btn btn-mini btn-danger' %>
         </td>
       </tr>
   </tbody>
@@ -25,11 +25,8 @@
 </table>
 
 <div class="well">
-  <%= submit_tag("Run Query", :name => 'submit', :class=>"btn btn-primary" ) %>
-
-  <%= button_tag("Generate New Dataset", :controller=> 'datagen', :action => 'new', :class => "btn btn-large btn-primary")  %>
+<%= link_to "Generate New Dataset", {:controller=> 'datagen', :action => 'new'}, :class => "btn btn-large btn-primary"  %>
 </div>
-
 
 This will contain the form for data generation.
 
