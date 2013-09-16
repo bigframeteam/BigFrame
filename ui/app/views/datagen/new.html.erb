@@ -1,4 +1,4 @@
-<%= form_tag("/home/submit") do %>
+<%= form_tag("/datagen/submit") do %>
 
 <h3>System Settings</h3>
   <%=label_tag :slide, '$HADOOP_HOME'%>
@@ -8,25 +8,39 @@
  <hr>
 
 <h3>Data Specification</h3>
-	<h4>Data Volume</h4>
+  <h5>Data Volume</h5>
   <%= select_tag(:datasize, options_for_select(['Tiny - around 10GB','Small - around 100GB','Medium - around 1TB','Large - around 10TB']) ) %>
-  <br>
-  <h4>Data Variety</h4>
+  <br><br>
+
+  <h5>Data Variety</h5>
   <%=label_tag :groupfield, 'Select one or more type(s) of data you want to create.' %>
 
   <%= check_box_tag :relational%> Relational <br>
   <%= check_box_tag :text%> Text  <br>
-  <%= check_box_tag :graph %> Graph  
+  <%= check_box_tag :graph %> Graph <br>
+  <%= check_box_tag :nested %> Nested
 
-  <br>
-  <h4>Data Velocity</h4>
+  <br><br>
+
+
+  <h5>Data Velocity</h5>
 
   <%=label_tag :relvel, 'Relational'%>
   <%= text_field_tag(:relvel, @relvel) %>
+  <br>
+  <%= select_tag(:datasize, options_for_select(['Rest','Slow','Fast']) ) %>
   <%=label_tag :textvel, 'Text'%>
   <%= text_field_tag(:textvel, @textvel) %>
-  <%=label_tag :arrayvel, 'Graph'%>
+  <br>
+  <%= select_tag(:datasize, options_for_select(['Rest','Slow','Fast']) ) %>
+  <%=label_tag :graphvel, 'Graph'%>
   <%= text_field_tag(:tpchds_local, @tpchds_local) %>
+  <br>
+  <%= select_tag(:datasize, options_for_select(['Rest','Slow','Fast']) ) %>
+  <%=label_tag :nestedvel, 'Nested'%>
+  <%= text_field_tag(:nestedvel, @nestedvel) %>
+<br>
+  <%= select_tag(:datasize, options_for_select(['Rest','Slow','Fast']) ) %>
 
   <hr>
 
