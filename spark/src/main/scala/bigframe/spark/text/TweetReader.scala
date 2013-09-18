@@ -1,18 +1,13 @@
 package bigframe.spark.text
 
-import com.codahale.jerkson.Json._
+import com.google.gson.Gson
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext
 import SparkContext._
 
 import bigframe.sentiment.NaiveSentimentExtractor
-//import com.hp.hpl.sentimentanalysis.main.SentimentExtractor;
 
-
-/*
- Class to read tweets in JSon format.
-*/
 class TweetReader(val sc:SparkContext, val path:String) {
 
    /**
@@ -21,6 +16,9 @@ class TweetReader(val sc:SparkContext, val path:String) {
     */
    val productStart = 1
    val productEnd = 100
+   
+   // Gson parser
+   val gson = new Gson()
   
    /**
     * Reads tweets from specified path
@@ -29,7 +27,7 @@ class TweetReader(val sc:SparkContext, val path:String) {
    def read(): RDD[(Tweet)] = {
        val tweetFile = sc.textFile(path)
 
-       val tweetsRDD = tweetFile.map(line => parse[Tweet](line))
+       val tweetsRDD = tweetFile.map(line => gson.fromJson(line, classOf[Tweet]))
 
        tweetsRDD
    }
@@ -40,8 +38,10 @@ class TweetReader(val sc:SparkContext, val path:String) {
    def addSentimentScore(tweets: RDD[(Tweet)]): RDD[(Tweet)] = {
        val extractor = new NaiveSentimentExtractor()
 //       val extractor = new SentimentExtractor()
-       return tweets.map( t => new Tweet(t.text, t.created_at, t.user, 
-           try{ extractor.extract(t.text).toDouble } catch { case e: Exception => 0.0 }))
+       tweets.map( t => (t.score = (
+           try{ extractor.extract(t.text).toDouble } catch { case e: Exception => 0.0 }
+           )))
+       tweets
    }
    
    /**
@@ -54,15 +54,15 @@ class TweetReader(val sc:SparkContext, val path:String) {
 
 	   // filter tweets not talking about specified products
 	   val selected = productStart until productEnd
-	   val filteredTweets = allTweets filter (t => (selected contains t.product_id.toInt))
+	   val filteredTweets = allTweets filter (t => (selected contains t.productID))
 
 	   // extract sentiment for all filtered tweets
 	   val scoredTweets = addSentimentScore(filteredTweets) map (
-	       t => (t.product_id, (t.created_at, t.sentiment)))
+	       t => (t.productID.toString(), (t.creationTime, t.score)))
 
 	   // sum up the sentiment scores for each product
 	   val report = scoredTweets.reduceByKey((a, b) => (a._1, a._2 + b._2)).mapValues(t => t._2)
-	   
+//                sc makeRDD Array("redundant")	  
 	   report
    }
 }

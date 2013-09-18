@@ -32,13 +32,13 @@ class PromotionWorkflow(val sc:SparkContext, val tpcds_path: String,
 	   */  
 	  
 	  // filter tweets by items relevant to promotions
-	  val relevantTweets = (allTweets map (t => (t.product_id, t))).join(
+	  val relevantTweets = (allTweets map (t => (t.getProductID().toString(), t))).join(
 	      promotions map (t => (t._1, t))).map(t => t._2._1)
 //	  println("Relevant tweets: " + relevantTweets + ", count: " + relevantTweets.count())
 	  
 	  // run sentiment analysis
 	  val scoredTweets = textExecutor addSentimentScore relevantTweets map (
-	      t => (t.product_id, (t.created_at, t.sentiment)))
+	      t => (t.getProductID().toString(), (t.getCreationTime(), t.getScore())))
 	  
 	  // TODO: Use influence scores to weigh sentiment scores
 	  
