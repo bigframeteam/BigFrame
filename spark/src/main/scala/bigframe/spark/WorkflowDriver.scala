@@ -5,7 +5,6 @@ import org.apache.spark.SparkContext
 import SparkContext._
 
 import bigframe.spark.text._
-import bigframe.spark.text.TweetReader
 import bigframe.spark.relational.MicroQueries
 
 import java.io.File
@@ -122,8 +121,8 @@ object WorkflowDriver {
 		}
 		if (variety.equals(TEXT_VARIETY)) {
 			println("Going to run text workflow")
-			val textExecutor = new TweetReader(sc, text_path_string)
-			return textExecutor.microBench()
+			val executor = new TextExecutor(sc, text_path_string)
+			return executor.microBench("[aA].*")
 		}
 		sc makeRDD Array("redundant")
 	}

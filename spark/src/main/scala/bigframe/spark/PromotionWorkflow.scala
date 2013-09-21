@@ -5,14 +5,14 @@ import org.apache.spark.SparkContext
 import SparkContext._
 
 import bigframe.spark.relational.MicroQueries
-import bigframe.spark.text.TweetReader
+import bigframe.spark.text.TextExecutor
 
 class PromotionWorkflow(val sc:SparkContext, val tpcds_path: String, 
     val text_path: String, val graph_path: String) {
     
 	def runWorkflow() = {
 	  val tpcdsExecutor: MicroQueries = new MicroQueries(sc, tpcds_path)
-	  val textExecutor: TweetReader = new TweetReader(sc, text_path)
+	  val textExecutor: TextExecutor = new TextExecutor(sc, text_path)
 	  
 	  // get promotion table with key being item id
 	  val promotions = tpcdsExecutor promotionsMappedByItems
@@ -32,13 +32,13 @@ class PromotionWorkflow(val sc:SparkContext, val tpcds_path: String,
 	   */  
 	  
 	  // filter tweets by items relevant to promotions
-	  val relevantTweets = (allTweets map (t => (t.getProductID().toString(), t))).join(
+	  val relevantTweets = (allTweets map (t => (t.productID, t))).join(
 	      promotions map (t => (t._1, t))).map(t => t._2._1)
 //	  println("Relevant tweets: " + relevantTweets + ", count: " + relevantTweets.count())
 	  
 	  // run sentiment analysis
 	  val scoredTweets = textExecutor addSentimentScore relevantTweets map (
-	      t => (t.getProductID().toString(), (t.getCreationTime(), t.getScore())))
+	      t => (t.productID, (t.created_at, t.score)))
 	  
 	  // TODO: Use influence scores to weigh sentiment scores
 	  
@@ -69,6 +69,7 @@ class PromotionWorkflow(val sc:SparkContext, val tpcds_path: String,
 	  val joinedResult = sales.join(aggSentiments).mapValues( t=> (t._1._1, t._1._2, t._2._2))
 
 	  joinedResult
+//	  promoDates
 	}
 
 }
