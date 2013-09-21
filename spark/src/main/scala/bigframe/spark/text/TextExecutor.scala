@@ -27,16 +27,10 @@ class TextExecutor(val sc:SparkContext, val path:String) {
    def addSentimentScore(tweets: RDD[(Tweet)]): RDD[(Tweet)] = {
        val extractor = new NaiveSentimentExtractor()
        
-       // foreach statement introduces extra stage thereby possibly giving a 
-       // sub-optimal performance. If we use map instead and transform each 
-       // tweet to a new tweet with score appended, it might give a better 
-       // performance.
-       // TODO: Compare two versions with/without foreach. 
-       tweets.foreach( t => (t.score = try{ 
+       return tweets.map( t => new Tweet(t.text, t.id, 
+         t.created_at, t.user, t.entities, try{ 
          extractor.extract(t.text).toDouble } catch { 
-           case e: Exception => 0.0 } ))
-
-       tweets
+           case e: Exception => 0.0 }) )
    }
    
    /**

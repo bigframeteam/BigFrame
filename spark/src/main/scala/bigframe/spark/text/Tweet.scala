@@ -8,7 +8,7 @@ package bigframe.spark.text
  *
  */
 
-case class User(val id_str: String, name: String) {
+case class User(val id: Double, name: String) {
 
 }
 
@@ -21,15 +21,13 @@ case class Entities(val hashtags: List[String]) {
  * Assumption: The tweet text starts with item_sk (product identifier)
  */
 case class Tweet(val text: String, val id: String, val created_at: String, 
-    val user: User, val entities: Entities) {
+    val user: User, val entities: Entities, val score:Double = 0.0) {
 
 	@transient lazy val productID = text.split(" ")(0);
 
-	var score = 0.0;
-	
 	def products = entities.hashtags
 	
-	def userID = user.id_str
+	def userID = user.id
 	
 	def userName = user.name
 }
