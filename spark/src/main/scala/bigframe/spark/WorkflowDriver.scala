@@ -6,6 +6,7 @@ import SparkContext._
 
 import bigframe.spark.text._
 import bigframe.spark.relational.MicroQueries
+import bigframe.spark.graph.GraphDriver
 
 import java.io.File
 
@@ -18,6 +19,7 @@ object WorkflowDriver {
 	final var MIXED_VARIETY: String = "mixed"
 	final var RELATIONAL_VARIETY: String = "relational"
 	final var TEXT_VARIETY: String = "text"
+	final var GRAPH_VARIETY: String = "graph"
 	final var OUTPUT_KEY: String = "output"
 	final var SPARK_CONNECTION = "SPARK_CONNECTION_STRING"
 	final var TPCDS_PATH = "TPCDS_PATH"
@@ -43,7 +45,8 @@ object WorkflowDriver {
 		val value = tokens(1)
 		if (VARIETY_KEY.equals(key)) {
 		  try {
-		    variety = if(List(MIXED_VARIETY, RELATIONAL_VARIETY, TEXT_VARIETY).contains(value)) value else MIXED_VARIETY
+		    variety = if(List(MIXED_VARIETY, RELATIONAL_VARIETY, TEXT_VARIETY, 
+		        GRAPH_VARIETY).contains(value)) value else MIXED_VARIETY
 		  } catch {
 		  	case e: Exception => println("ERROR: variety invalid, using \"mixed\" instead")
 		  }
@@ -66,7 +69,8 @@ object WorkflowDriver {
 	
 	private def printUsage() {
 		println("Arguments:\n" +
-				"1. variety=<variety_value> where variety_value is one of the \"mixed\", \"relational\", or \"text\"\n" +
+				"1. variety=<variety_value> where variety_value is one of the " +
+				"\"mixed\", \"relational\", \"text\", or \"graph\"\n" +
 				"2. output=<output_path>")	  
 	}
 
@@ -96,12 +100,18 @@ object WorkflowDriver {
 	    exitMessage(SPARK_CONNECTION)
 	    System.exit(0)
 	  }
-	  if("".equals(tpcds_path_string) & !variety.equals(TEXT_VARIETY)) {
+	  if("".equals(tpcds_path_string) && 
+	      (variety.matches(RELATIONAL_VARIETY) || variety.matches(MIXED_VARIETY))) {
 	    exitMessage(TPCDS_PATH)
 	    System.exit(0)
 	  }
-	  if("".equals(text_path_string) & !variety.equals(RELATIONAL_VARIETY)) {
+	  if("".equals(text_path_string) && !variety.matches(RELATIONAL_VARIETY)) {
 	    exitMessage(TEXT_PATH)
+	    System.exit(0)
+	  }
+	  if("".equals(graph_path_string) && 
+	      (variety.matches(GRAPH_VARIETY) || variety.matches(MIXED_VARIETY))) {
+	    exitMessage(GRAPH_PATH)
 	    System.exit(0)
 	  }
 	  
@@ -123,6 +133,11 @@ object WorkflowDriver {
 			println("Going to run text workflow")
 			val executor = new TextExecutor(sc, text_path_string)
 			return executor.microBench("[aA].*")
+		}
+		if (variety.equals(GRAPH_VARIETY)) {
+			println("Going to run graph workflow")
+			val executor = new GraphDriver(sc, graph_path_string, text_path_string)
+			return executor.microBench("baration.*")
 		}
 		sc makeRDD Array("redundant")
 	}

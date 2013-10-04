@@ -43,8 +43,10 @@ object BigFrameBuild extends Build {
  def sparkSettings = sharedSettings ++ Seq(
    name := "bigframe-spark",
    libraryDependencies ++= Seq(
-     "org.apache.spark" % "spark-core_2.9.3" % "0.8.0-SNAPSHOT",
-     "io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0"
+     "org.apache.spark" % "spark-core_2.9.3" % "0.8.0-incubating",
+     "org.apache.spark" % "spark-bagel_2.9.3" % "0.8.0-incubating",
+     "io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
+     "org.slf4j" % "slf4j-log4j12" % "1.6.1"
    )
  ) ++ assemblySettings ++ extraAssemblySettings
 
