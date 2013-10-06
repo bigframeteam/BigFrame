@@ -114,4 +114,61 @@ class GraphUtils extends Serializable {
       s => s._1 -> s._2.toDouble / collected.getOrElse(s._1, 1)})
     }
   }
+  
+  var numIter: Int = 20
+  var gamma: Double = 0.85
+  var tranProb: scala.collection.immutable.Map[(Int, Int),Seq[(String, Double)]] = null 
+  var teleProb: scala.collection.immutable.Map[Int ,Seq[(String, Double)]] = null
+  
+  def initializeCompute(numIter: Int, gamma: Double) = {
+    this.numIter = numIter
+    this.gamma = gamma
+  }
+  
+  def collectProbabilities(transition: RDD[((Int, Int),Seq[(String, Double)])], 
+      teleport: RDD[(Int ,Seq[(String, Double)])]) = {
+    tranProb = transition.collect.toMap 
+    teleProb = teleport.collect.toMap
+  }
+  
+  def createVertices(friends: RDD[(Int, Seq[(Int, Int)])]) = {
+    if (teleProb == null) null
+    friends map {t => (t._1, 
+      new TRVertex(t._1, teleProb.getOrElse(t._1, List()), 
+          t._2 map {_._1} toList, true))}
+  }
+  
+  /**
+   * Function to run on each vertex.
+   * Arguments:
+   * 1. Vertex object
+   * 2. All incoming messages
+   * 3. Superstep number
+   */
+  def compute (self: TRVertex, msgs: Option[Iterable[TRMessage]], 
+      superstep: Int) : (TRVertex, Array[TRMessage]) = {
+      
+      val newRanks = 
+        if(msgs == null || msgs.isEmpty)
+          self.ranks
+        else {
+          val transitions = msgs getOrElse(List()) flatMap {m => 
+            tranProb.getOrElse((m.sourceId, m.targetId), List())} groupBy (
+                _._1) map { case (k,v) => k -> v.map(_._2).sum};
+          val transportations = teleProb.getOrElse(self.id, List()) toMap;
+          self.ranks map {r => r._1 -> (
+              gamma * transitions.getOrElse(r._1, 0.0) * r._2 + 
+              (1-gamma) * transportations.getOrElse(r._1, 0.0))}
+        }
+      
+      val halt = superstep >= numIter
+      val msgsOut =
+        if (!halt)
+          self.outEdges.map(e => new TRMessage(e, self.id))
+        else
+          List()
+      
+      (new TRVertex(self.id, newRanks, self.outEdges, !halt), msgsOut toArray)
+  }
+          
 }
