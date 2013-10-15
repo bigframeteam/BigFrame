@@ -1,6 +1,7 @@
 package bigframe.queries
 
-import spark.SparkContext
+import org.apache.spark.rdd.RDD
+import org.apache.spark.SparkContext
 import SparkContext._
 
 /**
@@ -10,5 +11,5 @@ import SparkContext._
  */
 trait SparkRunnable {
 
-  def run(sc: SparkContext): Unit
-}
+  def run(spark_context: SparkContext): RDD[_]
+}	

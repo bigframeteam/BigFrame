@@ -48,11 +48,15 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 		relational_supportedEngine.add(Constants.HIVE);
 		relational_supportedEngine.add(Constants.SHARK);
 		relational_supportedEngine.add(Constants.HADOOP);
-		
+		relational_supportedEngine.add(Constants.SPARK);
+
 		graph_supportedEngine.add(Constants.HADOOP);
+
 		nested_supportedEngine.add(Constants.HADOOP);
-		text_supportedEngine.add(Constants.HADOOP);		
-		
+		nested_supportedEngine.add(Constants.SPARK);
+
+		text_supportedEngine.add(Constants.HADOOP);	
+
 		querySupportEngine.put(Constants.RELATIONAL, relational_supportedEngine);
 		querySupportEngine.put(Constants.GRAPH, graph_supportedEngine);
 		querySupportEngine.put(Constants.NESTED, nested_supportedEngine);
@@ -158,7 +162,11 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 					}
 					else if(relationalEngine.equals(Constants.HADOOP)) {
 						hadoopWorkflow.addQuery(new 
-								bigframe.queries.BusinessIntelligence.relational.exploratory.Q1(basePath));
+								bigframe.queries.BusinessIntelligence.relational.exploratory.ReportSalesHadoop(basePath.relational_path()));
+					}
+					else if(relationalEngine.equals(Constants.SPARK)) {
+						sparkWorkflow.addQuery(new 
+								bigframe.queries.BusinessIntelligence.relational.exploratory.ReportSalesSpark(basePath));
 					}
 				}
 				
@@ -174,6 +182,10 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 					if(nestedEngine.equals(Constants.HADOOP)) {
 						
 					}
+					if(nestedEngine.equals(Constants.SPARK)) {
+						sparkWorkflow.addQuery(new
+								bigframe.queries.BusinessIntelligence.nested.exploratory.SenAnalyzeSpark(basePath));
+					}
 				}
 			}
 		}
@@ -185,11 +197,23 @@ public class BIDomainWorkflowInfo extends DomainWorkflowInfo {
 			
 			if(queryVelocity.equals(Constants.CONTINUOUS)) {
 				
-				
 			}
 			
 			else if(queryVelocity.equals(Constants.EXPLORATORY)) {
-				
+				//relational + nested + graph
+				if(dataVariety.contains(Constants.RELATIONAL) && dataVariety.contains(Constants.NESTED) &&
+					dataVariety.contains(Constants.GRAPH)) {
+
+				}
+
+				//relational + nested
+				else if(dataVariety.contains(Constants.RELATIONAL) && dataVariety.contains(Constants.NESTED)) {
+					if(nestedEngine.equals(Constants.SPARK) && nestedEngine.equals(Constants.SPARK)) {
+						sparkWorkflow.addQuery(new
+								bigframe.queries.BusinessIntelligence.macro.exploratory.PromotionSpark(basePath));
+
+					}
+				}
 			}
 		}
 		
