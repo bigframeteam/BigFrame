@@ -1,4 +1,3 @@
-
 import sbt._
 import Keys._
 import sbtassembly.Plugin._

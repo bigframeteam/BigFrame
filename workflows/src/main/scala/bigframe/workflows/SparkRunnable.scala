@@ -1,3 +1,4 @@
+
 package bigframe.workflows
 
 import spark.SparkContext
@@ -12,3 +13,5 @@ trait SparkRunnable {
 
   def run(sc: SparkContext): Boolean
 }
+
+

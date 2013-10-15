@@ -34,9 +34,17 @@ CONF_DIR=$BASE_DIR/conf
 # Get the user-defined parameters
 . "$BASE_DIR"/conf/config.sh
 
+# Get the user-defined hadoop parameters
+. "$BASE_DIR"/conf/hadoop-env.sh
+
+# Get the user-defined spark parameters
+. "$BASE_DIR"/conf/spark-env.sh
+
+
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.script=${TPCDS_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.singletblgen.script=${GEN_PROMTTBL_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.conf.dir=${CONF_DIR}"
+
 
 COMMON_JAR=`ls $BASE_DIR/common/target/scala-2.9.3/bigframe-common-assembly*.jar`
 
@@ -45,3 +53,7 @@ DATAGEN_JAR=`ls $BASE_DIR/datagen/target/scala-2.9.3/bigframe-datagen-assembly*.
 QGEN_JAR=`ls $BASE_DIR/qgen/target/scala-2.9.3/bigframe-qgen-assembly*.jar`
 
 QUERIES_JAR=`ls $BASE_DIR/queries/target/scala-2.9.3/bigframe-queries-assembly*.jar`
+
+SENTIMENT_JAR= `ls $BASE_DIR/sentiment/target/scala-2.9.3/bigframe-queries-assembly*.jar`
+
+export QUERIES_JAR

@@ -343,3 +343,4 @@ class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable w
 	  
 	}
 }
+
