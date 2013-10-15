@@ -20,7 +20,7 @@ import org.apache.commons.cli.ParseException;
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.XMLBigFrameInputParser;
-import bigframe.qgen.engineDriver.Workflow;
+import bigframe.qgen.engineDriver.EngineDriver;
 import bigframe.qgen.factory.WorkflowFactory;
 
 /**
@@ -190,7 +190,7 @@ public class QGenDriver {
 		}
 
 		//System.out.println(new File(".").getAbsolutePath());
-		InputStream default_conf_file = QGenDriver.class.getClassLoader().getResourceAsStream("default.xml");
+		InputStream default_conf_file = BigFrameInputFormat.class.getClassLoader().getResourceAsStream("default.xml");
 		XMLBigFrameInputParser parser = new XMLBigFrameInputParser();
 		BigFrameInputFormat conf = parser.importXML(default_conf_file);
 
@@ -230,9 +230,9 @@ public class QGenDriver {
 		if ( line.getOptionValue(MODE).equals(MODE_RUN_QUERY)) {
 			WorkflowFactory workflowFactory = new WorkflowFactory(conf);
 			
-			List<Workflow> workflows = workflowFactory.createWorkflows();
+			List<EngineDriver> workflows = workflowFactory.createWorkflows();
 			if(workflows != null)
-				for(Workflow workflow : workflows) {
+				for(EngineDriver workflow : workflows) {
 					workflow.init();
 					workflow.run();
 				}

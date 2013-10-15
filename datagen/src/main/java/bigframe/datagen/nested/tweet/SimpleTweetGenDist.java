@@ -133,8 +133,7 @@ public class SimpleTweetGenDist extends TweetGenDist {
 			 entities_json.put("hashtags", list);
 		}
 		else {
-			 JSONArray list = new JSONArray();
-			 list.add("No product mentioned");
+			JSONArray list = new JSONArray();
 			 entities_json.put("hashtags", list);
 		}
 		

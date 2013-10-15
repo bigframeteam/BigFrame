@@ -133,7 +133,7 @@
 	
 	<property>
 		<name>bigframe.queryvariety</name>
-		<value>micro</value>
+		<value>macro</value>
 	</property>
 	
 	<property>
@@ -148,7 +148,7 @@
 	
 	<property>
 		<name>bigframe.queryengine.relational</name>
-		<value>hive</value>
+		<value>hadoop</value>
 	</property>
 	
 	<property>

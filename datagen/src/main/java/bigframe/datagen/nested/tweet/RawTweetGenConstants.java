@@ -10,7 +10,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import bigframe.datagen.DataGenDriver;
 
 /**
  * Some constants used by the raw tweet generator.
@@ -45,15 +44,15 @@ public class RawTweetGenConstants {
 
 	// public static final TweetTextGenSimple TEXT_GEN = new
 	// TweetTextGenSimple(null, 0);
-	public static final InputStream TWEET_TEMPLATE_FILE = DataGenDriver.class.getClassLoader().getResourceAsStream("tweet_template.json");
-	public static final JSONObject TWEET_JSON = parseJsonFromFile(TWEET_TEMPLATE_FILE);
+	//public static final InputStream TWEET_TEMPLATE_FILE = DataGenDriver.class.getClassLoader().getResourceAsStream("tweet_template.json");
+	//public static final JSONObject TWEET_JSON = parseJsonFromFile(TWEET_TEMPLATE_FILE);
 
 	public static final int GB_PER_MAPPER = 1;
 
 	public static String TWEET_BEGINDATE = "1997-01-01";
 	public static String TWEET_ENDDATE = "1998-01-01";
 
-	private static JSONObject parseJsonFromFile(InputStream file) {
+	public static JSONObject parseJsonFromFile(InputStream file) {
 		JSONParser parser = new JSONParser();
 		try {
 

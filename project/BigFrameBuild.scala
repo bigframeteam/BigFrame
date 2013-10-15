@@ -15,15 +15,15 @@ object BigFrameBuild extends Build {
 	// Scala version
 	val SCALA_VERSION = "2.9.3"
 	
-	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, queries, interface)
+	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, workflows, interface)
 
 	lazy val common = Project(id = "common", base = file("common"), settings = commonSettings)
 
 	lazy val datagen = Project(id = "datagen", base = file("datagen"), settings = datagenSettings) dependsOn(common)
 
-	lazy val queries = Project(id = "queries", base = file("queries"), settings = queriesSettings) dependsOn(common)
+	lazy val workflows = Project(id = "workflows", base = file("workflows"), settings = workflowsSettings) dependsOn(common)
 
-	lazy val qgen = Project(id = "qgen", base = file("qgen"), settings = qgenSettings) dependsOn(common, queries)
+	lazy val qgen = Project(id = "qgen", base = file("qgen"), settings = qgenSettings) dependsOn(common, workflows)
 
 	lazy val interface = Project(id = "interface", base = file("interface"), settings = interfaceSettings) dependsOn(common)
 
@@ -70,14 +70,17 @@ object BigFrameBuild extends Build {
 		name := "bigframe-datagen"
 	) ++ extraAssemblySettings
 
-	def queriesSettings = assemblySettings ++ sharedSettings ++ Seq(
-		name := "bigframe-queries",
+	def workflowsSettings = assemblySettings ++ sharedSettings ++ Seq(
+		name := "bigframe-workflows",
 
 		resolvers ++= Seq(
 			"repo.codahale.com" at "http://repo.codahale.com"
 		),	
 
-		libraryDependencies ++= Seq("com.codahale" % "jerkson_2.9.1" % "0.5.0")
+		libraryDependencies ++= Seq(
+			"com.codahale" % "jerkson_2.9.1" % "0.5.0",
+			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1"	
+		)
 	) ++ extraAssemblySettings
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(

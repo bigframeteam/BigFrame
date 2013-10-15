@@ -1,6 +1,7 @@
 package bigframe.datagen.nested.tweet;
 
 import java.io.BufferedWriter;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.Date;
 import java.util.LinkedList;
@@ -29,7 +30,9 @@ import bigframe.datagen.util.RandomSeeds;
  */
 public class RawTweetGenNaive extends RawTweetGen {
 
-
+	//Get the tweets template file
+	private final InputStream TWEET_TEMPLATE_FILE = RawTweetGenNaive.class.
+			getClassLoader().getResourceAsStream("tweet_template.json");
 
 	public RawTweetGenNaive(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
@@ -73,7 +76,8 @@ public class RawTweetGenNaive extends RawTweetGen {
 			System.exit(-1);
 		}
 
-		JSONObject tweet_json = RawTweetGenConstants.TWEET_JSON;
+		JSONObject tweet_json = RawTweetGenConstants.parseJsonFromFile(TWEET_TEMPLATE_FILE);
+		
 		CollectTPCDSstatNaive tpcds_stat_collecter = new CollectTPCDSstatNaive();
 		tpcds_stat_collecter.genTBLonHDFS(conf, (int) targetGB, RawTweetGenConstants.PROMOTION_TBL);
 		tpcds_stat_collecter.genTBLonHDFS(conf, (int) targetGB, RawTweetGenConstants.ITEM_TBL);

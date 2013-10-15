@@ -7,7 +7,7 @@ import java.util.List;
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigDataInputFormat;
 import bigframe.bigif.BigFrameInputFormat;
-import bigframe.qgen.engineDriver.Workflow;
+import bigframe.qgen.engineDriver.EngineDriver;
 
 /**
  * A factory to create the set of workflows the user requires.
@@ -22,16 +22,16 @@ public class WorkflowFactory {
 		this.bigframeIF = conf;
 	}
 	
-	public List<Workflow> createWorkflows() {
+	public List<EngineDriver> createWorkflows() {
 	
 		BigDataInputFormat dataIF = bigframeIF.getBigDataInputFormat();
 		
-		DomainWorkflowInfo workflowInfo;
+		DomainWorkflow workflowInfo;
 		
 		String app_domain = dataIF.getAppDomain();
 
 		if (app_domain.equals(BigConfConstants.APPLICATION_BI)) {
-			workflowInfo = new BIDomainWorkflowInfo(bigframeIF);
+			workflowInfo = new BIDomainWorkflow(bigframeIF);
 		}
 		else 
 			return null;

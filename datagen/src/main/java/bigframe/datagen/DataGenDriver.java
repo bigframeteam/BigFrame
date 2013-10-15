@@ -189,7 +189,7 @@ public class DataGenDriver {
 		}
 
 		//System.out.println(new File(".").getAbsolutePath());
-		InputStream default_conf_file = DataGenDriver.class.getClassLoader().getResourceAsStream("default.xml");
+		InputStream default_conf_file = BigFrameInputFormat.class.getClassLoader().getResourceAsStream("default.xml");
 		XMLBigFrameInputParser parser = new XMLBigFrameInputParser();
 		BigFrameInputFormat conf = parser.importXML(default_conf_file);
 

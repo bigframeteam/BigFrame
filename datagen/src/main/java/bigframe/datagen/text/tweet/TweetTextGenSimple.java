@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Random;
 
 import bigframe.bigif.BigDataInputFormat;
-import bigframe.datagen.DataGenDriver;
 import bigframe.datagen.util.RandomSeeds;
 
 
@@ -30,14 +29,14 @@ public class TweetTextGenSimple extends TweetTextGen {
 		// TODO Auto-generated constructor stub
 
 		//System.out.println(new File(".").getAbsolutePath());
-		InputStream dictionary_file = DataGenDriver.class.getClassLoader().getResourceAsStream("AFINN-111.txt");
+		InputStream dictionary_file = TweetTextGenSimple.class.getClassLoader().getResourceAsStream("AFINN-111.txt");
 		sentiment_words = new ArrayList<String>();
 		randnum = new Random();
 		randnum.setSeed(RandomSeeds.SEEDS_TABLE[0]);
 
 		try {
 			BufferedReader br;
-			br = new BufferedReader(new BufferedReader(new InputStreamReader(dictionary_file)));
+			br = new BufferedReader(new InputStreamReader(dictionary_file));
 
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -77,17 +76,17 @@ public class TweetTextGenSimple extends TweetTextGen {
 	@Override
 	public String getNextTweet(int product_id) {
 		// TODO Auto-generated method stub
-		String tweet = String.valueOf(product_id);
+		StringBuilder tweet = new StringBuilder();
 		try {
 			for (int i = 0; i < 10; i++) {
 				int index = randnum.nextInt(num_words);
-				tweet += " " + sentiment_words.get(index);
+				tweet.append(sentiment_words.get(index)).append(" ");
 			}
 		} catch( ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
 
-		return tweet;
+		return tweet.toString();
 	}
 
 

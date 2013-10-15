@@ -3,6 +3,7 @@ package bigframe.datagen.nested.tweet;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
@@ -11,6 +12,7 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.json.simple.JSONObject;
+
 
 import bigframe.datagen.relational.tpcds.CollectTPCDSstat;
 import bigframe.datagen.relational.tpcds.CollectTPCDSstatNaive;
@@ -28,10 +30,14 @@ import bigframe.datagen.util.RandomSeeds;
  */
 public class RawTweetMapper extends
 Mapper<NullWritable, RawTweetInfoWritable, NullWritable, Text> {
-
+	
+	// Get the tweet template file
+	private final InputStream TWEET_TEMPLATE_FILE = RawTweetMapper.class.
+			getClassLoader().getResourceAsStream("tweet_template.json");
 	// private static final Logger LOG = Logger
 	// .getLogger(RawTweetGenMapper.class);
 
+	
 	@Override
 	protected void map(NullWritable ignored,
 			RawTweetInfoWritable tweet_gen_info, final Context context)
@@ -79,7 +85,7 @@ Mapper<NullWritable, RawTweetInfoWritable, NullWritable, Text> {
 		long[] non_customer_acc = tpcds_stat_collecter
 				.getNonCustTwitterAcc(customer_twitterAcc, num_twitter_user);
 
-		JSONObject tweet_json = RawTweetGenConstants.TWEET_JSON;
+		JSONObject tweet_json = RawTweetGenConstants.parseJsonFromFile(TWEET_TEMPLATE_FILE);
 
 		String textgen_name = mapreduce_config.get(
 				RawTweetGenConstants.TWEETGEN_NAME, "simple");
