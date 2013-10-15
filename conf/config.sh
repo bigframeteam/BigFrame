@@ -25,18 +25,6 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hadoop.slaves=${HADOOP_SLAVES}"
 TPCDS_LOCAL=/data/tpcds_tmp
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.local=${TPCDS_LOCAL}"
 
-
-# Global Input Data Path
-
-# HDFS path of TPCDS data
-export TPCDS_PATH=""
-
-# HDFS path of text data
-export TEXT_PATH=""
-
-# HDFS path of graph data
-export GRAPH_PATH=""
-
 # Global Output Path
 export OUTPUT_PATH=""
 

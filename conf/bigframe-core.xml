@@ -12,7 +12,7 @@
 	
 	<property>
 		<name>bigframe.datavariety</name>
-		<value>relational, nested, graph</value>
+		<value>relational, nested</value>
 		<description>
 			only relational, graph, nested data are supported.
 		</description>
@@ -133,7 +133,7 @@
 	
 	<property>
 		<name>bigframe.queryvariety</name>
-		<value>micro</value>
+		<value>macro</value>
 	</property>
 	
 	<property>
@@ -148,7 +148,7 @@
 	
 	<property>
 		<name>bigframe.queryengine.relational</name>
-		<value>hive</value>
+		<value>spark</value>
 	</property>
 	
 	<property>
@@ -158,7 +158,7 @@
 	
 	<property>
 		<name>bigframe.queryengine.nested</name>
-		<value>hadoop</value>
+		<value>spark</value>
 	</property>
 
 	<property>
