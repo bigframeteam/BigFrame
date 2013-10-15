@@ -4,17 +4,19 @@ import java.util.ArrayList
 import java.util.List
 import scala.collection.JavaConversions._
 
-import org.apache.spark.rdd.RDD
-import org.apache.spark.SparkContext
+import spark.rdd._
+import spark.SparkContext
 import SparkContext._
 
 import org.apache.log4j.Logger
-import bigframe.queries.BusinessIntelligence.nested.exploratory._
-import bigframe.queries.BusinessIntelligence.relational.exploratory._
+import bigframe.workflows.BusinessIntelligence.text.exploratory._
+import bigframe.workflows.BusinessIntelligence.relational.exploratory._
 import bigframe.bigif.WorkflowInputFormat
-import bigframe.queries.SparkRunnable
+import bigframe.workflows.SparkRunnable
 import java.io.File
-class SparkWorkflow(workIF: WorkflowInputFormat) extends Workflow(workIF) {
+
+
+class SparkWorkflow(workIF: WorkflowInputFormat) extends EngineDriver(workIF) {
   
   	final var VARIETY_KEY: String = "variety"
 	final var MIXED_VARIETY: String = "mixed"
