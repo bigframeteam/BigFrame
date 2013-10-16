@@ -3,17 +3,17 @@
 ######################### SPARK RELATED ##########################
 
 # Path of Spark installation home. 
-export SPARK_HOME=""
+export SPARK_HOME="/home/shlee0605/spark-0.8.0"
 
 # Path of Scala installation home.
-export SCALA_HOME=""
+export SCALA_HOME="/home/shlee0605/scala-2.9.3"
 
 # Spark memory parameters, defaults will be used if unspecified
 # export SPARK_MEM=6g
 # export SPARK_WORKER_MEMORY=6g
 
 # Spark connection string, available in Spark master's webUI
-export SPARK_CONNECTION_STRING="spark://localhost:7077"
+export SPARK_CONNECTION_STRING="spark://ubuntu:7077"
 
 # The Spark Home Directory
 SPARK_HOME=$SPARK_HOME

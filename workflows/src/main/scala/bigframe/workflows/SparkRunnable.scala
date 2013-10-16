@@ -1,7 +1,7 @@
 
 package bigframe.workflows
 
-import spark.SparkContext
+import org.apache.spark.SparkContext
 import SparkContext._
 
 /**

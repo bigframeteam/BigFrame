@@ -48,11 +48,17 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		relational_supportedEngine.add(Constants.HIVE);
 		relational_supportedEngine.add(Constants.SHARK);
 		relational_supportedEngine.add(Constants.HADOOP);
+		relational_supportedEngine.add(Constants.SPARK);
 		
 		graph_supportedEngine.add(Constants.HADOOP);
+		graph_supportedEngine.add(Constants.SPARK);
+
 		nested_supportedEngine.add(Constants.HADOOP);
+		nested_supportedEngine.add(Constants.SPARK);
+
 		text_supportedEngine.add(Constants.HADOOP);		
-		
+		text_supportedEngine.add(Constants.SPARK);		
+
 		querySupportEngine.put(Constants.RELATIONAL, relational_supportedEngine);
 		querySupportEngine.put(Constants.GRAPH, graph_supportedEngine);
 		querySupportEngine.put(Constants.NESTED, nested_supportedEngine);
@@ -160,6 +166,10 @@ public class BIDomainWorkflow extends DomainWorkflow {
 						hadoopWorkflow.addQuery(new 
 								bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSales(basePath)); 
 					}
+					else if(relationalEngine.equals(Constants.SPARK)) {
+						sparkWorkflow.addQuery(new 
+								bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSalesSpark(basePath)); 
+					}
 				}
 				
 				else if(dataVariety.contains(Constants.GRAPH)) {
@@ -176,6 +186,10 @@ public class BIDomainWorkflow extends DomainWorkflow {
 						hadoopWorkflow.addQuery(new 
 								bigframe.workflows.BusinessIntelligence.text.exploratory.WF_SenAnalyze(basePath));
 					}
+					else if(nestedEngine.equals(Constants.SPARK)) {
+						sparkWorkflow.addQuery(new 
+								bigframe.workflows.BusinessIntelligence.text.exploratory.WF_SenAnalyzeSpark(basePath));
+					}
 				}
 			}
 		}
@@ -191,10 +205,22 @@ public class BIDomainWorkflow extends DomainWorkflow {
 			}
 			
 			else if(queryVelocity.equals(Constants.EXPLORATORY)) {
+				//Relational, Text, Graph for Hadoop
 				if(relationalEngine.equals(Constants.HADOOP) && graphEngine.equals(Constants.HADOOP)&& 
 						nestedEngine.equals(Constants.HADOOP)) {
 					hadoopWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath));
+				}
+				
+				//Relational, Text, Graph for Spark
+				else if(relationalEngine.equals(Constants.SPARK) && graphEngine.equals(Constants.SPARK)&& 
+						nestedEngine.equals(Constants.SPARK)) {
+
+				}
+				//Relational, Text for Spark
+				else if(nestedEngine.equals(Constants.SPARK) && nestedEngine.equals(Constants.SPARK)) {
+					sparkWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RT.exploratory.WF_PromotionAnalyzeSpark(basePath));
 				}
 			}
 		}

@@ -14,17 +14,19 @@ object BigFrameBuild extends Build {
 	// Scala version
 	val SCALA_VERSION = "2.9.3"
 	
-	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, workflows, interface)
+	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, workflows, interface, sentiment)
 
 	lazy val common = Project(id = "common", base = file("common"), settings = commonSettings)
 
 	lazy val datagen = Project(id = "datagen", base = file("datagen"), settings = datagenSettings) dependsOn(common)
 
-	lazy val workflows = Project(id = "workflows", base = file("workflows"), settings = workflowsSettings) dependsOn(common)
+	lazy val workflows = Project(id = "workflows", base = file("workflows"), settings = workflowsSettings) dependsOn(common, sentiment)
 
 	lazy val qgen = Project(id = "qgen", base = file("qgen"), settings = qgenSettings) dependsOn(common, workflows)
 
 	lazy val interface = Project(id = "interface", base = file("interface"), settings = interfaceSettings) dependsOn(common)
+
+ 	lazy val sentiment = Project(id = "sentiment", base = file("sentiment"), settings = sentimentSettings)
 
 	def sharedSettings = Defaults.defaultSettings ++ Seq(
 		name := "bigframe",
@@ -46,16 +48,19 @@ object BigFrameBuild extends Build {
 		libraryDependencies ++= Seq(
       		"org.scalatest" %% "scalatest" % "1.9.1" % "test",
 	        "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-			"org.spark-project" % "spark-core_2.9.3" % SPARK_VERSION % "provided",
+	        "org.apache.spark" % "spark-core_2.9.3" % "0.8.0-incubating",
+     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.0-incubating",
 			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
-			"log4j" % "log4j" % "1.2.14" % "provided",
+			//"log4j" % "log4j" % "1.2.14" % "provided",
+			"org.slf4j" % "slf4j-log4j12" % "1.6.1",
 			"commons-configuration" % "commons-configuration" % "1.6" % "provided",
 			"commons-logging" % "commons-logging" % "1.1.1" % "provided",
 			"com.novocode" % "junit-interface" % "0.10-M2" % "test"
 		)
-	)	
+										)
+			
 
 	def rootSettings = sharedSettings ++ Seq(
 		publish := {}
@@ -72,31 +77,38 @@ object BigFrameBuild extends Build {
 	def workflowsSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-workflows",
 
-		resolvers ++= Seq(
-			"repo.codahale.com" at "http://repo.codahale.com"
-		),	
+		//resolvers ++= Seq(
+		//	"repo.codahale.com" at "http://repo.codahale.com"
+		//),	
 
 		libraryDependencies ++= Seq(
-			"com.codahale" % "jerkson_2.9.1" % "0.5.0",
-			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1"	
+			"io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
+			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1" 
 		)
 	) ++ extraAssemblySettings
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(
-		name := "bigframe-qgen",
+		name := "bigframe-qgen"
 		
-		libraryDependencies ++= Seq(
-			"org.apache.spark" % "spark-mllib_2.9.3" % "0.8.0-incubating"
-		)
-
+	//	libraryDependencies ++= Seq(
+	//		"org.apache.spark" % "spark-mllib_2.9.3" % "0.8.0-incubating"
+	//	)
 	) ++ extraAssemblySettings
 
 	def interfaceSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-interface"
 	) ++ extraAssemblySettings
 
+	def sentimentSettings = sharedSettings ++ sharedSettings ++ Seq(
+   		name := "bigframe-sentiment"
+ 	) ++ extraAssemblySettings
 
-	def extraAssemblySettings() = Seq(
-		
+	def extraAssemblySettings() = Seq(test in assembly := {}) ++ Seq(
+		mergeStrategy in assembly := {
+      		case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
+      		case m if m.toLowerCase.matches("meta-inf.*\\.sf$") => MergeStrategy.discard
+      		case "reference.conf" => MergeStrategy.concat
+      		case _ => MergeStrategy.first
+    	}
 	)
 }

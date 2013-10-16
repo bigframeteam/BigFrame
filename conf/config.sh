@@ -14,7 +14,7 @@
 ###################################################################
 
 # The Hadoop Home Directory
-HADOOP_HOME=""
+HADOOP_HOME="/home/shlee0605/hadoop-1.2.1"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hadoop.home=${HADOOP_HOME}"
 
 # The Hadoop slave file
@@ -26,7 +26,7 @@ TPCDS_LOCAL=/data/tpcds_tmp
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.local=${TPCDS_LOCAL}"
 
 # Global Output Path
-export OUTPUT_PATH=""
+export OUTPUT_PATH="hdfs://localhost:9000/test2_output"
 
 
 
