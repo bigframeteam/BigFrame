@@ -83,11 +83,11 @@ object BigFrameBuild extends Build {
 	) ++ extraAssemblySettings
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(
-		name := "bigframe-qgen",
+		name := "bigframe-qgen"
 		
-		libraryDependencies ++= Seq(
-			"org.apache.spark" % "spark-mllib_2.9.3" % "0.8.0-incubating"
-		)
+		//libraryDependencies ++= Seq(
+		//	"org.apache.spark" % "spark-mllib_2.9.3" % "0.8.0-incubating"
+		//)
 
 	) ++ extraAssemblySettings
 
