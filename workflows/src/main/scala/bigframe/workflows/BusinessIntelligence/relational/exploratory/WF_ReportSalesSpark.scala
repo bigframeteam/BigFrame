@@ -189,31 +189,29 @@ class WF_ReportSalesSpark(basePath : BaseTablePath) extends SparkRunnable {
 	* TODO: Write SQL for this workflow
 	*/
     override def run(spark_context: SparkContext): Boolean = {
-    	try {
-	    	setSparkContext(spark_context)
+    	
+		//TODO: make the fuction return false when exceptions are catched.
 
-			val promotions = promotionsMappedByItems()
+    	setSparkContext(spark_context)
 
-			val total_sales = salesPerPromotion(promotions)
+		val promotions = promotionsMappedByItems()
 
-			// load item table, tokenize it
-			val item = sc.textFile(tpcds_path+"/"+ReportSalesConstant.ItemTableName).map(t => t.split('|')) 
+		val total_sales = salesPerPromotion(promotions)
 
-			// map item_sk with product name
-			val item_mapped = item map { t => try {(t(0), t(21))} catch { case e:Exception => (t(0), "N/A") } }   
+		// load item table, tokenize it
+		val item = sc.textFile(tpcds_path+"/"+ReportSalesConstant.ItemTableName).map(t => t.split('|')) 
 
-			// join total_sales with item_mapped
-			val report = total_sales.join(item_mapped).map { t => (t._2._1._1, t._2._2, t._2._1._2) } 
+		// map item_sk with product name
+		val item_mapped = item map { t => try {(t(0), t(21))} catch { case e:Exception => (t(0), "N/A") } }   
 
-			// save the output to hdfs
-			output_path = output_path + "/spark/relational"
-			println("Workflow executed, writing the output to: " + output_path)
-	        report.saveAsTextFile(output_path)
-    	} catch{
-    		case ex: Exception => {
-            	return false
-         	}
-    	}
+		// join total_sales with item_mapped
+		val report = total_sales.join(item_mapped).map { t => (t._2._1._1, t._2._2, t._2._1._2) } 
+
+		// save the output to hdfs
+		output_path = output_path + "/spark/relational"
+		println("Workflow executed, writing the output to: " + output_path)
+        report.saveAsTextFile(output_path)
+
 		return true
   	}
 
