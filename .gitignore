@@ -4,3 +4,6 @@ target/
 .classpath
 .cache
 .settings
+
+hadoop-env.sh
+spark-env.sh

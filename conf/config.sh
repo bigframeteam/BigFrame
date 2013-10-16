@@ -14,7 +14,7 @@
 ###################################################################
 
 # The Hadoop Home Directory
-HADOOP_HOME=""
+HADOOP_HOME=$HADOOP_HOME
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hadoop.home=${HADOOP_HOME}"
 
 # The Hadoop slave file

@@ -2,7 +2,7 @@
 
 ######################### HADOOP RELATED ##########################
 # The HDFS Root Directory to store the generated data
-HDFS_ROOT_DIR=""
+HDFS_ROOT_DIR="/user/andy"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hdfs.root.dir=${HDFS_ROOT_DIR}"
 
 # The Hive HOME Directory

@@ -12,7 +12,7 @@
 #   CONF_DIR
 #   BIGFRAME_OPTS
 #
-# The user should not need to modify this script. All user-defined
+# The user should not modify this script. All user-defined
 # parameters can be set in 'conf/config.sh'.
 #
 # Author: Andy He
@@ -52,8 +52,8 @@ DATAGEN_JAR=`ls $BASE_DIR/datagen/target/scala-2.9.3/bigframe-datagen-assembly*.
 
 QGEN_JAR=`ls $BASE_DIR/qgen/target/scala-2.9.3/bigframe-qgen-assembly*.jar`
 
-QUERIES_JAR=`ls $BASE_DIR/queries/target/scala-2.9.3/bigframe-queries-assembly*.jar`
+WORKFLOWS_JAR=`ls $BASE_DIR/workflows/target/scala-2.9.3/bigframe-workflows-assembly*.jar`
 
-SENTIMENT_JAR= `ls $BASE_DIR/sentiment/target/scala-2.9.3/bigframe-queries-assembly*.jar`
+#SENTIMENT_JAR= `ls $BASE_DIR/sentiment/target/scala-2.9.3/bigframe-workflows-assembly*.jar`
 
-export QUERIES_JAR
+export $WORKFLOWS_JAR

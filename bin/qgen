@@ -24,7 +24,7 @@ BASE_PATH=$PWD
 cd $OLD_PATH
 
 QGEN_CLASSPATH=$QGEN_JAR
-QGEN_CLASSPATH+=:$QUERIES_JAR
+QGEN_CLASSPATH+=:$WORKFLOWS_JAR
 
 if [ -n "$HADOOP_HOME" ]; then
 	for jar in `find $HADOOP_HOME -name '*.jar'`; do
@@ -42,7 +42,6 @@ if [ -n "$HIVE_HOME" ]; then
 		QGEN_CLASSPATH+=:$jar
 	done
 fi
-
 
 java -cp "$QGEN_CLASSPATH" bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
 
