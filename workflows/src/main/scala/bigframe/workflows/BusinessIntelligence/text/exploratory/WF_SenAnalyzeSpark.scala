@@ -5,7 +5,6 @@ import org.apache.spark.SparkContext
 import SparkContext._
 import com.codahale.jerkson.Json._
 
-import bigframe.sentiment.NaiveSentimentExtractor
 import bigframe.workflows.BaseTablePath
 import bigframe.workflows.SparkRunnable
 import bigframe.workflows.util.SenExtractorEnum
@@ -72,7 +71,7 @@ class WF_SenAnalyzeSpark(basePath : BaseTablePath) extends SparkRunnable {
             val report = scoredTweets.reduceByKey((a, b) => (a._1, a._2 + b._2))
             .mapValues(t => t._2).sortByKey(true)
             //sc makeRDD Array("redundant")
-            
+
             println("Workflow executed, writing the output to: " + output_path)
             report.saveAsTextFile(output_path)
 
