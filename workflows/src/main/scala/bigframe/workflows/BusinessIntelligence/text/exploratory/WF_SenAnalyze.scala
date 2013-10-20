@@ -9,6 +9,7 @@ import java.util.concurrent.Future
 import bigframe.workflows.Query
 import bigframe.workflows.HadoopRunnable
 import bigframe.workflows.BaseTablePath
+
 //import bigframe.workflows.BusinessIntelligence.text.exploratory.SenAnalyzeHadoop;
 
 import org.apache.hadoop.conf.Configuration
@@ -36,7 +37,7 @@ class WF_SenAnalyze(basePath : BaseTablePath) extends Query with HadoopRunnable 
 				
 		val future = pool.submit(SenAnalyzeHadoop)
 		pool.shutdown()
-		
-		if(future.get()) true else false
+		true
+		//if(future.get()) true else false
 	}
 }

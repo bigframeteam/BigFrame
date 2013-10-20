@@ -1,4 +1,3 @@
-import sbt._
 import Keys._
 import sbtassembly.Plugin._
 import AssemblyKeys._
@@ -14,19 +13,17 @@ object BigFrameBuild extends Build {
 	// Scala version
 	val SCALA_VERSION = "2.9.3"
 	
-	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, workflows, interface, sentiment)
+	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, workflows, interface)
 
 	lazy val common = Project(id = "common", base = file("common"), settings = commonSettings)
 
 	lazy val datagen = Project(id = "datagen", base = file("datagen"), settings = datagenSettings) dependsOn(common)
 
-	lazy val workflows = Project(id = "workflows", base = file("workflows"), settings = workflowsSettings) dependsOn(common, sentiment)
+	lazy val workflows = Project(id = "workflows", base = file("workflows"), settings = workflowsSettings) dependsOn(common)
 
 	lazy val qgen = Project(id = "qgen", base = file("qgen"), settings = qgenSettings) dependsOn(common, workflows)
 
 	lazy val interface = Project(id = "interface", base = file("interface"), settings = interfaceSettings) dependsOn(common)
-
- 	lazy val sentiment = Project(id = "sentiment", base = file("sentiment"), settings = sentimentSettings)
 
 	def sharedSettings = Defaults.defaultSettings ++ Seq(
 		name := "bigframe",
@@ -98,10 +95,6 @@ object BigFrameBuild extends Build {
 	def interfaceSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-interface"
 	) ++ extraAssemblySettings
-
-	def sentimentSettings = sharedSettings ++ sharedSettings ++ Seq(
-   		name := "bigframe-sentiment"
- 	) ++ extraAssemblySettings
 
 	def extraAssemblySettings() = Seq(test in assembly := {}) ++ Seq(
 		mergeStrategy in assembly := {

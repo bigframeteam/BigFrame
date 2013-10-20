@@ -43,7 +43,7 @@ public class SenAnalyzeHadoop extends HadoopJob {
 	static class SenAnalyzeMapper1 extends Mapper<LongWritable, Text, Text, FloatWritable> {
 		
 		private SentimentExtractor senAnalyst  = SenExtractorFactory.getSenAnalyze(SenExtractorEnum.SIMPLE);
-	  	private JSONParser parser = new JSONParser();
+		private JSONParser parser = new JSONParser();
 		
 		@Override
 		protected void map(LongWritable key,

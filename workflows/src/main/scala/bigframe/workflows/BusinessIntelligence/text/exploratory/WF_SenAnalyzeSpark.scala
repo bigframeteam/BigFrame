@@ -8,12 +8,17 @@ import com.codahale.jerkson.Json._
 import bigframe.sentiment.NaiveSentimentExtractor
 import bigframe.workflows.BaseTablePath
 import bigframe.workflows.SparkRunnable
+import bigframe.workflows.util.SenExtractorEnum
+import bigframe.workflows.util.SenExtractorFactory
+import bigframe.workflows.util.SentimentExtractor
+
 
 class WF_SenAnalyzeSpark(basePath : BaseTablePath) extends SparkRunnable {
     final var OUTPUT_PATH = "OUTPUT_PATH"
     private var output_path: String = System.getenv(OUTPUT_PATH) + "/spark/nested"
-    private val _tweets_path = basePath.nested_path
     private var sc: SparkContext = _
+    private val _tweets_path = basePath.nested_path
+
     
     /**
     * Reads tweets from specified path
@@ -31,11 +36,11 @@ class WF_SenAnalyzeSpark(basePath : BaseTablePath) extends SparkRunnable {
     * Run sentiment analysis on all tweets
     */
     def addSentimentScore(tweets: RDD[(Tweet)]): RDD[(Tweet)] = {
-        val extractor = new NaiveSentimentExtractor()
-
+    	val extractor = SenExtractorFactory.getSenAnalyze(SenExtractorEnum.SIMPLE)
+    	
         return tweets.map( t => new Tweet(t.text, t.id, 
          t.created_at, t.user, t.entities, try{ 
-         extractor.extract(t.text).toDouble } catch { 
+         extractor.getSentiment(t.text).toDouble } catch { 
            case e: Exception => 0.0 }) )
     }
    
@@ -65,14 +70,16 @@ class WF_SenAnalyzeSpark(basePath : BaseTablePath) extends SparkRunnable {
 
             // sum up the sentiment scores for each product
             val report = scoredTweets.reduceByKey((a, b) => (a._1, a._2 + b._2))
-            .mapValues(t => t._2)
+            .mapValues(t => t._2).sortByKey(true)
             //sc makeRDD Array("redundant")
+            
             println("Workflow executed, writing the output to: " + output_path)
             report.saveAsTextFile(output_path)
 
 
         } catch{
             case ex: Exception => {
+            	ex.printStackTrace()
                 return false
             }
         }

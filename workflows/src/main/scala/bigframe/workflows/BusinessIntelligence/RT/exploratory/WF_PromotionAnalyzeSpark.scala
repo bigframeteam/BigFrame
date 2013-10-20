@@ -15,6 +15,8 @@ class WF_PromotionAnalyzeSpark(basePath : BaseTablePath) extends SparkRunnable {
     private var output_path: String = System.getenv(OUTPUT_PATH) + "/spark/macro_rel_nested"
     
 	def run(spark_context: SparkContext): Boolean  = {
+		//TODO: make the fuction return false when exceptions are catched.
+
 		val tpcdsExecutor: WF_ReportSalesSpark = new WF_ReportSalesSpark(basePath)
 		val textExecutor: WF_SenAnalyzeSpark = new WF_SenAnalyzeSpark(basePath)
 

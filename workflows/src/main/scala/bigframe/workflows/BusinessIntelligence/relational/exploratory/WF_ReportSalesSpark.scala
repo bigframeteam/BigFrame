@@ -208,7 +208,6 @@ class WF_ReportSalesSpark(basePath : BaseTablePath) extends SparkRunnable {
 		val report = total_sales.join(item_mapped).map { t => (t._2._1._1, t._2._2, t._2._1._2) } 
 
 		// save the output to hdfs
-		output_path = output_path + "/spark/relational"
 		println("Workflow executed, writing the output to: " + output_path)
         report.saveAsTextFile(output_path)
 
@@ -217,7 +216,5 @@ class WF_ReportSalesSpark(basePath : BaseTablePath) extends SparkRunnable {
 
   	def setSparkContext(spark_context: SparkContext) {
         sc = spark_context
-    }
-
-  
+    }  
 }
