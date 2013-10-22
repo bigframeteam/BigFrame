@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import bigframe.util.Constants;
+
 /**
  * A class contain some constants used for identifying configuration properties.
  * 
@@ -24,15 +26,34 @@ public class BigConfConstants {
 	public static final String BIGFRAME_HADOOP_HOME = "bigframe.hadoop.home";
 	public static final String BIGFRAME_HDFS_ROOTDIR = "bigframe.hdfs.root.dir";
 	public static final String BIGFRAME_HADOOP_SLAVE = "bigframe.hadoop.slaves";
+	
+	/**
+	 * Hive specific
+	 */
 	public static final String BIGFRAME_HIVE_HOME = "bigframe.hive.home";
 	public static final String BIGFRAME_HIVE_JDBC_SERVER = "bigframe.hive.jdbc.server";
 	
 	/**
-	 * Spark specific
+	 * Shark specific
 	 */
 	public static final String BIGFRAME_SHARK_HOME = "bigframe.shark.home";
+	
+	/**
+	 * Spark specific
+	 */
 	public static final String BIGFRAME_SPARK_HOME = "bigframe.spark.home";
 	public static final String BIGFRAME_SPARK_MASTER = "bigframe.spark.master";
+	
+	
+	/**
+	 * Vertica specific
+	 */
+	public static final String BIGFRAME_VERTICA_HOSTNAMES = "bigframe.vertica.hostnames";
+	public static final String BIGFRAME_VERTICA_PORT = "bigframe.vertica.port";
+	public static final String BIGFRAME_VERTICA_USERNAME = "bigframe.vertica.username";
+	public static final String BIGFRAME_VERTICA_PASSWORD = "bigframe.vertica.password";
+	public static final String BIGFRAME_VERTICA_DATABASE = "bigframe.vertica.database";
+	
 	
 	// Properties for external scripts
 	public static final String BIGFRAME_TPCDS_LOCAL = "bigframe.tpcds.local";
@@ -89,12 +110,12 @@ public class BigConfConstants {
 	public static final String BIGFRAME_QUERYENGINE_TEXT = "bigframe.queryengine.text";
 	
 	// Constants for Configuration parameters
-	static final String[] DATATYPES = new String[] { "relational", "graph",
-		"nested", "text" };
+	static final String[] DATATYPES = new String[] { Constants.RELATIONAL, Constants.GRAPH,
+		Constants.NESTED, Constants.TEXT };
 	public static final Set<String> DATAVARIETY = new HashSet<String>(
 			Arrays.asList(DATATYPES));
 
-	static final String[] QUERYTYPES = new String[] { "exploratory", "continuous" };
+	static final String[] QUERYTYPES = new String[] { Constants.EXPLORATORY, Constants.CONTINUOUS };
 	public static final Set<String> QUERYVELOCITY = new HashSet<String>(
 			Arrays.asList(QUERYTYPES));
 

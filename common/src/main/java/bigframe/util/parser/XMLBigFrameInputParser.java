@@ -1,4 +1,4 @@
-package bigframe.bigif;
+package bigframe.util.parser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import bigframe.util.XMLBaseParser;
+import bigframe.bigif.BigDataInputFormat;
+import bigframe.bigif.BigFrameInputFormat;
+import bigframe.bigif.BigQueryInputFormat;
+import bigframe.bigif.WorkflowInputFormat;
 
 
 

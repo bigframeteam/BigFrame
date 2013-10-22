@@ -71,7 +71,7 @@ public class JoinSenAndInfluHadoop extends HadoopJob {
 	}
 	
 	@Override
-	public Boolean run(Configuration mapred_config) {
+	public Boolean runHadoop(Configuration mapred_config) {
 		// TODO Auto-generated method stub
 		
 		if(mapred_config == null)

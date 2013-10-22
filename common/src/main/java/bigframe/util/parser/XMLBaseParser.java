@@ -1,4 +1,4 @@
-package bigframe.util;
+package bigframe.util.parser;
 
 import java.io.File;
 import java.io.FileInputStream;

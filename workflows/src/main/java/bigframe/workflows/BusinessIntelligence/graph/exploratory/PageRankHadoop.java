@@ -17,7 +17,7 @@ public class PageRankHadoop extends HadoopJob {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Boolean run(Configuration mapred_config) {
+	public Boolean runHadoop(Configuration mapred_config) {
 		
 		if(mapred_config == null)
 			mapred_config = mapred_config();

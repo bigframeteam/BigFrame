@@ -53,8 +53,6 @@ public class SimpleTweetGenDist extends TweetGenDist {
 		//Random choose a time stamp
 		long timestamp = time_begin + random.nextInt((int)(time_end - time_begin + 1));
 		
-
-		
 		double flip;
 		flip = random.nextDouble();
 		

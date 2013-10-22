@@ -85,7 +85,7 @@ public class SplitByProdHadoopImpl1 extends HadoopJob {
 	
 	
 	@Override
-	public Boolean run(Configuration mapred_config) {
+	public Boolean runHadoop(Configuration mapred_config) {
 		
 		if(mapred_config == null)
 			mapred_config = mapred_config();

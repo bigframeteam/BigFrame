@@ -1,7 +1,4 @@
-package bigframe.workflows
-
-import java.io.IOException
-
+package bigframe.workflows.runnable
 import org.apache.hadoop.conf.Configuration
 
 /**
@@ -15,5 +12,5 @@ trait HadoopRunnable {
 	/**
 	 * Run true is the query finish normally.
 	 */
-	def run(mapred_config: Configuration = null): java.lang.Boolean
+	def runHadoop(mapred_config: Configuration = null): java.lang.Boolean
 }

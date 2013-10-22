@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bigframe.bigif.WorkflowInputFormat;
-import bigframe.workflows.SharkRunnable;
+import bigframe.workflows.runnable.SharkRunnable;
 
 
 public class SharkEngineDriver extends EngineDriver {
@@ -65,7 +65,7 @@ public class SharkEngineDriver extends EngineDriver {
 		System.out.println("Running Shark Query");
 		
 		for(SharkRunnable query : queries) {
-			if(query.run(connection))
+			if(query.runShark(connection))
 				System.out.println("Query Finished");
 			else
 				System.out.println("Query failed");

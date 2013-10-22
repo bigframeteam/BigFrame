@@ -1,6 +1,7 @@
 package bigframe.qgen.factory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Set;
 
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigFrameInputFormat;
+import bigframe.bigif.appDomainInfo.BIDomainInfo;
 import bigframe.qgen.engineDriver.HadoopEngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
 import bigframe.qgen.engineDriver.SharkEngineDriver;
@@ -21,7 +23,7 @@ import com.sun.org.apache.commons.logging.Log;
 import com.sun.org.apache.commons.logging.LogFactory;
 
 /**
- * Encapsulate all information of the workflow of a BI domain.
+ * Encapsulate all information of the workflow for the BI domain.
  * 
  * @author andy
  *
@@ -32,31 +34,31 @@ public class BIDomainWorkflow extends DomainWorkflow {
 	
 	public BIDomainWorkflow(BigFrameInputFormat bigframeIF) {
 		super(bigframeIF);
-		
-		queryVelocity.add(Constants.CONTINUOUS);
-		queryVelocity.add(Constants.EXPLORATORY);
-		
-		queryVariety.add(Constants.MICRO);
-		queryVariety.add(Constants.MACRO);
-		
-		// The engines currently supported for each type of query
-		Set<String> relational_supportedEngine = new HashSet<String>();
-		Set<String> graph_supportedEngine = new HashSet<String>();
-		Set<String> nested_supportedEngine = new HashSet<String>();
-		Set<String> text_supportedEngine = new HashSet<String>();
-		
-		relational_supportedEngine.add(Constants.HIVE);
-		relational_supportedEngine.add(Constants.SHARK);
-		relational_supportedEngine.add(Constants.HADOOP);
-		
-		graph_supportedEngine.add(Constants.HADOOP);
-		nested_supportedEngine.add(Constants.HADOOP);
-		text_supportedEngine.add(Constants.HADOOP);		
-		
-		querySupportEngine.put(Constants.RELATIONAL, relational_supportedEngine);
-		querySupportEngine.put(Constants.GRAPH, graph_supportedEngine);
-		querySupportEngine.put(Constants.NESTED, nested_supportedEngine);
-		querySupportEngine.put(Constants.TEXT, text_supportedEngine);
+		domainInfo = new BIDomainInfo();
+//		queryVelocity.add(Constants.CONTINUOUS);
+//		queryVelocity.add(Constants.EXPLORATORY);
+//		
+//		queryVariety.add(Constants.MICRO);
+//		queryVariety.add(Constants.MACRO);
+//		
+//		// The engines currently supported for each type of query
+//		Set<String> relational_supportedEngine = new HashSet<String>();
+//		Set<String> graph_supportedEngine = new HashSet<String>();
+//		Set<String> nested_supportedEngine = new HashSet<String>();
+//		Set<String> text_supportedEngine = new HashSet<String>();
+//		
+//		relational_supportedEngine.add(Constants.HIVE);
+//		relational_supportedEngine.add(Constants.SHARK);
+//		relational_supportedEngine.add(Constants.HADOOP);
+//		
+//		graph_supportedEngine.add(Constants.HADOOP);
+//		nested_supportedEngine.add(Constants.HADOOP);
+//		text_supportedEngine.add(Constants.HADOOP);		
+//		
+//		querySupportEngine.put(Constants.RELATIONAL, relational_supportedEngine);
+//		querySupportEngine.put(Constants.GRAPH, graph_supportedEngine);
+//		querySupportEngine.put(Constants.NESTED, nested_supportedEngine);
+//		querySupportEngine.put(Constants.TEXT, text_supportedEngine);
 	}
 
 	@Override
@@ -221,6 +223,10 @@ public class BIDomainWorkflow extends DomainWorkflow {
 	protected boolean isBigIFvalid() {
 		// TODO Auto-generated method stub
 		// Need to do a lot of sanity tests, including:
+		
+		Set<String> queryVariety = domainInfo.getQueryVariety();
+		Set<String> queryVelocity = domainInfo.getQueryVelocity();
+		Map<String, Set<String> > querySupportEngine = domainInfo.getQuerySupportEngine();
 		
 		if (workflowIF.getHadoopHome().equals("")) {
 			LOG.error("Hadoop Home is needed, please set!");

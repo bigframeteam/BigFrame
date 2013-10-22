@@ -1,4 +1,4 @@
-package bigframe.workflows
+package bigframe.workflows.runnable
 
 import java.sql.Connection
 
@@ -18,5 +18,5 @@ trait HiveRunnable {
 	/**
 	 * Run the benchmark query
 	 */
-	def run(connection: Connection): Boolean
+	def runHive(connection: Connection): Boolean
 }

@@ -8,9 +8,9 @@ import java.io.IOException
 import org.apache.hadoop.conf.Configuration
 import bigframe.workflows.BaseTablePath
 import bigframe.workflows.Query
-import bigframe.workflows.HiveRunnable
-import bigframe.workflows.SharkRunnable
-import bigframe.workflows.HadoopRunnable
+import bigframe.workflows.runnable.HiveRunnable
+import bigframe.workflows.runnable.SharkRunnable
+import bigframe.workflows.runnable.HadoopRunnable
 
 
 import scala.collection.JavaConversions._
@@ -211,7 +211,7 @@ class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable w
 					    "c_birth_country           string," +
 					    "c_login                   string," +
 					    "c_email_address           string," +
-					    "c_last_review_date        string" +
+					    "c_last_review_date_sk        string" +
 					")" + 
 					"row format delimited fields terminated by \'|\' " + "\n" +
 					"location " + "\'" + customerHDFSPath + "\'"
@@ -306,7 +306,7 @@ class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable w
 	/**
 	 * Submit the query to hiveserver.
 	 */
-	override def run(connection: Connection): Boolean = {
+	override def runHive(connection: Connection): Boolean = {
 		try {
 			val stmt = connection.createStatement();
 			
@@ -321,13 +321,26 @@ class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable w
 	}
 	
 	/**
+	 * Submit the query to hiveserver by shark.
+	 *
+	 */
+	override def runShark(connection: Connection): Boolean = {
+		
+		/**
+		 *  Shark is compatible with Hive.
+		 */
+		runHive(connection);
+	}
+	
+	
+	/**
 	 * Run the query in Hadoop.
 	 */
-	override def run(mapred_config: Configuration): java.lang.Boolean = {
+	override def runHadoop(mapred_config: Configuration): java.lang.Boolean = {
 		try {
 			val promotedSKs = Set(new java.lang.Integer(1), new java.lang.Integer(2), new java.lang.Integer(3))
 			val reportsales = new ReportSalesHadoop(basePath.relational_path, promotedSKs, mapred_config)
-			return reportsales.run(mapred_config)
+			return reportsales.runHadoop(mapred_config)
 			
 		} catch {
 			case ioe: 

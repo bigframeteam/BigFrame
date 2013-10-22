@@ -67,7 +67,7 @@ object BigFrameBuild extends Build {
 
 	def datagenSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-datagen"
-	) ++ extraAssemblySettings
+	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 
 	def workflowsSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-workflows",
@@ -80,7 +80,7 @@ object BigFrameBuild extends Build {
 			"com.codahale" % "jerkson_2.9.1" % "0.5.0",
 			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1"	
 		)
-	) ++ extraAssemblySettings
+	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-qgen"
@@ -89,14 +89,20 @@ object BigFrameBuild extends Build {
 		//	"org.apache.spark" % "spark-mllib_2.9.3" % "0.8.0-incubating"
 		//)
 
-	) ++ extraAssemblySettings
+	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 
 	def interfaceSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-interface"
-	) ++ extraAssemblySettings
+	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 
 
 	def extraAssemblySettings() = Seq(
 		
+	)
+
+	def excludeJARfromCOMMON() = Seq(
+		excludedJars in assembly <<= (fullClasspath in assembly) map { cp => 
+		  cp filter {_.data.getName == "hadoop-vertica-SNAPSHOT.jar"}
+		}
 	)
 }

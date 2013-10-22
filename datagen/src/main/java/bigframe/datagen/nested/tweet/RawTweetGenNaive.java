@@ -21,6 +21,7 @@ import bigframe.datagen.relational.tpcds.TpcdsPromotionInfo;
 import bigframe.datagen.text.TextGenFactory;
 import bigframe.datagen.text.tweet.TweetTextGen;
 import bigframe.datagen.util.RandomSeeds;
+import bigframe.util.parser.JsonParser;
 
 /**
  * Single machine raw tweet generator.
@@ -76,7 +77,7 @@ public class RawTweetGenNaive extends RawTweetGen {
 			System.exit(-1);
 		}
 
-		JSONObject tweet_json = RawTweetGenConstants.parseJsonFromFile(TWEET_TEMPLATE_FILE);
+		JSONObject tweet_json = JsonParser.parseJsonFromFile(TWEET_TEMPLATE_FILE);
 		
 		CollectTPCDSstatNaive tpcds_stat_collecter = new CollectTPCDSstatNaive();
 		tpcds_stat_collecter.genTBLonHDFS(conf, (int) targetGB, RawTweetGenConstants.PROMOTION_TBL);

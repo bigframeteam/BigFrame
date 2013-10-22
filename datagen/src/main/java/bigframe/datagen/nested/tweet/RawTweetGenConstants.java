@@ -52,25 +52,25 @@ public class RawTweetGenConstants {
 	public static String TWEET_BEGINDATE = "1997-01-01";
 	public static String TWEET_ENDDATE = "1998-01-01";
 
-	public static JSONObject parseJsonFromFile(InputStream file) {
-		JSONParser parser = new JSONParser();
-		try {
-
-			Object obj = parser.parse(new BufferedReader(new InputStreamReader(file)));
-
-			JSONObject jsonObject = (JSONObject) obj;
-
-			return jsonObject;
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
-	}
+//	public static JSONObject parseJsonFromFile(InputStream file) {
+//		JSONParser parser = new JSONParser();
+//		try {
+//
+//			Object obj = parser.parse(new BufferedReader(new InputStreamReader(file)));
+//
+//			JSONObject jsonObject = (JSONObject) obj;
+//
+//			return jsonObject;
+//
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		return null;
+//	}
 }

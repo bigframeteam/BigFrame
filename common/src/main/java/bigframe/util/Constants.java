@@ -22,6 +22,8 @@ public class Constants {
 	public static String SHARK = "shark";
 	public static String SPARK = "spark";
 	
+	public static String VERTICA = "vertica";
+	
 	
 	public static String MICRO = "micro";
 	public static String MACRO = "macro";

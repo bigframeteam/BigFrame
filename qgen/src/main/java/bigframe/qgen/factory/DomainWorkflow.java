@@ -10,6 +10,7 @@ import bigframe.bigif.BigDataInputFormat;
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.BigQueryInputFormat;
 import bigframe.bigif.WorkflowInputFormat;
+import bigframe.bigif.appDomainInfo.DomainInfo;
 import bigframe.qgen.engineDriver.EngineDriver;
 
 /**
@@ -27,14 +28,16 @@ import bigframe.qgen.engineDriver.EngineDriver;
  *
  */
 public abstract class DomainWorkflow {
-	protected Set<String> queryVariety = new HashSet<String>();
-	protected Set<String> queryVelocity = new HashSet<String>();
-	protected Map<String, Set<String> > querySupportEngine = new HashMap<String, Set<String> >();
+//	protected Set<String> queryVariety = new HashSet<String>();
+//	protected Set<String> queryVelocity = new HashSet<String>();
+//	protected Map<String, Set<String> > querySupportEngine = new HashMap<String, Set<String> >();
 	
 	
 	protected BigDataInputFormat bigdataIF;
 	protected BigQueryInputFormat bigqueryIF;
 	protected WorkflowInputFormat workflowIF;
+	
+	protected DomainInfo domainInfo;
 	
 	public DomainWorkflow(BigFrameInputFormat bigframeIF) {
 		bigdataIF = bigframeIF.getBigDataInputFormat();
@@ -42,17 +45,17 @@ public abstract class DomainWorkflow {
 		workflowIF = bigframeIF.getWorkflowInputFormat();
 	}
 	
-	public boolean containQueryVariety(String variety) {
-		return queryVariety.contains(variety);
-	}
-	
-	public boolean containQueryVelocity(String velocity) {
-		return queryVelocity.contains(velocity);
-	}
-	
-	public boolean supportEngine(String dataType, String engine) {
-		return querySupportEngine.get(dataType).contains(engine);
-	}
+//	public boolean containQueryVariety(String variety) {
+//		return queryVariety.contains(variety);
+//	}
+//	
+//	public boolean containQueryVelocity(String velocity) {
+//		return queryVelocity.contains(velocity);
+//	}
+//	
+//	public boolean supportEngine(String dataType, String engine) {
+//		return querySupportEngine.get(dataType).contains(engine);
+//	}
 	
 	public abstract List<EngineDriver> getWorkflows();
 	

@@ -9,7 +9,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
 
 import bigframe.bigif.WorkflowInputFormat;
-import bigframe.workflows.HadoopRunnable;
+import bigframe.workflows.runnable.HadoopRunnable;
 
 
 /**
@@ -43,7 +43,7 @@ public class HadoopEngineDriver extends EngineDriver {
 		System.out.println("Running Hadoop Query");
 		for(HadoopRunnable query : queries) {
 			init();
-			if(query.run(mapred_config))
+			if(query.runHadoop(mapred_config))
 				System.out.println("Query Finished");
 			else
 				System.out.println("Query failed");

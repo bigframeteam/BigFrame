@@ -12,7 +12,7 @@ import org.apache.log4j.Logger
 import bigframe.workflows.BusinessIntelligence.text.exploratory._
 import bigframe.workflows.BusinessIntelligence.relational.exploratory._
 import bigframe.bigif.WorkflowInputFormat
-import bigframe.workflows.SparkRunnable
+import bigframe.workflows.runnable.SparkRunnable
 import java.io.File
 
 
@@ -62,7 +62,7 @@ class SparkWorkflow(workIF: WorkflowInputFormat) extends EngineDriver(workIF) {
 			val sc = new SparkContext(spark_connection_string, "BigFrame",
 						spark_home_string, Seq(jar_path_string))
 			println("Set the context: " + sc)
-			query.run(sc)
+			query.runSpark(sc)
 		}
 	}
 	

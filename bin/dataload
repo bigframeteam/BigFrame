@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+###################################################################
+# The Datagen command script
+#
+#
+# The user should not need to modify this script. All user-defined
+# parameters can be set in 'conf/config.sh'.
+#
+# Author: Andy He
+# Date:   Jun 17, 2013
+###################################################################
+
+
+# Perform common tasks like Load configurations and initializations
+bin=`dirname "$0"`
+. "$bin"/common.sh
+
+# Get the bigframe base dir
+OLD_PATH=$PWD
+cd $bin
+cd ..
+BASE_PATH=$PWD
+cd $OLD_PATH
+
+DATALOAD_CLASSPATH=$COMMON_JAR
+
+for jar in `find $HADOOP_HOME -name '*.jar'`; do
+	DATALOAD_CLASSPATH+=:$jar
+done
+
+
+for jar in `find $HADOOP_HOME/lib -name '*.jar'`; do
+	DATALOAD_CLASSPATH+=:$jar
+done
+
+java -cp "$DATALOAD_CLASSPATH" bigframe.util.dataloader.DataLoaderDriver $BIGFRAME_OPTS "$@"

@@ -18,8 +18,8 @@ import org.apache.commons.cli.ParseException;
 
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.BigConfConstants;
-import bigframe.bigif.XMLBigFrameInputParser;
 import bigframe.datagen.factory.DatagenFactory;
+import bigframe.util.parser.XMLBigFrameInputParser;
 
 
 

@@ -40,6 +40,9 @@ CONF_DIR=$BASE_DIR/conf
 # Get the user-defined spark parameters
 . "$BASE_DIR"/conf/spark-env.sh
 
+# Get the user-defined vertica parameters
+. "$BASE_DIR"/conf/vertica-env.sh
+
 
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.script=${TPCDS_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.singletblgen.script=${GEN_PROMTTBL_SCRIPT}"

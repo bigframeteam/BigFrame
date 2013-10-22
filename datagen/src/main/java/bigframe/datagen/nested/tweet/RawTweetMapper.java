@@ -21,6 +21,7 @@ import bigframe.datagen.relational.tpcds.TpcdsPromotionInfo;
 import bigframe.datagen.text.TextGenFactory;
 import bigframe.datagen.text.tweet.TweetTextGen;
 import bigframe.datagen.util.RandomSeeds;
+import bigframe.util.parser.JsonParser;
 
 /**
  * Mapper for generating a specific time range of tweets.
@@ -85,7 +86,7 @@ Mapper<NullWritable, RawTweetInfoWritable, NullWritable, Text> {
 		long[] non_customer_acc = tpcds_stat_collecter
 				.getNonCustTwitterAcc(customer_twitterAcc, num_twitter_user);
 
-		JSONObject tweet_json = RawTweetGenConstants.parseJsonFromFile(TWEET_TEMPLATE_FILE);
+		JSONObject tweet_json = JsonParser.parseJsonFromFile(TWEET_TEMPLATE_FILE);
 
 		String textgen_name = mapreduce_config.get(
 				RawTweetGenConstants.TWEETGEN_NAME, "simple");

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bigframe.bigif.WorkflowInputFormat;
-import bigframe.workflows.HiveRunnable;
+import bigframe.workflows.runnable.HiveRunnable;
 
 /**
  * A class to control the workflow running on hvie system.
@@ -67,7 +67,7 @@ public class HiveEngineDriver extends EngineDriver {
 		System.out.println("Running Hive Query");
 		
 		for(HiveRunnable query : queries) {
-			if(query.run(connection))
+			if(query.runHive(connection))
 				System.out.println("Query Finished");
 			else
 				System.out.println("Query failed");

@@ -7,7 +7,7 @@ import java.util.concurrent.{Executors, ExecutorService}
 import java.util.concurrent.Future
 
 import bigframe.workflows.Query
-import bigframe.workflows.HadoopRunnable
+import bigframe.workflows.runnable.HadoopRunnable
 import bigframe.workflows.BaseTablePath
 //import bigframe.workflows.BusinessIntelligence.text.exploratory.SenAnalyzeHadoop;
 
@@ -29,7 +29,7 @@ class WF_SenAnalyze(basePath : BaseTablePath) extends Query with HadoopRunnable 
 	 * Use a executor to submit the query. It is useful when
 	 * the query is a complex DAG.
 	 */
-	override def run(mapred_config: Configuration): java.lang.Boolean = {
+	override def runHadoop(mapred_config: Configuration): java.lang.Boolean = {
 		val SenAnalyzeHadoop = new SenAnalyzeHadoop(tweet_dir, mapred_config)
 		
 		val pool: ExecutorService = Executors.newFixedThreadPool(1)

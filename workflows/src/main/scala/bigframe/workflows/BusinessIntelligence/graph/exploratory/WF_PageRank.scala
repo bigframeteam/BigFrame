@@ -1,10 +1,10 @@
 package bigframe.workflows.BusinessIntelligence.graph.exploratory
 
 import org.apache.hadoop.conf.Configuration
-import bigframe.workflows.HadoopRunnable
+import bigframe.workflows.runnable.HadoopRunnable
 
 class WF_PageRank(val graph_path: String) extends HadoopRunnable {
 
-	def run(mapred_config: Configuration): java.lang.Boolean = { false }
+	def runHadoop(mapred_config: Configuration): java.lang.Boolean = { false }
 
 }

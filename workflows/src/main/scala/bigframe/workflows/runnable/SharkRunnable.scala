@@ -1,4 +1,4 @@
-package bigframe.workflows
+package bigframe.workflows.runnable
 
 import java.sql.Connection
 
@@ -17,5 +17,5 @@ trait SharkRunnable {
 	/**
 	 * Run the benchmakr query
 	 */
-	def run(connection: Connection): Boolean
+	def runShark(connection: Connection): Boolean
 }
