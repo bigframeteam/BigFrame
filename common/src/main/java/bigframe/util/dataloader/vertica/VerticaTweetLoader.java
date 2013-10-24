@@ -91,12 +91,44 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 					record.setFromString("user_id", user_id.toString());
 					record.setFromString("text", text);
 				
+					context.write(new Text(tableName), record);
+					
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+					
 				
-				context.write(new Text(tableName), record);
+			}
+			else if(tableName.equals("entities")) {
+				String tweet_id = (String) tweet_json.get("id");
+				
+				try {
+
+
+				
+					JSONObject entities_json = (JSONObject) tweet_json.get("entities");
+					JSONArray hashtags = (JSONArray) entities_json.get("hashtags");
+					
+					if (hashtags.isEmpty()){
+						record.setFromString("tweet_id", tweet_id);
+						record.setFromString("hashtag", "");
+						context.write(new Text(tableName), record);
+					}
+					//String hashtags_str = hashtags.toString().substring(1,hashtags.toString().length()-1);
+					else {
+						for(Object tag : hashtags) {
+							String tag_str = (String) tag;
+							
+							record.setFromString("tweet_id", tweet_id);
+							record.setFromString("hashtag", tag_str);
+							context.write(new Text(tableName), record);
+						}				
+					}
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 			}
 			
@@ -145,7 +177,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 		 
 		    if(table.equals("entities"))
 			    VerticaOutputFormat.setOutput(job, "entities", true, "tweet_id int", "urls varchar(100)",
-			    		"hashtags varchar(100)", "user_mentions varchar(200)");
+			    		"hashtag varchar(50)", "user_mentions varchar(200)");
 		   
 		    else if(table.equals("user"))
 			    VerticaOutputFormat.setOutput(job, "user", true, "profile_sidebar_border_color char(20)", 

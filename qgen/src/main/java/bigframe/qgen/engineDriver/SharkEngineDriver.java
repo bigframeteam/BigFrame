@@ -46,7 +46,7 @@ public class SharkEngineDriver extends EngineDriver {
 				System.exit(1);
 			}
 			for(SharkRunnable query : queries) {
-				query.prepareTables(connection);
+				query.prepareSharkTables(connection);
 			}
 		
 		} catch (SQLException e) {

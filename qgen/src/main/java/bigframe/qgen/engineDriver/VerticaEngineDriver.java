@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import bigframe.bigif.WorkflowInputFormat;
+import bigframe.workflows.runnable.HiveRunnable;
 import bigframe.workflows.runnable.SharkRunnable;
 import bigframe.workflows.runnable.VerticaRunnable;
 
@@ -19,7 +20,7 @@ public class VerticaEngineDriver extends EngineDriver {
 	private static final Logger LOG = Logger.getLogger(HadoopEngineDriver.class);
 	private List<VerticaRunnable> queries = new ArrayList<VerticaRunnable>();
 	
-	private static String driverName = "com.vertica.jdbc.driver";
+	private static String driverName = "com.vertica.jdbc.Driver";
 	
 	public VerticaEngineDriver(WorkflowInputFormat workIF) {
 		super(workIF);
@@ -29,7 +30,7 @@ public class VerticaEngineDriver extends EngineDriver {
 	@Override
 	public int numOfQueries() {
 		// TODO Auto-generated method stub
-		return 0;
+		return queries.size();
 	}
 
 	@Override
@@ -43,12 +44,18 @@ public class VerticaEngineDriver extends EngineDriver {
         }
 
 		try {
-			connection = DriverManager.getConnection(workIF.getHiveJDBCServer(), "", "");
+			connection = DriverManager.getConnection(workIF.getVerticaJDBCServer(), 
+					workIF.getVerticaUserName(), workIF.getVerticaPassword());
     	  
 			if(connection == null) {
 				System.out.println("Cannot connect to JDBC server! " +
-						"Make sure the SharkServer is running!");
+						"Make sure Vertica is running!");
 				System.exit(1);
+			}
+				
+			for(VerticaRunnable query : queries) {
+				System.out.println("Prepare tables!!!");
+				query.prepareVerticaTables(connection);
 			}
 
 		

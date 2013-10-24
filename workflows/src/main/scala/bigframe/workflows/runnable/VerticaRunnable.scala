@@ -10,6 +10,11 @@ import java.sql.Connection
 trait VerticaRunnable {
 
 	/**
+	 * Prepare the base tables before actually run the vertica query
+	 */
+	def prepareVerticaTables(connection: Connection): Unit
+	
+	/**
 	 * Run the benchmark query
 	 */
 	def runVertica(connection: Connection): Boolean

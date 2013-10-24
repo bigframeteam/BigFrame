@@ -12,7 +12,7 @@ trait SharkRunnable {
 	/**
 	 * Prepare the base tables before actually run the shark query
 	 */
-	def prepareTables(connection: Connection): Unit
+	def prepareSharkTables(connection: Connection): Unit
 	
 	/**
 	 * Run the benchmakr query

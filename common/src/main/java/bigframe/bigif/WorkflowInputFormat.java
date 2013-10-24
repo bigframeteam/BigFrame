@@ -28,6 +28,8 @@ public class WorkflowInputFormat extends Config {
 	private Integer VERTICA_PORT = 0;
 	private String VERTICA_USERNAME = "";
 	private String VERTICA_PASSWORD = "";
+	private String VERTICA_JDBC_SERVER = "";
+	private String VERTICA_HOME = "";
 	
 	
 	public WorkflowInputFormat() {
@@ -80,6 +82,14 @@ public class WorkflowInputFormat extends Config {
 	
 	public Integer getVerticaPort() {
 		return VERTICA_PORT;
+	}
+	
+	public String getVerticaJDBCServer() {
+		return VERTICA_JDBC_SERVER;
+	}
+	
+	public String getVerticaHome(){
+		return VERTICA_HOME;
 	}
 	
 	public void reload() {
@@ -141,6 +151,14 @@ public class WorkflowInputFormat extends Config {
 			else if (key.equals(BigConfConstants.BIGFRAME_VERTICA_PORT)) {
 				VERTICA_PORT = Integer.parseInt(value);
 			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_VERTICA_JDBC_SERVER)) {
+				VERTICA_JDBC_SERVER = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_VERTICA_HOME)) {
+				VERTICA_HOME = value;
+			}
 		}
 		
 	}
@@ -151,6 +169,7 @@ public class WorkflowInputFormat extends Config {
 		System.out.println("Hadoop Home:" + HADOOP_HOME);
 		System.out.println("Hadoop Root Dir: " + HDFS_ROOT_DIR);
 		System.out.println("Hive Home: " + HIVE_HOME);
+		System.out.println("Hive JDBC Server: " + HIVE_JDBC_SERVER);
 		System.out.println("Shark Home: " + SHARK_HOME);
 		System.out.println("Spark Home: " + SPARK_HOME);
 		System.out.println("Spark MASTER: " + SPARK_MASTER);
@@ -159,5 +178,6 @@ public class WorkflowInputFormat extends Config {
 		System.out.println("Vertica User Name: " + VERTICA_USERNAME);
 		System.out.println("Vertica Password: " + VERTICA_PASSWORD);
 		System.out.println("Vertica Port: " + VERTICA_PORT);
+		System.out.println("Vertica JDBC Server: " + VERTICA_JDBC_SERVER);
 	}
 }

@@ -25,3 +25,7 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.vertica.username=${VERTICA_USERNAME}"
 VERTICA_PASSWORD="bigframe"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.vertica.password=${VERTICA_PASSWORD}"
 
+# The JDBC Server
+VERTICA_JDBC_SERVER="jdbc:vertica://VerticaHost:5433/bigframe"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.vertica.jdbc.server=${VERTICA_JDBC_SERVER}"
+

@@ -11,6 +11,8 @@ import bigframe.workflows.Query
 import bigframe.workflows.runnable.HiveRunnable
 import bigframe.workflows.runnable.SharkRunnable
 import bigframe.workflows.runnable.HadoopRunnable
+import bigframe.workflows.runnable.VerticaRunnable
+
 
 
 import scala.collection.JavaConversions._
@@ -20,7 +22,8 @@ import scala.collection.JavaConversions._
  * @author andy
  *
  */
-class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable with SharkRunnable with HadoopRunnable{
+class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable 
+						with SharkRunnable with HadoopRunnable with VerticaRunnable {
 
 	private val itemHDFSPath = basePath.relational_path + "/item"
 	private val web_salesHDFSPath = basePath.relational_path + "/web_sales"
@@ -289,7 +292,7 @@ class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable w
 	/**
 	 * prepare base table for hive query
 	 */
-	override def prepareTables(connection: Connection): Unit = {
+	override def prepareHiveTables(connection: Connection): Unit = {
 		try {
 			val stmt = connection.createStatement()
 			
@@ -304,13 +307,47 @@ class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable w
 	}
 	
 	/**
+	 * prepare base table for shark query
+	 */
+	override def prepareSharkTables(connection: Connection): Unit = {
+		
+		/**
+		 *  Shark is compatible with Hive.
+		 */
+		prepareHiveTables(connection)
+		
+	}
+	
+	/**
+	 * prepare base table for vertica query
+	 */
+	override def prepareVerticaTables(connection: Connection): Unit = {
+		try {
+			val stmt = connection.createStatement()
+			
+			val dropRptSales = "DROP TABLE IF EXISTS RptSalesByProdCmpn"
+			
+			stmt.execute(dropRptSales)
+				
+			val createRptSales = "CREATE TABLE RptSalesByProdCmpn (p_promo_id char(16), " +
+							"i_item_sk int, i_product_name char(50), totalsales float)"
+			
+			stmt.execute(createRptSales)
+		} catch {
+		  
+		  case sqle :SQLException => sqle.printStackTrace()
+
+		}
+	}
+	
+	/**
 	 * Submit the query to hiveserver.
 	 */
 	override def runHive(connection: Connection): Boolean = {
 		try {
-			val stmt = connection.createStatement();
+			val stmt = connection.createStatement()
 			
-			return runBenchQuery(stmt);
+			return runBenchQuery(stmt)
 			
 		} catch {
 			case sqle :
@@ -329,9 +366,58 @@ class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable w
 		/**
 		 *  Shark is compatible with Hive.
 		 */
-		runHive(connection);
+		runHive(connection)
 	}
 	
+	
+	override def runVertica(connection: Connection): Boolean = {
+		
+		try {
+			val stmt = connection.createStatement();
+			
+			val benchmarkQuery = "INSERT INTO RptSalesByProdCmpn" + "\n" +
+						"SELECT p_promo_id, i_item_sk, i_product_name, totalsales" + "\n" +
+						"FROM (" + "\n" +
+						"	SELECT p_promo_id, p_item_sk, sum(price*quantity) as totalsales" + "\n" +
+						"	FROM" + "\n" +
+							"	(SELECT ws_sold_date_sk as sold_date_sk, ws_item_sk as item_sk, ws_sales_price as price, ws_quantity as quantity" + "\n" +
+							"	FROM web_sales" + "\n" +
+							"	UNION ALL" + "\n" +
+							"	SELECT ss_sold_date_sk as sold_date_sk, ss_item_sk as item_sk, ss_sales_price as price, ss_quantity as quantity" + "\n" +
+							"	FROM store_sales" + "\n" +
+							"	UNION ALL" + "\n" +
+							"	SELECT cs_sold_date_sk as sold_date_sk, cs_item_sk as item_sk, cs_sales_price as price, cs_quantity as quantity" + "\n" +
+							"	FROM catalog_sales) sales" + "\n" +
+							"	JOIN promotion p " + "\n" +
+							"	ON (sales.item_sk = p.p_item_sk)" + "\n" +
+							"WHERE " + "\n" +
+							"	p_start_date_sk <= sold_date_sk " + "\n" +
+							"	AND" + "\n" +
+							"	sold_date_sk <= p_end_date_sk" + "\n" +
+							"GROUP BY" + "\n" +
+							"	p_promo_id, p_item_sk " + "\n" +
+							") s" + "\n" +
+							"JOIN item i" + "\n" +
+							"ON (s.p_item_sk = i.i_item_sk)"
+			
+//			val rs = stmt.executeQuery("Select * From customer")
+//			
+//			while(rs.next() != null) {
+//				println(rs.getString(1)) 
+//			}
+							
+		return stmt.execute(benchmarkQuery)
+//			return stmt.execute("Select * From customer")
+			
+		} catch {
+			case sqle :
+				SQLException => sqle.printStackTrace()
+			case e :
+				Exception => e.printStackTrace()
+		}
+		
+		return false
+	}
 	
 	/**
 	 * Run the query in Hadoop.

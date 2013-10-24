@@ -250,6 +250,7 @@ public class DataLoaderDriver {
 				else if(line.getOptionValue(DATATYPE).equals(Constants.NESTED)) {
 					VerticaDataLoader dataloader = new VerticaTweetLoader(workflowIF);
 					dataloader.load(new Path(line.getOptionValue(SRC)), "tweet");
+					dataloader.load(new Path(line.getOptionValue(SRC)), "entities");
 				}
 				
 				else if(line.getOptionValue(DATATYPE).equals(Constants.GRAPH)) {

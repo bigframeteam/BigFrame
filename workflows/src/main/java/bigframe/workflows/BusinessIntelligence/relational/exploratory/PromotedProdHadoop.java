@@ -144,7 +144,7 @@ public class PromotedProdHadoop extends HadoopJob {
 		/**
 		 * The reduce output is with this format:
 		 * 
-		 * 
+		 *  itemSK|product name
 		 */
 		@Override
 	    protected void reduce(LongWritable key, Iterable<Text> values, 

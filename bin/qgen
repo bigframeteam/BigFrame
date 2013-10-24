@@ -43,5 +43,11 @@ if [ -n "$HIVE_HOME" ]; then
 	done
 fi
 
+if [ -n "$VERTICA_HOME" ]; then
+	for jar in `find $VERTICA_HOME/java/lib -name '*.jar'`; do
+		QGEN_CLASSPATH+=:$jar
+	done
+fi
+
 java -cp "$QGEN_CLASSPATH" bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
 

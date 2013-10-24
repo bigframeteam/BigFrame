@@ -53,6 +53,8 @@ public class BigConfConstants {
 	public static final String BIGFRAME_VERTICA_USERNAME = "bigframe.vertica.username";
 	public static final String BIGFRAME_VERTICA_PASSWORD = "bigframe.vertica.password";
 	public static final String BIGFRAME_VERTICA_DATABASE = "bigframe.vertica.database";
+	public static final String BIGFRAME_VERTICA_JDBC_SERVER = "bigframe.vertica.jdbc.server";
+	public static final String BIGFRAME_VERTICA_HOME = "bigframe.vertica.home";
 	
 	
 	// Properties for external scripts

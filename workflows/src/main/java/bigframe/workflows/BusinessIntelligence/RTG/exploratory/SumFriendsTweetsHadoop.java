@@ -71,6 +71,11 @@ public class SumFriendsTweetsHadoop extends HadoopJob {
 	  	   	}
 		}
 		
+		/**
+		 * The output of map function is with this format:
+		 * 
+		 * follower|num of frend's tweets
+		 */
 		@Override
 		protected void map(LongWritable key,
 				Text value, final Context context)
@@ -105,6 +110,11 @@ public class SumFriendsTweetsHadoop extends HadoopJob {
 	
 	static class SumFriendsTweetsReducer extends Reducer<LongWritable, IntWritable, LongWritable, IntWritable> {
 		
+		/**
+		 * The output of reduce function is with this format:
+		 * 
+		 * follower|total num of friends's tweets
+		 */
 		@Override
 	    protected void reduce(LongWritable key, Iterable<IntWritable> values, 
 	    		final Context context) throws IOException, InterruptedException {

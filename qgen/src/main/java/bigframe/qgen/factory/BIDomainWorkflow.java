@@ -16,6 +16,7 @@ import bigframe.qgen.engineDriver.HiveEngineDriver;
 import bigframe.qgen.engineDriver.SharkEngineDriver;
 import bigframe.qgen.engineDriver.SparkEngineDriver;
 import bigframe.qgen.engineDriver.EngineDriver;
+import bigframe.qgen.engineDriver.VerticaEngineDriver;
 import bigframe.util.Constants;
 import bigframe.workflows.BaseTablePath;
 
@@ -35,30 +36,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 	public BIDomainWorkflow(BigFrameInputFormat bigframeIF) {
 		super(bigframeIF);
 		domainInfo = new BIDomainInfo();
-//		queryVelocity.add(Constants.CONTINUOUS);
-//		queryVelocity.add(Constants.EXPLORATORY);
-//		
-//		queryVariety.add(Constants.MICRO);
-//		queryVariety.add(Constants.MACRO);
-//		
-//		// The engines currently supported for each type of query
-//		Set<String> relational_supportedEngine = new HashSet<String>();
-//		Set<String> graph_supportedEngine = new HashSet<String>();
-//		Set<String> nested_supportedEngine = new HashSet<String>();
-//		Set<String> text_supportedEngine = new HashSet<String>();
-//		
-//		relational_supportedEngine.add(Constants.HIVE);
-//		relational_supportedEngine.add(Constants.SHARK);
-//		relational_supportedEngine.add(Constants.HADOOP);
-//		
-//		graph_supportedEngine.add(Constants.HADOOP);
-//		nested_supportedEngine.add(Constants.HADOOP);
-//		text_supportedEngine.add(Constants.HADOOP);		
-//		
-//		querySupportEngine.put(Constants.RELATIONAL, relational_supportedEngine);
-//		querySupportEngine.put(Constants.GRAPH, graph_supportedEngine);
-//		querySupportEngine.put(Constants.NESTED, nested_supportedEngine);
-//		querySupportEngine.put(Constants.TEXT, text_supportedEngine);
+
 	}
 
 	@Override
@@ -91,6 +69,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		HadoopEngineDriver hadoopWorkflow = new HadoopEngineDriver(workflowIF);
 		SharkEngineDriver sharkWorkflow = new SharkEngineDriver(workflowIF);
 		SparkEngineDriver sparkWorkflow = new SparkEngineDriver(workflowIF);
+		VerticaEngineDriver verticaWorkflow = new VerticaEngineDriver(workflowIF);
 
 		
 		/**
@@ -102,7 +81,6 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		 * initialize the path for each data set.
 		 */
 		
-		// Remove extra "/" in the end 
 		String HADOOP_ROOT_DIR = workflowIF.getHDFSRootDIR();
 		String relational_path = HADOOP_ROOT_DIR+"/"+bigdataIF.getDataStoredPath()
 				.get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_RELATIONAL);
@@ -162,6 +140,10 @@ public class BIDomainWorkflow extends DomainWorkflow {
 						hadoopWorkflow.addQuery(new 
 								bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSales(basePath)); 
 					}
+					else if(relationalEngine.equals(Constants.VERTICA)) {
+						verticaWorkflow.addQuery(new
+								bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSales(basePath)); 
+					}
 				}
 				
 				else if(dataVariety.contains(Constants.GRAPH)) {
@@ -196,7 +178,12 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				if(relationalEngine.equals(Constants.HADOOP) && graphEngine.equals(Constants.HADOOP)&& 
 						nestedEngine.equals(Constants.HADOOP)) {
 					hadoopWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath, 10));
+				}
+				else if(relationalEngine.equals(Constants.VERTICA) && graphEngine.equals(Constants.VERTICA)&& 
+						nestedEngine.equals(Constants.VERTICA)) {
+					verticaWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath, 10));
 				}
 			}
 		}
@@ -210,6 +197,8 @@ public class BIDomainWorkflow extends DomainWorkflow {
 			workflows.add(sharkWorkflow);
 		if(sparkWorkflow.numOfQueries() > 0)
 			workflows.add(sparkWorkflow);
+		if(verticaWorkflow.numOfQueries() > 0)
+			workflows.add(verticaWorkflow);
 		
 		return workflows;
 	}
@@ -310,6 +299,19 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				}
 				else if (workflowIF.getHiveJDBCServer().equals("")) {
 					LOG.error("Hive JDBC Server Address is needed, please set!");
+					return false;
+				}
+			}
+		}
+		
+		for (Entry<String, String> entry : bigqueryIF.getQueryRunningEngine().entrySet()) {
+			if(entry.getValue().equals(Constants.VERTICA)) {
+				if (workflowIF.getVerticaHome().equals("")) {
+					LOG.error("VERTICA Home is needed, please set!");
+					return false;
+				}
+				else if (workflowIF.getVerticaJDBCServer().equals("")) {
+					LOG.error("Vertica JDBC Server Address is needed, please set!");
 					return false;
 				}
 			}

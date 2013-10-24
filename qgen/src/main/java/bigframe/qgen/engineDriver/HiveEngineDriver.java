@@ -48,7 +48,7 @@ public class HiveEngineDriver extends EngineDriver {
 			}
 			for(HiveRunnable query : queries) {
 				System.out.println("Prepare tables!!!");
-				query.prepareTables(connection);
+				query.prepareHiveTables(connection);
 			}
 		
 		} catch (SQLException e) {

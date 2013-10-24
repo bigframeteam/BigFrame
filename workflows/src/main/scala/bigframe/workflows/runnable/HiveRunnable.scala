@@ -13,7 +13,7 @@ trait HiveRunnable {
 	/*
 	 * Prepeare the basic tables before run the Hive query
 	 */
-	def prepareTables(connection: Connection): Unit
+	def prepareHiveTables(connection: Connection): Unit
 	
 	/**
 	 * Run the benchmark query
