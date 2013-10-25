@@ -1,17 +1,17 @@
 Ui::Application.routes.draw do
+  get "home/index"
+  get "home/about"
   get "datagen/index"
+  get "datagen/new"
   get "execution/index"
   get "spark/workloads"
   get "spark/visualize"
   get "hive/workloads"
   get "hive/visualize"
-  get "bigframe/about"
-  get "bigframe/index"
-  get "bigframe/test"
   post "sessions/destroy"
 #resources :users
 resources :sessions
-  root to: "bigframe#index"
+  root to: "home#index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

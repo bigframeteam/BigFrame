@@ -1,4 +1,33 @@
-<h1>Data Generator</h1>
+<h1>Data Generation</h1>
+
+
+
+<br>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Progress</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td>1</td>
+        <td>Testdddddddddd</td>
+        <td><div class="progress"> <div class="bar" style="width: 61.16%;"></div></div></td> 
+        <td> <%= link_to 'Detail',{},:class => 'btn btn-mini' %> <%= link_to 'Destroy',{},:class => 'btn btn-mini btn-danger' %>
+        </td>
+      </tr>
+  </tbody>
+
+</table>
+
+<div class="well">
+<%= link_to "Generate New Dataset", {:controller=> 'datagen', :action => 'new'}, :class => "btn btn-large btn-primary"  %>
+</div>
+
 This will contain the form for data generation.
 
 Dropdown (Volume), small, medium, large
