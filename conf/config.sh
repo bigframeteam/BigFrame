@@ -26,7 +26,7 @@ TPCDS_LOCAL=/data/tpcds_tmp
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.local=${TPCDS_LOCAL}"
 
 # Global Output Path
-export OUTPUT_PATH="hdfs://localhost:9000/test2_output"
+export OUTPUT_PATH="hdfs://localhost:9000/test_output"
 
 
 
