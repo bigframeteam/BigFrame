@@ -1,6 +1,6 @@
 package bigframe.workflows.util
 
-class SenExtractorSimple extends SentimentExtractor {
+class SenExtractorSimple extends SentimentExtractor with Serializable {
 	
 	private val dict_map: Map[String, Float] =  {
 		val dict_in = getClass.getResourceAsStream("/AFINN-111.txt")

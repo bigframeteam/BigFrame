@@ -1,8 +1,8 @@
 
 package bigframe.workflows.runnable
 
-import spark.SparkContext
-import spark.SparkContext._
+import org.apache.spark.SparkContext
+import SparkContext._
 
 /**
  * Implement this interface such that a query can be run on spark.

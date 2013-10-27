@@ -46,16 +46,19 @@ object BigFrameBuild extends Build {
 		libraryDependencies ++= Seq(
       		"org.scalatest" %% "scalatest" % "1.9.1" % "test",
 	        "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-			"org.spark-project" % "spark-core_2.9.3" % SPARK_VERSION % "provided",
+	        "org.apache.spark" % "spark-core_2.9.3" % "0.8.0-incubating",
+     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.0-incubating",
 			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
-			"log4j" % "log4j" % "1.2.14" % "provided",
+			//"log4j" % "log4j" % "1.2.14" % "provided",
+			"org.slf4j" % "slf4j-log4j12" % "1.6.1",
 			"commons-configuration" % "commons-configuration" % "1.6" % "provided",
 			"commons-logging" % "commons-logging" % "1.1.1" % "provided",
 			"com.novocode" % "junit-interface" % "0.10-M2" % "test"
 		)
-	)	
+										)
+			
 
 	def rootSettings = sharedSettings ++ Seq(
 		publish := {}
@@ -72,13 +75,13 @@ object BigFrameBuild extends Build {
 	def workflowsSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-workflows",
 
-		resolvers ++= Seq(
-			"repo.codahale.com" at "http://repo.codahale.com"
-		),	
+		//resolvers ++= Seq(
+		//	"repo.codahale.com" at "http://repo.codahale.com"
+		//),	
 
 		libraryDependencies ++= Seq(
-			"com.codahale" % "jerkson_2.9.1" % "0.5.0",
-			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1"	
+			"io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
+			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1" 
 		)
 	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 
@@ -95,9 +98,13 @@ object BigFrameBuild extends Build {
 		name := "bigframe-interface"
 	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 
-
-	def extraAssemblySettings() = Seq(
-		
+	def extraAssemblySettings() = Seq(test in assembly := {}) ++ Seq(
+		mergeStrategy in assembly := {
+      		case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
+      		case m if m.toLowerCase.matches("meta-inf.*\\.sf$") => MergeStrategy.discard
+      		case "reference.conf" => MergeStrategy.concat
+      		case _ => MergeStrategy.first
+    	}
 	)
 
 	def excludeJARfromCOMMON() = Seq(

@@ -1,0 +1,32 @@
+
+<h1>Data Generation</h1>
+
+<br>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Data Volume</th>
+      <th>Data Variety</th>
+      <th>Data Velocity</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td>1</td>
+        <td>Test Data Generation</td>
+        <td>Tiny</td>
+        <td>Relational, Text, Graph</td> 
+        <td>Rest</td>
+        <td><%= link_to 'see the logs',{:controller => 'datagen', :action => 'log'},:class => 'btn btn-mini'%> </td>
+      </tr>
+  </tbody>
+
+</table>
+
+<div class="well">
+<%= link_to "Generate New Dataset", {:controller=> 'datagen', :action => 'new'}, :class => "btn btn-large btn-primary"  %>
+
+</div>

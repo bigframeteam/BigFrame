@@ -1,0 +1,2 @@
+module DatagenHelper
+end

@@ -1,0 +1,11 @@
+<p class="lead">Log in to perform administrative actions.<p>
+<%= form_tag url_for(:controller=>"sessions", :action=>"create") do %> 
+<p class="text-error"><%=flash[:notice]%></p>
+<div>
+<%= text_field_tag :name, nil, {:placeholder=>"Name"} %>  
+</div>
+<div>
+<%= password_field_tag :password, nil, {:placeholder=>"Password"}%>  
+</div>
+<%= submit_tag "Log in",{:class=>"btn btn-success"} %>
+<%end%>
