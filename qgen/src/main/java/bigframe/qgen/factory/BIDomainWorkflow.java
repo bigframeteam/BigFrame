@@ -36,7 +36,6 @@ public class BIDomainWorkflow extends DomainWorkflow {
 	public BIDomainWorkflow(BigFrameInputFormat bigframeIF) {
 		super(bigframeIF);
 		domainInfo = new BIDomainInfo();
-
 	}
 
 	@Override
@@ -143,7 +142,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					else if(relationalEngine.equals(Constants.VERTICA)) {
 						verticaWorkflow.addQuery(new
 								bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSales(basePath)); 
-
+					}
 					else if(relationalEngine.equals(Constants.SPARK)) {
 						sparkWorkflow.addQuery(new 
 								bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSalesSpark(basePath)); 

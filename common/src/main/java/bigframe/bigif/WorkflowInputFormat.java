@@ -149,7 +149,9 @@ public class WorkflowInputFormat extends Config {
 			}
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_VERTICA_PORT)) {
-				VERTICA_PORT = Integer.parseInt(value);
+				if(!value.equals("")) {
+					VERTICA_PORT = Integer.parseInt(value);
+				}
 			}
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_VERTICA_JDBC_SERVER)) {
