@@ -1,4 +1,8 @@
 Ui::Application.routes.draw do
+  get "shark/visualize"
+  get "shark/workloads"
+  get "hadoop/visualize"
+  get "hadoop/workloads"
   get "home/index"
   get "home/about"
   get "datagen/index"
@@ -6,6 +10,8 @@ Ui::Application.routes.draw do
   get "datagen/log"
   post "datagen/submit"
   get "execution/index"
+  post "execution/submit"
+
   get "spark/workloads"
   get "spark/visualize"
   get "hive/workloads"

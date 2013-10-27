@@ -11,8 +11,8 @@
 <h3>Data Specification</h3>
   <h5>Data Volume</h5>
   <%= select_tag(:data_volume, options_for_select([
-    ['Tiny - around 10GB','tiny'],['Small - around 100GB','small'],
-    ['Medium - around 1TB','medium'],['Large - around 10TB','large']])) %>
+    ['tiny - around 10GB','tiny'],['small - around 100GB','small'],
+    ['medium - around 1TB','medium'],['large - around 10TB','large']])) %>
 
   <br><br>
 
@@ -27,7 +27,7 @@
 
 
   <h5>Data Velocity</h5>
-  <%= select_tag(:data_velocity, options_for_select([['Rest','rest'],['Slow','slow'],['Fast','fast']] )) %>
+  <%= select_tag(:data_velocity, options_for_select(['rest','slow','fast'] )) %>
   <hr>
 
 <h3>Data Outputs</h3>
