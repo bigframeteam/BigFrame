@@ -12,7 +12,7 @@ import bigframe.workflows.util.SenExtractorFactory
 import bigframe.workflows.util.SentimentExtractor
 
 
-class WF_SenAnalyzeSpark(basePath : BaseTablePath) extends SparkRunnable {
+class WF_SenAnalyzeSpark(basePath : BaseTablePath, regex: String = "*") extends SparkRunnable {
     final var OUTPUT_PATH = "OUTPUT_PATH"
     private var output_path: String = System.getenv(OUTPUT_PATH) + "/spark/nested"
     private var sc: SparkContext = _
@@ -60,7 +60,6 @@ class WF_SenAnalyzeSpark(basePath : BaseTablePath) extends SparkRunnable {
             val allTweets = read()
 
             // filter tweets not talking about specified products
-            val regex = "[aA].*"
             val filteredTweets = allTweets filter (
                 t => t.products != null && t.products.length > 0 && t.products(0).matches(regex))
 
