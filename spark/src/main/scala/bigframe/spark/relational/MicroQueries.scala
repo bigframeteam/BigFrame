@@ -47,19 +47,56 @@ class MicroQueries(val sc: SparkContext, val tpcds_path: String) {
       }
     }
   }
+
+  def productNamesPerItem(): RDD[(String, String)] = {
+    try {
+  	  // load item table, tokenize it
+	  val item = sc.textFile(tpcds_path+"/"+Constants.ItemTableName).map(
+	      t => t.split('|')) 
+
+	  // map item_sk with product name
+	  item map { t => try {(t(0), t(21))} catch {
+	    case e:Exception => (t(0), "N/A") } }   
+    } catch {
+      case e:Exception => { 
+        throwException(e)
+        sc makeRDD Array(("redundant", "redundant"))
+      }
+    }
+  }
   
   /**
    * Reads promotion table, applies selectivity parameters.
    * Returns an RDD of (p_item_sk, Array(p_promo_sk, p_promo_id, 
    * p_start_date_sk, p_end_date_sk, p_item_sk))
    */
-  def promotionsMappedByItems(): RDD[(String, Array[String])] = {
+  private def promotionsMappedByItems(): RDD[(String, Array[String])] = {
     try {
 	  // Read promotion table, tokenize it, and filter out promotions not in the given list of promo_ids
 	  val promotion = readFile(Constants.PromotionTableName)
 
 	  // Create a mapping from item_sk to promotion tuple
 	  applySelectivity (promotion) map { t => (t(4), t.slice(0,5)) }
+    } catch {
+      case e:Exception => {
+        throwException(e)
+        sc makeRDD Array(("redundant", Array("0")))
+      }
+    }
+  }
+  
+  /**
+   * Joins promotions with Item table to find product names corresponding to
+   * item_sk in the promotion table.
+   */
+  def promotedProducts(): RDD[(String, Array[String])] = {
+    try {
+      
+      val promotion = promotionsMappedByItems
+      
+      promotion.join(productNamesPerItem).map { t => t._1 -> Array(t._2._1(0), 
+          t._2._1(1), t._2._1(2), t._2._1(3), t._2._2) }
+      
     } catch {
       case e:Exception => {
         throwException(e)
@@ -140,18 +177,20 @@ class MicroQueries(val sc: SparkContext, val tpcds_path: String) {
 
   /**
    * Joins promotions with supplied sales channel
-   * Returns (item_sk, (promotion_id, sales))
+   * Returns (item_sk, (product_name, sales))
    */
-  private def promoJoinSales(promotions: RDD[(String, Array[String])], sales: RDD[(String, Array[String])]) = {
+  private def promoJoinSales(promotions: RDD[(String, Array[String])], 
+      sales: RDD[(String, Array[String])]) = {
       // join promotions with sales, filter irrelevant attributes, and filter sales not within promotion dates.
-	  promotions.join(sales).mapValues(t => (t._1(1), t._1(2), t._1(3), t._2(0), 
-			  ( try{t._2(3).toDouble*t._2(4).toDouble} catch{case e:Exception => 0} )))
-			  .filter(t => (t._2._2 <= t._2._4 & t._2._4 <= t._2._3)).mapValues(t => (t._1, t._5))
+	  promotions.join(sales).mapValues(t => (t._1(4), t._1(2), t._1(3), t._2(0), 
+			  ( try{t._2(3).toDouble*t._2(4).toDouble} catch{
+			    case e:Exception => 0} )))
+			  .filter(t => (t._2._2 <= t._2._4 & t._2._4 <= t._2._3)).mapValues(
+			      t => (t._1, t._5))
   }
   
   /**
    * Relational part of the promotion workflow
-   * TODO: Write a SQL version
    */
   def salesPerPromotion(promotions: RDD[(String, Array[String])]) = {
 
@@ -185,20 +224,20 @@ class MicroQueries(val sc: SparkContext, val tpcds_path: String) {
    */
   def microBench() = {
 
-	  val promotions = promotionsMappedByItems()
+	  val promotions = promotedProducts()
 	  
 	  val total_sales = salesPerPromotion(promotions)
 
 	  // load item table, tokenize it
-	  val item = sc.textFile(tpcds_path+"/"+Constants.ItemTableName).map(t => t.split('|')) 
+//	  val item = sc.textFile(tpcds_path+"/"+Constants.ItemTableName).map(t => t.split('|')) 
 
 	  // map item_sk with product name
-	  val item_mapped = item map { t => try {(t(0), t(21))} catch { case e:Exception => (t(0), "N/A") } }   
+//	  val item_mapped = item map { t => try {(t(0), t(21))} catch { case e:Exception => (t(0), "N/A") } }   
 
 	  // join total_sales with item_mapped
-	  val report = total_sales.join(item_mapped).map { t => (t._2._1._1, t._2._2, t._2._1._2) } 
+//	  val report = total_sales.join(item_mapped).map { t => (t._2._1._1, t._2._2, t._2._1._2) } 
 	  
-	  report
+	  total_sales
   }
   
 }

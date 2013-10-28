@@ -6,7 +6,7 @@ import SparkContext._
 
 import bigframe.spark.text._
 import bigframe.spark.relational.MicroQueries
-import bigframe.spark.graph.GraphDriver
+import bigframe.spark.graph.TwitterRankDriver
 
 import java.io.File
 
@@ -120,7 +120,7 @@ object WorkflowDriver {
 	def runWorkflow (sc: SparkContext):RDD[_] = {
 		if (variety.equals(MIXED_VARIETY)) {
 			println("Going to run mixed workflow")
-			val promotion = new PromotionWorkflow(sc, tpcds_path_string, text_path_string, 
+			val promotion = new WF_Macro_Spark(sc, tpcds_path_string, text_path_string, 
 					graph_path_string)
 			return promotion.runWorkflow()
 		}
@@ -136,8 +136,9 @@ object WorkflowDriver {
 		}
 		if (variety.equals(GRAPH_VARIETY)) {
 			println("Going to run graph workflow")
-			val executor = new GraphDriver(sc, graph_path_string, text_path_string)
-			return executor.microBench("baration.*")
+			val executor = new TwitterRankDriver(sc, graph_path_string, 
+			    text_path_string, tpcds_path_string)
+			return executor.microBench("a.*")
 		}
 		sc makeRDD Array("redundant")
 	}

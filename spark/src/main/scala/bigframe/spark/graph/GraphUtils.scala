@@ -47,13 +47,20 @@ class GraphUtils extends Serializable {
   }
   
    /**
-   * Calculates similarity between every pair of users for each product
-   * Arguments: (user_id -> Seq[(product, counts)]) map
+   * Calculates similarity between every pair of friends for each product
+   * Arguments: 
+   * 1. (user_id -> Seq[(product, counts)]) map
+   * 2. Original graph i.e. (follower -> friend) map
    * Output: Map((user1, user2) -> Map(product, similarity score))
    */
-  def similarity(countsByUser: RDD[(Int, Seq[(String, Int)])]) = {
-    countsByUser cartesian countsByUser map {t => (
-        (t._1._1, t._2._1) -> simScore(t._1._2, t._2._2))}
+  def similarity(countsByUser: RDD[(Int, Seq[(String, Int)])], 
+      graph: RDD[(Int, Int)]) = {
+    val firstJoin = countsByUser join graph map {
+      t => t._2._2 -> (t._1, t._2._1)}
+    firstJoin join countsByUser map {
+      t => (t._2._1._1, t._1) -> simScore(t._2._1._2, t._2._2)}
+//    countsByUser cartesian countsByUser map {t => (
+//        (t._1._1, t._2._1) -> simScore(t._1._2, t._2._2))}
   }
   
   /**
@@ -96,7 +103,7 @@ class GraphUtils extends Serializable {
   def transitionProbabilities(ratios:RDD[((Int, Int), Double)], 
       similarity: RDD[((Int, Int), Seq[(String, Double)])]) = {
     ratios join similarity map (
-        t => t._1 -> scale(t._2._2, t._2._1)) cache
+        t => t._1 -> scale(t._2._2, t._2._1))
   }
   
   /**
@@ -115,15 +122,8 @@ class GraphUtils extends Serializable {
     }
   }
   
-  var numIter: Int = 20
-  var gamma: Double = 0.85
   var tranProb: scala.collection.immutable.Map[(Int, Int),Seq[(String, Double)]] = null 
   var teleProb: scala.collection.immutable.Map[Int ,Seq[(String, Double)]] = null
-  
-  def initializeCompute(numIter: Int, gamma: Double) = {
-    this.numIter = numIter
-    this.gamma = gamma
-  }
   
   def collectProbabilities(transition: RDD[((Int, Int),Seq[(String, Double)])], 
       teleport: RDD[(Int ,Seq[(String, Double)])]) = {
@@ -145,8 +145,9 @@ class GraphUtils extends Serializable {
    * 2. All incoming messages
    * 3. Superstep number
    */
-  def compute (self: TRVertex, msgs: Option[Iterable[TRMessage]], 
-      superstep: Int) : (TRVertex, Array[TRMessage]) = {
+  def compute (numIter: Int, gamma: Double) (self: TRVertex, 
+      msgs: Option[Iterable[TRMessage]], superstep: Int) 
+      : (TRVertex, Array[TRMessage]) = {
       
       val newRanks = 
         if(msgs == null || msgs.isEmpty)
@@ -170,5 +171,68 @@ class GraphUtils extends Serializable {
       
       (new TRVertex(self.id, newRanks, self.outEdges, !halt), msgsOut toArray)
   }
-          
+  
+  private def transFactor(seq1: Seq[(String, Double)], 
+      seq2: Seq[(String, Double)], 
+      gamma: Double) = {
+    val vector1 = Map(seq1 map {t => t._1 -> t._2}: _*)
+    val vector2 = Map(seq2 map {t => t._1 -> t._2}: _*)
+    
+    (vector1.keySet ++ vector2.keySet) map {t => t -> 
+    (vector1.getOrElse(t, 0.0) * vector2.getOrElse(t, 0.0) * gamma)} toSeq
+  }
+  
+  private def transReducer(seq1: Seq[(String, Double)], 
+      seq2: Seq[(String, Double)]) = {
+    val vector1 = Map(seq1 map {t => t._1 -> t._2}: _*)
+    val vector2 = Map(seq2 map {t => t._1 -> t._2}: _*)
+    
+    (vector1.keySet ++ vector2.keySet) map {t => t -> 
+    (vector1.getOrElse(t, 0.0) + vector2.getOrElse(t, 0.0))} toSeq
+  }
+  
+  private def teleFactor(seq1: Seq[(String, Double)], 
+      seq2: Seq[(String, Double)], 
+      gamma: Double) = {
+    val vector1 = Map(seq1 map {t => t._1 -> t._2}: _*)
+    val vector2 = Map(seq2 map {t => t._1 -> t._2}: _*)
+    
+    (vector1.keySet ++ vector2.keySet) map {t => t -> 
+    (vector1.getOrElse(t, 0.0) + vector2.getOrElse(t, 0.0) * (1 - gamma))} toSeq
+  }
+  
+  /**
+   * One iteration over twitter rank in standalone implementation
+   * TODO: test for correctness
+   */
+  def iterateRank(ranks: RDD[(Int, Seq[(String, Double)])], 
+      transition: RDD[((Int, Int), Seq[(String, Double)])], 
+      teleport: RDD[(Int, Seq[(String, Double)])], 
+      gamma: Double) = {    
+    val trans = transition map {t => t._1._2 -> (t._1._1, t._2)}
+    
+    // transition probability times previous rank weighted by gamma
+    val term1 = trans join ranks map {
+      t => t._1 -> transFactor(t._2._1._2, t._2._2, gamma)
+    } reduceByKey {
+      (a, b) => transReducer(a, b)
+    }
+    
+    // teleport probability weighted by (1-gamma)
+    term1 rightOuterJoin teleport mapValues {
+      case(Some(v), w) => teleFactor(v, w, gamma)
+      case(None, w) => w.map {s => s._1 -> s._2 * (1-gamma)}
+    }
+  }
+    
+  /**
+   * Find item_sk in the given sequence and return the corresponding rank,
+   * 0 by default
+   */
+  def influence(ranks: Seq[(String, Double)], item_sk: String) = {
+	  var influence = 0.0;
+	  ranks map {r => if(r._1 == item_sk) influence = r._2; r};
+	  influence
+  }
+
 }

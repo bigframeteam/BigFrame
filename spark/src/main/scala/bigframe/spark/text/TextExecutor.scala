@@ -20,17 +20,17 @@ class TextExecutor(val sc:SparkContext, val path:String) {
 
        tweetsRDD
    }
-   
+      
    /**
     * Run sentiment analysis on all tweets
     */
    def addSentimentScore(tweets: RDD[(Tweet)]): RDD[(Tweet)] = {
-       val extractor = new NaiveSentimentExtractor()
-       
-       return tweets.map( t => new Tweet(t.text, t.id, 
+     val extractor = new NaiveSentimentExtractor()
+     
+     return tweets.map(t => new Tweet(t.text, t.id, 
          t.created_at, t.user, t.entities, try{ 
          extractor.extract(t.text).toDouble } catch { 
-           case e: Exception => 0.0 }) )
+           case e: Exception => 0.0 }))
    }
    
    /**
@@ -52,7 +52,7 @@ class TextExecutor(val sc:SparkContext, val path:String) {
 	   // sum up the sentiment scores for each product
 	   val report = scoredTweets.reduceByKey((a, b) => (a._1, a._2 + b._2))
 	   .mapValues(t => t._2)
-//                sc makeRDD Array("redundant")	  
+
 	   report
    }
 }

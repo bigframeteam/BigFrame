@@ -9,19 +9,26 @@ import SparkContext._
 import bigframe.spark.text.TextExecutor
 import scala.collection.mutable.ArrayBuffer
 import org.apache.spark.bagel.Bagel
+import bigframe.spark.relational.MicroQueries
+import bigframe.spark.text.Tweet
 
 /**
  * @author mayuresh
  *
  */
 
-class GraphDriver(val sc:SparkContext, val graph_path:String, 
-    val tweet_path: String) {
+class TwitterRankDriver(val sc:SparkContext, val graph_path:String, 
+    val tweet_path: String, val tpcds_path: String) {
 
   /**
    * Driver to read tweets
    */
   lazy val textDriver = new TextExecutor(sc, tweet_path)
+  
+  /**
+   * Driver to read product table
+   */
+  lazy val tpcdsDriver = new MicroQueries(sc, tpcds_path)
   
   /**
    * utility methods
@@ -61,31 +68,37 @@ class GraphDriver(val sc:SparkContext, val graph_path:String,
    * Reads all tweets and filter those talking about products matching 'regex'
    */
   def readTweets(regex: String) = {
-    textDriver.read filter (t => t.products(0).matches(regex))
+    val tweets = textDriver.read filter (t => t.products(0).matches(regex))
+    // add product id to every filtered tweet
+    val products = tpcdsDriver.productNamesPerItem map (_.swap)
+    tweets map {t => t.products(0) -> t} leftOuterJoin products map {
+      case (k, (v, Some(w))) => (v, w) case (k, (v, None)) => (v, "-1")}
   }
   
   /**
    * Builds transition matrix and teleportation matrix by reading graph 
    * relationships and tweets about products specified by 'regex'
    */
-  def buildMatrices(regex: String) = {
+  def buildMatrices(tweets: RDD[(Tweet, String)]) = {
 
     // count number of tweets by each user on products of interest
-    val tweetsByUser = readTweets(regex) map {t => t.userID -> 1} reduceByKey (
+    val tweetsByUser = tweets map {t => t._1.userID -> 1} reduceByKey (
         (a,b) => (a + b))
+        
+    // twitter graph
+    val graph = read map {t => t(0).toInt -> t(1).toInt}
             
     // read all graph relationships and find a subgraph induced on users who
     // have tweeted about products of interest
-    friends = utils.filterFriends(read map {t => t(0).toInt -> t(1).toInt}, 
-        tweetsByUser) groupByKey () cache
+    friends = utils.filterFriends(graph, tweetsByUser) groupByKey () cache
     
     // ratios giving proportion of tweets received from a certain friend 
     // compared to total number of tweets received
     val ratios = utils.ratios(friends) 
     
     // users * products matrix giving counts of tweets 
-    val counts = readTweets(regex) map {t => (
-        (t.userID, t.productID) -> 1)} reduceByKey ((a,b) => (a + b))
+    val counts = tweets map {t => (
+        (t._1.userID, t._2) -> 1)} reduceByKey ((a,b) => (a + b))
         
     // re-organize counts to have key as 'user' and 'product' being pushed to 
     // the value
@@ -95,12 +108,11 @@ class GraphDriver(val sc:SparkContext, val graph_path:String,
 
     // how similar are two users in terms of what they are tweeting about
     // NOTE: Only considering products of interest. Ideally should look at
-    // all the tweets, but this operation involves a cartesian product and 
-    // hence too expensive.
-    val similarity = utils.similarity(countsByUser)
+    // all the tweets, but this operation is too expensive.
+    val similarity = utils.similarity(countsByUser, graph)
      
     // transition probabilities as a product of ratios and similarity scores
-    transition = utils.transitionProbabilities(ratios, similarity)
+    transition = utils.transitionProbabilities(ratios, similarity) cache
     
     // number of tweets for each product
     val countsPerProduct = countsByUser flatMap {
@@ -127,33 +139,69 @@ class GraphDriver(val sc:SparkContext, val graph_path:String,
    * 2. gamma: parameter controlling transition and teleport contributions
    * Returns twitter ranks for every user and for every product 
    */
-  def computeTR(numIter:Int = 20, gamma:Double = 0.85) = {
+  def computeTR_bagel(numIter:Int = 20, gamma:Double = 0.85) = {
     
-//    val tranProb = transition.collect.toMap 
-//    val teleProb = teleport.collect.toMap
-    
-//    val verts = friends map {t => (t._1, 
-//      new TRVertex(t._1, teleProb.getOrElse(t._1, List()), 
-//          t._2 map {_._1} toList, true))} cache
-      
     val emptyMsgs = sc.parallelize(List[(Int, TRMessage)]())
 
-    utils.initializeCompute(numIter, gamma)
     utils.collectProbabilities(transition, teleport)
     val verts = utils.createVertices(friends) cache
     val partitions = verts.partitions.length
-    println("Running Bagel iterative program with number of partitions: " + partitions)
-    val result = Bagel.run(sc, verts, emptyMsgs, new TRCombiner, partitions)(
-        utils.compute)
-        
+    
+    val result = Bagel.run(sc, verts, emptyMsgs, new TRCombiner(), partitions)(
+        utils.compute(numIter, gamma))
     result map (_._2) map {t => t.id -> t.ranks}
   }
   
-  def microBench(regex: String = ".*") = {
+  
+  /**
+   * Computes twitter ranks of every user for each product
+   * The users who have not published a single tweet on any product of interest 
+   * are not considered in these computations.
+   * Prerequisites: 
+   * 1. relationship graph induced on 'interesting' users (friends) 
+   * 2. transition and teleportation probabilities (transition and teleport)
+   * Arguments:
+   * 1. number of iterations
+   * 2. gamma: parameter controlling transition and teleport contributions
+   * Returns twitter ranks for every user and for every product 
+   */
+  def computeTR_standalone(numIter:Int = 10, gamma:Double = 0.85) = {
     
-    buildMatrices(regex)
+    // initial ranks same as teleport
+    var ranks = teleport
     
-    computeTR()
+//    println("transition: ")
+//    transition.collect().foreach(println)
+
+//    println("initial ranks: ")
+//    ranks.collect().foreach(println)
+
+    for (iter <- 1 to numIter) {
+      ranks = utils.iterateRank(ranks, transition, teleport, gamma)
+//      println("After iteration " + iter + ", ranks: ")
+//      ranks.collect().foreach(println)
+    }
+
+    ranks
+  }
+
+  def microBench(regex: String = ".*") 
+  : RDD[(Int, Seq[(String, Double)])] = {
+    
+    val tweets = readTweets(regex)
+    
+    microBench(tweets)
+    
+  }
+  
+  def microBench(tweets: RDD[(Tweet, String)]) 
+  : RDD[(Int, Seq[(String, Double)])] = {
+    
+    buildMatrices(tweets)
+    
+    // Using a standalone implementation
+    // TODO: Fix serialization issue with bagel implementation
+    computeTR_standalone()
     
   }
   

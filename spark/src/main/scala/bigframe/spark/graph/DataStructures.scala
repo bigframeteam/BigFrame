@@ -10,15 +10,15 @@ package bigframe.spark.graph
 import org.apache.spark.bagel._
 import org.apache.spark.bagel.Bagel._
 
-@serializable class TRVertex (
+class TRVertex (
   val id: Int, 
   val ranks: Seq[(String, Double)], 
   val outEdges: Seq[Int],
-  val active: Boolean ) extends Vertex
+  val active: Boolean ) extends Vertex with Serializable
 
-@serializable class TRMessage (
+class TRMessage (
   val targetId: Int,
-  val sourceId: Int ) extends Message[Int]
+  val sourceId: Int ) extends Message[Int] with Serializable
 
 /** Default combiner that simply appends messages together (i.e. performs no aggregation) */
 class TRCombiner extends Combiner[TRMessage, Seq[TRMessage]] 
