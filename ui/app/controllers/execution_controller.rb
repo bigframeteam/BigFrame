@@ -58,7 +58,7 @@ class ExecutionController < ApplicationController
     output = File.new(@bigframe_home + "/conf/hadoop-env.sh", "w")
 
     if output
-      output.syswrite(config % @hdfs_root_dir)
+      output.syswrite(config % %Q["#{@hdfs_root_dir}"])
     end
     output.close()
   end
