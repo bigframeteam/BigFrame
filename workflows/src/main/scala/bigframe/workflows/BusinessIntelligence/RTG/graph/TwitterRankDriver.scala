@@ -211,7 +211,7 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
     
   }
   
-  def microBench(tweets: RDD[(Tweet, String)], numIter: Int = 10) 
+  def microBench(tweets: RDD[(Tweet, String)], numIter: Int) 
   : RDD[(Int, Seq[(String, Double)])] = {
     
     buildMatrices(tweets)
