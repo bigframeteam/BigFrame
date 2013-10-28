@@ -24,7 +24,7 @@ class WF_PromotionAnalyzeSpark(basePath : BaseTablePath) extends SparkRunnable {
 		textExecutor.setSparkContext(spark_context)
 
 		// get promotion table with key being item id
-		val promotions = tpcdsExecutor promotionsMappedByItems
+		val promotions = tpcdsExecutor promotedProducts
 
 		/** 
 		*  relational processing to get total sales for each product
@@ -35,22 +35,16 @@ class WF_PromotionAnalyzeSpark(basePath : BaseTablePath) extends SparkRunnable {
 		// read all tweets
 		val allTweets = textExecutor.read()
 
-		/**
-		*  TODO: Do graph processing on all the tweets
-		*  can be done in a separate thread
-		*/  
-
 		// filter tweets by items relevant to promotions
-		val relevantTweets = (allTweets map (t => (t.productID, t))).join(
-		  promotions map (t => (t._1, t))).map(t => t._2._1)
-		//	  println("Relevant tweets: " + relevantTweets + ", count: " + relevantTweets.count())
+		// tuples item_sk -> tweet
+		val relevantTweets = (allTweets map (t => (t.products(0), t))).join(
+				promotions map (t => (t._2(4), t._1))).map(t => t._2._1)
 
-		// run sentiment analysis
-		val scoredTweets = textExecutor addSentimentScore relevantTweets map (
-		  t => (t.productID, (t.created_at, t.score)))
-
-		// TODO: Use influence scores to weigh sentiment scores
-
+	    // run sentiment analysis
+	    val scoredTweets = textExecutor addSentimentScore relevantTweets map {
+		  t => t.products(0) -> (t.created_at, t.score)
+		}
+	  
 		// read date_dim and cache it
 		val tpcdsDates = tpcdsExecutor.dateTuples().cache()
 
@@ -63,28 +57,26 @@ class WF_PromotionAnalyzeSpark(basePath : BaseTablePath) extends SparkRunnable {
 		val sentimentsPerPromotion = promoDates.join(scoredTweets)
 		.mapValues (t => (t._1(1), t._1(2), t._1(3), t._2._1, t._2._2))
 		.filter (t => (dateUtils.isDateWithin(t._2._4, t._2._2, t._2._3)))
-		//	  .filter (t => true)
 		.mapValues (t => (t._1, t._5))
 
 
 		// aggregate sentiment values for every promotion
-		val aggSentiments = sentimentsPerPromotion.reduceByKey( (a, b) => (a._1, a._2 + b._2) )
+		val aggSentiments = sentimentsPerPromotion.reduceByKey(
+		    (a, b) => (a._1, a._2 + b._2))
 
 		/**
 		*  join relational output with text output
-		*  sales result is (item_id, (promotion_id, total_sales)) and 
-		*  sentiment result is (item_id, (promotion_id, total_sentiment)
+	    *  sales result is (item_id, (product_name, total_sales)) and 
+	    *  sentiment result is (product_name, (promotion_id, total_sentiment)
+	    *  TODO: Do a outer join
 		*/ 
-		val joinedResult = sales.join(aggSentiments).mapValues( t=> (t._1._1, t._1._2, t._2._2))
-
+		val joinedResult = sales.join(aggSentiments).mapValues(
+		    t=> (t._1._1, t._1._2, t._2._2))
 
 		// save the output to hdfs
 		println("Workflow executed, writing the output to: " + output_path)
 		joinedResult.saveAsTextFile(output_path)
 
-		//joinedResult
-		//promoDates
-	
 		return true
 	}
 }

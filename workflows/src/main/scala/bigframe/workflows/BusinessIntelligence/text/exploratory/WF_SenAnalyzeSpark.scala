@@ -70,7 +70,6 @@ class WF_SenAnalyzeSpark(basePath : BaseTablePath) extends SparkRunnable {
             // sum up the sentiment scores for each product
             val report = scoredTweets.reduceByKey((a, b) => (a._1, a._2 + b._2))
             .mapValues(t => t._2).sortByKey(true)
-            //sc makeRDD Array("redundant")
 
             println("Workflow executed, writing the output to: " + output_path)
             report.saveAsTextFile(output_path)

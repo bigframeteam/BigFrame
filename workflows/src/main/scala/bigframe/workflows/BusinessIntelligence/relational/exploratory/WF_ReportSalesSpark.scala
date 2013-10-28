@@ -53,12 +53,29 @@ class WF_ReportSalesSpark(basePath : BaseTablePath) extends SparkRunnable {
 		}
 	}
   
-	/**
-	* Reads promotion table, applies selectivity parameters.
-	* Returns an RDD of (p_item_sk, Array(p_promo_sk, p_promo_id, 
-	* p_start_date_sk, p_end_date_sk, p_item_sk))
-	*/
-	def promotionsMappedByItems(): RDD[(String, Array[String])] = {
+  def productNamesPerItem(): RDD[(String, String)] = {
+    try {
+  	  // load item table, tokenize it
+	  val item = sc.textFile(tpcds_path+"/"+
+	      ReportSalesConstant.ItemTableName).map(t => t.split('|')) 
+
+	  // map item_sk with product name
+	  item map { t => try {(t(0), t(21))} catch {
+	    case e:Exception => (t(0), "N/A") } }   
+    } catch {
+      case e:Exception => { 
+        throwException(e)
+        sc makeRDD Array(("redundant", "redundant"))
+      }
+    }
+  }
+  
+    /**
+	 * Reads promotion table, applies selectivity parameters.
+	 * Returns an RDD of (p_item_sk, Array(p_promo_sk, p_promo_id, 
+	 * p_start_date_sk, p_end_date_sk, p_item_sk))
+	 */
+	private def promotionsMappedByItems(): RDD[(String, Array[String])] = {
 		try {
 			// Read promotion table, tokenize it, and filter out promotions not in the given list of promo_ids
 			val promotion = readFile(ReportSalesConstant.PromotionTableName)
@@ -72,6 +89,26 @@ class WF_ReportSalesSpark(basePath : BaseTablePath) extends SparkRunnable {
 			}
 		}
 	}
+  
+  /**
+   * Joins promotions with Item table to find product names corresponding to
+   * item_sk in the promotion table.
+   */
+  def promotedProducts(): RDD[(String, Array[String])] = {
+    try {
+      
+      val promotion = promotionsMappedByItems
+      
+      promotion.join(productNamesPerItem).map { t => t._1 -> Array(t._2._1(0), 
+          t._2._1(1), t._2._1(2), t._2._1(3), t._2._2) }
+      
+    } catch {
+      case e:Exception => {
+        throwException(e)
+        sc makeRDD Array(("redundant", Array("0")))
+      }
+    }
+  }
   
 	/**
 	* Given a promotions RDD mapped by p_item_sk and dates RDD (d_date_sk, date),
@@ -145,13 +182,17 @@ class WF_ReportSalesSpark(basePath : BaseTablePath) extends SparkRunnable {
 
 	/**
 	* Joins promotions with supplied sales channel
-	* Returns (item_sk, (promotion_id, sales))
+	* Returns (item_sk, (product_name, sales))
 	*/
-	private def promoJoinSales(promotions: RDD[(String, Array[String])], sales: RDD[(String, Array[String])]) = {
+	private def promoJoinSales(promotions: RDD[(String, Array[String])], 
+	    sales: RDD[(String, Array[String])]) = {
 		// join promotions with sales, filter irrelevant attributes, and filter sales not within promotion dates.
-		promotions.join(sales).mapValues(t => (t._1(1), t._1(2), t._1(3), t._2(0), 
-			  ( try{t._2(3).toDouble*t._2(4).toDouble} catch{case e:Exception => 0} )))
-			  .filter(t => (t._2._2 <= t._2._4 & t._2._4 <= t._2._3)).mapValues(t => (t._1, t._5))
+		promotions.join(sales).mapValues(
+		    t => (t._1(1), t._1(2), t._1(3), t._2(0), 
+			  ( try{t._2(3).toDouble*t._2(4).toDouble} catch{
+			    case e:Exception => 0} )))
+			  .filter(t => (t._2._2 <= t._2._4 & t._2._4 <= t._2._3)).mapValues(
+			      t => (t._1, t._5))
 	}
   
 	/**
@@ -167,18 +208,14 @@ class WF_ReportSalesSpark(basePath : BaseTablePath) extends SparkRunnable {
     
 	    // join promotions with sales
 	    val promo_store_sales = promoJoinSales(promotions, store_sales)
-//    	println("Number of tuples joining store sales: " + promo_store_sales.count())
     	val promo_catalog_sales = promoJoinSales(promotions, catalog_sales)
-//   	println("Number of tuples joining catalog sales: " + promo_catalog_sales.count())
    		val promo_web_sales = promoJoinSales(promotions, web_sales)
-//    	println("Number of tuples joining web sales: " + promo_web_sales.count())
     
     	// TODO: Watch out order of operations. Which one is most optimized?
   		// TODO: Can we print schedule used by Spark?
     
 	    // union three join results
 	    val promo_sales = promo_store_sales union promo_catalog_sales union promo_web_sales
-//    	println("Number of tuples in union: " + promo_sales.count())
 
     	// group items together, sum up the sales
     	promo_sales.reduceByKey( (a, b) => (a._1, a._2 + b._2) )
@@ -186,30 +223,20 @@ class WF_ReportSalesSpark(basePath : BaseTablePath) extends SparkRunnable {
   
 	/**
 	* Run a relational microbenchmark.
-	* TODO: Write SQL for this workflow
 	*/
     override def runSpark(spark_context: SparkContext): Boolean = {
     	
 		//TODO: make the fuction return false when exceptions are catched.
 
-    	setSparkContext(spark_context)
+		setSparkContext(spark_context)
 
-		val promotions = promotionsMappedByItems()
+		val promotions = promotedProducts()
 
 		val total_sales = salesPerPromotion(promotions)
 
-		// load item table, tokenize it
-		val item = sc.textFile(tpcds_path+"/"+ReportSalesConstant.ItemTableName).map(t => t.split('|')) 
-
-		// map item_sk with product name
-		val item_mapped = item map { t => try {(t(0), t(21))} catch { case e:Exception => (t(0), "N/A") } }   
-
-		// join total_sales with item_mapped
-		val report = total_sales.join(item_mapped).map { t => (t._2._1._1, t._2._2, t._2._1._2) } 
-
 		// save the output to hdfs
 		println("Workflow executed, writing the output to: " + output_path)
-        report.saveAsTextFile(output_path)
+		total_sales.saveAsTextFile(output_path)
 
 		return true
   	}

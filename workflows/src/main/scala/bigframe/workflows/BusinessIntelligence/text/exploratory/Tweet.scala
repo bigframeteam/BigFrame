@@ -20,8 +20,6 @@ case class Entities(val hashtags: List[String]) {
 case class Tweet(val text: String, val id: String, val created_at: String, 
     val user: User, val entities: Entities, val score:Double = 0.0) {
 
-	@transient lazy val productID = text.split(" ")(0)
-
 	def products = entities.hashtags
 	
 	def userID = user.id
