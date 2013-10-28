@@ -1,4 +1,4 @@
-package bigframe.datagen.factory;
+package bigframe.datagen.appDomainInfo;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +15,7 @@ import bigframe.datagen.nested.NestedDataGen;
 import bigframe.datagen.nested.tweet.RawTweetGenHadoop;
 import bigframe.datagen.relational.RelationalDataGen;
 import bigframe.datagen.relational.tpcds.TpcdsDataGenNaive;
+import bigframe.refreshing.DataPreparator;
 import bigframe.util.Constants;
 
 /**
@@ -52,21 +53,23 @@ public class BIDomainDataInfo extends DomainDataInfo {
 		dataVariety.add("text");
 	}
 
-	@Override
-	public List<DataGenerator> getDataGens() {
-		
-		if (!isBigDataIFvalid()) {
-			return null;
-		}
-		
-		List<DataGenerator> datagen_list = new LinkedList<DataGenerator>();
-		Set<String> dataVariety = datainputformat.getDataVariety();
-		
-		for(String variety : dataVariety) {
-			datagen_list.add(datagen_map.get(variety));
-		}
-		return datagen_list;
-	}
+//	@Override
+//	public List<DataGenerator> getDataGens() {
+//		
+//		if (!isBigDataIFvalid()) {
+//			return null;
+//		}
+//		
+//		List<DataGenerator> datagen_list = new LinkedList<DataGenerator>();
+//		Set<String> dataVariety = datainputformat.getDataVariety();
+//		
+//		for(String variety : dataVariety) {
+//			datagen_list.add(datagen_map.get(variety));
+//		}
+//		return datagen_list;
+//	}
+	
+
 
 	@Override
 	protected boolean isBigDataIFvalid() {

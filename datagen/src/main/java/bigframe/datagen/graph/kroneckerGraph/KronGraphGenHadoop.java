@@ -39,11 +39,19 @@ public class KronGraphGenHadoop extends KroneckerGraphGen {
 
 
 		long nodeCount = KroneckerGraphGen.getNodeCount(targetGB);
-		steps = (int) Math.log10(nodeCount);
-		//float realgraphGB = KroneckerGraphGen.getRealGraphGB(targetGB);
+		steps = (int) (Math.log(nodeCount)/Math.log(2));
+		float realgraphGB = KroneckerGraphGen.getRealGraphGB(targetGB);
+		
+		System.out.println(nodeCount);
+		System.out.println(targetGB);
+		System.out.println(steps);
+		System.out.println(realgraphGB);
+		
 		int nodePerMapper = KnonGraphConstants.NODEGEN_PER_MAPPER;
 		int num_Mappers = (int) (nodeCount / nodePerMapper) * (int) (nodeCount / nodePerMapper);
-
+		
+		System.out.println(nodePerMapper);
+//		int num_Mappers = (int) (nodeCount / nodePerMapper);
 
 
 		Configuration mapreduce_config = new Configuration();

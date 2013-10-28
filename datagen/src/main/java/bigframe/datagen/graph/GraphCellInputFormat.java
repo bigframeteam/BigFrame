@@ -196,15 +196,15 @@ InputFormat<NullWritable, KronGraphInfoWritable> {
 	}
 
 	/**
-	 * Create the desired number of splits, dividing the number of seconds
-	 * between the mappers.
+	 * Create the desired number of splits, each mapper generate
+	 * the minimum graph size.
 	 */
 	public List<InputSplit> getSplits(JobContext job) {
 		int num_Mappers = job.getConfiguration().getInt(
 				KnonGraphConstants.NUM_MAPPERS, 1);
 		int steps = job.getConfiguration().getInt(KnonGraphConstants.NUM_STEPS,
 				1);
-		int k = (int) logb(num_Mappers, 100) + 1;
+		int k = (int) logb(num_Mappers, 4) + 1;
 
 		List<int[]> path = new ArrayList<int[]>();
 

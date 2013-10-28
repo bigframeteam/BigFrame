@@ -66,7 +66,14 @@ object BigFrameBuild extends Build {
 	) ++ extraAssemblySettings 
 
 	def datagenSettings = assemblySettings ++ sharedSettings ++ Seq(
-		name := "bigframe-datagen"
+		name := "bigframe-datagen",
+
+		resolvers += "Apache repo" at "https://repository.apache.org/content/repositories/releases",
+
+		libraryDependencies ++= Seq(
+			"org.apache.kafka" % "kafka_2.9.2" % "0.8.0-beta1" % "provided"
+		)
+
 	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 
 	def workflowsSettings = assemblySettings ++ sharedSettings ++ Seq(

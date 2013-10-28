@@ -18,7 +18,8 @@ import org.apache.commons.cli.ParseException;
 
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.BigConfConstants;
-import bigframe.datagen.factory.DatagenFactory;
+import bigframe.refreshing.RefreshDriver;
+import bigframe.refreshing.driver.KafkaRefreshDriver;
 import bigframe.util.parser.XMLBigFrameInputParser;
 
 
@@ -224,13 +225,23 @@ public class DataGenDriver {
 
 		//If mode equals datagen, then generate the data we need
 		if ( line.getOptionValue(MODE).equals(MODE_DATAGEN)) {
-			DatagenFactory datagen_factory = new DatagenFactory(conf.getBigDataInputFormat());
+//			DatagenFactory datagen_factory = new DatagenFactory(conf.getBigDataInputFormat());
 
-			List<DataGenerator> datagen_list = datagen_factory.createGenerators();
+			List<DataGenerator> datagen_list = DatagenFactory.createGenerators(conf.getBigDataInputFormat());
 
 			for(DataGenerator datagen : datagen_list) {
 				datagen.generate();
 			}
+		}
+		
+		else if (line.getOptionValue(MODE).equals(MODE_REFRESH)) {
+			RefreshDriver refresh_driver = new KafkaRefreshDriver(conf.getBigDataInputFormat());
+			
+			System.out.println("Preparing the refreshing data...");
+			refresh_driver.prepare();			
+			System.out.println("Finish data preparation!");
+			
+			refresh_driver.refresh();
 		}
 
 	}

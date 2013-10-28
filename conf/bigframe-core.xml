@@ -12,15 +12,15 @@
 	
 	<property>
 		<name>bigframe.datavariety</name>
-		<value>relational, nested, graph</value>
+		<value>graph</value>
 		<description>
-			only relational, graph, nested data are supported.
+			BI: only relational, graph, nested data are supported.
 		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.datavolume</name>
-		<value>tiny</value>
+		<value>test</value>
 		<description>
 			tiny: around 10GB
 			small: around 100GB
@@ -68,9 +68,11 @@
 	
 	<property>
 		<name>bigframe.datavelocity.relational</name>
-		<value>0</value>
+		<value>100</value>
 		<description>
 			It is used to determine the data refresh rate of relational data.
+
+			BI: The absolute number represents the number of sales generated per second per city.
 		</description>
 	</property>
 	
@@ -79,15 +81,18 @@
 		<value>0</value>
 		<description>
 			It is used to determine the data refresh rate of graph data.
+
+			BI: Not available
 		</description>
 	</property>
 	
 	<property>
 		<name>bigframe.datavelocity.nested</name>
-		<value>0.1</value>
+		<value>1000</value>
 		<description>
 			It is used to determine the data refresh rate of nested data.
-			The absolute number represents each user sent per day.
+
+			BI: The absolute number represents the number of tweets generated per second per city. 
 		</description>
 	</property>
 	
@@ -96,6 +101,8 @@
 		<value>0</value>
 		<description>
 			It is used to determine the data refresh rate of text data.
+
+			BI: Not available
 		</description>
 	</property>
 	
