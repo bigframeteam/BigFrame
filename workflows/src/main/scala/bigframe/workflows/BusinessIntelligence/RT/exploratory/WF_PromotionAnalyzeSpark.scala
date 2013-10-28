@@ -33,7 +33,7 @@ class WF_PromotionAnalyzeSpark(basePath : BaseTablePath) extends SparkRunnable {
 		val sales = tpcdsExecutor salesPerPromotion promotions
 
 		// read all tweets
-		val allTweets = textExecutor.read()
+		val allTweets = textExecutor.read().filter(t => t.products != null && t.products.length > 0)
 
 		// filter tweets by items relevant to promotions
 		// tuples item_sk -> tweet
