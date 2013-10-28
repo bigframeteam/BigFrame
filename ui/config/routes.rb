@@ -11,6 +11,7 @@ Ui::Application.routes.draw do
   post "datagen/submit"
   get "execution/index"
   post "execution/submit"
+  get "execution/log"
 
   get "spark/workloads"
   get "spark/visualize"

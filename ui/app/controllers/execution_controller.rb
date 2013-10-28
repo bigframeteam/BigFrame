@@ -21,30 +21,32 @@ class ExecutionController < ApplicationController
 
   #This is called when we click the generate data.
   def submit
-  	@bigframe_home = "/home/shlee0605/big/0.2"
-	@query_volume = params[:query_volume]
-	@query_variety = params[:query_variety]
-	@query_variety2 = ""
-	@query_velocity = params[:query_velocity]
-	@queryengine_relational = params[:queryengine_relational]
-	@queryengine_text = params[:queryengine_nested]
-	@queryengine_graph = params[:queryengine_graph]
-	@hdfs_root_dir = params[:hdfs_root_dir]
-	@query_variety2 = ""
-    if @query_variety.split(" ").size > 1
-      @data_variety2 = "macro"
+  	@bigframe_home = "/home/shlee0605/big/big-0.2"
+  	@query_volume = params[:query_volume]
+  	@query_variety = params[:query_variety]
+  	@query_variety2 = ""
+  	@query_velocity = params[:query_velocity]
+  	@queryengine_relational = params[:queryengine_relational]
+  	@queryengine_text = params[:queryengine_nested]
+  	@queryengine_graph = params[:queryengine_graph]
+  	@hdfs_root_dir = params[:hdfs_root_dir]
+  	@query_variety2 = ""
+
+    if @query_variety.split(",").size > 1
+      @query_variety2 = "macro"
     else
-	  @data_variety2 = "micro"
-	end
+      @query_variety2 = "micro"
+    end
+
     process_env
     process_xml
     Delayed::Job.enqueue(Qgen.new(@bigframe_home))
-    redirect_to :action=>"index"
+    redirect_to :action=>"log"
   end
 
   #read the log file and put the text into @log
   def log
-    file = File.open('log/datagen.log')
+    file = File.open('log/qgen.log')
     @log = file.read
   end
 

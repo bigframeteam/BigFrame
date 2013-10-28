@@ -1,4 +1,6 @@
 class Qgen
+	
+  require 'open3'
 
   def initialize(home)
     @bigframe_home=home
