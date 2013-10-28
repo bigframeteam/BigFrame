@@ -202,23 +202,23 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
     ranks
   }
 
-  def microBench(regex: String = ".*") 
+  def microBench(regex: String = ".*", numIter: Int = 10) 
   : RDD[(Int, Seq[(String, Double)])] = {
     
     val tweets = readTweets(regex)
     
-    microBench(tweets)
+    microBench(tweets, numIter)
     
   }
   
-  def microBench(tweets: RDD[(Tweet, String)]) 
+  def microBench(tweets: RDD[(Tweet, String)], numIter: Int = 10) 
   : RDD[(Int, Seq[(String, Double)])] = {
     
     buildMatrices(tweets)
     
     // Using a standalone implementation
     // TODO: Fix serialization issue with bagel implementation
-    computeTR_standalone()
+    computeTR_standalone(numIter)
     
   }
   

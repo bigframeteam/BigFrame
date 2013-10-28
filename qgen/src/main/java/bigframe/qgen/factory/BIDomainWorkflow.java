@@ -197,7 +197,8 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				//Relational, Text, Graph for Spark
 				else if(relationalEngine.equals(Constants.SPARK) && graphEngine.equals(Constants.SPARK)&& 
 						nestedEngine.equals(Constants.SPARK)) {
-
+					sparkWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_MacroRTGSpark(basePath, 10));
 				}
 				//Relational, Text for Spark
 				else if(nestedEngine.equals(Constants.SPARK) && nestedEngine.equals(Constants.SPARK)) {
