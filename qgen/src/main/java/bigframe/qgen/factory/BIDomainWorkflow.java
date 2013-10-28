@@ -165,7 +165,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					}
 					else if(nestedEngine.equals(Constants.SPARK)) {
 						sparkWorkflow.addQuery(new 
-								bigframe.workflows.BusinessIntelligence.text.exploratory.WF_SenAnalyzeSpark(basePath));
+								bigframe.workflows.BusinessIntelligence.text.exploratory.WF_SenAnalyzeSpark(basePath, "[aA].*"));
 					}
 				}
 			}
