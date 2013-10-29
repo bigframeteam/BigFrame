@@ -71,7 +71,7 @@ Mapper<NullWritable, KronGraphInfoWritable, NullWritable, Text> {
 			for (int i = 0; i < KnonGraphConstants.NUM_ROWS; i++) {
 				for (int j = 0; j < KnonGraphConstants.NUM_COLUMNS; j++) {
 					double d = randnum.nextFloat();
-					if (d <= KnonGraphConstants.INITIAL_GRAPH[i][j]) {
+					if (d <= KnonGraphConstants.INITIAL_GRAPH2[i][j]) {
 						int real_row = i + 1;
 						int real_column = j + 1;
 
@@ -114,7 +114,7 @@ Mapper<NullWritable, KronGraphInfoWritable, NullWritable, Text> {
 					double d = randnum.nextFloat();
 
 					// Recursively select a sub-region of the graph matrix
-					if (d <= KnonGraphConstants.INITIAL_GRAPH[i][j]) {
+					if (d <= KnonGraphConstants.INITIAL_GRAPH2[i][j]) {
 						List<int[]> new_path = new ArrayList<int[]>(path);
 						int[] cell = { i, j };
 						new_path.add(cell);

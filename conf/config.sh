@@ -22,8 +22,12 @@ HADOOP_SLAVES=$HADOOP_HOME/conf/slaves
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hadoop.slaves=${HADOOP_SLAVES}"
 
 # Local Directory to store the temporary TPCDS generated files
-TPCDS_LOCAL=/data/tpcds_tmp
+TPCDS_LOCAL=~/tpcds_tmp
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.local=${TPCDS_LOCAL}"
+
+# Local Directory to store the itermediate data used for data refershing
+REFRESH_LOCAL=~/bigframe_refresh_data
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.refresh.local=${REFRESH_LOCAL}"
 
 # Global Output Path
 export OUTPUT_PATH="hdfs://localhost:9000/test_output"

@@ -56,6 +56,9 @@ public class BigConfConstants {
 	public static final String BIGFRAME_VERTICA_JDBC_SERVER = "bigframe.vertica.jdbc.server";
 	public static final String BIGFRAME_VERTICA_HOME = "bigframe.vertica.home";
 	
+	// Properties related to data refreshing
+	public static final String BIGFRAME_REFRESH_LOCAL = "bigframe.refresh.local";
+	
 	
 	// Properties for external scripts
 	public static final String BIGFRAME_TPCDS_LOCAL = "bigframe.tpcds.local";
@@ -124,7 +127,8 @@ public class BigConfConstants {
 	public static final Map<String, Integer> DATAVOLUME_MAP;
 	static {
 		DATAVOLUME_MAP = new HashMap<String, Integer>();
-		DATAVOLUME_MAP.put("test", 3);
+		DATAVOLUME_MAP.put("test", 1);
+		DATAVOLUME_MAP.put("toy", 3);
 		DATAVOLUME_MAP.put("tiny", 10);
 		DATAVOLUME_MAP.put("small", 100);
 		DATAVOLUME_MAP.put("medium", 1000);

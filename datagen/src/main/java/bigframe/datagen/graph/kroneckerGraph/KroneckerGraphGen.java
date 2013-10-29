@@ -19,12 +19,13 @@ public abstract class KroneckerGraphGen extends GraphDataGen {
 	protected int steps;
 	protected String hdfs_dir;
 
-	private static final float arScaleVolume [] = KnonGraphConstants.arScaleVolume;
+	private static final float arScaleVolume [] = KnonGraphConstants.arScaleVolume2;
+	private static final int arScaleNodeCount2 [] = KnonGraphConstants.arScaleNodeCount2;
 
 	public KroneckerGraphGen(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
-		initial_graph = KnonGraphConstants.INITIAL_GRAPH;
+		initial_graph = KnonGraphConstants.INITIAL_GRAPH2;
 
 		num_rows = initial_graph.length;
 		num_columns = initial_graph[0].length;
@@ -49,8 +50,8 @@ public abstract class KroneckerGraphGen extends GraphDataGen {
 	 */
 	public static float getRealGraphGB(float targetGB) {
 		int i = 0;
-		for(;i<arScaleVolume.length; i++) {
-			if (targetGB < arScaleVolume[i]) {
+		for(;; i++) {
+			if (targetGB < arScaleVolume[0] * Math.pow(4, i) ) {
 				break;
 			}
 		}
@@ -59,20 +60,20 @@ public abstract class KroneckerGraphGen extends GraphDataGen {
 			return arScaleVolume[0];
 
 		else
-			return arScaleVolume[i];
+			return (float) (arScaleVolume[0] * Math.pow(4, i -1));
 	}
 
 	public static long getNodeCount(float targetGB) {
 		int i = 0;
-		for(;i<arScaleVolume.length; i++) {
-			if (targetGB < arScaleVolume[i]) {
+		for(;; i++) {
+			if (targetGB < arScaleVolume[0] * Math.pow(4, i)) {
 				break;
 			}
 		}
 		if (i==0)
-			return (long) Math.pow(10, 6);
+			return arScaleNodeCount2[0];
 		else
-			return (long) Math.pow(10, 6 + i -1);
+			return arScaleNodeCount2[0] * (long)Math.pow(2, i -1);
 	}
 
 	public abstract void setInitialGraph(double graph[][]);
