@@ -1,0 +1,13 @@
+<!--The benchmark specification-->
+<configuration>
+	
+	<property>
+		<name>test</name>
+		<value>test</value>
+		<description>
+			For test use.
+		</description>
+	</property>
+	
+
+</configuration>
