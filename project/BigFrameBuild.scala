@@ -51,7 +51,7 @@ object BigFrameBuild extends Build {
 			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
-			//"log4j" % "log4j" % "1.2.14" % "provided",
+			"log4j" % "log4j" % "1.2.16" % "provided",
 			"org.slf4j" % "slf4j-log4j12" % "1.6.1",
 			"commons-configuration" % "commons-configuration" % "1.6" % "provided",
 			"commons-logging" % "commons-logging" % "1.1.1" % "provided",

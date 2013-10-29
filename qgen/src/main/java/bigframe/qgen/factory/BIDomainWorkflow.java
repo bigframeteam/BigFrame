@@ -186,12 +186,12 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				if(relationalEngine.equals(Constants.HADOOP) && graphEngine.equals(Constants.HADOOP)&& 
 						nestedEngine.equals(Constants.HADOOP)) {
 					hadoopWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath, 10));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHadoop(basePath, 10));
 				}
 				else if(relationalEngine.equals(Constants.VERTICA) && graphEngine.equals(Constants.VERTICA)&& 
 						nestedEngine.equals(Constants.VERTICA)) {
 					verticaWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath, 10));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentVertica(basePath, 10));
 				}
 				
 				//Relational, Text, Graph for Spark

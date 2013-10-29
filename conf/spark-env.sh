@@ -9,7 +9,7 @@ export SPARK_HOME="/home/shlee0605/spark-0.8.0"
 export SCALA_HOME="/home/shlee0605/scala-2.9.3"
 
 # Spark memory parameters, defaults will be used if unspecified
-export SPARK_MEM=2g
+#export SPARK_MEM=g
 # export SPARK_WORKER_MEMORY=6g
 
 # Spark connection string, available in Spark master's webUI
@@ -26,4 +26,6 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.shark.home=${SHARK_HOME}"
 SPARK_MASTER=$SPARK_CONNECTION_STRING
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.master=${SPARK_MASTER}"
 
+# Global Output Path
+export OUTPUT_PATH="hdfs://localhost:9000/test_output"
 

@@ -12,7 +12,7 @@
 	
 	<property>
 		<name>bigframe.datavariety</name>
-		<value> relational, nested </value>
+		<value> relational, nested, graph </value>
 		<description>
 			BI: only relational, graph, nested data are supported.
 		</description>
@@ -155,7 +155,7 @@
 	
 	<property>
 		<name>bigframe.queryengine.relational</name>
-		<value>spark</value>
+		<value>hadoop</value>
 	</property>
 	
 	<property>
@@ -165,7 +165,7 @@
 	
 	<property>
 		<name>bigframe.queryengine.nested</name>
-		<value>spark</value>
+		<value>hadoop</value>
 	</property>
 
 	<property>
