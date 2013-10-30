@@ -57,11 +57,12 @@ class WF_SenAnalyzeSpark(basePath : BaseTablePath, regex: String = "*") extends 
             setSparkContext(spark_context)
 
             // read all tweets
-            val allTweets = read()
+            val allTweets = read().filter(t => t.products != null && t.products.length >0)
 
             // filter tweets not talking about specified products
+            val pattern = regex
             val filteredTweets = allTweets filter (
-                t => t.products != null && t.products.length > 0 && t.products(0).matches(regex))
+                t => t.products(0).matches(pattern))
 
             // extract sentiment for all filtered tweets
             val scoredTweets = addSentimentScore(filteredTweets) map (
