@@ -31,6 +31,7 @@ public class KronGraphGenHadoop extends KroneckerGraphGen {
 		// TODO Auto-generated constructor stub
 	}
 
+	
 	@Override
 	public void generate() {
 		// TODO Auto-generated method stub
@@ -42,17 +43,8 @@ public class KronGraphGenHadoop extends KroneckerGraphGen {
 		steps = (int) (Math.log(nodeCount)/Math.log(2));
 		float realgraphGB = KroneckerGraphGen.getRealGraphGB(targetGB);
 		
-		System.out.println(nodeCount);
-		System.out.println(targetGB);
-		System.out.println(steps);
-		System.out.println(realgraphGB);
-		
 		int nodePerMapper = KnonGraphConstants.NODEGEN_PER_MAPPER;
 		int num_Mappers = (int) (nodeCount / nodePerMapper) * (int) (nodeCount / nodePerMapper);
-		
-		System.out.println(nodePerMapper);
-//		int num_Mappers = (int) (nodeCount / nodePerMapper);
-
 
 		Configuration mapreduce_config = new Configuration();
 		mapreduce_config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
@@ -64,7 +56,7 @@ public class KronGraphGenHadoop extends KroneckerGraphGen {
 		try {
 			Job job = new Job(mapreduce_config);
 
-			Path outputDir = new Path(hdfs_dir);
+			Path outputDir = new Path(hdfs_path);
 			FileOutputFormat.setOutputPath(job, outputDir);
 			job.setJarByClass(KronGraphGenHadoop.class);
 			job.setMapperClass(KronGraphMapper.class);

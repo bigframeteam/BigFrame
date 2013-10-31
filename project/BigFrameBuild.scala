@@ -14,7 +14,7 @@ object BigFrameBuild extends Build {
 	// Scala version
 	val SCALA_VERSION = "2.9.3"
 	
-	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, workflows, interface)
+	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, workflows)
 
 	lazy val common = Project(id = "common", base = file("common"), settings = commonSettings)
 
@@ -24,7 +24,6 @@ object BigFrameBuild extends Build {
 
 	lazy val qgen = Project(id = "qgen", base = file("qgen"), settings = qgenSettings) dependsOn(common, workflows)
 
-	lazy val interface = Project(id = "interface", base = file("interface"), settings = interfaceSettings) dependsOn(common)
 
 	def sharedSettings = Defaults.defaultSettings ++ Seq(
 		name := "bigframe",
@@ -46,13 +45,13 @@ object BigFrameBuild extends Build {
 		libraryDependencies ++= Seq(
       		"org.scalatest" %% "scalatest" % "1.9.1" % "test",
 	        "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-	        "org.apache.spark" % "spark-core_2.9.3" % "0.8.0-incubating",
-     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.0-incubating",
+	        "org.apache.spark" % "spark-core_2.9.3" % "0.8.0-incubating" % "provided",
+     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.0-incubating" % "provided",
 			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
-			//"log4j" % "log4j" % "1.2.14" % "provided",
-			"org.slf4j" % "slf4j-log4j12" % "1.6.1",
+			"log4j" % "log4j" % "1.2.14" % "provided",
+			//"org.slf4j" % "slf4j-log4j12" % "1.6.1",
 			"commons-configuration" % "commons-configuration" % "1.6" % "provided",
 			"commons-logging" % "commons-logging" % "1.1.1" % "provided",
 			"com.novocode" % "junit-interface" % "0.10-M2" % "test"
@@ -74,7 +73,14 @@ object BigFrameBuild extends Build {
 		resolvers += "Apache repo" at "https://repository.apache.org/content/repositories/releases",
 
 		libraryDependencies ++= Seq(
-			"org.apache.kafka" % "kafka_2.9.2" % "0.8.0-beta1" % "provided"
+			"org.apache.kafka" % "kafka_2.9.2" % "0.8.0-beta1" exclude("com.sun.jmx","jmxri")
+		 	exclude("com.sun.jdmk","jmxtools"),
+			"com.typesafe.akka" % "akka-actor" % "2.0.5",
+			"com.typesafe.akka" % "akka-kernel" % "2.0.5",
+			"com.typesafe.akka" % "akka-slf4j"    % "2.0.5",
+			"com.typesafe.akka" % "akka-remote"   % "2.0.5",
+			"com.typesafe.akka" % "akka-agent"    % "2.0.5", 
+			"com.typesafe.akka" % "akka-testkit"  % "2.0.5"% "test"
 		)
 
 	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
@@ -99,10 +105,6 @@ object BigFrameBuild extends Build {
 		//	"org.apache.spark" % "spark-mllib_2.9.3" % "0.8.0-incubating"
 		//)
 
-	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
-
-	def interfaceSettings = assemblySettings ++ sharedSettings ++ Seq(
-		name := "bigframe-interface"
 	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 
 	def extraAssemblySettings() = Seq(test in assembly := {}) ++ Seq(

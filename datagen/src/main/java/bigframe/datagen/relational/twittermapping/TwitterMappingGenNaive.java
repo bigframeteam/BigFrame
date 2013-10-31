@@ -32,6 +32,10 @@ public class TwitterMappingGenNaive extends TwitterMappingGen {
 	
 	private String hdfs_path; 
 		
+	public void setHDFS_PATH(String path) {
+		hdfs_path = path;
+	}
+	
 	public TwitterMappingGenNaive(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub

@@ -67,7 +67,8 @@ public abstract class DomainDataInfo {
 		Set<String> dataVariety = datainputformat.getDataVariety();
 		
 		for(String variety : dataVariety) {
-			dataPrep_list.add(dataPrep_map.get(variety));
+			if(dataPrep_map.containsKey(variety))
+				dataPrep_list.add(dataPrep_map.get(variety));
 		}
 		return dataPrep_list;
 	}
@@ -77,13 +78,14 @@ public abstract class DomainDataInfo {
 			return null;
 		}
 		
-		List<DataProducer> dataPrep_list = new LinkedList<DataProducer>();
+		List<DataProducer> dataProd_list = new LinkedList<DataProducer>();
 		Set<String> dataVariety = datainputformat.getDataVariety();
 		
 		for(String variety : dataVariety) {
-			dataPrep_list.add(dataProd_map.get(variety));
+			if(dataProd_map.containsKey(variety))
+				dataProd_list.add(dataProd_map.get(variety));
 		}
-		return dataPrep_list;
+		return dataProd_list;
 	}
 	
 	public boolean containDataVariety(String variety) {

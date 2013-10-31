@@ -1,57 +1,43 @@
-package bigframe.datagen.nested.tweet;
-
+package bigframe.refreshing.nested;
 
 import java.text.SimpleDateFormat;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import bigframe.datagen.nested.tweet.TweetGenDist;
 import bigframe.datagen.text.tweet.TweetTextGen;
 
-/**
- * A simple distribution to control tweet generation.
- * Including:
- * 1. Which twitter user mention this tweet;
- * 2. If a product is mentioned in the tweet;
- * 3. If a promoted product is mentioned. 
- * 
- * @author andy
- *
- */
-public class SimpleTweetGenDist extends TweetGenDist {
+public class StreamTweetGenDist extends TweetGenDist {
 
 	private double cust_mention_prob;
 	private double noncust_mention_prob;
 	
-//	private double promotion_cust_mention_prob;
-//	private double promotion_non_cust_mention_prob;
-	
 	private double promoted_prod_men_prob_cust;
 	private double promoted_prod_men_prob_noncust;
 	
-	public SimpleTweetGenDist(long random_seed, TweetTextGen text_gen, long ID) {
+	long timestamp;
+	
+	public StreamTweetGenDist(long random_seed, TweetTextGen text_gen, long ID) {
 		super(random_seed, text_gen, ID);
-		
 		cust_mention_prob = 0.8;
 		noncust_mention_prob = 0.08;
-		
-//		promotion_cust_mention_prob  = 0.8;
-//		promotion_non_cust_mention_prob = 0.08;
-		
+	
 		promoted_prod_men_prob_cust = 0.8;
 		promoted_prod_men_prob_noncust = 0.2;
 	}
 
+	public void setTimeStamp(long time) {
+		timestamp = time;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public String getNextTweet() {
-		
-		double ratio = cust_twitter_acc.length /(cust_twitter_acc.length + noncust_twitter_acc.length);
+	double ratio = cust_twitter_acc.length /(cust_twitter_acc.length + noncust_twitter_acc.length);
 		
 		SimpleDateFormat twitterDateFormat = new SimpleDateFormat(
 				"EEE MMM dd HH:mm:ss ZZZZZ yyyy");
-		//Random choose a time stamp
-		long timestamp = time_begin + random.nextInt((int)(time_end - time_begin + 1));
 		
 		double flip;
 		flip = random.nextDouble();
@@ -107,7 +93,7 @@ public class SimpleTweetGenDist extends TweetGenDist {
 
 		
 		String tweet = text_gen.getNextTweet(prod_id);
-		String date = twitterDateFormat.format(timestamp*1000);
+		String date = twitterDateFormat.format(timestamp);
 
 		
 		tweet_json.put("created_at", date);
@@ -140,29 +126,4 @@ public class SimpleTweetGenDist extends TweetGenDist {
 		return tweet_json.toString();
 	}
 
-	public double getCustMenProb() {
-		return cust_mention_prob;
-	}
-	
-	public double getNonCustMenProb() {
-		return noncust_mention_prob;
-	}
-	
-//	public double getPromotionCustMenProb() {
-//		return promotion_cust_mention_prob;
-//	}
-//	
-//	public double getPromotionNonCustMenProb() {
-//		return promotion_non_cust_mention_prob;
-//	}
-	
-	public double getPromotedProdMenProbCust() {
-		return promoted_prod_men_prob_cust;
-	}
-	
-	public double getPromotedProdMenProbNonCust() {
-		return promoted_prod_men_prob_noncust;
-	}
-
-	
 }

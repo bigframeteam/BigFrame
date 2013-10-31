@@ -7,3 +7,5 @@ target/
 
 hadoop-env.sh
 spark-env.sh
+vertica-env.sh
+bigframe-core.xml

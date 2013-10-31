@@ -18,8 +18,10 @@ import org.apache.commons.cli.ParseException;
 
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.BigConfConstants;
-import bigframe.refreshing.RefreshDriver;
-import bigframe.refreshing.driver.KafkaRefreshDriver;
+import bigframe.refreshing.DataPreparator;
+import bigframe.refreshing.DataPreparatorFactory;
+import bigframe.refreshing.DataProducer;
+import bigframe.refreshing.DataProducerFactory;
 import bigframe.util.parser.XMLBigFrameInputParser;
 
 
@@ -47,9 +49,11 @@ public class DataGenDriver {
 	// Main parsing options
 	private static String MODE = "mode";
 	private static String CONF = "conf";
+	private static String STREAM_SCALE = "stream_scale";
 	private static String HELP = "help";
 	private static String MODE_DATAGEN = "datagen";
 	private static String MODE_REFRESH = "refresh";
+	private static String MODE_PREPARE = "prepare";
 
 
 
@@ -60,7 +64,8 @@ public class DataGenDriver {
 		out.println();
 		out.println("Usage: datagen");
 		out.println(" -mode								[required] Currently, these modes are supportted:");
-		out.println("									[datagen, refresh]");
+		out.println("									[datagen, refresh, prepare]");
+		out.println(" -stream_scale						The scala factor of the stream refreshing rate, by default it is 1");
 		out.println(" -conf <config file>				Benchmark configuration file");
 		out.println(" -help								Print this usage");
 		out.println("");
@@ -77,6 +82,10 @@ public class DataGenDriver {
 		// Build the options
 		Option modeOption = OptionBuilder.withArgName(MODE).hasArg()
 				.withDescription("Execution mode options").create(MODE);
+		
+		Option streamScaleOption = OptionBuilder.withArgName(STREAM_SCALE).hasArg()
+				.withDescription("Stream refreshing rate").create(STREAM_SCALE);
+
 
 		Option confOption = OptionBuilder.withArgName(CONF).hasArg()
 				.withDescription("The benchmark configuration file").create(CONF);
@@ -92,6 +101,7 @@ public class DataGenDriver {
 		// Declare the options
 		Options opts = new Options();
 		opts.addOption(modeOption);
+		opts.addOption(streamScaleOption);
 		opts.addOption(helpOption);
 		opts.addOption(confOption);
 		opts.addOption(property);
@@ -146,8 +156,8 @@ public class DataGenDriver {
 
 		String mode = line.getOptionValue(MODE);
 
-		if (! (mode.equals(MODE_DATAGEN) || mode.equals(MODE_REFRESH))) {
-			failAndExit("Only support modes:"+MODE_DATAGEN+","+MODE_REFRESH);
+		if (! (mode.equals(MODE_DATAGEN) || mode.equals(MODE_REFRESH)  || mode.equals(MODE_PREPARE))) {
+			failAndExit("Only support modes:"+MODE_DATAGEN + "," + MODE_REFRESH + ","+MODE_PREPARE);
 		}
 
 		Properties properties = line.getOptionProperties("D");
@@ -175,7 +185,6 @@ public class DataGenDriver {
 
 		return line;
 	}
-
 
 
 
@@ -227,6 +236,7 @@ public class DataGenDriver {
 		if ( line.getOptionValue(MODE).equals(MODE_DATAGEN)) {
 //			DatagenFactory datagen_factory = new DatagenFactory(conf.getBigDataInputFormat());
 
+			System.out.println("Begin to generate data...");
 			List<DataGenerator> datagen_list = DatagenFactory.createGenerators(conf.getBigDataInputFormat());
 
 			for(DataGenerator datagen : datagen_list) {
@@ -234,14 +244,36 @@ public class DataGenDriver {
 			}
 		}
 		
-		else if (line.getOptionValue(MODE).equals(MODE_REFRESH)) {
-			RefreshDriver refresh_driver = new KafkaRefreshDriver(conf.getBigDataInputFormat());
+		else if(line.getOptionValue(MODE).equals(MODE_PREPARE)) {
+			List<DataPreparator> preparators = DataPreparatorFactory.createPreparators(conf.getBigDataInputFormat());
 			
 			System.out.println("Preparing the refreshing data...");
-			refresh_driver.prepare();			
+			for(DataPreparator prep : preparators) {
+				prep.prepare();
+			}
 			System.out.println("Finish data preparation!");
+
+		}
+		
+		else if (line.getOptionValue(MODE).equals(MODE_REFRESH)) {
 			
-			refresh_driver.refresh();
+			List<DataProducer> producers = DataProducerFactory.createProducers(conf.getBigDataInputFormat());
+			
+			if(line.hasOption(STREAM_SCALE))
+				System.out.println("Starting " + Float.parseFloat(line.getOptionValue(STREAM_SCALE)) 
+						+ " units of data producer");
+			
+			else
+				System.out.println("Starting 1 unit of data producer");
+			
+			for(DataProducer prod : producers) {
+				if(line.hasOption(STREAM_SCALE))
+					prod.setStreamScaleFactor(Float.parseFloat(line.getOptionValue(STREAM_SCALE)));
+				
+				prod.init();
+				prod.produce();
+			}
+			
 		}
 
 	}
