@@ -56,6 +56,17 @@ public class BigConfConstants {
 	public static final String BIGFRAME_VERTICA_JDBC_SERVER = "bigframe.vertica.jdbc.server";
 	public static final String BIGFRAME_VERTICA_HOME = "bigframe.vertica.home";
 	
+	/**
+	 * Hana specific
+	 */
+	public static final String BIGFRAME_HANA_HOSTNAMES = "bigframe.hana.hostnames";
+	public static final String BIGFRAME_HANA_PORT = "bigframe.hana.port";
+	public static final String BIGFRAME_HANA_USERNAME = "bigframe.hana.username";
+	public static final String BIGFRAME_HANA_PASSWORD = "bigframe.hana.password";
+	public static final String BIGFRAME_HANA_DATABASE = "bigframe.hana.database";
+	public static final String BIGFRAME_HANA_JDBC_SERVER = "bigframe.hana.jdbc.server";
+	public static final String BIGFRAME_HANA_HOME = "bigframe.hana.home";
+
 	// Properties related to data refreshing
 	public static final String BIGFRAME_REFRESH_LOCAL = "bigframe.refresh.local";
 	

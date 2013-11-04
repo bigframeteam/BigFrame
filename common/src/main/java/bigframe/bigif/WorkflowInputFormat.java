@@ -31,6 +31,15 @@ public class WorkflowInputFormat extends Config {
 	private String VERTICA_JDBC_SERVER = "";
 	private String VERTICA_HOME = "";
 	
+	private String HANA_HOSTNAMES = "";
+	private String HANA_DATABASE = "";
+	private Integer HANA_PORT = 0;
+	private String HANA_USERNAME = "";
+	private String HANA_PASSWORD = "";
+	private String HANA_JDBC_SERVER = "";
+	private String HANA_HOME = "";
+
+	
 	
 	public WorkflowInputFormat() {
 	}
@@ -91,6 +100,41 @@ public class WorkflowInputFormat extends Config {
 	public String getVerticaHome(){
 		return VERTICA_HOME;
 	}
+	
+	
+	
+	
+	
+	public String getHanaHostNames() {
+		return HANA_HOSTNAMES;
+	}
+	
+	public String getHanaUserName() {
+		return HANA_USERNAME;
+	}
+	
+	public String getHanaPassword() {
+		return HANA_PASSWORD;
+	}
+	
+	public String getHanaDatabase() {
+		return HANA_DATABASE;
+	}
+	
+	public Integer getHanaPort() {
+		return HANA_PORT;
+	}
+	
+	public String getHanaJDBCServer() {
+		return HANA_JDBC_SERVER;
+	}
+	
+	public String getHanaHome(){
+		return HANA_HOME;
+	}
+
+	
+	
 	
 	public void reload() {
 
@@ -161,6 +205,36 @@ public class WorkflowInputFormat extends Config {
 			else if (key.equals(BigConfConstants.BIGFRAME_VERTICA_HOME)) {
 				VERTICA_HOME = value;
 			}
+			
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_HANA_DATABASE)) {
+				HANA_DATABASE = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_HANA_HOSTNAMES)) {
+				HANA_HOSTNAMES = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_HANA_USERNAME)) {
+				HANA_USERNAME = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_HANA_PASSWORD)) {
+				HANA_PASSWORD = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_HANA_PORT)) {
+				if(!value.equals("")) {
+					HANA_PORT = Integer.parseInt(value);
+				}
+			}
+			else if (key.equals(BigConfConstants.BIGFRAME_HANA_JDBC_SERVER)) {
+				HANA_JDBC_SERVER = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_HANA_HOME)) {
+				HANA_HOME = value;
+			}
 		}
 		
 	}
@@ -181,5 +255,12 @@ public class WorkflowInputFormat extends Config {
 		System.out.println("Vertica Password: " + VERTICA_PASSWORD);
 		System.out.println("Vertica Port: " + VERTICA_PORT);
 		System.out.println("Vertica JDBC Server: " + VERTICA_JDBC_SERVER);
+		
+		System.out.println("Hana Host Names: " + HANA_HOSTNAMES);
+		System.out.println("Hana Database: " + HANA_DATABASE);
+		System.out.println("Hana User Name: " + HANA_USERNAME);
+		System.out.println("Hana Password: " + HANA_PASSWORD);
+		System.out.println("Hana Port: " + HANA_PORT);
+		System.out.println("Hana JDBC Server: " + HANA_JDBC_SERVER);
 	}
 }

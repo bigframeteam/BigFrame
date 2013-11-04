@@ -23,7 +23,7 @@ public class Constants {
 	public static String SPARK = "spark";
 	
 	public static String VERTICA = "vertica";
-	
+	public static String HANA = "hana";
 	
 	public static String MICRO = "micro";
 	public static String MACRO = "macro";

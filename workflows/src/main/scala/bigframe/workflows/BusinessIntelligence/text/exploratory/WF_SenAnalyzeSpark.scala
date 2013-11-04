@@ -4,6 +4,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext
 import SparkContext._
 import com.codahale.jerkson.Json._
+import bigframe.workflows.Query
 
 import bigframe.workflows.BaseTablePath
 import bigframe.workflows.runnable.SparkRunnable
@@ -12,13 +13,14 @@ import bigframe.workflows.util.SenExtractorFactory
 import bigframe.workflows.util.SentimentExtractor
 
 
-class WF_SenAnalyzeSpark(basePath : BaseTablePath, regex: String = "*") extends SparkRunnable {
+class WF_SenAnalyzeSpark(basePath : BaseTablePath, regex: String = "*") extends Query with SparkRunnable {
     final var OUTPUT_PATH = "OUTPUT_PATH"
     private var output_path: String = System.getenv(OUTPUT_PATH) + "/spark/nested"
     private var sc: SparkContext = _
     private val _tweets_path = basePath.nested_path
 
-    
+    def printDescription(): Unit = {}
+
     /**
     * Reads tweets from specified path
     * Returns: RDD of all tweets 

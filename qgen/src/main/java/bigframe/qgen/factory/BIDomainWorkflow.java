@@ -12,6 +12,7 @@ import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.appDomainInfo.BIDomainInfo;
 import bigframe.qgen.engineDriver.HadoopEngineDriver;
+import bigframe.qgen.engineDriver.HanaEngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
 import bigframe.qgen.engineDriver.SharkEngineDriver;
 import bigframe.qgen.engineDriver.SparkEngineDriver;
@@ -69,7 +70,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		SharkEngineDriver sharkWorkflow = new SharkEngineDriver(workflowIF);
 		SparkEngineDriver sparkWorkflow = new SparkEngineDriver(workflowIF);
 		VerticaEngineDriver verticaWorkflow = new VerticaEngineDriver(workflowIF);
-
+		HanaEngineDriver hanaWorkflow = new HanaEngineDriver(workflowIF);
 		
 		/**
 		 * Record the paths for all the base table used. 
@@ -193,7 +194,12 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					verticaWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentVertica(basePath, 10));
 				}
-				
+				else if(relationalEngine.equals(Constants.HANA) && graphEngine.equals(Constants.HANA)&& 
+						nestedEngine.equals(Constants.HANA)) {
+					hanaWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHana(basePath, 10));
+				}
+
 				//Relational, Text, Graph for Spark
 				else if(relationalEngine.equals(Constants.SPARK) && graphEngine.equals(Constants.SPARK)&& 
 						nestedEngine.equals(Constants.SPARK)) {
@@ -219,7 +225,9 @@ public class BIDomainWorkflow extends DomainWorkflow {
 			workflows.add(sparkWorkflow);
 		if(verticaWorkflow.numOfQueries() > 0)
 			workflows.add(verticaWorkflow);
-		
+		if(hanaWorkflow.numOfQueries() > 0)
+			workflows.add(hanaWorkflow);
+
 		return workflows;
 	}
 
@@ -336,7 +344,19 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				}
 			}
 		}
-		
+		for (Entry<String, String> entry : bigqueryIF.getQueryRunningEngine().entrySet()) {
+			if(entry.getValue().equals(Constants.HANA)) {
+				if (workflowIF.getHanaHome().equals("")) {
+					LOG.error("HANA Home is needed, please set!");
+					return false;
+				}
+				else if (workflowIF.getHanaJDBCServer().equals("")) {
+					LOG.error("Hana JDBC Server Address is needed, please set!");
+					return false;
+				}
+			}
+		}
+
 		return true;
 	}
 
