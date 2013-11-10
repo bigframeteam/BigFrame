@@ -1,9 +1,11 @@
 package bigframe.util.dataloader.vertica;
 
 import java.io.IOException;
+import java.util.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -57,7 +59,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 			}
 			
 			twitterDateFormat = new SimpleDateFormat(
-					"EEE MMM dd HH:mm:ss ZZZZZ yyyy");
+					"EEE MMM dd HH:mm:ss ZZZZZ yyyy", java.util.Locale.ENGLISH);
 			
 			tableName = context.getConfiguration().get(MAPRED_VERTICA_TABLE_NAME);
 		}
@@ -79,6 +81,8 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 				String create_at = (String) tweet_json.get("created_at");
 				
 				try {
+					
+					
 					Timestamp create_date = new Timestamp(twitterDateFormat.parse(create_at).getTime());
 
 				
@@ -192,7 +196,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 			    		"statuses_count int", "screen_name char(20)", "following boolean", "show_all_inline_media boolean");
 		    
 		    else if(table.equals("tweet")) 
-		    	VerticaOutputFormat.setOutput(job, "tweet", true, "coordinates char(20)", "created_at TIMESTAMP WITH TIMEZONE",
+		    	VerticaOutputFormat.setOutput(job, "tweet", true, "coordinates char(20)", "created_at TIMESTAMP WITHOUT TIME ZONE",
 		    			"favorited boolean", "truncated boolean", "id_str char(20)", "in_reply_to_user_id_str char(20)",
 		    			"text varchar(200)", "contributors char(20)", "id int", "retweet_count int", "in_reply_to_status_id_str char(20)",
 		    			"geo char(20)", "retweeted boolean", "in_reply_to_user_id int", "user_id int", "in_reply_to_screen_name char(20)",

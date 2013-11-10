@@ -49,5 +49,5 @@ if [ -n "$VERTICA_HOME" ]; then
 	done
 fi
 
-java -cp "$QGEN_CLASSPATH" bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
+java -cp "$QGEN_CLASSPATH" -XX:MaxPermSize=128M bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
 

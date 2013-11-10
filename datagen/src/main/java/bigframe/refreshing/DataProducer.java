@@ -23,6 +23,8 @@ public abstract class DataProducer implements Callable<Object>{
 		
 		props.put("metadata.broker.list", kafka_broker_list);
 		props.put("serializer.class", "kafka.serializer.StringEncoder");
+		props.put("producer.type", "async");
+		props.put("compression.codec", "2");
 		//props.put("partitioner.class", "example.producer.SimplePartitioner");
 		props.put("request.required.acks", "1");
 		 

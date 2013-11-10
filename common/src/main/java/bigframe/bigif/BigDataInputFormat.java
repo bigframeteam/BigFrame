@@ -22,7 +22,7 @@ public class BigDataInputFormat extends Config {
 	protected Set<String> dataVariety = new HashSet<String>();
 	protected Integer dataVolume; // Not used in this version
 	protected Map<String, Float> dataVelocity = new HashMap<String, Float>();
-	protected Map<String, Integer> dataScaleProportions = new HashMap<String, Integer>();
+	protected Map<String, Float> dataScaleProportions = new HashMap<String, Float>();
 	protected Map<String, String> dataStoredPath = new HashMap<String, String>();
 
 	public BigDataInputFormat() {
@@ -58,7 +58,7 @@ public class BigDataInputFormat extends Config {
 		return dataVelocity;
 	}
 
-	public Map<String, Integer> getDataScaleProportions() {
+	public Map<String, Float> getDataScaleProportions() {
 		return dataScaleProportions;
 	}
 
@@ -173,7 +173,7 @@ public class BigDataInputFormat extends Config {
 		}
 
 		System.out.println("Data proportions:");
-		for (Map.Entry<String, Integer> entry : dataScaleProportions.entrySet()) {
+		for (Map.Entry<String, Float> entry : dataScaleProportions.entrySet()) {
 			if (containDataType(entry.getKey())) {
 				System.out.println("\t" + entry.getKey() + ":"
 						+ entry.getValue());
@@ -226,7 +226,7 @@ public class BigDataInputFormat extends Config {
 			}
 
 			else if (BigConfConstants.BIGFRAME_DATAVOLUME_PORTION_SET.contains(key)) {
-				Integer portion = Integer.parseInt(value);
+				Float portion = Float.parseFloat(value);
 
 				dataScaleProportions.put(key, portion);
 			}

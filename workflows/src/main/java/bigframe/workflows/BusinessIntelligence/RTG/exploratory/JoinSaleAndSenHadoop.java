@@ -39,7 +39,7 @@ public class JoinSaleAndSenHadoop extends HadoopJob {
 		// TODO Auto-generated constructor stub
 	}
 
-	static class JoinSaleAndSenMapper extends Mapper<LongWritable, Text, Text, FloatWritable> {
+	static class JoinSaleAndSenMapper extends Mapper<LongWritable, Text, Text, Text> {
 	
 		private Map<String, Float> map_item_sentiment = new HashMap<String, Float>();
 		
@@ -80,10 +80,16 @@ public class JoinSaleAndSenHadoop extends HadoopJob {
 			String itemSK = fields[1];
 			Float sales = Float.parseFloat(fields[2]);
 			
-			assert(map_item_sentiment.containsKey(itemSK));
+			/**
+			 * There exist product is mentioned but not bought by anyone
+			 */
+			if(map_item_sentiment.containsKey(itemSK))
+				context.write(new Text(promotID + "|" + itemSK),
+						new Text(sales +"|"+ map_item_sentiment.get(itemSK)));
 			
-			context.write(new Text(promotID + "|" + itemSK),
-						new FloatWritable(sales * map_item_sentiment.get(itemSK)));
+//			else
+//				context.write(new Text(promotID + "|" + itemSK),
+//						new FloatWritable(sales * 0));
 		}
 	}
 	
@@ -131,7 +137,7 @@ public class JoinSaleAndSenHadoop extends HadoopJob {
 			
 
 			job.setOutputKeyClass(Text.class);
-			job.setOutputValueClass(FloatWritable.class);
+			job.setOutputValueClass(Text.class);
 			
 			job.setNumReduceTasks(0);
 

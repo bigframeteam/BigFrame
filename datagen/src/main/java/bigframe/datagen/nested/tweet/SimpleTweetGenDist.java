@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import bigframe.datagen.relational.tpcds.TpcdsItemInfo;
+import bigframe.datagen.relational.tpcds.TpcdsPromotionInfo;
 import bigframe.datagen.text.tweet.TweetTextGen;
 
 /**
@@ -29,6 +31,9 @@ public class SimpleTweetGenDist extends TweetGenDist {
 	private double promoted_prod_men_prob_cust;
 	private double promoted_prod_men_prob_noncust;
 	
+	JSONObject user_json;
+	JSONObject entities_json;
+	
 	public SimpleTweetGenDist(long random_seed, TweetTextGen text_gen, long ID) {
 		super(random_seed, text_gen, ID);
 		
@@ -42,6 +47,19 @@ public class SimpleTweetGenDist extends TweetGenDist {
 		promoted_prod_men_prob_noncust = 0.2;
 	}
 
+	@Override
+	public void init(long[] cust_acc, long[] noncust_acc, long time_begin, double time_step, 
+			TpcdsPromotionInfo promt_info, TpcdsItemInfo item_info,
+			int totalnum_prods, JSONObject tweet_json) {
+		super.init(cust_acc, noncust_acc, time_begin,time_step, promt_info, item_info,
+				totalnum_prods, tweet_json);
+		
+		user_json = (JSONObject) tweet_json.get("user");
+		entities_json = (JSONObject) tweet_json.get("entities");
+		
+		
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public String getNextTweet() {
@@ -51,7 +69,7 @@ public class SimpleTweetGenDist extends TweetGenDist {
 		SimpleDateFormat twitterDateFormat = new SimpleDateFormat(
 				"EEE MMM dd HH:mm:ss ZZZZZ yyyy");
 		//Random choose a time stamp
-		long timestamp = time_begin + random.nextInt((int)(time_end - time_begin + 1));
+//		long timestamp = time_begin + random.nextInt((int)(time_step - time_begin + 1));
 		
 		double flip;
 		flip = random.nextDouble();
@@ -107,22 +125,19 @@ public class SimpleTweetGenDist extends TweetGenDist {
 
 		
 		String tweet = text_gen.getNextTweet(prod_id);
-		String date = twitterDateFormat.format(timestamp*1000);
-
+		String date = twitterDateFormat.format(time_stamp*1000);
+		time_stamp += time_step;
 		
 		tweet_json.put("created_at", date);
 		tweet_json.put("text", tweet);
-		tweet_json.put("id", String.valueOf(tweet_startID));
+		tweet_json.put("id", tweet_startID);
 
 		tweet_startID++;
 		// How to put nested attribute?
-		JSONObject user_json = (JSONObject) tweet_json.get("user");
+		
 		user_json.put("id", user_id);
 		tweet_json.put("user", user_json);
-		
-		JSONObject entities_json = (JSONObject) tweet_json.get("entities");
-
-		
+			
 		if(prod_id != -1) {
 			 assert prod_id > 0;
 			 String prod_name = item_info.getProdName().get(prod_id-1);
@@ -131,7 +146,7 @@ public class SimpleTweetGenDist extends TweetGenDist {
 			 entities_json.put("hashtags", list);
 		}
 		else {
-			JSONArray list = new JSONArray();
+			 JSONArray list = new JSONArray();
 			 entities_json.put("hashtags", list);
 		}
 		

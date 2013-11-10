@@ -262,15 +262,15 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 					continue;
 				}
 
-				if (promt_info.getDateBySK(Integer.parseInt(dateendSK)) != null
-						&& promt_info
+				if (CollectTPCDSstat.getDateBySK(Integer.parseInt(dateendSK)) != null
+						&& CollectTPCDSstat
 						.getDateBySK(Integer.parseInt(dateendSK))
 						.before(stringToDate(RawTweetGenConstants.TWEET_BEGINDATE))) {
 					continue;
 				}
 
-				if (promt_info.getDateBySK(Integer.parseInt(datebegSK)) != null
-						&& promt_info.getDateBySK(Integer.parseInt(datebegSK))
+				if (CollectTPCDSstat.getDateBySK(Integer.parseInt(datebegSK)) != null
+						&& CollectTPCDSstat.getDateBySK(Integer.parseInt(datebegSK))
 						.after(stringToDate(RawTweetGenConstants.TWEET_ENDDATE))) {
 					continue;
 				}
@@ -519,4 +519,5 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		return non_cust_acc;
 	}
 
+	
 }

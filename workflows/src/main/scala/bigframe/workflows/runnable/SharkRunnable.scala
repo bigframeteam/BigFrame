@@ -18,4 +18,7 @@ trait SharkRunnable {
 	 * Run the benchmakr query
 	 */
 	def runShark(connection: Connection): Boolean
+	
+	
+	def cleanUpShark(connection: Connection): Unit
 }

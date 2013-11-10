@@ -110,7 +110,7 @@ public class PromotedProdHadoop extends HadoopJob {
 		/**
 		 * The map output is with this format:
 		 * 
-		 * itemSK|product name
+		 * itemSK|product name|dateBeginSK|dateEndSK
 		 */
 		@Override
 		protected void map(LongWritable key,
@@ -127,35 +127,37 @@ public class PromotedProdHadoop extends HadoopJob {
 			}
 			
 			for (int i = 0; i < itemSKs.size(); i++) {
-				if(itemSKs.get(i)== itemSK)
-					context.write(new LongWritable(itemSK), new Text(productname));
+				if(itemSKs.get(i)== itemSK) {
+					context.write(new LongWritable(itemSK), new Text(productname + "|" 
+								+ dateBeginSKs.get(i) + "|" + dateEndSKs.get(i)));
+				}
 			} 				
 
 		}
 	}
 	
 	
-	/**
-	 * A reducer to eliminate duplicate itemSK.
-	 */
-	static class PromotedProdReducer extends Reducer<LongWritable, Text, LongWritable, Text> {
-		
-		
-		/**
-		 * The reduce output is with this format:
-		 * 
-		 *  itemSK|product name
-		 */
-		@Override
-	    protected void reduce(LongWritable key, Iterable<Text> values, 
-	    		final Context context) throws IOException, InterruptedException {
-	    	
-			for(Text value : values) {
-				context.write(key, value);
-				break;
-			}
-	    }
-	}
+//	/**
+//	 * A reducer to eliminate duplicate itemSK.
+//	 */
+//	static class PromotedProdReducer extends Reducer<LongWritable, Text, LongWritable, Text> {
+//		
+//		
+//		/**
+//		 * The reduce output is with this format:
+//		 * 
+//		 *  itemSK|product name
+//		 */
+//		@Override
+//	    protected void reduce(LongWritable key, Iterable<Text> values, 
+//	    		final Context context) throws IOException, InterruptedException {
+//	    	
+//			for(Text value : values) {
+//				context.write(key, value);
+//				break;
+//			}
+//	    }
+//	}
 	
 	@Override
 	public Boolean runHadoop(Configuration mapred_config) {
@@ -217,11 +219,11 @@ public class PromotedProdHadoop extends HadoopJob {
 			job.setJarByClass(PromotedProdHadoop.class);
 			
 			job.setMapperClass(PromotedProdMapper.class);
-			job.setReducerClass(PromotedProdReducer.class);
+//			job.setReducerClass(PromotedProdReducer.class);
 			job.setOutputKeyClass(LongWritable.class);
 			job.setOutputValueClass(Text.class);
 			
-			job.setNumReduceTasks(1);
+			job.setNumReduceTasks(0);
 
 			
 			return job.waitForCompletion(true);

@@ -19,4 +19,6 @@ trait HiveRunnable {
 	 * Run the benchmark query
 	 */
 	def runHive(connection: Connection): Boolean
+	
+	def cleanUpHive(connection: Connection): Unit
 }

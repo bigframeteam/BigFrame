@@ -16,6 +16,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.BigConfConstants;
@@ -37,7 +39,7 @@ public class QGenDriver {
 	 * ***************************************************************
 	 */
 
-	//private static final Log LOG = LogFactory.getLog(QGenDriver.class);
+	private static final Log LOG = LogFactory.getLog(QGenDriver.class);
 
 
 
@@ -236,6 +238,7 @@ public class QGenDriver {
 				for(EngineDriver workflow : workflows) {
 					workflow.init();
 					workflow.run();
+					workflow.cleanup();
 				}
 		}
 		

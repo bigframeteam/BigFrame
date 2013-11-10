@@ -67,6 +67,11 @@ public class BigConfConstants {
 	 */
 	public static final String BIGFRAME_ZOOKEEPER_CONNECT = "bigframe.zookeeper.connect";
 	
+	/**
+	 * Shared UDF specific
+	 *
+	 */
+	public static final String BIGFRAME_UDF_JAR = "bigframe.udf.jar";
 	
 	// Properties related to data refreshing
 	public static final String BIGFRAME_REFRESH_LOCAL = "bigframe.refresh.local";

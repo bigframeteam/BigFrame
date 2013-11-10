@@ -69,17 +69,17 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		// Separate twitter account into customer and non customer
 		//
 		// Calculate the number twitter account based on the graph volume in GB
-		int nested_proportion = conf.getDataScaleProportions().get(
+		float nested_proportion = conf.getDataScaleProportions().get(
 				BigConfConstants.BIGFRAME_DATAVOLUME_NESTED_PROPORTION);
-		int twitter_graph_proportion = conf.getDataScaleProportions().get(
+		float twitter_graph_proportion = conf.getDataScaleProportions().get(
 				BigConfConstants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION);
-		int tpcds_proportion = conf.getDataScaleProportions().get(
+		float tpcds_proportion = conf.getDataScaleProportions().get(
 				BigConfConstants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION);
 
-		float graph_targetGB = (float) (twitter_graph_proportion * 1.0
-				/ nested_proportion * targetGB);
-		float tpcds_targetGB = (float) (tpcds_proportion * 1.0
-				/ nested_proportion * targetGB);
+		float graph_targetGB = twitter_graph_proportion
+				/ nested_proportion * targetGB;
+		float tpcds_targetGB = tpcds_proportion
+				/ nested_proportion * targetGB;
 
 		Integer num_products = (int) tpcds_stat_collecter
 				.getNumOfItem((int) tpcds_targetGB);

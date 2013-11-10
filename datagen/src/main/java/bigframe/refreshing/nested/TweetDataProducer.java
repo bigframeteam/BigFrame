@@ -11,6 +11,8 @@ import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -21,6 +23,7 @@ import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.appDomainInfo.BIDomainDataInfo;
 import bigframe.datagen.graph.kroneckerGraph.KroneckerGraphGen;
 import bigframe.datagen.nested.tweet.RawTweetGenConstants;
+import bigframe.datagen.nested.tweet.SimpleTweetGenDist;
 import bigframe.datagen.relational.tpcds.CollectTPCDSstatNaive;
 import bigframe.datagen.relational.tpcds.TpcdsItemInfo;
 import bigframe.datagen.relational.tpcds.TpcdsPromotionInfo;
@@ -32,7 +35,12 @@ import bigframe.util.parser.JsonParser;
 
 public class TweetDataProducer extends DataProducer {
 
-	private StreamTweetGenDist tweet_gen_dist;
+	private static final Log LOG = LogFactory.getLog(TweetDataProducer.class);
+	
+	private SimpleTweetGenDist tweet_gen_dist;
+	
+	// In second.
+	private double time_step = 0.0001;
 	
 	private final InputStream TWEET_TEMPLATE_FILE = TweetDataProducer.class.
 			getClassLoader().getResourceAsStream("tweet_template.json");
@@ -92,14 +100,20 @@ public class TweetDataProducer extends DataProducer {
 		
 		JSONObject tweet_json = JsonParser.parseJsonFromFile(TWEET_TEMPLATE_FILE);
 		
-		tweet_gen_dist = new StreamTweetGenDist(RandomSeeds.SEEDS_TABLE[0], tweet_textGen, 1);
-		tweet_gen_dist.init(customer_twitterAcc, non_customer_acc, 0, 
-				0, promt_info, item_info, num_products, tweet_json);
+		tweet_gen_dist = new SimpleTweetGenDist(RandomSeeds.SEEDS_TABLE[0], tweet_textGen, 1);
+		
+		/**
+		 * The init function ask for time in seconds. 
+		 */
+		tweet_gen_dist.init(customer_twitterAcc, non_customer_acc, System.currentTimeMillis()/1000, 
+				time_step, promt_info, item_info, num_products, tweet_json);
 		
 
 	}
 	
 	class TweetProducer implements Runnable{
+		
+
 		
 		ProducerConfig config;
 		
@@ -123,21 +137,40 @@ public class TweetDataProducer extends DataProducer {
 			while(true) {
 				long start_time = System.currentTimeMillis();
 				for(int i = 0; i < 10000; i++) {
-					tweet_gen_dist.setTimeStamp(System.currentTimeMillis());
 					KeyedMessage<String, String> data2 = new KeyedMessage<String, String>("tweets", tweet_gen_dist.getNextTweet());
-					producer.send(data2);				
+					producer.send(data2);		
 				}
 				long stop_time = System.currentTimeMillis();
-
-				try {
-					
-					if(stop_time-start_time <= 1000)					
+				
+				
+				if(stop_time-start_time > 1000)					
+					LOG.warn("Generate tweets " + 10000/((stop_time-start_time)/1000.0) + " per seconds");
+				
+				else {
+					try {
+						//LOG.info("Generate tweets " + 10000/((stop_time-start_time)/1000.0) + " per seconds");
 						Thread.sleep(1000 - (stop_time-start_time));
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+					
+				
+//				
+//				System.out.println("Time in seconds: " + (stop_time-start_time)/1000);
+//				System.exit(-1);
+//				
+//				try {
+//					
+//					if(stop_time-start_time <= 1000)					
+//						Thread.sleep(1000 - (stop_time-start_time));
+//					
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 		}		
 	}

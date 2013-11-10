@@ -94,20 +94,21 @@ public class JoinSenAndInfluHadoop extends HadoopJob {
 		
 			job = new Job(mapred_config);
 			
-			FileStatus[] status1 = fs.listStatus(new Path(TwitterRankConstant.TWITTER_RANK() ));
-			
-			for (FileStatus stat1 : status1){
-				if(stat1.getPath().toString().contains("product")) {
-					FileStatus[] status2 = fs.listStatus(stat1.getPath());
-					
-					for(FileStatus stat2 : status2) {
-						FileInputFormat.addInputPath(job, stat2.getPath());
-					}
-				}
-
-			}
+//			FileStatus[] status1 = fs.listStatus(new Path(TwitterRankConstant.TWITTER_RANK() ));
+//			
+//			for (FileStatus stat1 : status1){
+//				if(stat1.getPath().toString().contains("product")) {
+//					FileStatus[] status2 = fs.listStatus(stat1.getPath());
+//					
+//					for(FileStatus stat2 : status2) {
+//						FileInputFormat.addInputPath(job, stat2.getPath());
+//					}
+//				}
+//
+//			}
 			
 			FileInputFormat.addInputPath(job, new Path(SenAnalyzeConstant.REPORT_SENTIMENT()));
+			FileInputFormat.addInputPath(job, new Path(TwitterRankConstant.TWITTER_RANK()+ "/result"));
 			
 			FileOutputFormat.setOutputPath(job, outputDir);
 			

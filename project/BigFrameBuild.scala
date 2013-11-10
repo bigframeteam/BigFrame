@@ -94,7 +94,8 @@ object BigFrameBuild extends Build {
 
 		libraryDependencies ++= Seq(
 			"io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
-			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1" 
+			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1", 
+			"org.apache.hive" % "hive-exec" % "0.12.0" % "provided"
 		)
 	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 

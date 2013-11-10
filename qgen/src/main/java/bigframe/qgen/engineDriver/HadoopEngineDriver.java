@@ -44,9 +44,9 @@ public class HadoopEngineDriver extends EngineDriver {
 		for(HadoopRunnable query : queries) {
 			init();
 			if(query.runHadoop(mapred_config))
-				System.out.println("Query Finished");
+				LOG.info("Query Finished");
 			else
-				System.out.println("Query failed");
+				LOG.info("Query failed");
 		}
 	}
 

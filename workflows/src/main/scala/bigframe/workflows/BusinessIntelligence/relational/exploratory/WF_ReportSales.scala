@@ -306,6 +306,9 @@ class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable
 		
 	}
 	
+	override def cleanUpHive(connection: Connection): Unit = {}
+	
+	
 	/**
 	 * prepare base table for shark query
 	 */
@@ -317,6 +320,8 @@ class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable
 		prepareHiveTables(connection)
 		
 	}
+	
+	override def cleanUpShark(connection: Connection): Unit = {}
 	
 	/**
 	 * prepare base table for vertica query
@@ -339,6 +344,8 @@ class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable
 
 		}
 	}
+	
+	override def cleanUpVertica(connection: Connection): Unit = {}
 	
 	/**
 	 * Submit the query to hiveserver.

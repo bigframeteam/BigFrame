@@ -1,5 +1,7 @@
 package bigframe.qgen.engineDriver;
 
+import org.apache.log4j.Logger;
+
 import bigframe.bigif.WorkflowInputFormat;
 
 
@@ -11,6 +13,8 @@ import bigframe.bigif.WorkflowInputFormat;
  */
 public class CompositeEngineDriver extends EngineDriver {
 
+	private static final Logger LOG = Logger.getLogger(CompositeEngineDriver.class);
+	
 	public CompositeEngineDriver(WorkflowInputFormat conf) {
 		super(conf);
 		// TODO Auto-generated constructor stub

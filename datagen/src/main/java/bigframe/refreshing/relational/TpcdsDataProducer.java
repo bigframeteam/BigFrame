@@ -4,6 +4,7 @@ package bigframe.refreshing.relational;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -36,6 +37,8 @@ public class TpcdsDataProducer extends DataProducer {
 	private List<String> s_catalog_order = new ArrayList<String>();
 	private List<String> s_catalog_order_lineitem = new ArrayList<String>();
 
+	private SimpleDateFormat twitterDateFormat = new SimpleDateFormat(
+			"EEE MMM dd HH:mm:ss ZZZZZ yyyy");
 			
 	public TpcdsDataProducer(BigDataInputFormat bigdataIF) {
 		super(bigdataIF);
@@ -66,15 +69,18 @@ public class TpcdsDataProducer extends DataProducer {
 	         * Every catalog order contains 9 items
 	         */
 			while(true) {
-				long start_time = System.currentTimeMillis();
+//				long start_time = System.currentTimeMillis();
 				for(int i = 0; i < s_purchase.size(); i++) {
 					
-					KeyedMessage<String, String> data1 = new KeyedMessage<String, String>("s_purchase",s_purchase.get(i));
+					String time_stamp = twitterDateFormat.format(System.currentTimeMillis());
+					
+					KeyedMessage<String, String> data1 = new KeyedMessage<String, String>("s_purchase", time_stamp + "|" + s_purchase.get(i));
 					producer.send(data1);
 					
 					int count = 0;
 					for(int j = i * 12; j < s_purchase_lineitem.size();j++) {						
-						KeyedMessage<String, String> data2 = new KeyedMessage<String, String>("s_purchase_lineitem", s_purchase_lineitem.get(j));
+						KeyedMessage<String, String> data2 = new KeyedMessage<String, String>("s_purchase_lineitem", time_stamp + "|" + 
+								s_purchase_lineitem.get(j));
 						producer.send(data2);
 						
 						count++;						
@@ -82,18 +88,25 @@ public class TpcdsDataProducer extends DataProducer {
 							break;
 					}
 					
-				}
-				long stop_time = System.currentTimeMillis();
-
-				try {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
-					if(stop_time-start_time <= 1000)					
-						Thread.sleep(1000 - (stop_time-start_time));
-					
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+//				long stop_time = System.currentTimeMillis();
+//
+//				try {
+//					
+//					if(stop_time-start_time <= 1000)					
+//						Thread.sleep(1000 - (stop_time-start_time));
+//					
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 		}
 		
@@ -126,15 +139,17 @@ public class TpcdsDataProducer extends DataProducer {
 			while(true) {
 				
 				while(true) {
-					long start_time = System.currentTimeMillis();
+//					long start_time = System.currentTimeMillis();
 					for(int i = 0; i < s_purchase.size(); i++) {
+						String time_stamp = twitterDateFormat.format(System.currentTimeMillis());
 						
-						KeyedMessage<String, String> data1 = new KeyedMessage<String, String>("s_catalog_order",s_catalog_order.get(i));
+						KeyedMessage<String, String> data1 = new KeyedMessage<String, String>("s_catalog_order", time_stamp + "|" + s_catalog_order.get(i));
 						producer.send(data1);
 						
 						int count = 0;
 						for(int j = i * 9; j < s_purchase_lineitem.size();j++) {						
-							KeyedMessage<String, String> data2 = new KeyedMessage<String, String>("s_catalog_order_lineitem", s_catalog_order_lineitem.get(j));
+							KeyedMessage<String, String> data2 = new KeyedMessage<String, String>("s_catalog_order_lineitem", time_stamp + "|" + 
+										s_catalog_order_lineitem.get(j));
 							producer.send(data2);
 							
 							count++;						
@@ -142,18 +157,25 @@ public class TpcdsDataProducer extends DataProducer {
 								break;
 						}
 						
-					}
-					long stop_time = System.currentTimeMillis();
-
-					try {
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						
-						if(stop_time-start_time <= 1000)					
-							Thread.sleep(1000 - (stop_time-start_time));
-						
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
+//					long stop_time = System.currentTimeMillis();
+//
+//					try {
+//						
+//						if(stop_time-start_time <= 1000)					
+//							Thread.sleep(1000 - (stop_time-start_time));
+//						
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 				}
 			}
 		}
@@ -185,15 +207,18 @@ public class TpcdsDataProducer extends DataProducer {
 			while(true) {
 				
 				while(true) {
-					long start_time = System.currentTimeMillis();
+//					long start_time = System.currentTimeMillis();
 					for(int i = 0; i < s_purchase.size(); i++) {
+						String time_stamp = twitterDateFormat.format(System.currentTimeMillis());
 						
-						KeyedMessage<String, String> data1 = new KeyedMessage<String, String>("s_web_order",s_web_order.get(i));
+						KeyedMessage<String, String> data1 = new KeyedMessage<String, String>("s_web_order", time_stamp + "|" + 
+						s_web_order.get(i));
 						producer.send(data1);
 						
 						int count = 0;
 						for(int j = i * 12; j < s_purchase_lineitem.size();j++) {						
-							KeyedMessage<String, String> data2 = new KeyedMessage<String, String>("s_web_order_lineitem", s_web_order_lineitem.get(j));
+							KeyedMessage<String, String> data2 = new KeyedMessage<String, String>("s_web_order_lineitem", time_stamp + "|" + 
+									s_web_order_lineitem.get(j));
 							producer.send(data2);
 							
 							count++;						
@@ -201,18 +226,25 @@ public class TpcdsDataProducer extends DataProducer {
 								break;
 						}
 						
-					}
-					long stop_time = System.currentTimeMillis();
-
-					try {
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						
-						if(stop_time-start_time <= 1000)					
-							Thread.sleep(1000 - (stop_time-start_time));
-						
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
+//					long stop_time = System.currentTimeMillis();
+//
+//					try {
+//						
+//						if(stop_time-start_time <= 1000)					
+//							Thread.sleep(1000 - (stop_time-start_time));
+//						
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 				}
 			}
 		}

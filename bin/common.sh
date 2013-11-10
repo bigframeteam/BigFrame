@@ -59,6 +59,9 @@ QGEN_JAR=`ls $BASE_DIR/qgen/target/scala-2.9.3/bigframe-qgen-assembly*.jar`
 
 WORKFLOWS_JAR=`ls $BASE_DIR/workflows/target/scala-2.9.3/bigframe-workflows-assembly*.jar`
 
-#SENTIMENT_JAR= `ls $BASE_DIR/sentiment/target/scala-2.9.3/bigframe-workflows-assembly*.jar`
+# UDF used by Hive and Shark
+UDF_JAR=$WORKFLOWS_JAR
 
-export WORKFLOWS_JAR
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.udf.jar=${UDF_JAR}"
+
+#SENTIMENT_JAR= `ls $BASE_DIR/sentiment/target/scala-2.9.3/bigframe-workflows-assembly*.jar`
