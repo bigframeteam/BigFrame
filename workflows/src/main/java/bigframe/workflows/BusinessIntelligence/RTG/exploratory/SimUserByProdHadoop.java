@@ -14,6 +14,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -32,8 +33,8 @@ public class SimUserByProdHadoop extends HadoopJob {
 
 	private String graph_path;
 	
-	private static String USER_PAIR = "user_pair";
-	private static String GRAPH = "graph";
+	private static String USER_PAIR = "0";
+	private static String GRAPH = "1";
 	
 	public SimUserByProdHadoop(String graph_path, Configuration mapred_config) {
 		super(mapred_config);
@@ -42,14 +43,30 @@ public class SimUserByProdHadoop extends HadoopJob {
 
 	static class SimUserByProdMapper extends Mapper<LongWritable, Text, Text, Text> {
 		
+		private boolean isFromUserPair;
+		
 		@Override
-		protected void map(LongWritable key,
-				Text value, final Context context)
-						throws IOException, InterruptedException {
+		protected void setup(final Context context) throws IOException {
 			FileSplit fileSplit = (FileSplit) context.getInputSplit();
 			String pathname = fileSplit.getPath().toString();
 			
 			if(pathname.contains(TwitterRankConstant.USERPAIR_PROD_PROB_())) {
+				isFromUserPair = true;
+			}
+			
+			else
+				isFromUserPair = false;
+			
+		}
+		
+		@Override
+		protected void map(LongWritable key,
+				Text value, final Context context)
+						throws IOException, InterruptedException {
+//			FileSplit fileSplit = (FileSplit) context.getInputSplit();
+//			String pathname = fileSplit.getPath().toString();
+			
+			if(isFromUserPair) {
 				String [] fields = value.toString().split("\\|");
 				
 				String itemSK = fields[0];

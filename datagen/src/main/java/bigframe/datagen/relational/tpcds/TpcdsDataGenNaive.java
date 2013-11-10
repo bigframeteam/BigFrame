@@ -22,25 +22,36 @@ import bigframe.datagen.relational.twittermapping.TwitterMappingGenNaive;
  *
  */
 public class TpcdsDataGenNaive extends TpcdsDataGen {
-	private static final Logger LOG = Logger.getLogger(DataGenerator.class);
+	private static final Logger LOG = Logger.getLogger(TpcdsDataGenNaive.class);
 	
 	private int num_files;
-	private String hdfs_dir;
+	private String hdfs_path;
 	private String local_dir;
 	private String datagen_script;
 	private String hadoop_slaves;
 	private String dagegen_script_path;
 	
+	TwitterMappingGenNaive twitter_mapping;
+	
 	public TpcdsDataGenNaive(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
+		
+		if(targetGB < 1) {
+			LOG.error("The size of relational data cannot be less than 1GB. \n" +
+					"please modified the big data volume!");
+			System.exit(1);
+			
+		}
+		
+		twitter_mapping = new TwitterMappingGenNaive(conf,targetGB);
 		
 		num_files = (int) (targetGB/2) + 1;
 		if (num_files < 2) {
 			num_files = 2;
 		}
 
-		hdfs_dir = conf.getDataStoredPath().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_RELATIONAL);
+		hdfs_path = conf.getDataStoredPath().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_RELATIONAL);
 		local_dir = conf.getProp().get(BigConfConstants.BIGFRAME_TPCDS_LOCAL);
 		datagen_script = conf.getProp().get(BigConfConstants.BIGFRAME_TPCDS_SCRIPT);
 		hadoop_slaves = conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_SLAVE);
@@ -48,6 +59,11 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 		dagegen_script_path = (new File(datagen_script)).getParentFile().getAbsolutePath();
 	}
 
+	public void setHDFSPATH(String path) {
+		hdfs_path = path;
+		twitter_mapping.setHDFS_PATH(path + "/" + "twitter_mapping");
+	}
+	
 	@Override
 	public void generate() {
 		// TODO Auto-generated method stub
@@ -59,27 +75,27 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 				   + num_files + " " 
 				   + hadoop_slaves + " " 
 				   + local_dir + " " 
-				   + hdfs_dir;
+				   + hdfs_path;
 
 		
 		try {
             Runtime rt = Runtime.getRuntime();
             Process proc = rt.exec(cmd, null, new File(dagegen_script_path));
             
-            InputStream stderr =  proc.getErrorStream();
+//            InputStream stderr =  proc.getErrorStream();
             InputStream stdout = proc.getInputStream();
             
             
-            InputStreamReader isr = new InputStreamReader(stderr);
-            BufferedReader br = new BufferedReader(isr);
+//            InputStreamReader isr = new InputStreamReader(stderr);
+//            BufferedReader br = new BufferedReader(isr);
             InputStreamReader isout = new InputStreamReader(stdout);
             BufferedReader br1 = new BufferedReader(isout);
             
 
             String line = null;
             
-            while ( (line = br.readLine()) != null)
-            	LOG.error(line);           
+//            while ( (line = br.readLine()) != null)
+//            	LOG.error(line);           
 
             while ( (line = br1.readLine()) != null)
             	LOG.info(line);
@@ -88,8 +104,7 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 			System.out.println(e.toString());
 			e.printStackTrace();
 		}
-		
-		RelationalDataGen twitter_mapping = new TwitterMappingGenNaive(conf,targetGB);
+			
 		twitter_mapping.generate();
 	}
 

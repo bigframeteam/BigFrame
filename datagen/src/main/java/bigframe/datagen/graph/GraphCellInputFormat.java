@@ -50,7 +50,7 @@ InputFormat<NullWritable, KronGraphInfoWritable> {
 
 			for (int i = 0; i < this.length; i++) {
 				this.path[i] = path.get(i);
-				LOG.info("this path:" + this.path[i][0] + "," + this.path[i][1]);
+//				LOG.info("this path:" + this.path[i][0] + "," + this.path[i][1]);
 			}
 		}
 
@@ -123,9 +123,7 @@ InputFormat<NullWritable, KronGraphInfoWritable> {
 				this.path = ((GraphCellInputSplit) split).path;
 
 			if (this.path == null) {
-				LOG.info("++++++++++++++++++++++++++++++++");
 				LOG.error("path object is NULL");
-				LOG.info("++++++++++++++++++++++++++++++++");
 			}
 		}
 

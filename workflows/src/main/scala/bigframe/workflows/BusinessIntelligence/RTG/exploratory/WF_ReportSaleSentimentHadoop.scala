@@ -25,9 +25,9 @@ class WF_ReportSaleSentimentHadoop(basePath: BaseTablePath, num_iter: Int) exten
 		val promotedSKs = Set(new java.lang.Integer(1), new java.lang.Integer(2), new java.lang.Integer(3))
 		val iteration = num_iter
 		
-		val job_getPromotedProd = new PromotedProdHadoop(basePath.relational_path, promotedSKs, mapred_config)
+			val job_getPromotedProd = new PromotedProdHadoop(basePath.relational_path, promotedSKs, mapred_config)
 		val job_reportSales = new ReportSalesHadoop(basePath.relational_path, promotedSKs, mapred_config )
-		val job_filterTweets = new FilterTweetHadoop(basePath.nested_path, mapred_config);
+		val job_filterTweets = new FilterTweetHadoop(basePath, mapred_config);
 		val job_senAnalyze = new SenAnalyzeHadoop(SenAnalyzeConstant.FILTERED_TWEETS_PATH, mapred_config)
 		val job_tweetByUser = new TweetByUserHadoop(mapred_config)
 		val job_tweetByProd = new TweetByProductHadoop(mapred_config)
@@ -37,8 +37,7 @@ class WF_ReportSaleSentimentHadoop(basePath: BaseTablePath, num_iter: Int) exten
 		val job_initialRank = new ComputeInitialRankHadoop(mapred_config)
 		val job_simBetweenUser = new SimUserByProdHadoop(basePath.graph_path, mapred_config)
 		val job_transitMatrix = new TransitMatrixHadoop(basePath.graph_path, mapred_config)
-		val job_splitByProd = new SplitByProdHadoopImpl2(mapred_config)
-		val job_twitterRank = new TwitterRankImpl2(iteration, mapred_config)
+		val job_twitterRank = new TwitterRankImpl(iteration, mapred_config)
 		val job_joinSenAndInflu = new JoinSenAndInfluHadoop(mapred_config)
 		val job_groupSenByProd = new GroupSenByProdHadoop(mapred_config)
 		val job_joinSaleAnsSen = new JoinSaleAndSenHadoop(mapred_config)
@@ -72,9 +71,7 @@ class WF_ReportSaleSentimentHadoop(basePath: BaseTablePath, num_iter: Int) exten
 							val future_transitMatrix = pool.submit(job_transitMatrix)
 							
 							if(future_transitMatrix.get()) {
-								val future_splitByProd = pool.submit(job_splitByProd)
-								
-								if(future_splitByProd.get()) {
+						
 									val future_twitterRank = pool.submit(job_twitterRank)
 									
 									if(future_twitterRank.get() && future_senAnalyze.get()) {
@@ -95,7 +92,6 @@ class WF_ReportSaleSentimentHadoop(basePath: BaseTablePath, num_iter: Int) exten
 									}						
 								}
 							}
-						}
 					}
 				}			
 			}

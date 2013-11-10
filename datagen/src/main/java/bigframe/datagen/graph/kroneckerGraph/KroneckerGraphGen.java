@@ -17,7 +17,7 @@ public abstract class KroneckerGraphGen extends GraphDataGen {
 	protected int num_columns;
 	protected double expected_edges;
 	protected int steps;
-	protected String hdfs_dir;
+	protected String hdfs_path;
 
 	private static final float arScaleVolume [] = KnonGraphConstants.arScaleVolume2;
 	private static final int arScaleNodeCount2 [] = KnonGraphConstants.arScaleNodeCount2;
@@ -38,11 +38,15 @@ public abstract class KroneckerGraphGen extends GraphDataGen {
 			}
 		}
 
-		hdfs_dir = conf.getDataStoredPath().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_GRAPH) ;
+		hdfs_path = conf.getDataStoredPath().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_GRAPH) ;
 
 
 	}
 
+	public void setHDFSPATH(String path) {
+		hdfs_path = path;
+	}
+	
 	/**
 	 * This method should be consistent with getNodeCount.
 	 * @param targetGB

@@ -31,6 +31,10 @@ public class WorkflowInputFormat extends Config {
 	private String VERTICA_JDBC_SERVER = "";
 	private String VERTICA_HOME = "";
 	
+	private String KAFKA_HOME = "";
+	private String KAFKA_BROKER_LIST = "";
+	
+	private String ZOOKEEPER_CONNECT = ""; 
 	
 	public WorkflowInputFormat() {
 	}
@@ -90,6 +94,19 @@ public class WorkflowInputFormat extends Config {
 	
 	public String getVerticaHome(){
 		return VERTICA_HOME;
+	}
+	
+	
+	public String getKafkaHome() {
+		return KAFKA_HOME;
+	}
+	
+	public String getKafakaBrokers() {
+		return KAFKA_BROKER_LIST;
+	}
+	
+	public String getZooKeeperConnect() {
+		return ZOOKEEPER_CONNECT;
 	}
 	
 	public void reload() {
@@ -161,6 +178,18 @@ public class WorkflowInputFormat extends Config {
 			else if (key.equals(BigConfConstants.BIGFRAME_VERTICA_HOME)) {
 				VERTICA_HOME = value;
 			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_KAFKA_HOME)) {
+				KAFKA_HOME = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_KAFKA_BROKER_LIST)) {
+				KAFKA_BROKER_LIST = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_ZOOKEEPER_CONNECT)) {
+				ZOOKEEPER_CONNECT = value;
+			}
 		}
 		
 	}
@@ -168,18 +197,26 @@ public class WorkflowInputFormat extends Config {
 	@Override
 	public void printConf() {
 		System.out.println("Workflow Driver configuration:");
+		
 		System.out.println("Hadoop Home:" + HADOOP_HOME);
 		System.out.println("Hadoop Root Dir: " + HDFS_ROOT_DIR);
+		
 		System.out.println("Hive Home: " + HIVE_HOME);
 		System.out.println("Hive JDBC Server: " + HIVE_JDBC_SERVER);
+		
 		System.out.println("Shark Home: " + SHARK_HOME);
 		System.out.println("Spark Home: " + SPARK_HOME);
 		System.out.println("Spark MASTER: " + SPARK_MASTER);
+		
 		System.out.println("Vertica Host Names: " + VERTICA_HOSTNAMES);
 		System.out.println("Vertica Database: " + VERTICA_DATABASE);
 		System.out.println("Vertica User Name: " + VERTICA_USERNAME);
 		System.out.println("Vertica Password: " + VERTICA_PASSWORD);
 		System.out.println("Vertica Port: " + VERTICA_PORT);
 		System.out.println("Vertica JDBC Server: " + VERTICA_JDBC_SERVER);
+		
+		System.out.println("Kafka Home: " + KAFKA_HOME);
+		System.out.println("Kafka Broker List: " + KAFKA_BROKER_LIST);
+		System.out.println("ZooKeeper Connect: " + ZOOKEEPER_CONNECT);
 	}
 }

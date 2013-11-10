@@ -60,6 +60,10 @@ public class ReportSalesHadoop extends HadoopJob {
 		private List<Integer> dateEndSKs = new ArrayList<Integer>();
 		private Set<String> promotedSKs = new HashSet<String>();
 		
+		private boolean isStoreSales = false;
+		private boolean isWebSales = false;
+		private boolean isCatalogSales = false;
+		
 		@Override
 		protected void setup(final Context context) throws IOException {
 			Configuration mapred_config = context.getConfiguration();
@@ -101,14 +105,26 @@ public class ReportSalesHadoop extends HadoopJob {
 				}
 				in.close();
 			}
+			
+			FileSplit fileSplit = (FileSplit) context.getInputSplit();
+			String filename = fileSplit.getPath().getName();
+			
+			if (filename.contains("store_sales"))
+				isStoreSales = true;
+			
+			else if (filename.contains("web_sales"))
+				isWebSales = true;
+			
+			else if (filename.contains("catalog_sales"))
+				isCatalogSales = true;
 		}
 		
 		@Override
 		protected void map(LongWritable key,
 				Text value, final Context context)
 						throws IOException, InterruptedException {			   
-			FileSplit fileSplit = (FileSplit) context.getInputSplit();
-			String filename = fileSplit.getPath().getName();
+//			FileSplit fileSplit = (FileSplit) context.getInputSplit();
+//			String filename = fileSplit.getPath().getName();
 				
 			String []fields = value.toString().split("\\|", -1);
 				
@@ -118,21 +134,21 @@ public class ReportSalesHadoop extends HadoopJob {
 			int quantity = 0;
 			float price = 0;
 
-			if (filename.contains("store_sales") && 
+			if (isStoreSales && 
 					!fields[0].equals("") && !fields[2].equals("") && !fields[10].equals("") && !fields[13].equals("")){
 				sold_dateSK = Integer.parseInt(fields[0]);
 				item_sk = Long.parseLong(fields[2]);
 				quantity = Integer.parseInt(fields[10]);
 				price = Float.parseFloat(fields[13]);
 			}
-			else if(filename.contains("web_sales") &&
+			else if(isWebSales &&
 					!fields[0].equals("") && !fields[3].equals("") && !fields[18].equals("") && !fields[21].equals("")){
 				sold_dateSK = Integer.parseInt(fields[0]);
 				item_sk = Long.parseLong(fields[3]);
 				quantity = Integer.parseInt(fields[18]);
 				price = Float.parseFloat(fields[21]);
 			}
-			else if(filename.contains("catalog_sales") &&
+			else if(isCatalogSales &&
 				!fields[0].equals("") && !fields[15].equals("") && !fields[18].equals("") && !fields[21].equals("")){
 				sold_dateSK = Integer.parseInt(fields[0]);
 				item_sk = Long.parseLong(fields[15]);
@@ -145,7 +161,7 @@ public class ReportSalesHadoop extends HadoopJob {
 			 * Group the sales by (promotionID, itemSK)
 			 */
 			for(int i = 0; i < itemSKs.size(); i++) {
-				if(item_sk == itemSKs.get(1) && dateBeginSKs.get(i) <= sold_dateSK && 
+				if(item_sk == itemSKs.get(i) && dateBeginSKs.get(i) <= sold_dateSK && 
 					sold_dateSK <= dateEndSKs.get(i)) {
 					context.write(new Text(promotIDs.get(i) +"|" +itemSKs.get(i)), new FloatWritable(quantity * price));
 				}

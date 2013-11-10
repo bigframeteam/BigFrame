@@ -27,6 +27,7 @@ BASE_DIR=`cd "$BIN_DIR/../"; pwd`
 cd $CURRENT_DIR;
 
 TPCDS_SCRIPT=$BASE_DIR/tools/tpcds/gen_data.pl
+TPCDS_UPDATE_SCRIPT=$BASE_DIR/tools/tpcds/gen_update_data.pl
 GEN_PROMTTBL_SCRIPT=$BASE_DIR/tools/tpcds/gen_single_tbl.pl
 
 CONF_DIR=$BASE_DIR/conf
@@ -45,6 +46,7 @@ CONF_DIR=$BASE_DIR/conf
 
 
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.script=${TPCDS_SCRIPT}"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.updatescript=${TPCDS_UPDATE_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.singletblgen.script=${GEN_PROMTTBL_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.conf.dir=${CONF_DIR}"
 
@@ -57,6 +59,9 @@ QGEN_JAR=`ls $BASE_DIR/qgen/target/scala-2.9.3/bigframe-qgen-assembly*.jar`
 
 WORKFLOWS_JAR=`ls $BASE_DIR/workflows/target/scala-2.9.3/bigframe-workflows-assembly*.jar`
 
-#SENTIMENT_JAR= `ls $BASE_DIR/sentiment/target/scala-2.9.3/bigframe-workflows-assembly*.jar`
+# UDF used by Hive and Shark
+UDF_JAR=$WORKFLOWS_JAR
 
-export WORKFLOWS_JAR
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.udf.jar=${UDF_JAR}"
+
+#SENTIMENT_JAR= `ls $BASE_DIR/sentiment/target/scala-2.9.3/bigframe-workflows-assembly*.jar`

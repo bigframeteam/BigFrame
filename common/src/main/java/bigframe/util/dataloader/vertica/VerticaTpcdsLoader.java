@@ -185,6 +185,13 @@ public class VerticaTpcdsLoader extends VerticaDataLoader{
 		    			"p_channel_radio char(1)", "p_channel_press char(1)", "p_channel_event char(1)", "p_channel_demo char(1)", 
 		    			"p_channel_details varchar(100)", "p_purpose char(15)");
 		    
+		    else if(table.equals("date_dim"))
+		    	VerticaOutputFormat.setOutput(job, "date_dim", true, "d_date_sk int", "d_date_id char(16)", "d_date date", "d_month_seq int", "d_week_seq int",
+		    			"d_quarter_seq int", "d_year int", "d_dow int", "d_moy int", "d_dom int", "d_qoy int", "d_fy_year int", "d_fy_quarter_seq int",
+		    			"d_fy_week_seq int", "d_day_name char(9)", "d_quarter_name char(6)", "d_holiday char(1)", "d_weekend char(1)", "d_following_holiday char(1)",
+		    			"d_first_dom int", "d_last_dom int", "d_same_day_ly int", "d_same_day_lq int", "d_current_day char(1)", "d_current_week char(1)",
+		    			"d_current_month char(1)", "d_current_quarter char(1)", "d_current_year char(1)");
+		    
 		    else {
 		    	//throw new TableNotFoundException("Table " + table + " doesn't exist!");
 		    	System.out.println("Table " + table + " doesn't exist!");

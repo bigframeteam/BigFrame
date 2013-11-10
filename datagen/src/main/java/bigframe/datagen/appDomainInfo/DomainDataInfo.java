@@ -22,8 +22,8 @@ import bigframe.refreshing.DataProducer;
  */
 public abstract class DomainDataInfo {
 
-	protected Set<String> dataVariety;
-	protected Set<String> dataVelocity;
+	protected Set<String> supported_dataVariety;
+	protected Set<String> supported_dataVelocity;
 	
 	protected Map<String, DataGenerator> datagen_map;
 	protected Map<String, DataPreparator> dataPrep_map;
@@ -34,8 +34,8 @@ public abstract class DomainDataInfo {
 	public DomainDataInfo(BigDataInputFormat datainputformat) {
 		this.datainputformat = datainputformat;
 		
-		dataVariety = new HashSet<String>();
-		dataVelocity = new HashSet<String>();
+		supported_dataVariety = new HashSet<String>();
+		supported_dataVelocity = new HashSet<String>();
 		datagen_map = new HashMap<String, DataGenerator>();
 		dataPrep_map = new HashMap<String, DataPreparator>();
 		dataProd_map = new HashMap<String, DataProducer>(); 
@@ -43,54 +43,18 @@ public abstract class DomainDataInfo {
 	
 	protected abstract boolean isBigDataIFvalid(); 
 	
-	public  List<DataGenerator> getDataGens() {
-		if (!isBigDataIFvalid()) {
-			return null;
-		}
-		
-		List<DataGenerator> datagen_list = new LinkedList<DataGenerator>();
-		Set<String> dataVariety = datainputformat.getDataVariety();
-		
-		for(String variety : dataVariety) {
-			datagen_list.add(datagen_map.get(variety));
-		}
-		return datagen_list;
-	}
+	public abstract List<DataGenerator> getDataGens();
 	
 	
-	public List<DataPreparator> getDataPreps() {
-		if (!isBigDataIFvalid()) {
-			return null;
-		}
-		
-		List<DataPreparator> dataPrep_list = new LinkedList<DataPreparator>();
-		Set<String> dataVariety = datainputformat.getDataVariety();
-		
-		for(String variety : dataVariety) {
-			dataPrep_list.add(dataPrep_map.get(variety));
-		}
-		return dataPrep_list;
-	}
+	public abstract List<DataPreparator> getDataPreps();
 	
-	public List<DataProducer> getDataProds() {
-		if (!isBigDataIFvalid()) {
-			return null;
-		}
-		
-		List<DataProducer> dataPrep_list = new LinkedList<DataProducer>();
-		Set<String> dataVariety = datainputformat.getDataVariety();
-		
-		for(String variety : dataVariety) {
-			dataPrep_list.add(dataProd_map.get(variety));
-		}
-		return dataPrep_list;
-	}
+	public abstract List<DataProducer> getDataProds();
 	
 	public boolean containDataVariety(String variety) {
-		return dataVariety.contains(variety);
+		return supported_dataVariety.contains(variety);
 	}
 	
 	public boolean containDataVelocity(String velocity) {
-		return dataVelocity.contains(velocity);
+		return supported_dataVelocity.contains(velocity);
 	}
 }

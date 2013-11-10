@@ -17,7 +17,7 @@ public class VerticaEngineDriver extends EngineDriver {
 
 	private Connection connection;
 	
-	private static final Logger LOG = Logger.getLogger(HadoopEngineDriver.class);
+	private static final Logger LOG = Logger.getLogger(VerticaEngineDriver.class);
 	private List<VerticaRunnable> queries = new ArrayList<VerticaRunnable>();
 	
 	private static String driverName = "com.vertica.jdbc.Driver";
@@ -48,13 +48,13 @@ public class VerticaEngineDriver extends EngineDriver {
 					workIF.getVerticaUserName(), workIF.getVerticaPassword());
     	  
 			if(connection == null) {
-				System.out.println("Cannot connect to JDBC server! " +
+				LOG.error("Cannot connect to JDBC server! " +
 						"Make sure Vertica is running!");
 				System.exit(1);
 			}
 				
 			for(VerticaRunnable query : queries) {
-				System.out.println("Prepare tables!!!");
+				LOG.info("Prepare tables!!!");
 				query.prepareVerticaTables(connection);
 			}
 
@@ -73,16 +73,17 @@ public class VerticaEngineDriver extends EngineDriver {
 		
 		for(VerticaRunnable query : queries) {
 			if(query.runVertica(connection))
-				System.out.println("Query Finished");
+				LOG.info("Query Finished");
 			else
-				System.out.println("Query failed");
+				LOG.info("Query failed");
 		}
 
 	}
 
 	@Override
 	public void cleanup() {
-		// TODO Auto-generated method stub
+		for(VerticaRunnable query : queries)
+			query.cleanUpVertica(connection);
 
 	}
 	

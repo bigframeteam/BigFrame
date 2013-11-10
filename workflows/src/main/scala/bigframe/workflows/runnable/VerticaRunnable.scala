@@ -18,4 +18,6 @@ trait VerticaRunnable {
 	 * Run the benchmark query
 	 */
 	def runVertica(connection: Connection): Boolean
+	
+	def cleanUpVertica(connection: Connection): Unit
 }

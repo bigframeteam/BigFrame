@@ -54,6 +54,10 @@ public class TransitMatrixHadoop extends HadoopJob {
 		
 		private Map<String, Integer> map_user_tweets = new HashMap<String, Integer>();
 		
+		private boolean isFromSim = false;
+		private boolean isFromSum = false;
+		private boolean isFromFriend = false;
+		
 		@Override
 		protected void setup(final Context context) throws IOException {
 			Configuration mapred_config = context.getConfiguration();
@@ -77,6 +81,19 @@ public class TransitMatrixHadoop extends HadoopJob {
 	  	   			in.close();
 	  	   		}
 	  	   		
+				FileSplit fileSplit = (FileSplit) context.getInputSplit();
+				String pathname = fileSplit.getPath().toString();
+				
+				if(pathname.contains( TwitterRankConstant.SIMILARITY_B_USERS() )) {
+					isFromSim = true;
+				}
+				else if(pathname.contains( TwitterRankConstant.SUM_FRIENDS_TWEETS_PATH() )) {
+					isFromSum = true;
+				}
+				else {
+					isFromFriend = true;
+				}
+						
 	  	   	}
 		}
 		
@@ -85,11 +102,11 @@ public class TransitMatrixHadoop extends HadoopJob {
 				Text value, final Context context)
 						throws IOException, InterruptedException {			
 			
-			FileSplit fileSplit = (FileSplit) context.getInputSplit();
-			String pathname = fileSplit.getPath().toString();
+//			FileSplit fileSplit = (FileSplit) context.getInputSplit();
+//			String pathname = fileSplit.getPath().toString();
 	  	   	
 			
-			if(pathname.contains( TwitterRankConstant.SIMILARITY_B_USERS() )) {
+			if(isFromSim) {
 				String [] fields = value.toString().split("\\|");
 				
 				String follower = fields[0];
@@ -102,7 +119,7 @@ public class TransitMatrixHadoop extends HadoopJob {
 				context.write(new Text(follower), 
 						new Text(SIM_BETWEEN_USER + "|" + friend + "|" + itemSK + "|" + similarity));
 			}
-			else if (pathname.contains( TwitterRankConstant.SUM_FRIENDS_TWEETS_PATH() )){
+			else if (isFromSum){
 				String [] fields = value.toString().split("\\|");
 				
 				String follower = fields[0];

@@ -23,8 +23,9 @@ public abstract class TweetGenDist extends NestedGenDist {
 	
 	protected long[] cust_twitter_acc;
 	protected long[] noncust_twitter_acc;
-	protected long time_begin;
-	protected long time_end;
+//	protected long time_begin;
+	protected double time_step;
+	protected double time_stamp;
 	protected TpcdsPromotionInfo promt_info;
 	protected TpcdsItemInfo item_info;
 	protected int totalnum_prods;
@@ -37,13 +38,13 @@ public abstract class TweetGenDist extends NestedGenDist {
 		
 	}
 	
-	public void init(long[] cust_acc, long[] noncust_acc, long time_begin, long time_end, 
+	public void init(long[] cust_acc, long[] noncust_acc, long time_begin, double time_step, 
 			TpcdsPromotionInfo promt_info, TpcdsItemInfo item_info,
 			int totalnum_prods, JSONObject tweet_json) {
 		this.cust_twitter_acc = cust_acc;
 		this.noncust_twitter_acc = noncust_acc;
-		this.time_begin = time_begin;
-		this.time_end = time_end;
+		this.time_stamp = time_begin;
+		this.time_step = time_step;
 		this.promt_info = promt_info;
 		this.item_info = item_info;
 		this.totalnum_prods = totalnum_prods;

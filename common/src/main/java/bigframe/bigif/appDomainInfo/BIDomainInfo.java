@@ -27,17 +27,23 @@ public class BIDomainInfo extends DomainInfo {
 		relational_supportedEngine.add(Constants.VERTICA);
 		relational_supportedEngine.add(Constants.SPARK);
 
+		graph_supportedEngine.add(Constants.HIVE);
 		graph_supportedEngine.add(Constants.HADOOP);
 		graph_supportedEngine.add(Constants.VERTICA);
 		graph_supportedEngine.add(Constants.SPARK);
+		graph_supportedEngine.add(Constants.SHARK);
 		
+		nested_supportedEngine.add(Constants.HIVE);
 		nested_supportedEngine.add(Constants.HADOOP);
 		nested_supportedEngine.add(Constants.VERTICA);
 		nested_supportedEngine.add(Constants.SPARK);
+		nested_supportedEngine.add(Constants.SHARK);
 		
+		text_supportedEngine.add(Constants.HIVE);
 		text_supportedEngine.add(Constants.HADOOP);		
 		text_supportedEngine.add(Constants.VERTICA);		
-		text_supportedEngine.add(Constants.SPARK);		
+		text_supportedEngine.add(Constants.SPARK);	
+		text_supportedEngine.add(Constants.SHARK);	
 
 		querySupportEngine.put(Constants.RELATIONAL, relational_supportedEngine);
 		querySupportEngine.put(Constants.GRAPH, graph_supportedEngine);

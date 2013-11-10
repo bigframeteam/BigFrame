@@ -56,6 +56,23 @@ public class BigConfConstants {
 	public static final String BIGFRAME_VERTICA_JDBC_SERVER = "bigframe.vertica.jdbc.server";
 	public static final String BIGFRAME_VERTICA_HOME = "bigframe.vertica.home";
 	
+	/**
+	 * Kafka specific
+	 */
+	public static final String BIGFRAME_KAFKA_HOME = "bigframe.kafka.home";
+	public static final String BIGFRAME_KAFKA_BROKER_LIST = "bigframe.kafka.broker.list";
+	
+	/**
+	 * Zookeeper specific
+	 */
+	public static final String BIGFRAME_ZOOKEEPER_CONNECT = "bigframe.zookeeper.connect";
+	
+	/**
+	 * Shared UDF specific
+	 *
+	 */
+	public static final String BIGFRAME_UDF_JAR = "bigframe.udf.jar";
+	
 	// Properties related to data refreshing
 	public static final String BIGFRAME_REFRESH_LOCAL = "bigframe.refresh.local";
 	
@@ -63,6 +80,7 @@ public class BigConfConstants {
 	// Properties for external scripts
 	public static final String BIGFRAME_TPCDS_LOCAL = "bigframe.tpcds.local";
 	public static final String BIGFRAME_TPCDS_SCRIPT = "bigframe.tpcds.script";
+	public static final String BIGFRAME_TPCDS_UPDATESCRIPT = "bigframe.tpcds.updatescript";
 	public static final String BIGFRAME_GEN_SINGLETBL_SCRIPT = "bigframe.singletblgen.script";
 
 

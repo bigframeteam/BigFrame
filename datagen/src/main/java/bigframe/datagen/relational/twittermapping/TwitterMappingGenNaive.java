@@ -24,21 +24,25 @@ import cern.jet.random.sampling.RandomSampler;
  *
  */
 public class TwitterMappingGenNaive extends TwitterMappingGen {
-	private int tpcds_proportion;
-	private int twitter_graph_proportion;
+	private float tpcds_proportion;
+	private float twitter_graph_proportion;
 	
 	private int num_customer;
 	private long num_twitter_user;
 	
 	private String hdfs_path; 
 		
+	public void setHDFS_PATH(String path) {
+		hdfs_path = path;
+	}
+	
 	public TwitterMappingGenNaive(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 		tpcds_proportion = conf.getDataScaleProportions().get(BigConfConstants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION);
 		twitter_graph_proportion = conf.getDataScaleProportions().get(BigConfConstants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION);
 		
-		float graph_targetGB = (float) (twitter_graph_proportion * 1.0 /tpcds_proportion * targetGB);
+		float graph_targetGB = twitter_graph_proportion /tpcds_proportion * targetGB;
 		
 		CollectTPCDSstat tpcds_stat_collecter = new CollectTPCDSstatNaive();
 		num_customer = (int) (tpcds_stat_collecter.getNumOfCustomer((int)targetGB));
@@ -89,7 +93,7 @@ public class TwitterMappingGenNaive extends TwitterMappingGen {
 	
 	@Override
 	public void generate() {
-		System.out.println("Generating Twitter Mapping tada");
+		System.out.println("Generating Twitter Mapping data");
 		
 		// TODO Auto-generated method stub
 		try {

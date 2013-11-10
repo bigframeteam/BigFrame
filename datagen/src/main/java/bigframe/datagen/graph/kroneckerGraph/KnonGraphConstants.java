@@ -51,7 +51,7 @@ public class KnonGraphConstants {
 	
 	// size in GB for the minimum graph
 	public static final float arScaleVolume2 [] = 
-		{0.32f};
+		{0.16f};
 	
 	// 2^18 nodes
 	public static final int arScaleNodeCount2 [] = 

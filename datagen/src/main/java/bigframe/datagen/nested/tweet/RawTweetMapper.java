@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
@@ -101,12 +102,13 @@ Mapper<NullWritable, RawTweetInfoWritable, NullWritable, Text> {
 
 		tweet_textGen.setRandomSeed(RandomSeeds.SEEDS_TABLE[0] + time_begin);
 
+		double time_step = (time_end - time_begin) * 1.0 / tweets_per_mapper;
 
 		TweetGenDist tweet_gen_dist = new SimpleTweetGenDist(RandomSeeds.SEEDS_TABLE[0] 
 				+ time_begin, tweet_textGen, tweet_start_ID);
-		// The conversion from int to long for time_begin and time_end will lost precision. 
+ 
 		tweet_gen_dist.init(customer_twitterAcc, non_customer_acc, time_begin, 
-				time_end, promt_info, item_info, num_products, tweet_json);
+				time_step, promt_info, item_info, num_products, tweet_json);
 		
 		for(int i = 0; i < tweets_per_mapper; i++) {
 			context.write(null, new Text(tweet_gen_dist.getNextTweet().toString()));

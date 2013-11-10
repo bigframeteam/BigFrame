@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
@@ -25,9 +27,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import bigframe.workflows.BaseTablePath;
 import bigframe.workflows.HadoopJob;
 import bigframe.workflows.BusinessIntelligence.relational.exploratory.ReportSalesConstant;
 import bigframe.workflows.BusinessIntelligence.text.exploratory.SenAnalyzeConstant;
+
+import bigframe.workflows.util.DateUtils;
 
 /**
  * A Hadoop job for filtering the tweets that didn't mention any promoted products. 
@@ -36,11 +41,13 @@ import bigframe.workflows.BusinessIntelligence.text.exploratory.SenAnalyzeConsta
  */
 public class FilterTweetHadoop extends HadoopJob{
 	String promotedProd_path = ReportSalesConstant.PROMOTED_PROD_PATH();
+	String date_path;
 	String tweet_path;
 	
-	public FilterTweetHadoop(String tweet_path, Configuration mapred_config) {
+	public FilterTweetHadoop(BaseTablePath basePath, Configuration mapred_config) {
 		super(mapred_config);
-		this.tweet_path = tweet_path;
+		this.tweet_path = basePath.nested_path();
+		this.date_path = basePath.relational_path() + "/date_dim";
 	}
 	
 	/**
@@ -53,6 +60,12 @@ public class FilterTweetHadoop extends HadoopJob{
 	
 		private List<Long> itemSKs = new ArrayList<Long>();
 		private List<String> productNames = new ArrayList<String>();
+		private List<Integer> dateBeginSKs = new ArrayList<Integer>();
+		private List<Integer> dateEndSKs = new ArrayList<Integer>();
+		
+		private Map<Integer, String> date_dim = new HashMap<Integer, String>();
+		
+		private DateUtils dateUtils = new DateUtils();
 		
 		@Override
 		protected void setup(final Context context) throws IOException {
@@ -69,11 +82,30 @@ public class FilterTweetHadoop extends HadoopJob{
 			
 						String itemSK = fields[0];
 						String productName = fields[1];
+						String datebegsk = fields[2];
+						String dateendsk = fields[3];
 			
 						if (!itemSK.equals("") && !productName.equals("")) {
 							itemSKs.add(Long.parseLong(itemSK));
 							productNames.add(productName);
+							dateBeginSKs.add(Integer.parseInt(datebegsk));
+							dateEndSKs.add(Integer.parseInt(dateendsk));
 						}
+						line = in.readLine();
+					}
+					in.close();
+				}
+				else if(p.toString().contains("date_dim")) {
+					BufferedReader in = new BufferedReader(new FileReader(p.toString()));
+					String line = in.readLine();
+					while (line != null) {
+						String [] fields = line.split("\\|");
+			
+						Integer date_sk = Integer.parseInt(fields[0]);
+						String date = fields[2];
+						
+						date_dim.put(date_sk, date);
+						
 						line = in.readLine();
 					}
 					in.close();
@@ -93,6 +125,7 @@ public class FilterTweetHadoop extends HadoopJob{
 				JSONObject jsonObject = (JSONObject) obj;
 				
 				String text = (String) jsonObject.get("text");
+				String created_at = (String) jsonObject.get("created_at");
 				
 				JSONObject user_json = (JSONObject) jsonObject.get("user");
 				Long user_id = (Long) user_json.get("id");
@@ -105,7 +138,9 @@ public class FilterTweetHadoop extends HadoopJob{
 					String tag_str = (String) tag;
 					
 					for(int i = 0; i < productNames.size(); i++) {
-						if(tag_str.equals(productNames.get(i))) {
+						if(tag_str.equals(productNames.get(i)) && 
+								dateUtils.isDateWithin(created_at, date_dim.get(dateBeginSKs.get(i)), date_dim.get(dateEndSKs.get(i)))) {
+
 							context.write(new Text(user_id + "|" + itemSKs.get(i)), new Text(text));
 						}
 					}
@@ -165,6 +200,14 @@ public class FilterTweetHadoop extends HadoopJob{
 				DistributedCache.addCacheFile(new URI(stat.getPath().toString()), 
 					mapred_config);
 			}
+			
+			status = fs.listStatus(new Path(date_path));
+			
+			for (FileStatus stat : status){
+				DistributedCache.addCacheFile(new URI(stat.getPath().toString()), 
+					mapred_config);
+			}
+			
 		
 			String hdfs_dir = SenAnalyzeConstant.FILTERED_TWEETS_PATH();
 			Path outputDir = new Path(hdfs_dir);	

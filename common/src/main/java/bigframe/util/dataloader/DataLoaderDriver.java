@@ -245,6 +245,7 @@ public class DataLoaderDriver {
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/web_sales"), "web_sales");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/item"), "item");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/promotion"), "promotion");
+					dataloader.load(new Path(line.getOptionValue(SRC)+"/date_dim"), "date_dim");
 				}
 				
 				else if(line.getOptionValue(DATATYPE).equals(Constants.NESTED)) {
@@ -262,6 +263,9 @@ public class DataLoaderDriver {
 					System.out.println("Not supported data type: " + line.getOptionValue(DATATYPE));
 				}
 				
+			}
+			else {
+				System.out.println("Not supported data domain: " + line.getOptionValue(APPDOMAIN));
 			}
 		}
 		

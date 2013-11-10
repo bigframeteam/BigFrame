@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +51,23 @@ public abstract class CollectTPCDSstat {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	// So these numbers are TPCDS specific
+	public static Date getDateBySK(int dateSK) {
+		if(dateSK < 2415022 || dateSK > 2488070) {
+			return null;
+		}
+		int baseSK = 2415022;
+		int offset = dateSK - baseSK;
+
+		Calendar c = Calendar.getInstance();
+		c.set(1900,  Calendar.JANUARY, 2);
+
+		c.add(Calendar.DATE, offset);
+
+		return c.getTime();
+
 	}
 
 	public abstract  long getNumOfCustomer(int targetGB);

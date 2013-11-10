@@ -17,13 +17,6 @@ import bigframe.datagen.appDomainInfo.DomainDataInfo;
  *
  */
 public class DatagenFactory {
-	//private static final Logger LOG = Logger.getLogger(DatagenFactory.class);
-//	private BigDataInputFormat datainputformat;
-//
-//	public DatagenFactory(BigDataInputFormat datainputformat) {
-//		this.datainputformat = datainputformat;
-//	}
-
 
 	/**Create the set of data generator based on the data variety user specified.
 	 * 

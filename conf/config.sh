@@ -33,4 +33,20 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.refresh.local=${REFRESH_LOCAL}"
 export OUTPUT_PATH="hdfs://localhost:9000/test_output"
 
 
+###################################################################
+# GLOBAL PARAMETERS USED BY DATA REFRESHING (REQUIRED)
+###################################################################
+
+# The Kafka Home Directory
+KAFKA_HOME=$KAFKA_HOME
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.kafka.home=${KAFKA_HOME}"
+
+# The list of brokers that the data refreshing driver can connnect to 
+KAFAKA_BROKER_LIST=""
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.kafka.broker.list=${KAFKA_BROKER_LIST}"
+
+# The address of zookeeper
+ZOOKEEPER_CONNECT=""
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.zookeeper.connect=${ZOOKEEPER_CONNECT}"
+
 

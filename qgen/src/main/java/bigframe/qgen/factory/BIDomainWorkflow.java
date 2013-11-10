@@ -116,9 +116,6 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				
 				else if(dataVariety.contains(Constants.NESTED)) {
 					
-					if(nestedEngine.equals(Constants.HADOOP)) {
-						
-					}
 					
 				}
 			}
@@ -167,6 +164,12 @@ public class BIDomainWorkflow extends DomainWorkflow {
 						sparkWorkflow.addQuery(new 
 								bigframe.workflows.BusinessIntelligence.text.exploratory.WF_SenAnalyzeSpark(basePath, "[aA].*"));
 					}
+					
+					
+					else if(nestedEngine.equals(Constants.HIVE)) {
+						hiveWorkflow.addQuery(new 
+								bigframe.workflows.BusinessIntelligence.text.exploratory.WF_SenAnalyze(basePath));
+					}
 				}
 			}
 		}
@@ -192,6 +195,18 @@ public class BIDomainWorkflow extends DomainWorkflow {
 						nestedEngine.equals(Constants.VERTICA)) {
 					verticaWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentVertica(basePath, 10));
+				}
+				
+				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.HIVE)&& 
+						nestedEngine.equals(Constants.HIVE)) {
+					hiveWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath, 10));
+				}
+				
+				else if(relationalEngine.equals(Constants.SHARK) && graphEngine.equals(Constants.SHARK)&& 
+						nestedEngine.equals(Constants.SHARK)) {
+					sharkWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath, 10));
 				}
 				
 				//Relational, Text, Graph for Spark

@@ -6,6 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.WorkflowInputFormat;
 import bigframe.workflows.runnable.HiveRunnable;
 
@@ -20,6 +24,7 @@ public class HiveEngineDriver extends EngineDriver {
 	private List<HiveRunnable> queries = new ArrayList<HiveRunnable>();
 	private static String driverName = "org.apache.hadoop.hive.jdbc.HiveDriver";
 	
+	private static final Log LOG = LogFactory.getLog(HiveEngineDriver.class);
 	//private static int hiveServer_version = 1;
 	
 	public HiveEngineDriver(WorkflowInputFormat workIF) {
@@ -38,16 +43,29 @@ public class HiveEngineDriver extends EngineDriver {
         }
 
 		try {
-			System.out.println("Before connection!!!");
+			LOG.info("Connectiong to Hive JDBC server!!!");
 			connection = DriverManager.getConnection(workIF.getHiveJDBCServer(), "", "");
-			System.out.println("After connection!!!");
 			if(connection == null) {
-				System.out.println("Cannot connect to JDBC server! " +
+				LOG.error("Cannot connect to JDBC server! " +
 						"Make sure the HiveServer is running!");
 				System.exit(1);
 			}
+			else
+				LOG.info("Successful!!!");
+			
+			String UDF_JAR = workIF.getProp().get(BigConfConstants.BIGFRAME_UDF_JAR);
+			
+			connection.createStatement().execute("DELETE JAR " + UDF_JAR);
+			LOG.info("Adding UDF JAR " + UDF_JAR + " to hive server");
+			if(connection.createStatement().execute("ADD JAR " + UDF_JAR)) {
+				LOG.info("Adding UDF JAR successful!");
+			}
+			else {
+				LOG.error("Adding UDF JAR failed!");
+			}
+			
 			for(HiveRunnable query : queries) {
-				System.out.println("Prepare tables!!!");
+				LOG.info("Prepare tables...");
 				query.prepareHiveTables(connection);
 			}
 		
@@ -64,19 +82,21 @@ public class HiveEngineDriver extends EngineDriver {
 	
 	@Override
 	public void run() {
-		System.out.println("Running Hive Query");
+		LOG.info("Running Hive Query");
 		
 		for(HiveRunnable query : queries) {
 			if(query.runHive(connection))
-				System.out.println("Query Finished");
+				LOG.info("Query Finished");
 			else
-				System.out.println("Query failed");
+				LOG.info("Query failed");
 		}
 	}
 
 	@Override
 	public void cleanup() {
-		// TODO Auto-generated method stub
+		for(HiveRunnable query : queries) {
+			query.cleanUpHive(connection);
+		}
 
 	}
 
