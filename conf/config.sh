@@ -38,15 +38,15 @@ export OUTPUT_PATH="hdfs://localhost:9000/test_output"
 ###################################################################
 
 # The Kafka Home Directory
-KAFKA_HOME="/home/cszahe/Programs/kafka/kafka-0.8.0-beta1-src"
+KAFKA_HOME=""
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.kafka.home=${KAFKA_HOME}"
 
 # The list of brokers that the data refreshing driver can connnect to 
-KAFKA_BROKER_LIST="localhost:9092"
+KAFKA_BROKER_LIST=""
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.kafka.broker.list=${KAFKA_BROKER_LIST}"
 
 # The address of zookeeper
-ZOOKEEPER_CONNECT="localhost:2181"
+ZOOKEEPER_CONNECT=""
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.zookeeper.connect=${ZOOKEEPER_CONNECT}"
 
 
