@@ -18,13 +18,16 @@ import org.apache.hadoop.fs.Path;
 
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.WorkflowInputFormat;
-
 import bigframe.util.Constants;
 //import bigframe.util.TableNotFoundException;
 import bigframe.util.dataloader.vertica.VerticaDataLoader;
 import bigframe.util.dataloader.vertica.VerticaGraphLoader;
 import bigframe.util.dataloader.vertica.VerticaTpcdsLoader;
 import bigframe.util.dataloader.vertica.VerticaTweetLoader;
+import bigframe.util.dataloader.hana.HanaDataLoader;
+import bigframe.util.dataloader.hana.HanaGraphLoader;
+import bigframe.util.dataloader.hana.HanaTpcdsLoader;
+import bigframe.util.dataloader.hana.HanaTweetLoader;
 
 public class DataLoaderDriver {
 
@@ -41,9 +44,10 @@ public class DataLoaderDriver {
 	static {
 		HashSet<String> temp = new HashSet<String>();
 		
-		temp.add(Constants.HADOOP);
+		temp.add(Constants.HDFS);
 		
 		supported_engines.put(Constants.VERTICA, temp);
+		supported_engines.put(Constants.HANA, temp);
 	}
 	
 	
@@ -65,8 +69,8 @@ public class DataLoaderDriver {
 
 		out.println();
 		out.println("Usage: dataload");
-		out.println(" -from								[required] The engine that contain the source data");
-		out.println(" -to								[required] The engine to store the data into");
+		out.println(" -from								[required] The storage that contains the source data");
+		out.println(" -to								[required] The storage to store the data into");
 		out.println(" -src							    [required] The source path");
 		out.println(" -appdomain						[required] The Application Domain which the data belongs to");
 		out.println(" -datatype							[required] The data type: e.g, relational, graph");
@@ -202,7 +206,7 @@ public class DataLoaderDriver {
 		
 		Properties properties = line.getOptionProperties("D");
 
-		if(from.equals(Constants.HADOOP) || to.equals(Constants.HADOOP)) {
+		if(from.equals(Constants.HDFS) || to.equals(Constants.HDFS)) {
 			if (properties.getProperty(BigConfConstants.BIGFRAME_HADOOP_HOME) == null) {
 				failAndExit("HADOOP_HOME is not set");
 			}
@@ -222,6 +226,21 @@ public class DataLoaderDriver {
 						BigConfConstants.BIGFRAME_VERTICA_PASSWORD + "\n" );
 			}
 		}
+		
+		if(from.equals(Constants.HANA) || to.equals(Constants.HANA)) {
+			if (properties.getProperty(BigConfConstants.BIGFRAME_HANA_DATABASE) == null || 
+					properties.getProperty(BigConfConstants.BIGFRAME_HANA_HOSTNAMES) == null ||
+					properties.getProperty(BigConfConstants.BIGFRAME_HANA_PORT) == null ||
+					properties.getProperty(BigConfConstants.BIGFRAME_HANA_USERNAME) == null ||
+					properties.getProperty(BigConfConstants.BIGFRAME_HANA_PASSWORD) == null) {
+				failAndExit("These parameters should be set: \n" + 
+						BigConfConstants.BIGFRAME_HANA_DATABASE + "\n" + 
+						BigConfConstants.BIGFRAME_HANA_HOSTNAMES + "\n" + 
+						BigConfConstants.BIGFRAME_HANA_PORT + "\n" + 
+						BigConfConstants.BIGFRAME_HANA_USERNAME + "\n" + 
+						BigConfConstants.BIGFRAME_HANA_PASSWORD + "\n" );
+			}
+		}
 
 
 		return line;
@@ -234,7 +253,7 @@ public class DataLoaderDriver {
 	 */
 	private static void load(CommandLine line, WorkflowInputFormat workflowIF) {
 		
-		if(line.getOptionValue(FROM).equals(Constants.HADOOP) && 
+		if(line.getOptionValue(FROM).equals(Constants.HDFS) && 
 				line.getOptionValue(TO).equals(Constants.VERTICA)) {
 			if(line.getOptionValue(APPDOMAIN).equals(BigConfConstants.APPLICATION_BI)) {
 				if(line.getOptionValue(DATATYPE).equals(Constants.RELATIONAL)) {
@@ -265,6 +284,38 @@ public class DataLoaderDriver {
 			}
 		}
 		
+		if(line.getOptionValue(FROM).equals(Constants.HDFS) && 
+				line.getOptionValue(TO).equals(Constants.HANA)) {
+			if(line.getOptionValue(APPDOMAIN).equals(BigConfConstants.APPLICATION_BI)) {
+				if(line.getOptionValue(DATATYPE).equals(Constants.RELATIONAL)) {
+					HanaDataLoader dataloader = new HanaTpcdsLoader(workflowIF);
+					dataloader.load(line.getOptionValue(SRC)+"/store_sales", "store_sales");
+					dataloader.load(line.getOptionValue(SRC)+"/catalog_sales", "catalog_sales");
+					dataloader.load(line.getOptionValue(SRC)+"/store_sales", "store_sales");
+					dataloader.load(line.getOptionValue(SRC)+"/web_sales", "web_sales");
+					dataloader.load(line.getOptionValue(SRC)+"/item", "item");
+					dataloader.load(line.getOptionValue(SRC)+"/promotion", "promotion");
+				}
+				
+				else if(line.getOptionValue(DATATYPE).equals(Constants.NESTED)) {
+					HanaDataLoader dataloader = new HanaTweetLoader(workflowIF);
+					dataloader.preProcess(line.getOptionValue(SRC));
+					dataloader.load(line.getOptionValue(SRC), "tweet");
+					dataloader.load(line.getOptionValue(SRC), "entities");
+				}
+				
+				else if(line.getOptionValue(DATATYPE).equals(Constants.GRAPH)) {
+					HanaDataLoader dataloader = new HanaGraphLoader(workflowIF);
+					dataloader.load(line.getOptionValue(SRC), "twitter_graph");
+				}
+				
+				else {
+					System.out.println("Not supported data type: " + line.getOptionValue(DATATYPE));
+				}
+				
+			}
+		}
+
 	}
 
 	public static void main(String[] args) {

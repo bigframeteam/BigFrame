@@ -27,4 +27,7 @@ public class Constants {
 	
 	public static String MICRO = "micro";
 	public static String MACRO = "macro";
+	
+	//storage specific
+	public static String HDFS = "hdfs";
 }

@@ -24,8 +24,8 @@ class WF_ReportSaleSentimentHana(basePath: BaseTablePath, num_iter: Int) extends
 			val stmt = connection.createStatement()		
 		try {
 
-			val set_schema = "SET SCHEMA \"" + SCHEMA + "\""
-			stmt.execute(set_schema);
+			//val set_schema = "SET SCHEMA \"" + SCHEMA + "\""
+			//stmt.execute(set_schema);
 
 			val databaseMetaData2 = connection.getMetaData()
 

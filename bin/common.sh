@@ -46,6 +46,9 @@ CONF_DIR=$BASE_DIR/conf
 # Get the user-defined hana parameters
 . "$BASE_DIR"/conf/hana-env.sh
 
+# Get the user-defined sqoop parameters
+. "$BASE_DIR"/conf/sqoop-env.sh
+
 
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.script=${TPCDS_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.singletblgen.script=${GEN_PROMTTBL_SCRIPT}"
