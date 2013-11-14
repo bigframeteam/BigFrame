@@ -1,0 +1,4 @@
+bigframe-core.xml	merge=ours
+hadoop-env.sh	merge=ours
+vertica-env.sh	merge=ours
+spark-env.sh	merge=ours

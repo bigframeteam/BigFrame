@@ -200,14 +200,14 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.HIVE)&& 
 						nestedEngine.equals(Constants.HIVE)) {
 					hiveWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath, 10));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10));
 				}
 				
-				else if(relationalEngine.equals(Constants.SHARK) && graphEngine.equals(Constants.SHARK)&& 
-						nestedEngine.equals(Constants.SHARK)) {
-					sharkWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath, 10));
-				}
+//				else if(relationalEngine.equals(Constants.SHARK) && graphEngine.equals(Constants.SHARK)&& 
+//						nestedEngine.equals(Constants.SHARK)) {
+//					sharkWorkflow.addQuery(new 
+//							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath, 10));
+//				}
 				
 				//Relational, Text, Graph for Spark
 				else if(relationalEngine.equals(Constants.SPARK) && graphEngine.equals(Constants.SPARK)&& 

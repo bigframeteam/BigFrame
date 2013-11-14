@@ -16,10 +16,10 @@ class WF_ReportSaleSentimentVertica(basePath: BaseTablePath, num_iter: Int) exte
 	def printDescription(): Unit = {}
 
 
-		override def prepareVerticaTables(connection: Connection): Unit = {}
+	override def prepareVerticaTables(connection: Connection): Unit = {}
 	
 
-	
+		
 	def cleanUpVertica1(connection: Connection): Unit = {
 		val stmt = connection.createStatement()	
 		

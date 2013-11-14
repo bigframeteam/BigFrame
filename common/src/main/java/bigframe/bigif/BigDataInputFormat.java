@@ -20,7 +20,7 @@ public class BigDataInputFormat extends Config {
 
 	protected String app_domain;
 	protected Set<String> dataVariety = new HashSet<String>();
-	protected Integer dataVolume; // Not used in this version
+	protected Integer dataVolume; // In GB
 	protected Map<String, Float> dataVelocity = new HashMap<String, Float>();
 	protected Map<String, Float> dataScaleProportions = new HashMap<String, Float>();
 	protected Map<String, String> dataStoredPath = new HashMap<String, String>();
@@ -222,7 +222,9 @@ public class BigDataInputFormat extends Config {
 			}
 
 			else if (key.equals(BigConfConstants.BIGFRAME_DATAVOLUME)) {
-				dataVolume = BigConfConstants.DATAVOLUME_MAP.get(value);
+//				dataVolume = BigConfConstants.DATAVOLUME_MAP.get(value);
+				
+				dataVolume = Integer.parseInt(value);
 			}
 
 			else if (BigConfConstants.BIGFRAME_DATAVOLUME_PORTION_SET.contains(key)) {

@@ -22,10 +22,15 @@ class WF_ReportSaleSentimentHadoop(basePath: BaseTablePath, num_iter: Int) exten
 	def printDescription(): Unit = {}
 
 	override def runHadoop(mapred_config: Configuration): java.lang.Boolean = {	
-		val promotedSKs = Set(new java.lang.Integer(1), new java.lang.Integer(2), new java.lang.Integer(3))
+		var promotedSKs = Set[java.lang.Integer]()
+//		val promotedSKs = Set(new java.lang.Integer(1), new java.lang.Integer(2), new java.lang.Integer(3))
+		
+		for(i <- 1 to 300)
+			promotedSKs += new java.lang.Integer(i)
+		
 		val iteration = num_iter
 		
-			val job_getPromotedProd = new PromotedProdHadoop(basePath.relational_path, promotedSKs, mapred_config)
+		val job_getPromotedProd = new PromotedProdHadoop(basePath.relational_path, promotedSKs, mapred_config)
 		val job_reportSales = new ReportSalesHadoop(basePath.relational_path, promotedSKs, mapred_config )
 		val job_filterTweets = new FilterTweetHadoop(basePath, mapred_config);
 		val job_senAnalyze = new SenAnalyzeHadoop(SenAnalyzeConstant.FILTERED_TWEETS_PATH, mapred_config)
