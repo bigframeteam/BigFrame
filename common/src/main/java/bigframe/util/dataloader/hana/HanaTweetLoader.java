@@ -100,8 +100,6 @@ public class HanaTweetLoader extends HanaDataLoader {
 		BufferedReader reader = null;
 
 		try {
-			Statement stmt = connection.createStatement();
-			
 			fis = HanaTweetLoader.class.getClassLoader().getResourceAsStream("AFINN-111.txt");
 
 			reader = new BufferedReader(new InputStreamReader(fis));
@@ -127,7 +125,6 @@ public class HanaTweetLoader extends HanaDataLoader {
 			connection.setAutoCommit(true);
 
 			pstmt.close();
-			stmt.close();
 		} catch (SQLException se) {
 			se.printStackTrace();
 			return false;
