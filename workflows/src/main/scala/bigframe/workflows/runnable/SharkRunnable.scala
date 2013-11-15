@@ -15,7 +15,7 @@ trait SharkRunnable {
 	def prepareSharkTables(connection: Connection): Unit
 	
 	/**
-	 * Run the benchmakr query
+	 * Run the benchmark query
 	 */
 	def runShark(connection: Connection): Boolean
 	
