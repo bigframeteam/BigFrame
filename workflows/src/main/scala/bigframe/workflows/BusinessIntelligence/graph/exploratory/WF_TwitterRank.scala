@@ -1,6 +1,7 @@
 package bigframe.workflows.BusinessIntelligence.graph.exploratory
 
-import bigframe.workflows.runnable.GiraphRunnable
+import bigframe.workflows.BusinessIntelligence.RTG.exploratory.TwitterRankConstant
+import bigframe.workflows.runnable.HiveGiraphRunnable
 import bigframe.workflows.Query
 
 import org.apache.giraph.job.GiraphJob
@@ -29,45 +30,111 @@ import org.apache.giraph.hive.common.HiveProfiles.EDGE_INPUT_PROFILE_ID
 import org.apache.giraph.hive.common.HiveProfiles.VERTEX_INPUT_PROFILE_ID
 import org.apache.giraph.hive.common.HiveProfiles.VERTEX_OUTPUT_PROFILE_ID
 
-import com.facebook.giraph.hive.input.HiveApiInputFormat;
-import com.facebook.giraph.hive.input.HiveInputDescription;
-import com.facebook.giraph.hive.output.HiveApiOutputFormat;
-import com.facebook.giraph.hive.output.HiveOutputDescription;
-import com.facebook.giraph.hive.schema.HiveTableSchemas;
+import com.facebook.giraph.hive.input.HiveApiInputFormat
+import com.facebook.giraph.hive.input.HiveInputDescription
+import com.facebook.giraph.hive.output.HiveApiOutputFormat
+import com.facebook.giraph.hive.output.HiveOutputDescription
+import com.facebook.giraph.hive.schema.HiveTableSchemas
+
+import java.sql.Connection
 
 /**
  * Just for proof of concept.
  * 
  *  @author andy
  */
-class WF_TwitterRank(transitMatrix: String, initialRank: String, randSuffVec: String) extends Query with GiraphRunnable{
+class WF_TwitterRank() extends Query with HiveGiraphRunnable{
 
 	def printDescription(): Unit = {}
 	
-	override def runGiraph(mapred_config: Configuration): Boolean = {
+	override def prepareHiveGiraphTables(connection: Connection): Unit = {
+  		val stmt = connection.createStatement()
+  		
+  		stmt.execute("Drop Table twitterRank")
+  		
+  		val create_twitterRank = "Create TABLE twitterRank" +
+  				"	(" +
+  				"		item_sk		int," +
+  				"		user_id		int," +
+  				"		rank_score	float" +
+  				"	)"
+  		
+  		stmt.execute(create_twitterRank)
+	}
+	
+	override def runGiraph(hive_config: HiveConf): Boolean = {
 		
-		HIVE_TO_VERTEX_CLASS.set(mapred_config, classOf[InitialRankToVertex]);
-		mapred_config.setClass(HiveVertexWriter.VERTEX_TO_HIVE_KEY, 
-				classOf[TRVertexToHive], classOf[VertexToHive[Text, DoubleWritable, Writable]]);
+	  /**
+	   * Get the copy of the hive configuration
+	   */
+		val hive_config_copy = new HiveConf(hive_config)
+	  
+		val workers = 1	
+		val dbName = "default"
+		val edgeInputTableStr = "initialRank"
+		val vertexInputTableStr = "transitMatrix"
+		val vertexOutputTableStr = "twitterRank"
+	  
+		HIVE_TO_VERTEX_CLASS.set(hive_config_copy, classOf[InitialRankToVertex])
+		hive_config_copy.setClass(HiveVertexWriter.VERTEX_TO_HIVE_KEY, 
+				classOf[TRVertexToHive], classOf[VertexToHive[Text, DoubleWritable, Writable]])
 		
-		val job = new GiraphJob(mapred_config, getClass().getName())
+		val job = new GiraphJob(hive_config_copy, getClass().getName())
 		var giraphConf = job.getConfiguration()
 		
 		
-		var hiveVertexInputDescription = new HiveInputDescription();
-		var hiveEdgeInputDescription = new HiveInputDescription();
-		var hiveOutputDescription = new HiveOutputDescription();
+		var hiveVertexInputDescription = new HiveInputDescription()
+		var hiveEdgeInputDescription = new HiveInputDescription()
+		var hiveOutputDescription = new HiveOutputDescription()
 		
+		/**
+		 * Initialize hive input db and tables
+		 */
+		hiveVertexInputDescription.setDbName(dbName)
+		hiveEdgeInputDescription.setDbName(dbName)
+		hiveOutputDescription.setDbName(dbName)
+		
+		
+		hiveEdgeInputDescription.setTableName(edgeInputTableStr)
+		hiveVertexInputDescription.setTableName(vertexInputTableStr)
+		hiveOutputDescription.setTableName(vertexOutputTableStr)
 
-		
-		hiveVertexInputDescription.setNumSplits(HIVE_VERTEX_SPLITS.get(giraphConf));
-		HiveApiInputFormat.setProfileInputDesc(mapred_config, hiveVertexInputDescription,
-				VERTEX_INPUT_PROFILE_ID);
-		giraphConf.setVertexInputFormatClass(classOf[HiveVertexInputFormat[Text, DoubleWritable, Writable]]);
+		/**
+		 * Initialize the hive input settings
+		 */
+		hiveVertexInputDescription.setNumSplits(HIVE_VERTEX_SPLITS.get(giraphConf))
+		HiveApiInputFormat.setProfileInputDesc(giraphConf, hiveVertexInputDescription,
+				VERTEX_INPUT_PROFILE_ID)
+		giraphConf.setVertexInputFormatClass(classOf[HiveVertexInputFormat[Text, DoubleWritable, Writable]])
 		HiveTableSchemas.put(giraphConf, VERTEX_INPUT_PROFILE_ID,
-				hiveVertexInputDescription.hiveTableName());
+				hiveVertexInputDescription.hiveTableName())
 		
-		return true
+		hiveEdgeInputDescription.setNumSplits(HIVE_EDGE_SPLITS.get(giraphConf));
+		HiveApiInputFormat.setProfileInputDesc(giraphConf, hiveEdgeInputDescription,
+				EDGE_INPUT_PROFILE_ID);
+		giraphConf.setEdgeInputFormatClass(classOf[HiveEdgeInputFormat[Text, DoubleWritable]]);
+		HiveTableSchemas.put(giraphConf, EDGE_INPUT_PROFILE_ID,
+				hiveEdgeInputDescription.hiveTableName())		
+		
+				
+		/**
+		 * Initialize the hive output settings
+		 */
+		HiveApiOutputFormat.initProfile(giraphConf, hiveOutputDescription,
+				VERTEX_OUTPUT_PROFILE_ID);
+		giraphConf.setVertexOutputFormatClass(classOf[HiveVertexOutputFormat[Text, DoubleWritable, Writable]]);
+		HiveTableSchemas.put(giraphConf, VERTEX_OUTPUT_PROFILE_ID,
+				hiveOutputDescription.hiveTableName());	
+		
+		/**
+		 * Set number of workers
+		 */
+		giraphConf.setWorkerConfiguration(workers, workers, 100.0f)	
+		
+		/**
+		 * Run the job
+		 */
+		if (job.run(true)) return true else return false
 	}
 
 }

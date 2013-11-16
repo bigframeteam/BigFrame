@@ -24,6 +24,7 @@ public class Constants {
 	
 	public static String VERTICA = "vertica";
 	
+	public static String HIVE_GIRAPH = "hive_giraph";
 	
 	public static String MICRO = "micro";
 	public static String MACRO = "macro";

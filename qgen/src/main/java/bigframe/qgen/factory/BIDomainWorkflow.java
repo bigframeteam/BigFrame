@@ -13,6 +13,7 @@ import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.appDomainInfo.BIDomainInfo;
 import bigframe.qgen.engineDriver.HadoopEngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
+import bigframe.qgen.engineDriver.HiveGiraphEngineDriver;
 import bigframe.qgen.engineDriver.SharkEngineDriver;
 import bigframe.qgen.engineDriver.SparkEngineDriver;
 import bigframe.qgen.engineDriver.EngineDriver;
@@ -22,6 +23,7 @@ import bigframe.workflows.BaseTablePath;
 
 import com.sun.org.apache.commons.logging.Log;
 import com.sun.org.apache.commons.logging.LogFactory;
+
 
 /**
  * Encapsulate all information of the workflow for the BI domain.
@@ -69,7 +71,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		SharkEngineDriver sharkWorkflow = new SharkEngineDriver(workflowIF);
 		SparkEngineDriver sparkWorkflow = new SparkEngineDriver(workflowIF);
 		VerticaEngineDriver verticaWorkflow = new VerticaEngineDriver(workflowIF);
-
+		HiveGiraphEngineDriver hivegiraphWorkflow = new HiveGiraphEngineDriver(workflowIF);
 		
 		/**
 		 * Record the paths for all the base table used. 
@@ -112,6 +114,11 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					if(graphEngine.equals(Constants.HADOOP)) {
 						
 					}
+					
+					else if(graphEngine.equals(Constants.HIVE_GIRAPH)) {
+						hivegiraphWorkflow.addQuery(new
+								bigframe.workflows.BusinessIntelligence.graph.exploratory.WF_TwitterRank());
+					}
 				}
 				
 				else if(dataVariety.contains(Constants.NESTED)) {
@@ -148,10 +155,10 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				
 				else if(dataVariety.contains(Constants.GRAPH)) {
 					
-					if(graphEngine.equals(Constants.HADOOP)) {
-						hadoopWorkflow.addQuery(new 
-								bigframe.workflows.BusinessIntelligence.graph.exploratory.WF_PageRank(basePath.graph_path())); 
-					}
+//					if(graphEngine.equals(Constants.HADOOP)) {
+//						hadoopWorkflow.addQuery(new 
+//								bigframe.workflows.BusinessIntelligence.graph.exploratory.WF_PageRank(basePath.graph_path())); 
+//					}
 				}
 				
 				else if(dataVariety.contains(Constants.NESTED)) {
@@ -230,10 +237,12 @@ public class BIDomainWorkflow extends DomainWorkflow {
 			workflows.add(hadoopWorkflow);
 		if(sharkWorkflow.numOfQueries() > 0)
 			workflows.add(sharkWorkflow);
-		if(sparkWorkflow.numOfQueries() > 0)
+		if((Integer)sparkWorkflow.numOfQueries() > 0)
 			workflows.add(sparkWorkflow);
 		if(verticaWorkflow.numOfQueries() > 0)
 			workflows.add(verticaWorkflow);
+		if(hivegiraphWorkflow.numOfQueries() > 0)
+			workflows.add(hivegiraphWorkflow);
 		
 		return workflows;
 	}

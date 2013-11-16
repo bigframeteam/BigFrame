@@ -62,7 +62,6 @@ class WF_ReportSaleSentimentVertica(basePath: BaseTablePath, num_iter: Int) exte
 		try {
 			val stmt = connection.createStatement();
 						
-			val promotSKs = "1"
 			val lower = 1
 			val upper = 300
 			
@@ -72,11 +71,13 @@ class WF_ReportSaleSentimentVertica(basePath: BaseTablePath, num_iter: Int) exte
 			stmt.execute(drop_promotionSelected)
 			stmt.execute(create_promotionSelected)
 
+			/**
+			 * Choose all promotion except those contain NULL value.
+			 */
 			val query_promotionSelected = "INSERT INTO promotionSelected " + 
 					"	SELECT p_promo_id, p_item_sk, p_start_date_sk, p_end_date_sk " +
 					"	FROM promotion " +
-					"	WHERE " + lower + " <= p_promo_sk AND p_promo_sk <= " + upper +
-					"	AND p_item_sk IS NOT NULL AND p_start_date_sk IS NOT NULL AND p_end_date_sk IS NOT NULL"
+					"	WHERE p_item_sk IS NOT NULL AND p_start_date_sk IS NOT NULL AND p_end_date_sk IS NOT NULL"
 			
 
 			stmt.executeUpdate(query_promotionSelected)
@@ -231,10 +232,7 @@ class WF_ReportSaleSentimentVertica(basePath: BaseTablePath, num_iter: Int) exte
 					"		FROM mentionProb JOIN twitter_graph " +
 					"		ON user_id = follower_id) f" +
 					"	JOIN mentionProb " +
-					"	ON	friend_id = user_id" +
-					"	UNION ALL" +
-					"	SELECT item_sk, user_id, user_id, 0" +
-					"	FROM mentionProb"
+					"	ON	friend_id = user_id"
 			
 			stmt.execute(drop_simUserByProd)
 			stmt.execute(create_simUserByProd)
@@ -312,7 +310,6 @@ class WF_ReportSaleSentimentVertica(basePath: BaseTablePath, num_iter: Int) exte
 						"		(SELECT t1.item_sk, follower_id, sum(transit_prob * rank_score) as sum_follower_score" +
 						"		FROM transitMatrix t1, " + twitterRank_previous +" t2" +
 						"		WHERE t1.friend_id = t2.user_id AND t1.item_sk = t2.item_sk " +
-						"			AND t1.follower_id != t2.user_id" +
 						"		GROUP BY " +
 						"		t1.item_sk, follower_id) t3" +
 						"	RIGHT JOIN randSUffVec t4" +

@@ -41,7 +41,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 		val twitter_grapgHDFSPath = basePath.graph_path
 		val tweets_HDFSPath = basePath.nested_path
 		
-		val stmt = connection.createStatement();
+		val stmt = connection.createStatement()
 		
 		
 		val add_JsonSerde = "ADD JAR "
@@ -784,7 +784,6 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 		try {
 			val stmt = connection.createStatement();			
 						
-			val promotSKs = "1"
 			val lower = 1
 			val upper = 300
 			
@@ -792,11 +791,13 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 			val create_promotionSelected = "CREATE TABLE promotionSelected (promo_id string, item_sk int," +
 					"start_date_sk int, end_date_sk int)"
 			
+			/**
+			 * Choose all promotion except those contain NULL value.
+			 */
 			val query_promotionSelected = "INSERT INTO TABLE promotionSelected" +
 					"	SELECT p_promo_id, p_item_sk, p_start_date_sk, p_end_date_sk " +
 					"	FROM promotion " +
-					"	WHERE " + lower + " <= p_promo_sk AND p_promo_sk <= " + upper +
-					"	AND p_item_sk IS NOT NULL AND p_start_date_sk IS NOT NULL AND p_end_date_sk IS NOT NULL"
+					"	WHERE p_item_sk IS NOT NULL AND p_start_date_sk IS NOT NULL AND p_end_date_sk IS NOT NULL"
 			stmt.execute(drop_promotionSelected)
 			stmt.execute(create_promotionSelected)
 			stmt.execute(query_promotionSelected)
@@ -939,10 +940,6 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 			val drop_simUserByProd = "DROP VIEW IF EXISTS simUserByProd"
 			val create_simUserByProd = "CREATE VIEW simUserByProd " +
 					"	(item_sk, follower_id, friend_id, similarity) AS" +
-					"	SELECT * FROM" +
-					"	(SELECT item_sk, user_id as follower_id, user_id as friend_id, COALESCE(0) as similarity" +
-					"	FROM mentionProb" +
-					"	UNION ALL" +
 					"	SELECT f.item_sk, follower_id, friend_id, (1 - ABS(follower_prob - prob)) as similarity" +
 					"	FROM " +
 					"		(SELECT item_sk, follower_id, friend_id, prob as follower_prob" +
@@ -1032,7 +1029,6 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 						"		(SELECT t1.item_sk, follower_id, sum(transit_prob * rank_score) as sum_follower_score" +
 						"		FROM transitMatrix t1 JOIN " + twitterRank_previous +" t2" +
 						"		ON t1.friend_id = t2.user_id AND t1.item_sk = t2.item_sk " +
-						"		WHERE t1.follower_id != t2.user_id" +
 						"		GROUP BY " +
 						"		t1.item_sk, follower_id) t3" +
 						"	RIGHT OUTER JOIN randSUffVec t4" +

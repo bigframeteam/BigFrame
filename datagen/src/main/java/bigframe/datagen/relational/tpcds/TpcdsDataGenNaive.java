@@ -82,20 +82,20 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
             Runtime rt = Runtime.getRuntime();
             Process proc = rt.exec(cmd, null, new File(dagegen_script_path));
             
-//            InputStream stderr =  proc.getErrorStream();
+            InputStream stderr =  proc.getErrorStream();
             InputStream stdout = proc.getInputStream();
             
             
-//            InputStreamReader isr = new InputStreamReader(stderr);
-//            BufferedReader br = new BufferedReader(isr);
+            InputStreamReader isr = new InputStreamReader(stderr);
+            BufferedReader br = new BufferedReader(isr);
             InputStreamReader isout = new InputStreamReader(stdout);
             BufferedReader br1 = new BufferedReader(isout);
             
 
             String line = null;
             
-//            while ( (line = br.readLine()) != null)
-//            	LOG.error(line);           
+            while ( (line = br.readLine()) != null)
+            	LOG.error(line);           
 
             while ( (line = br1.readLine()) != null)
             	LOG.info(line);
