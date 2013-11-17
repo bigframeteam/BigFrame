@@ -30,7 +30,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 	 * Tested on hive 0.9 - 0.12. No ORC file format is using.
 	 */
 	def prepareHiveTablesImpl1(connection: Connection): Unit = {
-			val itemHDFSPath = basePath.relational_path + "/item"
+		val itemHDFSPath = basePath.relational_path + "/item"
 		val web_salesHDFSPath = basePath.relational_path + "/web_sales"
 		val catalog_salesHDFSPath = basePath.relational_path + "/catalog_sales"
 		val store_salesHDFSPath = basePath.relational_path + "/store_sales"
@@ -398,9 +398,6 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 		val tweets_HDFSPath = basePath.nested_path
 		
 		val stmt = connection.createStatement();
-		
-		
-		val add_JsonSerde = "ADD JAR "
 		
 		
 		val dropWebSales = "DROP TABLE web_sales"
@@ -784,9 +781,9 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 		try {
 			val stmt = connection.createStatement();			
 						
-			val lower = 1
-			val upper = 300
-			
+//			val lower = 1
+//			val upper = 300
+//			
 			val drop_promotionSelected = "DROP TABLE IF EXISTS promotionSelected"
 			val create_promotionSelected = "CREATE TABLE promotionSelected (promo_id string, item_sk int," +
 					"start_date_sk int, end_date_sk int)"
@@ -935,6 +932,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 				
 			stmt.execute(drop_mentionProb)
 			stmt.execute(create_mentionProb)
+			stmt.execute(query_mentionProb)
 
 			
 			val drop_simUserByProd = "DROP VIEW IF EXISTS simUserByProd"
@@ -946,7 +944,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 					"		FROM mentionProb JOIN twitter_graph " +
 					"		ON mentionProb.user_id = twitter_graph.follower_id) f" +
 					"	JOIN mentionProb " +
-					"	ON	f.friend_id = mentionProb.user_id) c"
+					"	ON	f.friend_id = mentionProb.user_id"
 		
 
 			
@@ -1011,7 +1009,6 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 			stmt.execute(drop_initalRank)
 			stmt.execute(create_initialRank)
 			stmt.execute(query_initialRank)
-			
 					
 			val alpha = 0.85
 			for(iteration <- 1 to num_iter) {

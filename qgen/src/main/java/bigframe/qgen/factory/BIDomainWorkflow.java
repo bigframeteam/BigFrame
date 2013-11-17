@@ -114,11 +114,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					if(graphEngine.equals(Constants.HADOOP)) {
 						
 					}
-					
-					else if(graphEngine.equals(Constants.HIVE_GIRAPH)) {
-						hivegiraphWorkflow.addQuery(new
-								bigframe.workflows.BusinessIntelligence.graph.exploratory.WF_TwitterRank());
-					}
+
 				}
 				
 				else if(dataVariety.contains(Constants.NESTED)) {
@@ -153,12 +149,12 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					}
 				}
 				
-				else if(dataVariety.contains(Constants.GRAPH)) {
+				else if(dataVariety.contains(Constants.GRAPH)) {					
 					
-//					if(graphEngine.equals(Constants.HADOOP)) {
-//						hadoopWorkflow.addQuery(new 
-//								bigframe.workflows.BusinessIntelligence.graph.exploratory.WF_PageRank(basePath.graph_path())); 
-//					}
+					if(graphEngine.equals(Constants.HIVE_GIRAPH)) {
+						hivegiraphWorkflow.addQuery(new
+								bigframe.workflows.BusinessIntelligence.graph.exploratory.WF_TwitterRank());
+					}
 				}
 				
 				else if(dataVariety.contains(Constants.NESTED)) {

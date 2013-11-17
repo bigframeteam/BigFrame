@@ -21,6 +21,8 @@ import org.apache.hadoop.hive.conf.HiveConf
 import org.apache.hadoop.io.Writable
 import org.apache.hadoop.io.DoubleWritable
 import org.apache.hadoop.io.Text
+import org.apache.hadoop.mapreduce.JobContext
+import org.apache.hadoop.mapreduce.JobID
 
 import org.apache.giraph.hive.common.GiraphHiveConstants.HIVE_EDGE_SPLITS
 import org.apache.giraph.hive.common.GiraphHiveConstants.HIVE_TO_EDGE_CLASS
@@ -67,22 +69,23 @@ class WF_TwitterRank() extends Query with HiveGiraphRunnable{
 	  /**
 	   * Get the copy of the hive configuration
 	   */
-		val hive_config_copy = new HiveConf(hive_config)
+		var hive_config_copy = new HiveConf(hive_config)
 	  
-		val workers = 1	
+		val workers = 2	
 		val dbName = "default"
-		val edgeInputTableStr = "initialRank"
-		val vertexInputTableStr = "transitMatrix"
-		val vertexOutputTableStr = "twitterRank"
+		val edgeInputTableStr = "transitmatrix"
+		val vertexInputTableStr = "initialrank"
+		val vertexOutputTableStr = "twitterrank"
 	  
 		HIVE_TO_VERTEX_CLASS.set(hive_config_copy, classOf[InitialRankToVertex])
+		HIVE_TO_EDGE_CLASS.set(hive_config_copy, classOf[TransitMatrixToEdge])
 		hive_config_copy.setClass(HiveVertexWriter.VERTEX_TO_HIVE_KEY, 
 				classOf[TRVertexToHive], classOf[VertexToHive[Text, DoubleWritable, Writable]])
 		
-		val job = new GiraphJob(hive_config_copy, getClass().getName())
+		var job = new GiraphJob(hive_config_copy, getClass().getName())
 		var giraphConf = job.getConfiguration()
-		
-		
+		giraphConf.setVertexClass(classOf[TwitterRankVertex])
+
 		var hiveVertexInputDescription = new HiveInputDescription()
 		var hiveEdgeInputDescription = new HiveInputDescription()
 		var hiveOutputDescription = new HiveOutputDescription()
@@ -103,15 +106,30 @@ class WF_TwitterRank() extends Query with HiveGiraphRunnable{
 		 * Initialize the hive input settings
 		 */
 		hiveVertexInputDescription.setNumSplits(HIVE_VERTEX_SPLITS.get(giraphConf))
+//		hiveVertexInputDescription.setNumSplits(1)
 		HiveApiInputFormat.setProfileInputDesc(giraphConf, hiveVertexInputDescription,
 				VERTEX_INPUT_PROFILE_ID)
 		giraphConf.setVertexInputFormatClass(classOf[HiveVertexInputFormat[Text, DoubleWritable, Writable]])
 		HiveTableSchemas.put(giraphConf, VERTEX_INPUT_PROFILE_ID,
 				hiveVertexInputDescription.hiveTableName())
+				
+		val properties = giraphConf.iterator
 		
-		hiveEdgeInputDescription.setNumSplits(HIVE_EDGE_SPLITS.get(giraphConf));
+		while(properties.hasNext) {
+			val map = properties.next
+			println(map.getKey + ":" + map.getValue )
+		}
+		
+		var defaultInputFormat = new HiveApiInputFormat()
+		
+		var splits = defaultInputFormat.getSplits(new JobContext(giraphConf, new JobID()))
+		
+		println("getSplits returned " + splits.size() + " splits")
+				
+//		hiveEdgeInputDescription.setNumSplits(1)
+		hiveEdgeInputDescription.setNumSplits(HIVE_EDGE_SPLITS.get(giraphConf))
 		HiveApiInputFormat.setProfileInputDesc(giraphConf, hiveEdgeInputDescription,
-				EDGE_INPUT_PROFILE_ID);
+				EDGE_INPUT_PROFILE_ID)
 		giraphConf.setEdgeInputFormatClass(classOf[HiveEdgeInputFormat[Text, DoubleWritable]]);
 		HiveTableSchemas.put(giraphConf, EDGE_INPUT_PROFILE_ID,
 				hiveEdgeInputDescription.hiveTableName())		
@@ -121,10 +139,10 @@ class WF_TwitterRank() extends Query with HiveGiraphRunnable{
 		 * Initialize the hive output settings
 		 */
 		HiveApiOutputFormat.initProfile(giraphConf, hiveOutputDescription,
-				VERTEX_OUTPUT_PROFILE_ID);
-		giraphConf.setVertexOutputFormatClass(classOf[HiveVertexOutputFormat[Text, DoubleWritable, Writable]]);
+				VERTEX_OUTPUT_PROFILE_ID)
+		giraphConf.setVertexOutputFormatClass(classOf[HiveVertexOutputFormat[Text, DoubleWritable, Writable]])
 		HiveTableSchemas.put(giraphConf, VERTEX_OUTPUT_PROFILE_ID,
-				hiveOutputDescription.hiveTableName());	
+				hiveOutputDescription.hiveTableName())
 		
 		/**
 		 * Set number of workers

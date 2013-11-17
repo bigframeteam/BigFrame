@@ -12,18 +12,18 @@ class TwitterRankVertex extends Vertex[Text, DoubleWritable, DoubleWritable, Dou
 
 	override def compute(messages: java.lang.Iterable[DoubleWritable]): Unit = {
 	    if (getSuperstep() > 0) {
-	    	var twitterRank = 0.0;
+	    	var twitterRank = 0.0
 	    	val messages_iter = messages.iterator
 	    	while (messages_iter.hasNext) {
-	    		twitterRank += messages_iter.next.get;
+	    		twitterRank += messages_iter.next.get
 	    	}
-	    	setValue(new DoubleWritable(twitterRank));
+	    	setValue(new DoubleWritable(twitterRank))
 	    }
 
 	    if (getSuperstep() < 10) {
 	    	sendMessageToAllEdges(new DoubleWritable(getValue.get))
 	    } else {
-	    	voteToHalt();
+	    	voteToHalt()
 	    }
     
 	}

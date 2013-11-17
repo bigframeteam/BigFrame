@@ -18,7 +18,7 @@ class TRVertexToHive extends SimpleVertexToHive[Text, DoubleWritable, Writable] 
 		
 		record.set(0, item_sk)
 		record.set(1, user_id)
-		record.set(2, vertex.getValue().get())
+		record.set(2, vertex.getValue.get)
 	}
 
 }

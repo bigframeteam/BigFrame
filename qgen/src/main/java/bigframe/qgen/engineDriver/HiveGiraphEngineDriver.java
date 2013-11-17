@@ -18,7 +18,7 @@ import bigframe.workflows.runnable.HiveRunnable;
 public class HiveGiraphEngineDriver extends EngineDriver {
 	
 	private HiveConf hive_config;
-	private static final Logger LOG = Logger.getLogger(HadoopEngineDriver.class);
+	private static final Logger LOG = Logger.getLogger(HiveGiraphEngineDriver.class);
 	private List<HiveGiraphRunnable> queries = new ArrayList<HiveGiraphRunnable>();
 	
 	private Connection connection;
@@ -29,6 +29,10 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 		hive_config = new HiveConf();
 		hive_config.addResource(new Path(workIF.getHiveHome()
 				+ "/conf/hive-site.xml"));
+		hive_config.addResource(new Path(workIF.getHadoopHome()
+				+ "/conf/core-site.xml"));
+		hive_config.addResource(new Path(workIF.getHadoopHome()
+				+ "/conf/mapred-site.xml"));
 		// TODO Auto-generated constructor stub
 	}
 
@@ -73,6 +77,7 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 
 	@Override
 	public void run() {
+		System.out.println("Running HiveGiraph queries!");
 		for(HiveGiraphRunnable query : queries) {
 			query.runGiraph(hive_config);
 		}

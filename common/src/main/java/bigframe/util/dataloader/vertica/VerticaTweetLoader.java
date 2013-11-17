@@ -76,7 +76,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 			
 			if(tableName.equals("tweet")) {
 				
-				String tweet_id = (String) tweet_json.get("id");
+				Long tweet_id = (Long) tweet_json.get("id");
 				String text = (String) tweet_json.get("text");
 				String create_at = (String) tweet_json.get("created_at");
 				
@@ -91,7 +91,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 				
 					record.set("created_at", create_date);
 	
-					record.setFromString("id", tweet_id);
+					record.setFromString("id", tweet_id.toString());
 					record.setFromString("user_id", user_id.toString());
 					record.setFromString("text", text);
 				
@@ -105,7 +105,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 				
 			}
 			else if(tableName.equals("entities")) {
-				String tweet_id = (String) tweet_json.get("id");
+				Long tweet_id = (Long) tweet_json.get("id");
 				
 				try {
 
@@ -115,7 +115,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 					JSONArray hashtags = (JSONArray) entities_json.get("hashtags");
 					
 					if (hashtags.isEmpty()){
-						record.setFromString("tweet_id", tweet_id);
+						record.setFromString("tweet_id", tweet_id.toString());
 						record.setFromString("hashtag", "");
 						context.write(new Text(tableName), record);
 					}
@@ -124,7 +124,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 						for(Object tag : hashtags) {
 							String tag_str = (String) tag;
 							
-							record.setFromString("tweet_id", tweet_id);
+							record.setFromString("tweet_id", tweet_id.toString());
 							record.setFromString("hashtag", tag_str);
 							context.write(new Text(tableName), record);
 						}				
