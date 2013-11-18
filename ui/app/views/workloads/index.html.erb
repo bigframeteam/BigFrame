@@ -1,0 +1,24 @@
+      The table displays current log files in the log directory.
+<table class="table table-striped table-bordered">                         
+  <tr>                          
+<th>Name</th>
+<th>Age</th>
+<th>Visualization</th>
+  </tr>
+ <% @job_info.each do |key, val|   %>
+  <tr>
+           <td>
+              <%=@job_info[key]["name"]%>
+            </td>
+            <td>
+              <%=@job_info[key]["age"]%>
+            </td>
+      <td>
+      <%= link_to "Visualize", { :action => "visualize", :json => key},:class=>"btn btn-success" %>
+        </td>
+        
+</tr>
+<%end%>
+
+</table> 
+      

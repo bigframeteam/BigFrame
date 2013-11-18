@@ -1,13 +1,11 @@
 Ui::Application.routes.draw do
+  get "workloads/index"
+  get "workloads/visualize"
   get "home/index"
   get "home/about"
   get "datagen/index"
   get "datagen/new"
   get "execution/index"
-  get "spark/workloads"
-  get "spark/visualize"
-  get "hive/workloads"
-  get "hive/visualize"
   post "sessions/destroy"
 #resources :users
 resources :sessions

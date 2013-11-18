@@ -1,0 +1,202 @@
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<style>
+
+#visualization
+{
+border:2px solid;
+border-radius:25px;
+}
+
+node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+path.link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+text {
+  fill: #000;
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+
+svg body {
+  color: transparent;
+background: transparent;
+}
+svg div { 
+  border: 1px dotted blue; 
+}
+</style>
+<body>
+
+<div id="visualization">
+</div>
+<script>
+
+var json=<%=raw @jsondata.to_json%>;
+var width = 1100;
+var height = 500;
+var color = d3.scale.category10();
+var force=d3.layout.force()
+var links=[{"source":0, "target":1}];
+var nodes=json["jobs"];
+var path;
+var label;
+var node;
+var svg = d3.select("#visualization").append("svg")
+  .attr("width", width)
+  .attr("height", height);
+
+console.log(nodes);
+
+//make arrows
+svg.append("svg:defs").selectAll("marker")
+    .data(["end"])
+  .enter().append("svg:marker")
+    .attr("id", String)
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 20)
+    .attr("refY", -2.0)
+    .attr("markerWidth", 6)
+    .attr("markerHeight", 6)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+force
+    .nodes(nodes)
+    .links(links)
+    .size([width, height])
+    .linkDistance(200)
+    .charge(-1000)
+    .on("tick", tick)
+    .start();
+
+//create paths
+path = svg.append("svg:g").selectAll("path")
+    .data(force.links())
+  .enter().append("svg:path")
+    .attr("class", "link")
+    .attr("marker-end", function(d) { return "url(#end)"; })
+    .attr("id", 
+              function(d) { 
+                 return "path"+d.source.index+"_"+d.target.index; 
+              }) 
+       .attr("d", 
+              function(d) { 
+                 return moveto(d) + lineto(d); 
+              }); 
+
+/*
+//create edge labels
+label = svg.selectAll("text") 
+       .data(force.links()) 
+       .enter().append("svg:text") 
+       .attr("font-size", 10) 
+       .attr("dx", 40)
+       .append("svg:textPath") 
+       .attr("xlink:href", 
+              function(d) { 
+                 return "#path"+d.source.index+"_"+d.target.index; 
+              });
+*/
+// define the nodes
+node = svg.selectAll("node")
+  .data(force.nodes())
+  .enter()
+  .append("g")
+    .attr("class", "node")
+    .call(force.drag); 
+
+/*
+//add node shape
+node.append("path")
+      .attr("d", d3.svg.symbol()
+        //.type(function(d) { return d.color; }))
+        .type(function(d) { return d3.svg.symbolTypes[0]; })
+        .size(256))
+      .style("fill", function(d) { return color(0); })
+node.append("text")
+.attr("dx", -24)
+    .attr("dy", 24)
+    .text(function(d) { return d.jobId; });
+*/
+//add the tooltips
+var div = node
+.append("foreignObject").attr("width", 120).attr("height",  200)
+    .attr("y", -70)
+    .attr("x", -50)
+  .append("xhtml:body")
+  .append("div")
+    .style("color", "#FFFFFF")
+    .style("background-color",function(d) { return color(0);})
+  .html(function(d) { return "Start:"+d.startTime+"<br>Stop:"+d.endTime+"<br>Variety:<br>Input:<br>"});
+//TODO add map/reduce tasks if hadoop
+//TODO color based on variety type
+//TODO expanded info replaces node on click
+//TODO generate dendrogram from operatorInfo on right-click option
+//TODO by default, display name, runtime
+
+//display div on click
+node.on("click", function(d) {
+div                
+    .style("opacity", 1);
+        });
+/*
+//fix a node to the left
+  for (var i=0;i<nodes.length;i++){
+    if (nodes[i].name=="INPUT"){
+            var inp=i;
+    }
+  }
+  nodes[inp].x=50;
+  nodes[inp].y=height/2;
+  nodes[inp].px = nodes[inp].x;
+  nodes[inp].py = nodes[inp].y;
+  nodes[inp].fixed=1;
+  */
+
+/*
+//run simulation and stop
+var n=100;
+  for (var i = n * n; i > 0; --i) force.tick();
+  force.stop();
+
+});
+*/
+function moveto (d) { 
+     return "M"+d.source.x+","+d.source.y; 
+  }; 
+
+  function lineto (d) { 
+     return " L"+d.target.x+","+d.target.y; 
+  }; 
+
+// add the lines, dr=0 forces them to be straight
+function tick() {
+
+//does curved lines
+    path
+    .attr("d", function(d) {
+            var dx = d.target.x - d.source.x,
+            dy = d.target.y-d.source.y,
+            dr = Math.sqrt(dx*dx+dy*dy);
+        return "M" + 
+            d.source.x + "," + 
+            d.source.y + "A" + 
+            dr + "," + dr + " 0 0,1 " + 
+            d.target.x + "," + 
+            d.target.y;
+            });
+
+    node
+        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+}
+
+</script>
