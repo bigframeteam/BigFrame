@@ -59,6 +59,9 @@ QGEN_JAR=`ls $BASE_DIR/qgen/target/scala-2.9.3/bigframe-qgen-assembly*.jar`
 
 WORKFLOWS_JAR=`ls $BASE_DIR/workflows/target/scala-2.9.3/bigframe-workflows-assembly*.jar`
 
+# Please do not remove the following, Spark's engine driver requires this jar while launching a standalone application
+export WORKFLOWS_JAR
+
 # UDF used by Hive and Shark
 UDF_JAR=$WORKFLOWS_JAR
 

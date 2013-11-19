@@ -81,7 +81,10 @@ class WF_ReportSalesSpark(basePath : BaseTablePath) extends SparkRunnable {
 			val promotion = readFile(ReportSalesConstant.PromotionTableName)
 
 			// Create a mapping from item_sk to promotion tuple
-			applySelectivity (promotion) map { t => (t(4), t.slice(0,5)) }
+			// val filtered = applySelectivity (promotion) 
+			val filtered = promotion
+			
+			filtered map { t => (t(4), t.slice(0,5)) }
 		} catch {
 			case e:Exception => {
 				throwException(e)

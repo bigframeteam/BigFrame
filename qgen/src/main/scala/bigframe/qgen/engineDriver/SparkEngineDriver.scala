@@ -44,7 +44,7 @@ class SparkEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(workIF
 		for(query: SparkRunnable <- queries) {
 			println("Setting the context")
 			val sc = new SparkContext(spark_connection_string, "BigFrame", 
-						spark_home_string, Seq(jar_path_string), Map(), Map())
+						spark_home_string, Seq(jar_path_string))
 			println("Set the context: " + sc)
 			if(query.runSpark(sc)) {
 				println("Query Finished");
