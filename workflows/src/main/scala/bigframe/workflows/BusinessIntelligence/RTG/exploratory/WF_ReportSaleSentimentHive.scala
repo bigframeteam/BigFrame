@@ -781,7 +781,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 	 * Prepeare the basic tables before run the Hive query
 	 */
 	override def prepareHiveTables(connection: Connection): Unit = {
-//		prepareHiveTablesImpl2(connection)
+		prepareHiveTablesImpl2(connection)
 	
 	}
 	
@@ -826,10 +826,6 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 						
 			val lower = 1
 			val upper = 300
-			
-					stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'")
-		stmt.execute("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'")
-		stmt.execute("set hive.auto.convert.join=false")
 			
 			val drop_promotionSelected = "DROP TABLE IF EXISTS promotionSelected"
 			val create_promotionSelected = "CREATE TABLE promotionSelected (promo_id string, item_sk int," +
@@ -991,7 +987,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 					"		FROM mentionProb JOIN twitter_graph " +
 					"		ON mentionProb.user_id = twitter_graph.follower_id) f" +
 					"	JOIN mentionProb " +
-					"	ON	f.friend_id = mentionProb.user_id"
+					"	ON	f.friend_id = mentionProb.user_id AND f.item_sk=mentionProb.item_sk"
 		
 
 			

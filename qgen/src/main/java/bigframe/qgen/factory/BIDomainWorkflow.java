@@ -208,6 +208,12 @@ public class BIDomainWorkflow extends DomainWorkflow {
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10));
 				}
 				
+				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.GIRAPH)&& 
+						nestedEngine.equals(Constants.HIVE)) {
+					hivegiraphWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 10));
+				}
+				
 //				else if(relationalEngine.equals(Constants.SHARK) && graphEngine.equals(Constants.SHARK)&& 
 //						nestedEngine.equals(Constants.SHARK)) {
 //					sharkWorkflow.addQuery(new 

@@ -3,13 +3,15 @@ package bigframe.workflows.BusinessIntelligence.RTG.exploratory
 import bigframe.workflows.runnable.HiveGiraphRunnable
 import bigframe.workflows.Query
 import bigframe.workflows.BaseTablePath
+import bigframe.workflows.BusinessIntelligence.graph.exploratory.WF_TwitterRankGiraph
+
 
 import org.apache.giraph.conf.GiraphConfiguration
 
 import java.sql.Connection
 import java.sql.SQLException
 
-class WF_ReportSalesSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) extends Query with HiveGiraphRunnable {
+class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) extends Query with HiveGiraphRunnable {
 
 	override def printDescription(): Unit = {}
 	
@@ -764,7 +766,7 @@ class WF_ReportSalesSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) 
 	}
 	
 	override def prepareHiveGiraphTables(connection: Connection): Unit = {		
-		prepareTableImpl1(connection)
+		prepareTableImpl2(connection)
 	}
 
 	def runHiveGiraphImpl1(giraph_config: GiraphConfiguration, connection: Connection) : Boolean = {
@@ -775,9 +777,6 @@ class WF_ReportSalesSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) 
 //			val lower = 1
 //			val upper = 300
 			
-			stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'")
-			stmt.execute("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'")
-			stmt.execute("set hive.auto.convert.join=false")
 			
 			val drop_promotionSelected = "DROP TABLE IF EXISTS promotionSelected"
 			val create_promotionSelected = "CREATE TABLE promotionSelected (promo_id string, item_sk int," +
@@ -939,7 +938,7 @@ class WF_ReportSalesSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) 
 					"		FROM mentionProb JOIN twitter_graph " +
 					"		ON mentionProb.user_id = twitter_graph.follower_id) f" +
 					"	JOIN mentionProb " +
-					"	ON	f.friend_id = mentionProb.user_id"
+					"	ON	f.friend_id = mentionProb.user_id AND f.item_sk=mentionProb.item_sk"
 		
 
 			
@@ -950,7 +949,7 @@ class WF_ReportSalesSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) 
 
 			val drop_transitMatrix = "DROP TABLE IF EXISTS transitMatrix"
 			val create_transitMatrix = "CREATE TABLE transitMatrix (item_sk int, follower_id int, friend_id int, transit_prob float)" 
-				
+//				
 			val query_transitMatrix = "INSERT INTO TABLE transitMatrix" +
 					"	SELECT item_sk, follower_id, friend_id, " +
 					"		CASE WHEN follower_id != friend_id THEN num_tweets/num_friend_tweets*similarity" +
@@ -966,12 +965,10 @@ class WF_ReportSalesSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) 
 			stmt.execute(drop_transitMatrix)
 			stmt.execute(create_transitMatrix)
 			stmt.execute(query_transitMatrix)
-			
-			
-			val drop_randSufferVec = "DROP TABLE IF EXISTS randSuffVec"
-			val create_randSuffVec = "CREATE TABLE randSuffVec (item_sk int, user_id int, prob float)" 
-				
-			val query_randSuffVec =	"INSERT INTO TABLE randSuffVec	" +
+//			
+//			
+			val drop_randSufferVec = "DROP VIEW IF EXISTS randSuffVec"
+			val create_randSuffVec = "CREATE VIEW randSuffVec (item_sk, user_id, prob) AS" +
 					"	SELECT t1.item_sk, user_id, t1.num_tweets/t2.num_tweets" +
 					"	FROM" +
 					"		(SELECT item_sk, user_id, count(*) as num_tweets" +
@@ -983,12 +980,10 @@ class WF_ReportSalesSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) 
 				
 			stmt.execute(drop_randSufferVec)
 			stmt.execute(create_randSuffVec)
-			stmt.execute(query_randSuffVec)
+//			stmt.execute(query_randSuffVec)
 			
-			val drop_initalRank = "DROP TABLE IF EXISTS initialRank"
-			val create_initialRank = "CREATE TABLE initialRank (item_sk int, user_id int, rank_score float)" 
-				
-			val query_initialRank =	"INSERT INTO TABLE initialRank" +
+			val drop_initalRank = "DROP VIEW IF EXISTS initialRank"
+			val create_initialRank = "CREATE VIEW initialRank (item_sk, user_id, rank_score) AS" +
 					"	SELECT t2.item_sk, user_id, 1.0/num_users as rank_score" +
 					"	FROM " +
 					"		(SELECT item_sk, count(*) as num_users" +
@@ -1003,11 +998,34 @@ class WF_ReportSalesSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) 
 				
 			stmt.execute(drop_initalRank)
 			stmt.execute(create_initialRank)
-			stmt.execute(query_initialRank)
+//			stmt.execute(query_initialRank)
+			
+			
+			val drop_rankAndsuffvec = "DROP TABLE IF EXISTS rankAndsuffervec"
+			val create_rankAndsuffvec = "CREATE TABLE rankAndsuffervec AS" +
+					"	SELECT initialRank.item_sk, initialRank.user_id, rank_score, prob" +
+					"	FROM initialRank JOIN randSuffVec" +
+					"	ON initialRank.item_sk=randSuffVec.item_sk " +
+					"	AND initialRank.user_id=randSuffVec.user_id"	
 					
+			stmt.execute(drop_rankAndsuffvec)
+			stmt.execute(create_rankAndsuffvec)
+			
+			
 			/**
-			 * TO DO: implement TwitterRank by Giraph
+			 * Implement TwitterRank by Giraph
 			 */
+			val drop_twitterRank = "DROP TABLE IF EXISTS twitterRank"
+			val create_twitterRank = "CREATE EXTERNAL TABLE twitterRank (item_sk int, user_id int, rank_score float)" +
+					"	row format delimited fields terminated by \'|\' " +
+					"	location " + "\'" + basePath.relational_path  + "/../twitterrank\'"
+			
+			stmt.execute(drop_twitterRank)
+			stmt.execute(create_twitterRank)
+			
+			val computeTwitterRank = new WF_TwitterRankGiraph()
+			computeTwitterRank.runGiraph(giraph_config)
+								
 			
 			val drop_RptSAProdCmpn = "DROP TABLE IF EXISTS RptSAProdCmpn"
 			val create_RptSAProdCmpn = "CREATE TABLE RptSAProdCmpn (promo_id string, item_sk int, totalsales float , total_sentiment float)"
@@ -1015,17 +1033,14 @@ class WF_ReportSalesSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) 
 			stmt.execute(drop_RptSAProdCmpn)
 			stmt.execute(create_RptSAProdCmpn)
 			
-			val drop_twitterRank = "DROP"
-			
-			val twitterRank = "twitterRank"
 			
 			val query_RptSAProdCmpn = "INSERT INTO TABLE RptSAProdCmpn" +
 					"	SELECT promo_id, t.item_sk, totalsales, total_sentiment" +
 					"	FROM " +
 					"		(SELECT senAnalyse.item_sk, sum(rank_score * sentiment_score) as total_sentiment" +
-					"		FROM senAnalyse JOIN " + twitterRank +
-					"		ON senAnalyse.item_sk = " + twitterRank + ".item_sk " +
-					"		WHERE senAnalyse.user_id = " + twitterRank +".user_id" +
+					"		FROM senAnalyse JOIN  twitterRank "+
+					"		ON senAnalyse.item_sk = twitterRank.item_sk " +
+					"		WHERE senAnalyse.user_id = twitterRank.user_id" +
 					"		GROUP BY" +
 					"		senAnalyse.item_sk) t" +
 					"	JOIN RptSalesByProdCmpn " +

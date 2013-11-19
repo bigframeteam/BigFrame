@@ -85,7 +85,7 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 
 	@Override
 	public void run() {
-		System.out.println("Running HiveGiraph queries!");
+		LOG.info("Running HiveGiraph queries!");
 		for(HiveGiraphRunnable query : queries) {
 			query.runHiveGiraph(giraph_config, connection);
 		}

@@ -39,7 +39,7 @@ public class GiraphEngineDriver extends EngineDriver {
 
 	@Override
 	public void run() {
-		System.out.println("Running Giraph queries!");
+		LOG.info("Running Giraph queries!");
 		
 		for(GiraphRunnable query : queries) {
 			query.runGiraph(giraph_config);

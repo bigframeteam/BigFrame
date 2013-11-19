@@ -101,8 +101,15 @@ object BigFrameBuild extends Build {
 	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(
-		name := "bigframe-qgen"
+		name := "bigframe-qgen",
 		
+		excludedJars in assembly <<= (fullClasspath in assembly) map { cp => 
+			cp filter {_.data.getName match { 
+				 case "giraph-*jar" => true
+				 case _  => false
+				}}
+		}
+
 		//libraryDependencies ++= Seq(
 		//	"org.apache.spark" % "spark-mllib_2.9.3" % "0.8.0-incubating"
 		//)

@@ -232,7 +232,7 @@ class WF_ReportSaleSentimentVertica(basePath: BaseTablePath, num_iter: Int) exte
 					"		FROM mentionProb JOIN twitter_graph " +
 					"		ON user_id = follower_id) f" +
 					"	JOIN mentionProb " +
-					"	ON	friend_id = user_id"
+					"	ON	friend_id = user_id AND f.item_sk=mentionProb.item_sk"
 			
 			stmt.execute(drop_simUserByProd)
 			stmt.execute(create_simUserByProd)

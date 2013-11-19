@@ -27,8 +27,8 @@ public class TransitMatrixEdgeInputFormat extends TextEdgeInputFormat<Text, Doub
 		protected TextTextDoubleRecord preprocessLine(Text line) throws IOException {
 			String[] fields = line.toString().split("\001");
 			
-			return new TextTextDoubleRecord(new Text(fields[0] + "|" + fields[1]), 
-					new Text(fields[0] + "|" + fields[2]), new DoubleWritable(Double.parseDouble(fields[3])));
+			return new TextTextDoubleRecord(new Text(fields[0] + "|" + fields[2]), 
+					new Text(fields[0] + "|" + fields[1]), new DoubleWritable(Double.parseDouble(fields[3])));
 		}
 
 		@Override

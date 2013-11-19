@@ -32,7 +32,6 @@ public class BIDomainInfo extends DomainInfo {
 		graph_supportedEngine.add(Constants.VERTICA);
 		graph_supportedEngine.add(Constants.SPARK);
 		graph_supportedEngine.add(Constants.SHARK);
-		graph_supportedEngine.add(Constants.HIVE_GIRAPH);
 		graph_supportedEngine.add(Constants.GIRAPH);
 		
 		nested_supportedEngine.add(Constants.HIVE);

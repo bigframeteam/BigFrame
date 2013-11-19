@@ -10,7 +10,7 @@ import java.io.IOException;
 
 
 public class TwitterRankVertexOutputFormat extends
-    TextVertexOutputFormat<Text, DoubleWritable, DoubleWritable> {
+    TextVertexOutputFormat<Text, Text, DoubleWritable> {
 	
 	/**
 	 * Simple text based vertex writer
@@ -19,9 +19,9 @@ public class TwitterRankVertexOutputFormat extends
 
 		@Override
 		protected Text convertVertexToLine(
-				Vertex<Text, DoubleWritable, DoubleWritable, ?> vertex) throws IOException {
+				Vertex<Text, Text, DoubleWritable, ?> vertex) throws IOException {
 			// TODO Auto-generated method stub
-			Text line = new Text(vertex.getId().toString() + "|" + vertex.getValue().toString());
+			Text line = new Text(vertex.getId().toString() + "|" + vertex.getValue().toString().split("\\|")[0]);
 			
 			return line;
 		}

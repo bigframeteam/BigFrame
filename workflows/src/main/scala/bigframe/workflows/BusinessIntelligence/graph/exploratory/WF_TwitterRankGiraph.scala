@@ -27,9 +27,9 @@ class WF_TwitterRankGiraph extends Query with GiraphRunnable {
 		/**
 		 * Initialize vertex input
 		 */
-		GiraphFileInputFormat.addVertexInputPath(giraphConfiguration, new Path("/user/hive/warehouse/initialrank"))
+		GiraphFileInputFormat.addVertexInputPath(giraphConfiguration, new Path("/user/hive/warehouse/rankandsuffervec"))
 		giraphConfiguration.setVertexInputFormatClass(
-				classOf[InitialRankVertexInputFormat[NullWritable, NullWritable]])
+				classOf[RankAndSuffecVecVertexInputFormat[NullWritable, NullWritable]])
 		
 		/**
 		 *  Initialize edge input
