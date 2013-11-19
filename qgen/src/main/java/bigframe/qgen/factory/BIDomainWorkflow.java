@@ -11,6 +11,7 @@ import java.util.Set;
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.appDomainInfo.BIDomainInfo;
+import bigframe.qgen.engineDriver.GiraphEngineDriver;
 import bigframe.qgen.engineDriver.HadoopEngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
 import bigframe.qgen.engineDriver.HiveGiraphEngineDriver;
@@ -71,6 +72,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		SharkEngineDriver sharkWorkflow = new SharkEngineDriver(workflowIF);
 		SparkEngineDriver sparkWorkflow = new SparkEngineDriver(workflowIF);
 		VerticaEngineDriver verticaWorkflow = new VerticaEngineDriver(workflowIF);
+		GiraphEngineDriver giraphWorkflow = new GiraphEngineDriver(workflowIF);
 		HiveGiraphEngineDriver hivegiraphWorkflow = new HiveGiraphEngineDriver(workflowIF);
 		
 		/**
@@ -151,9 +153,9 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				
 				else if(dataVariety.contains(Constants.GRAPH)) {					
 					
-					if(graphEngine.equals(Constants.HIVE_GIRAPH)) {
-						hivegiraphWorkflow.addQuery(new
-								bigframe.workflows.BusinessIntelligence.graph.exploratory.WF_TwitterRank());
+					if(graphEngine.equals(Constants.GIRAPH)) {
+						giraphWorkflow.addQuery(new
+								bigframe.workflows.BusinessIntelligence.graph.exploratory.WF_TwitterRankGiraph());
 					}
 				}
 				
@@ -237,6 +239,8 @@ public class BIDomainWorkflow extends DomainWorkflow {
 			workflows.add(sparkWorkflow);
 		if(verticaWorkflow.numOfQueries() > 0)
 			workflows.add(verticaWorkflow);
+		if(giraphWorkflow.numOfQueries() > 0)
+			workflows.add(giraphWorkflow);
 		if(hivegiraphWorkflow.numOfQueries() > 0)
 			workflows.add(hivegiraphWorkflow);
 		

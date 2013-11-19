@@ -27,7 +27,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 	def printDescription(): Unit = {}
 
 	/**
-	 * Tested on hive 0.9 - 0.12. No ORC file format is using.
+	 * Tested on hive 0.9 - 0.11. No ORC file format is using.
 	 */
 	def prepareHiveTablesImpl1(connection: Connection): Unit = {
 		val itemHDFSPath = basePath.relational_path + "/item"
@@ -383,7 +383,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 	}
 	
 	/**
-	 * Try ORC file
+	 * Try ORC file, tested on hive 0.11
 	 */
 	def prepareHiveTablesImpl2(connection: Connection): Unit = {
 		val itemHDFSPath = basePath.relational_path + "/item"
@@ -400,28 +400,28 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 		val stmt = connection.createStatement();
 		
 		
-		val dropWebSales = "DROP TABLE web_sales"
-		val dropStoreSales = "DROP TABLE store_sales"  
-		val dropCatalogSales = "DROP TABLE catalog_sales"
-		val dropItem = "DROP TABLE item"
-		val dropPromot = "DROP TABLE promotion"
-		val dropCust = "DROP TABLE customer"
-		val dropDateDim = "DROP TABLE date_dim"
-		val dropGraph = "DROP TABLE twitter_graph"
-		val dropTweets = "DROP TABLE tweets"
+		val dropWebSalesTmp = "DROP TABLE web_sales_tmp"
+		val dropStoreSalesTmp = "DROP TABLE store_sales_tmp"  
+		val dropCatalogSalesTmp = "DROP TABLE catalog_sales_tmp"
+		val dropItemTmp = "DROP TABLE item_tmp"
+		val dropPromotTmp = "DROP TABLE promotion_tmp"
+		val dropCustTmp = "DROP TABLE customer_tmp"
+		val dropDateDimTmp = "DROP TABLE date_dim_tmp"
+		val dropGraphTmp = "DROP TABLE twitter_graph_tmp"
+		val dropTweetsTmp = "DROP TABLE tweets_tmp"
 
 		
-		stmt.execute(dropWebSales)
-		stmt.execute(dropCatalogSales)
-		stmt.execute(dropStoreSales)
-		stmt.execute(dropItem)
-		stmt.execute(dropPromot)
-		stmt.execute(dropCust)
-		stmt.execute(dropDateDim)
-		stmt.execute(dropGraph)
-		stmt.execute(dropTweets)
+		stmt.execute(dropWebSalesTmp)
+		stmt.execute(dropCatalogSalesTmp)
+		stmt.execute(dropStoreSalesTmp)
+		stmt.execute(dropItemTmp)
+		stmt.execute(dropPromotTmp)
+		stmt.execute(dropCustTmp)
+		stmt.execute(dropDateDimTmp)
+		stmt.execute(dropGraphTmp)
+		stmt.execute(dropTweetsTmp)
 		
-		val createWebSales = "create external table web_sales" + 
+		val createWebSalesTmp = "create external table web_sales_tmp" + 
 					"(" + 
 					    "ws_sold_date_sk           int," + 
 					    "ws_sold_time_sk           int," + 
@@ -461,7 +461,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 					"row format delimited fields terminated by \'|\' " + "\n" +
 					"location " + "\'" + web_salesHDFSPath + "\'"
 		
-		val createCatalogSales = "create external table catalog_sales" +
+		val createCatalogSalesTmp = "create external table catalog_sales_tmp" +
 					"(" +
 					    "cs_sold_date_sk           int                       ," +
 					    "cs_sold_time_sk           int                       ," +
@@ -502,7 +502,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 					"location " + "\'" + catalog_salesHDFSPath + "\'"
 		
 					
-		val createStoreSales = "create external table store_sales" +
+		val createStoreSalesTmp = "create external table store_sales_tmp" +
 					"(" +
 					    "ss_sold_date_sk           int                       ," +
 					    "ss_sold_time_sk           int                       ," +
@@ -532,7 +532,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 					"location" + "\'" + store_salesHDFSPath + "\'"
 
 					
-		val createItem = "create external table item" + 
+		val createItemTmp = "create external table item_tmp" + 
 					"(" +
 					    "i_item_sk                 int," + 
 					    "i_item_id                 string," + 
@@ -560,7 +560,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 					"row format delimited fields terminated by \'|\' " + "\n" +
 					"location " + "\'" + itemHDFSPath + "\'"
 		
-		val createCust = "create external table customer" + 
+		val createCustTmp = "create external table customer_tmp" + 
 				"(" +
 					    "c_customer_sk             int," +
 					    "c_customer_id             string," +
@@ -584,7 +584,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 					"row format delimited fields terminated by \'|\' " + "\n" +
 					"location " + "\'" + customerHDFSPath + "\'"
 		
-		val createPromot = "create external table promotion" + 
+		val createPromotTmp = "create external table promotion_tmp" + 
 					"(" +
 					    "p_promo_sk                int," +
 					    "p_promo_id                string," +
@@ -609,7 +609,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 					"row format delimited fields terminated by \'|\' " + "\n" +
 					"location " + "\'" + promotionHDFSPath + "\'"
 					
-		val createDateDim = "create external table date_dim" +
+		val createDateDimTmp = "create external table date_dim_tmp" +
 				"	(" +
 				"		d_date_sk 			int," +
 				"		d_date_id 			string," +
@@ -643,7 +643,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 				"	row format delimited fields terminated by \'|\' " +
 				"	location " + "\'" + date_dimHDFSPath + "\'"
 					
-		val createGraph = "create external table twitter_graph" +
+		val createGraphTmp = "create external table twitter_graph_tmp" +
 				"	(" +
 				"		friend_id	int," +
 				"		follower_id	int" +
@@ -654,7 +654,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 		/**
 		 * TO DO, create json format table
 		 */
-		val createTweets = "create external table tweets" +
+		val createTweetsTmp = "create external table tweets_tmp" +
 				"	(" +
 				"		contributors string," +
 				"		coordinates string," +
@@ -719,15 +719,58 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 				"	ROW FORMAT SERDE \'org.openx.data.jsonserde.JsonSerDe\'" +
 				"	location \'" + tweets_HDFSPath +"\'"
 					
+		stmt.execute(createWebSalesTmp)
+		stmt.execute(createCatalogSalesTmp)
+		stmt.execute(createStoreSalesTmp)
+		stmt.execute(createItemTmp)
+		stmt.execute(createCustTmp)
+		stmt.execute(createPromotTmp)
+		stmt.execute(createDateDimTmp)
+		stmt.execute(createGraphTmp)
+		stmt.execute(createTweetsTmp)
+		
+		
+		val dropWebSales = "DROP TABLE web_sales"
+		val dropStoreSales = "DROP TABLE store_sales"  
+		val dropCatalogSales = "DROP TABLE catalog_sales"
+		val dropItem = "DROP TABLE item"
+		val dropPromot = "DROP TABLE promotion"
+		val dropCust = "DROP TABLE customer"
+		val dropDateDim = "DROP TABLE date_dim"
+		val dropGraph = "DROP TABLE twitter_graph"
+		val dropTweets = "DROP TABLE tweets"
+
+		
+		stmt.execute(dropWebSales)
+		stmt.execute(dropCatalogSales)
+		stmt.execute(dropStoreSales)
+		stmt.execute(dropItem)
+		stmt.execute(dropPromot)
+		stmt.execute(dropCust)
+		stmt.execute(dropDateDim)
+		stmt.execute(dropGraph)
+		stmt.execute(dropTweets)
+		
+		val createWebSales = "CREATE TABLE web_sales STORED AS orc as select * from web_sales_tmp"
+		val createCatalogSales = "CREATE TABLE catalog_sales STORED AS orc as select * from catalog_sales_tmp"
+		val createStoreSales = "CREATE TABLE store_sales STORED AS orc as select * from store_sales_tmp"
+		val createItem = "CREATE TABLE item STORED AS orc as select * from item_tmp"
+		val createPromot = "CREATE TABLE promotion STORED AS orc as select * from promotion_tmp"
+		val createCust = "CREATE TABLE customer STORED AS orc as select * from customer_tmp"
+		val createDateDim = "CREATE TABLE date_dim STORED AS orc as select * from date_dim_tmp"
+		val createGraph = "CREATE TABLE twitter_graph STORED AS orc as select * from twitter_graph_tmp"
+		val createTweets = "CREATE TABLE tweets STORED AS orc as select * from tweets_tmp"
+	
 		stmt.execute(createWebSales)
 		stmt.execute(createCatalogSales)
 		stmt.execute(createStoreSales)
 		stmt.execute(createItem)
-		stmt.execute(createCust)
 		stmt.execute(createPromot)
+		stmt.execute(createCust)
 		stmt.execute(createDateDim)
 		stmt.execute(createGraph)
 		stmt.execute(createTweets)
+		
 		
 		stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'")
 		stmt.execute("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'")
@@ -738,7 +781,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 	 * Prepeare the basic tables before run the Hive query
 	 */
 	override def prepareHiveTables(connection: Connection): Unit = {
-		prepareHiveTablesImpl1(connection)
+//		prepareHiveTablesImpl2(connection)
 	
 	}
 	
@@ -781,9 +824,13 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 		try {
 			val stmt = connection.createStatement();			
 						
-//			val lower = 1
-//			val upper = 300
-//			
+			val lower = 1
+			val upper = 300
+			
+					stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'")
+		stmt.execute("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'")
+		stmt.execute("set hive.auto.convert.join=false")
+			
 			val drop_promotionSelected = "DROP TABLE IF EXISTS promotionSelected"
 			val create_promotionSelected = "CREATE TABLE promotionSelected (promo_id string, item_sk int," +
 					"start_date_sk int, end_date_sk int)"
@@ -842,7 +889,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 					"		FROM " +
 					"			(SELECT user.id as user_id, text, created_at, entities.hashtags[0] as hashtag" +
 					"			FROM tweets" +
-					"			WHERE entities.hashtags[0] IS NOT NULL) t1 " +
+					"			WHERE size(entities.hashtags) > 0 ) t1 " +
 					"		JOIN " +	
 					"			(SELECT item_sk, product_name, start_date, d_date as end_date" +
 					"			FROM " +
@@ -954,7 +1001,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 					
 
 			val drop_transitMatrix = "DROP TABLE IF EXISTS transitMatrix"
-			val create_transitMatrix = "CREATE TABLE transitMatrix (item_sk int, follower_id int, friend_id int, transit_prob float)"
+			val create_transitMatrix = "CREATE TABLE transitMatrix (item_sk int, follower_id int, friend_id int, transit_prob float)" 
 				
 			val query_transitMatrix = "INSERT INTO TABLE transitMatrix" +
 					"	SELECT item_sk, follower_id, friend_id, " +
@@ -974,7 +1021,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 			
 			
 			val drop_randSufferVec = "DROP TABLE IF EXISTS randSuffVec"
-			val create_randSuffVec = "CREATE TABLE randSuffVec (item_sk int, user_id int, prob float)"
+			val create_randSuffVec = "CREATE TABLE randSuffVec (item_sk int, user_id int, prob float)" 
 				
 			val query_randSuffVec =	"INSERT INTO TABLE randSuffVec	" +
 					"	SELECT t1.item_sk, user_id, t1.num_tweets/t2.num_tweets" +
@@ -991,7 +1038,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 			stmt.execute(query_randSuffVec)
 			
 			val drop_initalRank = "DROP TABLE IF EXISTS initialRank"
-			val create_initialRank = "CREATE TABLE initialRank (item_sk int, user_id int, rank_score float)"
+			val create_initialRank = "CREATE TABLE initialRank (item_sk int, user_id int, rank_score float)" 
 				
 			val query_initialRank =	"INSERT INTO TABLE initialRank" +
 					"	SELECT t2.item_sk, user_id, 1.0/num_users as rank_score" +

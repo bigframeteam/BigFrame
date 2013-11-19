@@ -1,6 +1,6 @@
 package bigframe.workflows.runnable
 
-import org.apache.hadoop.hive.conf.HiveConf
+import org.apache.giraph.conf.GiraphConfiguration
 
 import java.sql.Connection
 
@@ -20,5 +20,5 @@ trait HiveGiraphRunnable {
 	/*
 	 * Run the benchmark query
 	 */
-	def runGiraph(hive_config: HiveConf): Boolean
+	def runHiveGiraph(giraph_config: GiraphConfiguration, connection: Connection): Boolean
 }
