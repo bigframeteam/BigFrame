@@ -33,9 +33,6 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) e
 		val stmt = connection.createStatement()
 		
 		
-		val add_JsonSerde = "ADD JAR "
-		
-		
 		val dropWebSales = "DROP TABLE web_sales"
 		val dropStoreSales = "DROP TABLE store_sales"  
 		val dropCatalogSales = "DROP TABLE catalog_sales"

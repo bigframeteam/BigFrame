@@ -194,24 +194,24 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				if(relationalEngine.equals(Constants.HADOOP) && graphEngine.equals(Constants.HADOOP)&& 
 						nestedEngine.equals(Constants.HADOOP)) {
 					hadoopWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHadoop(basePath, 10));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHadoop(basePath, 100));
 				}
 				else if(relationalEngine.equals(Constants.VERTICA) && graphEngine.equals(Constants.VERTICA)&& 
 						nestedEngine.equals(Constants.VERTICA)) {
 					verticaWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentVertica(basePath, 10));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentVertica(basePath, 100));
 				}
 				
 				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.HIVE)&& 
 						nestedEngine.equals(Constants.HIVE)) {
 					hiveWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 100));
 				}
 				
 				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.GIRAPH)&& 
 						nestedEngine.equals(Constants.HIVE)) {
 					hivegiraphWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 10));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 100));
 				}
 				
 //				else if(relationalEngine.equals(Constants.SHARK) && graphEngine.equals(Constants.SHARK)&& 
@@ -224,7 +224,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				else if(relationalEngine.equals(Constants.SPARK) && graphEngine.equals(Constants.SPARK)&& 
 						nestedEngine.equals(Constants.SPARK)) {
 					sparkWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_MacroRTGSpark(basePath, 10));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_MacroRTGSpark(basePath, 100));
 				}
 				//Relational, Text for Spark
 				else if(nestedEngine.equals(Constants.SPARK) && nestedEngine.equals(Constants.SPARK)) {

@@ -28,7 +28,7 @@ public class TwitterRankVertex extends Vertex<Text, Text, DoubleWritable, Double
 
 	    }
 
-	    if (getSuperstep() < 10) {
+	    if (getSuperstep() <= 100) {
 	    	sendMessageToAllEdges(new 
 	    			DoubleWritable(Double.parseDouble(getValue().toString().split("\\|")[0])));
 	    } else {
