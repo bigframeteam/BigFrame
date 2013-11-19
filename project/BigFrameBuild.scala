@@ -45,8 +45,8 @@ object BigFrameBuild extends Build {
 		libraryDependencies ++= Seq(
       		"org.scalatest" %% "scalatest" % "1.9.1" % "test",
 	        "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-	        "org.apache.spark" % "spark-core_2.9.3" % "0.8.0-incubating" % "provided",
-     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.0-incubating" % "provided",
+	        "org.apache.spark" % "spark-core_2.9.3" % "0.8.0-incubating",
+     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.0-incubating",
 			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
@@ -111,6 +111,7 @@ object BigFrameBuild extends Build {
 
 	def extraAssemblySettings() = Seq(test in assembly := {}) ++ Seq(
 		mergeStrategy in assembly := {
+     		case m if m startsWith "org/apache/commons/logging" => MergeStrategy.last
       		case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
       		case m if m.toLowerCase.matches("meta-inf.*\\.sf$") => MergeStrategy.discard
       		case "reference.conf" => MergeStrategy.concat
