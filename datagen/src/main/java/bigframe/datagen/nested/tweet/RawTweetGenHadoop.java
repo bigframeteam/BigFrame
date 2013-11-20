@@ -114,6 +114,8 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		long total_tweets = getTotalNumTweets();
 
 		int num_Mapper = (int) Math.ceil(total_tweets * 1.0 / tweets_per_mapper);
+		tweets_per_mapper = total_tweets / num_Mapper;
+		
 		
 		mapred_config.setLong(RawTweetGenConstants.TIME_BEGIN,
 				dateBegin_time_sec);

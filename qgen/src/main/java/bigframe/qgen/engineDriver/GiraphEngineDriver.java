@@ -42,7 +42,10 @@ public class GiraphEngineDriver extends EngineDriver {
 		LOG.info("Running Giraph queries!");
 		
 		for(GiraphRunnable query : queries) {
-			query.runGiraph(giraph_config);
+			if(query.runGiraph(giraph_config))
+				LOG.info("Query Finished");
+			else
+				LOG.info("Query failed");
 		}
 
 	}

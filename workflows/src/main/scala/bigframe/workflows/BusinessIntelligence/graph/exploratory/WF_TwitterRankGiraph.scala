@@ -12,6 +12,11 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.NullWritable
 
+/**
+ * A Giraph implementation of the TwitterRank algorithm.
+ * 
+ *  @authou andy 
+ */
 class WF_TwitterRankGiraph extends Query with GiraphRunnable {
 
 	def printDescription(): Unit = {}
