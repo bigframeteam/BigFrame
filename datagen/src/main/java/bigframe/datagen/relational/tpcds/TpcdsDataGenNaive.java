@@ -71,7 +71,7 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 		
 		String cmd = "perl " 
 				   + datagen_script + " " 
-				   + (int) targetGB + " " 
+				   + targetGB + " " 
 				   + num_files + " " 
 				   + hadoop_slaves + " " 
 				   + local_dir + " " 

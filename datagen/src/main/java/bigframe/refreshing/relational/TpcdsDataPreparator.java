@@ -52,7 +52,7 @@ public class TpcdsDataPreparator extends DataPreparator {
 		 */
 		String cmd = "perl " 
 				   + dataupdate_script + " " 
-				   + (int) targetGB + " " 
+				   + targetGB + " " 
 				   + num_files + " " 
 				   + hadoop_slaves + " " 
 				   + local_dir + " " 
