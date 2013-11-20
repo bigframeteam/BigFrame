@@ -8,7 +8,8 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext
 import SparkContext._
 
-import org.apache.log4j.Logger
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import bigframe.workflows.BusinessIntelligence.text.exploratory._
 import bigframe.workflows.BusinessIntelligence.relational.exploratory._
 import bigframe.bigif.WorkflowInputFormat
@@ -18,15 +19,17 @@ import java.io.File
 
 class SparkEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(workIF) {
   
-	final var SPARK_CONNECTION = "SPARK_CONNECTION_STRING"
-	final var SPARK_HOME = "SPARK_HOME"
+//	final var SPARK_CONNECTION = "SPARK_CONNECTION_STRING"
+//	final var SPARK_HOME = "SPARK_HOME"
 
 	final var JAR_PATH = "WORKFLOWS_JAR"
-	final var LOG: Logger = Logger.getLogger(this.getClass.getName)
+	final var LOG: Log =
+LogFactory.getLog(classOf[SparkEngineDriver])
 
 	private var spark_connection_string: String = ""
 	private var spark_home_string: String = ""
 	private var jar_path_string: String = ""
+	private var spark_local_dir: String = ""
 
 	private var queries: java.util.List[SparkRunnable] = new java.util.ArrayList[SparkRunnable]()
 
@@ -40,20 +43,21 @@ class SparkEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(workIF
 	
 	def run() {	
 		init()
-	  	println("Running Spark Query");
+		LOG.info("Running Spark Query");
 		for(query: SparkRunnable <- queries) {
-			println("Setting the context")
+			System.setProperty("spark.local.dir",
+spark_local_dir)
 			val sc = new SparkContext(spark_connection_string, "BigFrame", 
 						spark_home_string, Seq(jar_path_string))
-			println("Set the context: " + sc)
 			if(query.runSpark(sc)) {
-				println("Query Finished");
+				LOG.info("Query Finished");
 			}
 			else {
-				println("Query failed");
+				LOG.error("Query failed");
 			}
 		}
 	}
+
 	
 	def cleanup() {
 	  
@@ -65,8 +69,9 @@ class SparkEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(workIF
 	}
 
 	private def readEnvVars() {
-		spark_connection_string = System.getenv(SPARK_CONNECTION)
+		spark_connection_string = workIF.getSparkMaster()
 		jar_path_string = System.getenv(JAR_PATH)
-		spark_home_string = System.getenv(SPARK_HOME)
+		spark_home_string = workIF.getSparkHome()
+		spark_local_dir = workIF.getSparkLocalDir()
 	}	
 }
