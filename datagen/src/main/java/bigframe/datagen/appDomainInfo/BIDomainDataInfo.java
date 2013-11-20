@@ -72,6 +72,7 @@ public class BIDomainDataInfo extends DomainDataInfo {
 		for(String variety : dataVariety) {
 			datagen_list.add(datagen_map.get(variety));
 		}
+		
 		return datagen_list;
 	}
 	
