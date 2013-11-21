@@ -20,6 +20,7 @@ export SPARK_CONNECTION_STRING="spark://ubuntu:7077"
 
 # The Spark Home Directory
 SPARK_HOME=$SPARK_HOME
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.home=${SPARK_HOME}"
 
 # The Shark Home
 SHARK_HOME=$SHARK_HOME
@@ -27,6 +28,7 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.shark.home=${SHARK_HOME}"
 
 # Local directory for Spark scratch space
 SPARK_LOCAL_DIR="/tmp/spark_local"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.local.dir=${SPARK_LOCAL_DIR}"
 
 # The Spark Master Address
 SPARK_MASTER=$SPARK_CONNECTION_STRING
