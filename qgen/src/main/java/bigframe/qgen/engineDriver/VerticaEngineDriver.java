@@ -69,7 +69,7 @@ public class VerticaEngineDriver extends EngineDriver {
 
 	@Override
 	public void run() {
-		System.out.println("Running Vertica Query");
+		LOG.info("Running Vertica Query");
 		
 		for(VerticaRunnable query : queries) {
 			if(query.runVertica(connection))
@@ -82,9 +82,19 @@ public class VerticaEngineDriver extends EngineDriver {
 
 	@Override
 	public void cleanup() {
+		
 		for(VerticaRunnable query : queries)
 			query.cleanUpVertica(connection);
 
+		
+		if(connection != null) {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void addQuery(VerticaRunnable query) {

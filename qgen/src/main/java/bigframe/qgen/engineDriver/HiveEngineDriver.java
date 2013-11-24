@@ -94,8 +94,19 @@ public class HiveEngineDriver extends EngineDriver {
 
 	@Override
 	public void cleanup() {
+
+		
 		for(HiveRunnable query : queries) {
 			query.cleanUpHive(connection);
+		}
+		
+		if(connection != null) {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}

@@ -2,6 +2,8 @@ package bigframe.util.dataloader.vertica;
 
 import java.io.IOException;
 import java.util.Date;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -136,14 +138,73 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 				
 			}
 			
+			else if(tableName.equals("tweetjson")){
+				try {
+					record.setFromString("json", value.toString());
+					context.write(new Text(tableName), record);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			
 			
 		}
+	}
+	
+	public void prepareBaseTable() throws SQLException {
+		initConnection(); 
+		Statement stmt = connection.createStatement();
+		connection.setAutoCommit(false);
+		String [] drop_table = {"DROP TABLE IF EXISTS users",
+								"DROP TABLE IF EXISTS entities",
+								"DROP TABLE IF EXISTS tweetjson",
+								"DROP TABLE IF EXISTS tweet"};
+		
+		for(String str : drop_table) {
+			stmt.addBatch(str);
+		}
+		
+		
+			
+//    	String createUsers = "CREATE TABLE users (profile_sidebar_border_color char(20)," +
+//			    		"name varchar(70), profile_sidebar_fill_color char(20), profile_background_tile char(20), "+
+//			    		"profile_image_url varchar(70), location varchar(20), created_at  TIMESTAMP WITH TIMEZONE," +
+//			    		"id_str char(20), follow_request_sent varchar(20), profile_link_color char(20)," + 
+//			    		"favourites_count int,  url varchar(70), contributors_enabled BOOLEAN, utc_offset varchar(20)," +
+//			    		"id int primary key, profile_use_background_image varchar(70), listed_count int, protected BOOLEAN," +
+//			    		"lang char(20), profile_text_color char(20), followers_count int, time_zone char(20)," +
+//			    		"verified boolean, geo_enabled boolean, profile_background_color varchar(70)," +
+//			    		"notifications boolean, description varchar(200), friends_count int, profile_background_image_url varchar(120),"+
+//			    		"statuses_count int, screen_name char(20), following boolean, show_all_inline_media boolean)";
+    
+		String createTweetJson = "CREATE TABLE tweetjson (json varchar(10000))";
+		
+    	String createEntities = "CREATE TABLE entities (tweet_id int primary key, urls varchar(100)," +
+			    		"hashtag varchar(50), user_mentions varchar(200))";
+    
+    	String createTweet = "Create TABLE tweet (coordinates char(20), created_at TIMESTAMP WITHOUT TIME ZONE," +
+		    			"favorited boolean, truncated boolean, id_str char(20), in_reply_to_user_id_str char(20)," +
+		    			"text varchar(200), contributors char(20), id int primary key, retweet_count int, in_reply_to_status_id_str char(20)," +
+		    			"geo char(20), retweeted boolean, in_reply_to_user_id int, user_id int, in_reply_to_screen_name char(20)," +
+		    			"source char(20), place char(20), in_reply_to_status_id int)";
+
+
+//    	stmt.addBatch(createUsers);
+    	stmt.addBatch(createEntities);
+    	stmt.addBatch(createTweet);
+    	stmt.addBatch(createTweetJson);
+    			
+    	System.out.println("Preparing base tables!");
+		stmt.executeBatch();
+		connection.commit();	
+		closeConnection();
 	}
 
 	
 	@Override
 	public boolean load(Path srcHdfsPath, String table) {
+		
 		Configuration mapred_config = new Configuration();
 		
 		mapred_config.addResource(new Path(workIF.getHadoopHome()
@@ -184,7 +245,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 			    		"hashtag varchar(50)", "user_mentions varchar(200)");
 		   
 		    else if(table.equals("user"))
-			    VerticaOutputFormat.setOutput(job, "user", true, "profile_sidebar_border_color char(20)", 
+			    VerticaOutputFormat.setOutput(job, "users", true, "profile_sidebar_border_color char(20)", 
 			    		"name varchar(70)", "profile_sidebar_fill_color char(20)", "profile_background_tile char(20)",
 			    		"profile_image_url varchar(70)", "location varchar(20)", "created_at  TIMESTAMP WITH TIMEZONE",
 			    		"id_str char(20)", "follow_request_sent varchar(20)", "profile_link_color char(20)", 
@@ -201,6 +262,9 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 		    			"text varchar(200)", "contributors char(20)", "id int", "retweet_count int", "in_reply_to_status_id_str char(20)",
 		    			"geo char(20)", "retweeted boolean", "in_reply_to_user_id int", "user_id int", "in_reply_to_screen_name char(20)",
 		    			"source char(20)", "place char(20)", "in_reply_to_status_id int");
+		    
+		    else if(table.equals("tweetjson"))
+		    	VerticaOutputFormat.setOutput(job, "tweetjson", true, "json varchar(10000)");
 		    
 		    else {
 		    	//throw new TableNotFoundException("Table " + table + " doesn't exist!");

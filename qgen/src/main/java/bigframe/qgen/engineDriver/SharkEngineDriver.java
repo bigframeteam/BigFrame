@@ -97,9 +97,18 @@ public class SharkEngineDriver extends EngineDriver {
 
 	@Override
 	public void cleanup() {
+		
 		for(SharkRunnable query : queries)
 			query.cleanUpShark(connection);
 
+		if(connection != null) {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

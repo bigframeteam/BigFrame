@@ -97,7 +97,15 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 
 	@Override
 	public void cleanup() {
-		// TODO Auto-generated method stub
+		
+		if(connection != null) {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 	}
 	

@@ -1,6 +1,8 @@
 package bigframe.util.dataloader.vertica;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 
 import org.apache.hadoop.conf.Configuration;
@@ -70,6 +72,8 @@ public class VerticaGraphLoader extends VerticaDataLoader {
 	    }
 	}
 	
+	
+	
 	@Override
 	public boolean load(Path srcHdfsPath, String table) {
 		// TODO Auto-generated method stub
@@ -138,6 +142,12 @@ public class VerticaGraphLoader extends VerticaDataLoader {
 	public boolean load() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void prepareBaseTable() throws SQLException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

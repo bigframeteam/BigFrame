@@ -2,10 +2,8 @@
 
 select version();
 
-\set libfile '\''`pwd`'/lib/SenAnalyseSimple.so\'';
+\set libfile '\''`pwd`'/lib/TwitterSentiment.so\'';
 
-CREATE LIBRARY SenAnalyseSimpleLib as :libfile;
-CREATE FUNCTION sentiment as language 'C++' name 'SenAnalyseSimpleFactory' library SenAnalyseSimpleLib;
-
-
-
+CREATE LIBRARY TwitterSentimentLib as :libfile;
+CREATE FUNCTION sentiment as language 'C++' name 'SenAnalyseSimpleFactory' library TwitterSentimentLib;
+CREATE TRANSFORM FUNCTION twitter as language 'C++' name 'TwitterJSONFactory' library TwitterSentimentLib;

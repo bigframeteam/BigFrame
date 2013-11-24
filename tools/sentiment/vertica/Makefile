@@ -1,8 +1,9 @@
 ############################
-# BigFrame Team
+# Vertica Analytic Database
 #
 # Makefile to build package directory
 #
+# Copyright 2011 Vertica Systems, an HP Company
 ############################
 
 SDK?=/opt/vertica/sdk
@@ -11,21 +12,21 @@ VSQL?=vsql
 VERTICA_SDK_INCLUDE = $(SDK)/include
 SIMULATOR_PATH = $(SDK)/simulator
 
-# THIRD_PARTY         = $(shell pwd)/src/third-party
-# THIRD_PARTY_INCLUDE = build/include
-# THIRD_PARTY_LIB     = build/lib
+THIRD_PARTY         = $(shell pwd)/src/third-party
+THIRD_PARTY_INCLUDE = build/include
+THIRD_PARTY_LIB     = build/lib
 
 # Add in your source files below
-BUILD_FILES      = build/Vertica.o build/SenAnalyseSimple.o
-		   #$(addprefix build/,SenAnalyseSimple.o)
+BUILD_FILES      = build/Vertica.o \
+		   $(addprefix build/,TwitterSentiment.o lib/libjson.a)
 
 # Define the .so name here (and update the references in ddl/install.sql and ddl/uninstall.sql)
-PACKAGE_LIBNAME   = lib/SenAnalyseSimple.so
+PACKAGE_LIBNAME   = lib/TwitterSentiment.so
 
 CXX=g++ -std=c++0x
-CXXFLAGS=-g -c -I ../include -Wall -Wno-unused-value -fPIC -I $(VERTICA_SDK_INCLUDE) 
-#LDFLAGS=-shared -Wl,-Bstatic -luriparser -Wl,-Bstatic -lpcre -Wl,-Bdynamic
-LDFLAGS=-shared -lcurl -lidn -lssl -lcrypto -lrt -lssl -lcrypto -ldl -lz -lz 
+CXXFLAGS=-g -c -I ../include -Wall -Wno-unused-value -fPIC -I $(VERTICA_SDK_INCLUDE) -I $(THIRD_PARTY_INCLUDE)
+#LDFLAGS=-shared -L $(THIRD_PARTY_LIB) -Wl,-Bstatic -luriparser -Wl,-Bstatic -lpcre -Wl,-Bdynamic
+LDFLAGS=-shared -L $(THIRD_PARTY_LIB) -lcurl -lidn -lssl -lcrypto -lrt -lssl -lcrypto -ldl -lz -lz 
 
 # add optimization if not a debug build
 # (make DEBUG=true" will make a non-optimized build)
@@ -36,15 +37,20 @@ endif
 
 all: $(PACKAGE_LIBNAME)
 
+# target to ensure third-party libraries are build
+.PHONY: tparty
+tparty: 
+	$(MAKE) -C $(THIRD_PARTY)
+
 # Main target that builds the package library
-$(PACKAGE_LIBNAME): $(BUILD_FILES) 
+$(PACKAGE_LIBNAME): tparty $(BUILD_FILES) 
 	mkdir -p lib
 	$(CXX) -o $@ $(BUILD_FILES) $(LDFLAGS) 
 
 # rule to make build/XXX.so from src/XXX.so
-build/SenAnalyseSimple.o: 
+build/%.o: src/%.cpp tparty 
 	@mkdir -p build
-	$(CXX) $(CXXFLAGS) src/SenAnalyseSimple.cpp -o $@
+	$(CXX) $(CXXFLAGS) $< -o $@
 
 # rule to compile symbols from the vertica SDK:
 build/Vertica.o: $(VERTICA_SDK_INCLUDE)/Vertica.cpp
@@ -59,11 +65,11 @@ uninstall: ddl/uninstall.sql
 	$(VSQL) -f ddl/uninstall.sql
 
 # run examples
-# test:
-# 	$(VSQL) -f examples/sentiment.sql
+test:
+	$(VSQL) -f examples/sentiment.sql
 
 clean:
-	$(MAKE) -C clean
+	$(MAKE) -C $(THIRD_PARTY) clean
 	rm -rf build
 	rm -rf lib
 	rm -f vsim*

@@ -1,1 +1,1 @@
-DROP LIBRARY SenAnalyseSimpleLib CASCADE;
+DROP LIBRARY TwitterSentimentLib CASCADE;

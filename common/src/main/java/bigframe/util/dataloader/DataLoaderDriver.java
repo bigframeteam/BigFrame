@@ -1,6 +1,7 @@
 package bigframe.util.dataloader;
 
 import java.io.PrintStream;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -239,9 +240,15 @@ public class DataLoaderDriver {
 			if(line.getOptionValue(APPDOMAIN).equals(BigConfConstants.APPLICATION_BI)) {
 				if(line.getOptionValue(DATATYPE).equals(Constants.RELATIONAL)) {
 					VerticaDataLoader dataloader = new VerticaTpcdsLoader(workflowIF);
+					try {
+						dataloader.prepareBaseTable();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/store_sales"), "store_sales");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/catalog_sales"), "catalog_sales");
-					dataloader.load(new Path(line.getOptionValue(SRC)+"/store_sales"), "store_sales");
+					dataloader.load(new Path(line.getOptionValue(SRC)+"/store_sales"), "customer");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/web_sales"), "web_sales");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/item"), "item");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/promotion"), "promotion");
@@ -250,12 +257,26 @@ public class DataLoaderDriver {
 				
 				else if(line.getOptionValue(DATATYPE).equals(Constants.NESTED)) {
 					VerticaDataLoader dataloader = new VerticaTweetLoader(workflowIF);
+					try {
+						dataloader.prepareBaseTable();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
 					dataloader.load(new Path(line.getOptionValue(SRC)), "tweet");
 					dataloader.load(new Path(line.getOptionValue(SRC)), "entities");
+					
 				}
 				
 				else if(line.getOptionValue(DATATYPE).equals(Constants.GRAPH)) {
 					VerticaDataLoader dataloader = new VerticaGraphLoader(workflowIF);
+					try {
+						dataloader.prepareBaseTable();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					dataloader.load(new Path(line.getOptionValue(SRC)), "twitter_graph");
 				}
 				

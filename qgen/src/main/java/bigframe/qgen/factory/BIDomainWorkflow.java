@@ -198,8 +198,12 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				}
 				else if(relationalEngine.equals(Constants.VERTICA) && graphEngine.equals(Constants.VERTICA)&& 
 						nestedEngine.equals(Constants.VERTICA)) {
+					boolean jsonasstring = false;
+					if(workflowIF.getProp().containsKey("jsonasstring"))
+						jsonasstring = true;
+					
 					verticaWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentVertica(basePath, 10));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentVertica(basePath, 10, jsonasstring));
 				}
 				
 				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.HIVE)&& 
