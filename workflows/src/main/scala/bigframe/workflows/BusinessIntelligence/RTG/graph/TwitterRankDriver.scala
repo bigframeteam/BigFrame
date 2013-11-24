@@ -163,7 +163,7 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
     utils.collectProbabilities(transition, teleport)
     val verts = utils.createVertices(friends) cache
     val partitions = verts.partitions.length
-    
+   
     val result = Bagel.run(sc, verts, emptyMsgs, new TRCombiner(), partitions)(
         utils.compute(numIter, gamma))
     result map (_._2) map {t => t.id -> t.ranks}
@@ -184,17 +184,31 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
    */
   def computeTR_standalone(numIter:Int = 10, gamma:Double = 0.85) = {
     
-    // initial ranks same as teleport
-    var ranks = teleport
-    
 //    println("transition: ")
 //    transition.collect().foreach(println)
 
 //    println("initial ranks: ")
 //    ranks.collect().foreach(println)
 
+    // save transition and teleport matrices as object files
+    // TODO: remove these files after twitter rank computation
+    val graphPath = basePath.graph_path
+    val tempDir = graphPath.take(1 + graphPath.lastIndexOf('/'))
+    val transitionPath = graphPath + "transition_matrix"
+    println("Saving object file in: " + transitionPath)
+    val teleportPath = graphPath + "teleport_matrix"
+    println("Saving object file in: " + teleportPath)
+
+    transition map {t => t._1._2 -> (t._1._1, t._2)} saveAsObjectFile(transitionPath)
+    teleport saveAsObjectFile(teleportPath)
+
+    // read these object files right back
+    val transitionNew = sc.objectFile[(Int, (Int, Seq[(String, Double)]))](transitionPath).cache
+    val teleportNew = sc.objectFile[(Int, Seq[(String, Double)])](teleportPath).cache
+
+    var ranks = teleport 
     for (iter <- 1 to numIter) {
-      ranks = utils.iterateRank(ranks, transition, teleport, gamma)
+      ranks = utils.iterateRank(ranks, transitionNew, teleportNew, gamma)
 //      println("After iteration " + iter + ", ranks: ")
 //      ranks.collect().foreach(println)
     }

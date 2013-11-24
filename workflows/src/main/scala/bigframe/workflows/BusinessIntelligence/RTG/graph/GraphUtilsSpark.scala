@@ -205,11 +205,9 @@ class GraphUtilsSpark extends Serializable {
    * TODO: test for correctness
    */
   def iterateRank(ranks: RDD[(Int, Seq[(String, Double)])], 
-      transition: RDD[((Int, Int), Seq[(String, Double)])], 
+      trans: RDD[(Int, (Int, Seq[(String, Double)]))], 
       teleport: RDD[(Int, Seq[(String, Double)])], 
       gamma: Double) = {    
-    val trans = transition map {t => t._1._2 -> (t._1._1, t._2)}
-    
     // transition probability times previous rank weighted by gamma
     val term1 = trans join ranks map {
       t => t._1 -> transFactor(t._2._1._2, t._2._2, gamma)
