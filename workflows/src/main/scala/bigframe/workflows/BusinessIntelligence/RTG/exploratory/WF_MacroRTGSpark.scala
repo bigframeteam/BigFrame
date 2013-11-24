@@ -31,7 +31,7 @@ class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int) extends Sp
 	  
 	  /** 
 	   *  relational processing to get total sales for each product
-	   *  tuples : item_sk -> (product_name, sales) 
+	   *  tuples : item_sk -> (promo_id, sales) 
 	   *  can be done in a separate thread
 	   */
 	  val sales = tpcdsExecutor salesPerPromotion promotions
@@ -47,7 +47,7 @@ class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int) extends Sp
 	  val relevantTweetsWithItem = (relevantTweets map (
 	      t => (t.products(0), t))).join(promotions map (
 	          t => (t._2(4), t._1))).map(t => t._2._1 -> t._2._2)
-	  
+	 
 	  /**
 	   *  Do graph processing on all the relevant tweets
 	   *  can be done in a separate thread
@@ -92,15 +92,16 @@ class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int) extends Sp
 	  // aggregate sentiment values for every promotion
 	  val aggSentiments = sentimentsPerPromotion.reduceByKey(
 	      (a, b) => (a._1, a._2 + b._2))
-	       
+
 	  /**
 	   *  join relational output with text output
-	   *  sales result is (item_id, (product_name, total_sales)) and 
+	   *  sales result is (item_id, (promotion_id, total_sales)) and 
 	   *  sentiment result is (product_name, (promotion_id, total_sentiment)
 	   *  TODO: Do a outer join
 	   */ 
 	  val joinedResult = (sales map {t => t._2._1 -> t._2._2}).join(
-	      aggSentiments).map {t => t._2._2._1 -> (t._1, t._2._1, t._2._2._2)}
+	      aggSentiments map {t => t._2._1 -> (t._1, t._2._2)}).map {
+		t => t._1 -> (t._2._2._1, t._2._1, t._2._2._2)}
 
 	  // save the output to hdfs
 	  println("Workflow executed, writing the output to: " + output_path)

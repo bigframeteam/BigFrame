@@ -43,7 +43,8 @@ public class BigConfConstants {
 	 */
 	public static final String BIGFRAME_SPARK_HOME = "bigframe.spark.home";
 	public static final String BIGFRAME_SPARK_MASTER = "bigframe.spark.master";
-	
+	public static final String BIGFRAME_SPARK_LOCAL_DIR =
+"bigframe.spark.local.dir";
 	
 	/**
 	 * Vertica specific
