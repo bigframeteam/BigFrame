@@ -30,6 +30,10 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.shark.home=${SHARK_HOME}"
 SPARK_LOCAL_DIR="/tmp/spark_local"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.local.dir=${SPARK_LOCAL_DIR}"
 
+# Use bagel for Spark
+SPARK_USE_BAGEL=true
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.usebagel=${SPARK_USE_BAGEL}"
+
 # The Spark Master Address
 SPARK_MASTER=$SPARK_CONNECTION_STRING
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.master=${SPARK_MASTER}"
