@@ -30,6 +30,7 @@ LogFactory.getLog(classOf[SparkEngineDriver])
 	private var spark_home_string: String = ""
 	private var jar_path_string: String = ""
 	private var spark_local_dir: String = ""
+	private var spark_use_bagel: Boolean = true
 
 	private var queries: java.util.List[SparkRunnable] = new java.util.ArrayList[SparkRunnable]()
 
@@ -73,5 +74,6 @@ spark_local_dir)
 		jar_path_string = System.getenv(JAR_PATH)
 		spark_home_string = workIF.getSparkHome()
 		spark_local_dir = workIF.getSparkLocalDir()
+		spark_use_bagel = workIF.getSparkUseBagel()
 	}	
 }

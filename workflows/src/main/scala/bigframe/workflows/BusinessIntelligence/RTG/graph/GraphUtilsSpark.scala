@@ -10,7 +10,7 @@ import org.apache.spark.SparkContext._
  * @author mayuresh
  *
  */
-class GraphUtilsSpark extends Serializable {
+case class GraphUtilsSpark() {
 
    /**
    * Calculates similarity between two users for every product
@@ -120,7 +120,10 @@ class GraphUtilsSpark extends Serializable {
       s => s._1 -> s._2.toDouble / collected.getOrElse(s._1, 1)})
     }
   }
-  
+
+  /**
+   * A hack to store collected probabilities to be used in iterative computation
+   */
   var tranProb: scala.collection.immutable.Map[(Int, Int),Seq[(String, Double)]] = null 
   var teleProb: scala.collection.immutable.Map[Int ,Seq[(String, Double)]] = null
   
@@ -130,11 +133,20 @@ class GraphUtilsSpark extends Serializable {
     teleProb = teleport.collect.toMap
   }
   
-  def createVertices(friends: RDD[(Int, Seq[(Int, Int)])]) = {
-    if (teleProb == null) null
-    friends map {t => (t._1, 
-      new TRVertex(t._1, teleProb.getOrElse(t._1, List()), 
-          t._2 map {_._1} toList, true))}
+  def createVertices( 
+      transition: RDD[((Int, Int), Seq[(String, Double)])], 
+      teleport: RDD[(Int, Seq[(String, Double)])]) = {
+//    val initialranks = friends leftOuterJoin teleport mapValues { 
+//      case (v, Some(w)) => w 
+//      case (v, None) => List()
+//    }
+//    friends join initialranks map {t => t._1 -> new TRVertex(t._1, t._2._2, 
+//        t._2._1 map {_._1} toList, true)}
+    
+    val friends = (transition map {t => t._1._1 -> (t._1._2, t._2)}) groupByKey()
+    
+    friends join teleport map {t => t._1 -> new TRVertex(t._1, t._2._2, 
+            t._2._1 map {_._1} toList, t._2._1, t._2._2, true)}
   }
   
   /**
@@ -144,31 +156,63 @@ class GraphUtilsSpark extends Serializable {
    * 2. All incoming messages
    * 3. Superstep number
    */
-  def compute (numIter: Int, gamma: Double) (self: TRVertex, 
-      msgs: Option[Iterable[TRMessage]], superstep: Int) 
-      : (TRVertex, Array[TRMessage]) = {
-      
-      val newRanks = 
+  def compute (transition: Array[(Int, (Int, Seq[(String, Double)]))], 
+      teleport: Array[(Int, Seq[(String, Double)])], 
+      numIter: Int, gamma: Double):
+      (TRVertex, Option[Iterable[TRMessage]], Int) => 
+        (TRVertex, Array[TRMessage]) = (self: TRVertex, 
+            msgs: Option[Iterable[TRMessage]], superstep: Int) => {
+
+//              val newRanks = 
+//                if(msgs == null || msgs.isEmpty)
+//                  self.ranks
+//                else {
+//                  val trans = Map(transition.filter(
+//                      t => t._1 == self.id).map(_._2): _*)
+//                  val sharedRanks = Map(msgs.getOrElse(List()).map {
+//                    m => m.sourceId -> m.rankShare}.asInstanceOf[
+//                    Seq[(Int, Seq[(String, Double)])]]: _*)
+//                  val joinKeys = trans.keySet.intersect(sharedRanks.keySet)
+//                  
+//                  val first = Map((joinKeys map {t => t -> transFactor(
+//                      trans(t), sharedRanks(t), gamma)}).asInstanceOf[
+//                        Seq[(Int, Seq[(String, Double)])]]: _*).map {_._2}.
+//                        reduce {                  
+//                        (a, b) => transReducer(a, b)
+//                      }
+//                  
+//                  val tele = teleport.filter(
+//                      t => t._1 == self.id).map(_._2).first
+//                  
+//                  teleFactor(first, tele, gamma)
+//                }
+//              
+//              println("At vertex: " + self.id)
+//              println("New ranks: " + newRanks)
+
+     val newRanks = 
         if(msgs == null || msgs.isEmpty)
           self.ranks
         else {
           val transitions = msgs getOrElse(List()) flatMap {m => 
-            tranProb.getOrElse((m.sourceId, m.targetId), List())} groupBy (
+//            tranProb.getOrElse((m.sourceId, m.targetId), List())} groupBy (
+            Map(self.transInProb: _*).getOrElse(m.sourceId, List())} groupBy (
                 _._1) map { case (k,v) => k -> v.map(_._2).sum};
-          val transportations = teleProb.getOrElse(self.id, List()) toMap;
+          val teleportations = self.teleProb.toMap//teleProb.getOrElse(self.id, List()) toMap;
           self.ranks map {r => r._1 -> (
               gamma * transitions.getOrElse(r._1, 0.0) * r._2 + 
-              (1-gamma) * transportations.getOrElse(r._1, 0.0))}
+              (1-gamma) * teleportations.getOrElse(r._1, 0.0))}
         }
       
-      val halt = superstep >= numIter
-      val msgsOut =
-        if (!halt)
-          self.outEdges.map(e => new TRMessage(e, self.id))
-        else
-          List()
-      
-      (new TRVertex(self.id, newRanks, self.outEdges, !halt), msgsOut toArray)
+              val halt = superstep >= numIter
+              val msgsOut =
+              if (!halt)
+                self.outEdges.map(e => new TRMessage(e, self.id, newRanks))
+              else
+                List()
+
+              (new TRVertex(self.id, newRanks, self.outEdges, self.transInProb, self.teleProb, !halt), 
+                  msgsOut toArray)
   }
   
   private def transFactor(seq1: Seq[(String, Double)], 

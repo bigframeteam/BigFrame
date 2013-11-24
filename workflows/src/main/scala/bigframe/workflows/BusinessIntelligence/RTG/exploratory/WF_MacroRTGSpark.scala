@@ -11,7 +11,7 @@ import bigframe.workflows.BusinessIntelligence.RTG.graph.TwitterRankDriver
 import bigframe.workflows.BusinessIntelligence.RTG.graph.GraphUtilsSpark
 import bigframe.workflows.util.DateUtils
 
-class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int) extends SparkRunnable {
+class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int, val useBagel: Boolean) extends SparkRunnable {
     final var OUTPUT_PATH = "OUTPUT_PATH"
     private var output_path: String = System.getenv(OUTPUT_PATH) + "/spark/macro_rel_nested_graph"
   
@@ -53,7 +53,7 @@ class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int) extends Sp
 	   *  can be done in a separate thread
 	   */  
 	  val twitterRanks = graphExecutor.microBench(
-	      relevantTweetsWithItem, numIter)
+	      relevantTweetsWithItem, numIter, useBagel)
 	  
 	  // run sentiment analysis
 	  val scoredTweets = textExecutor addSentimentScore relevantTweets
@@ -69,7 +69,7 @@ class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int) extends Sp
 	  // tuples (product_name -> (creation_date, score))
 	  val weightedTweets = scoredTweetsWithUser join twitterRanks map {
 	    t => t._2._1._2 -> (t._2._1._3, 
-	        t._2._1._4 * new GraphUtilsSpark().influence(t._2._2, t._2._1._1))
+	        t._2._1._4 * GraphUtilsSpark().influence(t._2._2, t._2._1._1))
 	  }
 	  
 	  // read date_dim and cache it

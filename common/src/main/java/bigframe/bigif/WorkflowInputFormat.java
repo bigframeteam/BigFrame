@@ -23,6 +23,7 @@ public class WorkflowInputFormat extends Config {
 	private String SPARK_HOME = "";
 	private String SPARK_MASTER = "";
 	private String SPARK_LOCAL_DIR = "";
+	private Boolean SPARK_USE_BAGEL = true;
 	
 	private String VERTICA_HOSTNAMES = "";
 	private String VERTICA_DATABASE = "";
@@ -70,6 +71,10 @@ public class WorkflowInputFormat extends Config {
 	
 	public String getSparkLocalDir() {
 		return SPARK_LOCAL_DIR;
+	}
+
+	public Boolean getSparkUseBagel() {
+		return SPARK_USE_BAGEL;
 	}
 
 	public String getVerticaHostNames() {
@@ -156,6 +161,10 @@ public class WorkflowInputFormat extends Config {
 			else if (key.equals(BigConfConstants.BIGFRAME_SPARK_LOCAL_DIR)) {
 				SPARK_LOCAL_DIR = value;
 			}
+
+			else if (key.equals(BigConfConstants.BIGFRAME_SPARK_USE_BAGEL)) {
+				SPARK_USE_BAGEL = Boolean.valueOf(value);
+			}
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_VERTICA_DATABASE)) {
 				VERTICA_DATABASE = value;
@@ -216,6 +225,7 @@ public class WorkflowInputFormat extends Config {
 		System.out.println("Spark Home: " + SPARK_HOME);
 		System.out.println("Spark MASTER: " + SPARK_MASTER);
 		System.out.println("Spark local dir: " + SPARK_LOCAL_DIR);
+		System.out.println("Spark use bagel: " + SPARK_USE_BAGEL);
 		
 		System.out.println("Vertica Host Names: " + VERTICA_HOSTNAMES);
 		System.out.println("Vertica Database: " + VERTICA_DATABASE);

@@ -156,19 +156,59 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
    * 2. gamma: parameter controlling transition and teleport contributions
    * Returns twitter ranks for every user and for every product 
    */
-  def computeTR_bagel(numIter:Int = 20, gamma:Double = 0.85) = {
+  private def computeTR_bagel(numIter:Int = 10, gamma:Double = 0.85, 
+      trans: Array[(Int, (Int, Seq[(String, Double)]))], 
+      tele: Array[(Int, Seq[(String, Double)])]) = {
     
     val emptyMsgs = sc.parallelize(List[(Int, TRMessage)]())
 
-    utils.collectProbabilities(transition, teleport)
-    val verts = utils.createVertices(friends) cache
+    val verts = utils.createVertices(transition, teleport) cache
     val partitions = verts.partitions.length
-   
+    
+//    utils.collectProbabilities(transition, teleport) // hack to use collected probabilities
     val result = Bagel.run(sc, verts, emptyMsgs, new TRCombiner(), partitions)(
-        utils.compute(numIter, gamma))
+        utils.compute(trans, tele, numIter, gamma))
     result map (_._2) map {t => t.id -> t.ranks}
   }
   
+  /**
+   * Computes twitter ranks of every user for each product
+   * The users who have not published a single tweet on any product of interest 
+   * are not considered in these computations.
+   * Prerequisites: 
+   * 1. relationship graph induced on 'interesting' users (friends) 
+   * 2. transition and teleportation probabilities (transition and teleport)
+   * Arguments:
+   * 1. number of iterations
+   * 2. gamma: parameter controlling transition and teleport contributions
+   * Returns twitter ranks for every user and for every product 
+   * 3. method to use; either of the standalone or bagel 
+   */
+  def computeTR(useBagel: Boolean = true, numIter:Int = 10, gamma:Double = 0.85) = {
+    if(useBagel) {
+      computeTR_bagel(numIter, gamma, null, null)
+    }
+    else {
+    // save transition and teleport matrices as object files
+    // TODO: remove these files after twitter rank computation
+    val graphPath = basePath.graph_path
+    val tempDir = graphPath.take(1 + graphPath.lastIndexOf('/'))
+    val transitionPath = graphPath + "transition_matrix"
+    println("Saving object file in: " + transitionPath)
+    val teleportPath = graphPath + "teleport_matrix"
+    println("Saving object file in: " + teleportPath)
+
+    transition map {t => t._1._2 -> (t._1._1, t._2)} saveAsObjectFile(transitionPath)
+    teleport saveAsObjectFile(teleportPath)
+
+    // read these object files right back to ensure a shorter lineage for repeated access
+    val transitionNew = sc.objectFile[(Int, (Int, Seq[(String, Double)]))](transitionPath).cache
+    val teleportNew = sc.objectFile[(Int, Seq[(String, Double)])](teleportPath).cache
+
+      computeTR_standalone(numIter, gamma, transitionNew, teleportNew)
+    }
+
+  }
   
   /**
    * Computes twitter ranks of every user for each product
@@ -182,7 +222,12 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
    * 2. gamma: parameter controlling transition and teleport contributions
    * Returns twitter ranks for every user and for every product 
    */
-  def computeTR_standalone(numIter:Int = 10, gamma:Double = 0.85) = {
+  private def computeTR_standalone(numIter:Int = 10, gamma:Double = 0.85,
+      trans: RDD[(Int, (Int, Seq[(String, Double)]))], 
+      tele: RDD[(Int, Seq[(String, Double)])]) = {
+    
+    // initial ranks same as teleport
+    var ranks = tele
     
 //    println("transition: ")
 //    transition.collect().foreach(println)
@@ -190,25 +235,8 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
 //    println("initial ranks: ")
 //    ranks.collect().foreach(println)
 
-    // save transition and teleport matrices as object files
-    // TODO: remove these files after twitter rank computation
-    val graphPath = basePath.graph_path
-    val tempDir = graphPath.take(1 + graphPath.lastIndexOf('/'))
-    val transitionPath = graphPath + "transition_matrix"
-    println("Saving object file in: " + transitionPath)
-    val teleportPath = graphPath + "teleport_matrix"
-    println("Saving object file in: " + teleportPath)
-
-    transition map {t => t._1._2 -> (t._1._1, t._2)} saveAsObjectFile(transitionPath)
-    teleport saveAsObjectFile(teleportPath)
-
-    // read these object files right back
-    val transitionNew = sc.objectFile[(Int, (Int, Seq[(String, Double)]))](transitionPath).cache
-    val teleportNew = sc.objectFile[(Int, Seq[(String, Double)])](teleportPath).cache
-
-    var ranks = teleport 
     for (iter <- 1 to numIter) {
-      ranks = utils.iterateRank(ranks, transitionNew, teleportNew, gamma)
+      ranks = utils.iterateRank(ranks, trans, tele, gamma)
 //      println("After iteration " + iter + ", ranks: ")
 //      ranks.collect().foreach(println)
     }
@@ -216,24 +244,23 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
     ranks
   }
 
-  def microBench(regex: String = ".*", numIter: Int = 10) 
+  def microBench(regex: String = ".*", numIter: Int = 10, useBagel: Boolean = true) 
   : RDD[(Int, Seq[(String, Double)])] = {
     
     val tweets = readTweets(regex)
     
-    microBench(tweets, numIter)
+    microBench(tweets, numIter, useBagel)
     
   }
   
-  def microBench(tweets: RDD[(Tweet, String)], numIter: Int) 
+  def microBench(tweets: RDD[(Tweet, String)], numIter: Int, useBagel: Boolean) 
   : RDD[(Int, Seq[(String, Double)])] = {
     
     buildMatrices(tweets)
     
-    // Using a standalone implementation
-    // TODO: Fix serialization issue with bagel implementation
-    computeTR_standalone(numIter)
+    computeTR(useBagel, numIter)
     
   }
   
 }
+

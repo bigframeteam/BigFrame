@@ -14,11 +14,14 @@ class TRVertex (
   val id: Int, 
   val ranks: Seq[(String, Double)], 
   val outEdges: Seq[Int],
+  val transInProb: Seq[(Int, Seq[(String, Double)])],
+  val teleProb: Seq[(String, Double)],
   val active: Boolean ) extends Vertex with Serializable
 
 class TRMessage (
   val targetId: Int,
-  val sourceId: Int ) extends Message[Int] with Serializable
+  val sourceId: Int,
+  val rankShare: Seq[(String, Double)] ) extends Message[Int] with Serializable
 
 /** Default combiner that simply appends messages together (i.e. performs no aggregation) */
 class TRCombiner extends Combiner[TRMessage, Seq[TRMessage]] 
