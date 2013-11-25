@@ -29,7 +29,7 @@ svg body {
 background: transparent;
 }
 svg div { 
-  border: 1px dotted blue; 
+  border-radius: 8px;
 }
 </style>
 <body>
@@ -43,11 +43,26 @@ var width = 1100;
 var height = 500;
 var color = d3.scale.category10();
 var force=d3.layout.force()
-var links=[{"source":0, "target":1}];
 var nodes=json["jobs"];
-var path;
-var label;
-var node;
+var links=[];
+//generate links dynamically with dependentChildren field
+for (var i=0;i<nodes.length;i++){
+  for (var j=0;j<nodes[i]["dependentChildren"].length;j++){
+      //get the children field of each node
+  //set a link between the current node i and the index of the target node, found by looping
+  links.push({"source":i,"target":findIndexById(nodes[i]["dependentChildren"][j])});
+  }
+}
+
+function findIndexById(id){
+for (var i=0;i<nodes.length;i++){
+  if (nodes[i].jobId==id){
+    return i;
+  }
+}
+return -1;
+}
+
 var svg = d3.select("#visualization").append("svg")
   .attr("width", width)
   .attr("height", height);
@@ -60,7 +75,7 @@ svg.append("svg:defs").selectAll("marker")
   .enter().append("svg:marker")
     .attr("id", String)
     .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 20)
+    .attr("refX", 30)
     .attr("refY", -2.0)
     .attr("markerWidth", 6)
     .attr("markerHeight", 6)
@@ -113,40 +128,98 @@ node = svg.selectAll("node")
     .attr("class", "node")
     .call(force.drag); 
 
-/*
-//add node shape
-node.append("path")
-      .attr("d", d3.svg.symbol()
-        //.type(function(d) { return d.color; }))
-        .type(function(d) { return d3.svg.symbolTypes[0]; })
-        .size(256))
-      .style("fill", function(d) { return color(0); })
+var pi=Math.PI;
+//find number of varieties in node
+//figure out how many are graph, relational, nested
+//define color constants for each type, relational=blue, graph=orange, nested=green
+var varietyColorMap={"relational":0, "graph":1, "nested":2};
+
+for (var i=0;i<nodes.length;i++){
+  hash={"relational":0, "graph":0, "nested":0};
+  for (var j=0;j<nodes[i].rootInputPath.length;j++){
+    for (var key in hash){
+       if (nodes[i].rootInputPath[j].indexOf(key)>=0){
+        hash[key]=hash[key]+1;
+       }
+    }
+}
+array=[];
+for (var key in hash){
+  obj={};
+  obj["group"]=key;
+  obj["value"]=hash[key]
+  array.push(obj);
+}
+//create new field dataVarieties to track counts
+nodes[i]["dataVarieties"]=array;
+}
+
+   var pie = d3.layout.pie()
+        .sort(null)
+        .value(function(d) { return d.value; });
+
+  var arc = d3.svg.arc()
+        .outerRadius(20)
+        .innerRadius(0);
+
+    node.selectAll("path")
+        .data(function(d, i) {return pie(d.dataVarieties); })
+        .enter()
+        .append("svg:path")
+        .attr("d", arc)
+        .attr("fill", function(d, i) { return color(varietyColorMap[d.data.group]); });;
+
 node.append("text")
-.attr("dx", -24)
-    .attr("dy", 24)
     .text(function(d) { return d.jobId; });
-*/
-//add the tooltips
+
+node.append("text")
+.attr("dy", 10)
+    .text(function(d) { return d.endTime-d.startTime+" sec"; });
+
+function stringifyArray(input){
+var string="";
+for (var i=0;i<input.length;i++){
+  string+=input[i]+"<br>";
+}
+return string;
+}
+
+function stringifyVarieties(input){
+  var string="";
+  for (var i=0;i<input.length;i++){
+    if (input[i].value>0){
+      string+=input[i].group+"/";
+    }
+}
+//drop trailing slash
+return string.slice(0, - 1);
+}
+
 var div = node
-.append("foreignObject").attr("width", 120).attr("height",  200)
-    .attr("y", -70)
-    .attr("x", -50)
+.append("foreignObject").attr("width", 150).attr("height", 200)
+    .attr("y", -40)
+    .attr("x", -20)
   .append("xhtml:body")
   .append("div")
     .style("color", "#FFFFFF")
     .style("background-color",function(d) { return color(0);})
-  .html(function(d) { return "Start:"+d.startTime+"<br>Stop:"+d.endTime+"<br>Variety:<br>Input:<br>"});
-//TODO add map/reduce tasks if hadoop
-//TODO color based on variety type
-//TODO expanded info replaces node on click
-//TODO generate dendrogram from operatorInfo on right-click option
-//TODO by default, display name, runtime
+    .style("display", "none")
+    .style("font-size", "10px")
+  .html(function(d) { return "Start:"+d.startTime+"<br>Stop:"+d.endTime+"<br>Variety:"+stringifyVarieties(d.dataVarieties)+"<br>Input:<br>"+stringifyArray(d.rootInputPath)});
 
-//display div on click
-node.on("click", function(d) {
-div                
-    .style("opacity", 1);
-        });
+//display div on dblclick
+node.on("dblclick", function(d) {
+  toggle(d3.select(this).selectAll("div"));
+});
+
+function toggle(e) {
+if(e.style("display") == 'block')
+e.style("display", "none");
+else
+e.style("display", 'block');
+tick();
+}
+
 /*
 //fix a node to the left
   for (var i=0;i<nodes.length;i++){
@@ -161,14 +234,6 @@ div
   nodes[inp].fixed=1;
   */
 
-/*
-//run simulation and stop
-var n=100;
-  for (var i = n * n; i > 0; --i) force.tick();
-  force.stop();
-
-});
-*/
 function moveto (d) { 
      return "M"+d.source.x+","+d.source.y; 
   }; 
