@@ -34,6 +34,10 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.local.dir=${SPARK_LOCAL_DIR}"
 SPARK_USE_BAGEL=true
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.usebagel=${SPARK_USE_BAGEL}"
 
+# Spark degree of parallelism
+SPARK_DOP=8
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.dop=${SPARK_DOP}"
+
 # The Spark Master Address
 SPARK_MASTER=$SPARK_CONNECTION_STRING
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.master=${SPARK_MASTER}"
