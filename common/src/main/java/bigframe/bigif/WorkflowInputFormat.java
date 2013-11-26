@@ -18,6 +18,7 @@ public class WorkflowInputFormat extends Config {
 	
 	private String HIVE_HOME = "";
 	private String HIVE_JDBC_SERVER = "";
+	private boolean HIVE_ORC = true;
 	
 	private String SHARK_HOME = "";
 	private String SPARK_HOME = "";
@@ -56,6 +57,10 @@ public class WorkflowInputFormat extends Config {
 	
 	public String getHiveJDBCServer() {
 		return HIVE_JDBC_SERVER;
+	}
+	
+	public boolean getHiveORC() {
+		return HIVE_ORC;
 	}
 	
 	public String getSharkHome() {
@@ -148,6 +153,10 @@ public class WorkflowInputFormat extends Config {
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_JDBC_SERVER)) {
 				HIVE_JDBC_SERVER = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_ORC)) {
+				HIVE_ORC = Boolean.valueOf(value);
 			}
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_SHARK_HOME)) {

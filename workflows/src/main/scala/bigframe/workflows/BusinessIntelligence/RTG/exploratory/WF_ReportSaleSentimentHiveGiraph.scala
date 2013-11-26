@@ -11,7 +11,7 @@ import org.apache.giraph.conf.GiraphConfiguration
 import java.sql.Connection
 import java.sql.SQLException
 
-class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) extends Query with HiveGiraphRunnable {
+class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, val useOrc: Boolean) extends Query with HiveGiraphRunnable {
 
 	override def printDescription(): Unit = {}
 	
@@ -762,8 +762,13 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int) e
 		stmt.execute("set hive.auto.convert.join=false")
 	}
 	
-	override def prepareHiveGiraphTables(connection: Connection): Unit = {		
-		prepareTableImpl2(connection)
+	override def prepareHiveGiraphTables(connection: Connection): Unit = {
+	    if(useOrc == true) {
+   		    prepareTableImpl2(connection)
+	    }
+	    else {
+	        prepareTableImpl1(connection)
+	    }
 	}
 
 	def runHiveGiraphImpl1(giraph_config: GiraphConfiguration, connection: Connection) : Boolean = {

@@ -32,7 +32,8 @@ public class BigConfConstants {
 	 */
 	public static final String BIGFRAME_HIVE_HOME = "bigframe.hive.home";
 	public static final String BIGFRAME_HIVE_JDBC_SERVER = "bigframe.hive.jdbc.server";
-	
+	public static final String BIGFRAME_HIVE_ORC = "bigframe.hive.orc";
+
 	/**
 	 * Shark specific
 	 */

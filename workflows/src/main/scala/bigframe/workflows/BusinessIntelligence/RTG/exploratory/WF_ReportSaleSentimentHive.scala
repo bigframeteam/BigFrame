@@ -22,7 +22,7 @@ import org.apache.hadoop.conf.Configuration
 
 import scala.collection.JavaConversions._
 
-class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends Query  with HiveRunnable{
+class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val useOrc: Boolean) extends Query  with HiveRunnable{
 
 	def printDescription(): Unit = {}
 
@@ -778,8 +778,12 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int) extends
 	 * Prepeare the basic tables before run the Hive query
 	 */
 	override def prepareHiveTables(connection: Connection): Unit = {
-		prepareHiveTablesImpl2(connection)
-	
+        if(useOrc == true) {
+            prepareHiveTablesImpl2(connection)
+        }
+        else {
+            prepareHiveTablesImpl1(connection)
+        }
 	}
 	
 	def cleanUpHiveImpl1(connection: Connection): Unit = {

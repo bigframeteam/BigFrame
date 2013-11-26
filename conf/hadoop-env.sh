@@ -9,6 +9,11 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hdfs.root.dir=${HDFS_ROOT_DIR}"
 HIVE_HOME=$HIVE_HOME
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hive.home=${HIVE_HOME}"
 
+# The Hive ORC File Setting
+ORC_SETTING="true"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hive.orc=${ORC_SETTING}"
+
+
 # The Hive JDBC Server Address
 HIVE_JDBC_SERVER="jdbc:hive://localhost:10000/default"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hive.jdbc.server=${HIVE_JDBC_SERVER}"
