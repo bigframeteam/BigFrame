@@ -48,6 +48,7 @@ LogFactory.getLog(classOf[SparkEngineDriver])
 		LOG.info("Running Spark Query");
 		for(query: SparkRunnable <- queries) {
 			System.setProperty("spark.local.dir", spark_local_dir)
+			System.setProperty("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
 			// Following statement is ineffective, commenting it
 			// System.setProperty("spark.default.parallelism", spark_dop)
 			val sc = new SparkContext(spark_connection_string, "BigFrame", 
