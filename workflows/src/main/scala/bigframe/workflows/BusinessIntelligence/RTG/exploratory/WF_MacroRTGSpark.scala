@@ -11,7 +11,7 @@ import bigframe.workflows.BusinessIntelligence.RTG.graph.TwitterRankDriver
 import bigframe.workflows.BusinessIntelligence.RTG.graph.GraphUtilsSpark
 import bigframe.workflows.util.DateUtils
 
-class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int, val useBagel: Boolean) extends SparkRunnable {
+class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int, val useBagel: Boolean, val dop: Integer) extends SparkRunnable {
     final var OUTPUT_PATH = "OUTPUT_PATH"
     private var output_path: String = System.getenv(OUTPUT_PATH) + "/spark/macro_rel_nested_graph"
   
@@ -41,26 +41,26 @@ class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int, val useBag
 	  
 	  // filter tweets by items relevant to promotions
 	  // tuples item_sk -> tweet
-	  val relevantTweets = (allTweets map (t => (t.products(0), t))).join(
-	      promotions map (t => (t._2(4), t._1))).map(t => t._2._1)
+	  val relevantTweets = (allTweets map (t => (t.products(0), t)) coalesce(dop)).join(
+	      promotions map (t => (t._2(4), t._1)), dop).map(t => t._2._1)
 	      
 	  val relevantTweetsWithItem = (relevantTweets map (
 	      t => (t.products(0), t))).join(promotions map (
-	          t => (t._2(4), t._1))).map(t => t._2._1 -> t._2._2)
+	          t => (t._2(4), t._1)), dop).map(t => t._2._1 -> t._2._2)
 	 
 	  /**
 	   *  Do graph processing on all the relevant tweets
 	   *  can be done in a separate thread
 	   */  
 	  val twitterRanks = graphExecutor.microBench(
-	      relevantTweetsWithItem, numIter, useBagel)
+	      relevantTweetsWithItem, numIter, useBagel, dop)
 	  
 	  // run sentiment analysis
 	  val scoredTweets = textExecutor addSentimentScore relevantTweets
 	  
 	  val scoredTweetsWithUser = (scoredTweets map (
 	      t => (t.products(0), t))).join(promotions map (
-	          t => (t._2(4), t._1))).map(t => t._2._2 -> t._2._1).map { t => 
+	          t => (t._2(4), t._1)), dop).map(t => t._2._2 -> t._2._1).map { t => 
 	            t._2.userID -> 
 	            (t._1, t._2.products(0), t._2.created_at, t._2.score)
 	  }
@@ -83,7 +83,7 @@ class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int, val useBag
 	  
 	  // join promotion with tweets, filter tweets not within promotion dates
 	  // tuples (product_name -> (promo_sk, score))
-	  val sentimentsPerPromotion = promoDates.join(weightedTweets)
+	  val sentimentsPerPromotion = promoDates.join(weightedTweets, dop)
 	  .mapValues (t => (t._1(1), t._1(2), t._1(3), t._2._1, t._2._2))
 	  .filter (t => (dateUtils.isDateWithin(t._2._4, t._2._2, t._2._3)))
 	  .mapValues (t => (t._1, t._5))
@@ -91,7 +91,7 @@ class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int, val useBag
   
 	  // aggregate sentiment values for every promotion
 	  val aggSentiments = sentimentsPerPromotion.reduceByKey(
-	      (a, b) => (a._1, a._2 + b._2))
+	      (a, b) => (a._1, a._2 + b._2), dop)
 
 	  /**
 	   *  join relational output with text output
@@ -100,7 +100,7 @@ class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int, val useBag
 	   *  TODO: Do a outer join
 	   */ 
 	  val joinedResult = (sales map {t => t._2._1 -> t._2._2}).join(
-	      aggSentiments map {t => t._2._1 -> (t._1, t._2._2)}).map {
+	      aggSentiments map {t => t._2._1 -> (t._1, t._2._2)}, dop).map {
 		t => t._1 -> (t._2._2._1, t._2._1, t._2._2._2)}
 
 	  // save the output to hdfs

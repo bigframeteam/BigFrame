@@ -30,7 +30,8 @@ LogFactory.getLog(classOf[SparkEngineDriver])
 	private var spark_home_string: String = ""
 	private var jar_path_string: String = ""
 	private var spark_local_dir: String = ""
-	private var spark_use_bagel: Boolean = true
+//	private var spark_use_bagel: Boolean = true
+//	private var spark_dop: Integer = 8
 
 	private var queries: java.util.List[SparkRunnable] = new java.util.ArrayList[SparkRunnable]()
 
@@ -46,8 +47,9 @@ LogFactory.getLog(classOf[SparkEngineDriver])
 		init()
 		LOG.info("Running Spark Query");
 		for(query: SparkRunnable <- queries) {
-			System.setProperty("spark.local.dir",
-spark_local_dir)
+			System.setProperty("spark.local.dir", spark_local_dir)
+			// Following statement is ineffective, commenting it
+			// System.setProperty("spark.default.parallelism", spark_dop)
 			val sc = new SparkContext(spark_connection_string, "BigFrame", 
 						spark_home_string, Seq(jar_path_string))
 			if(query.runSpark(sc)) {
@@ -74,6 +76,7 @@ spark_local_dir)
 		jar_path_string = System.getenv(JAR_PATH)
 		spark_home_string = workIF.getSparkHome()
 		spark_local_dir = workIF.getSparkLocalDir()
-		spark_use_bagel = workIF.getSparkUseBagel()
+//		spark_use_bagel = workIF.getSparkUseBagel()
+//		spark_dop = workIf.getSparkDop()
 	}	
 }

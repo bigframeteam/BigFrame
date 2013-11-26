@@ -96,14 +96,14 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
    * Builds transition matrix and teleportation matrix by reading graph 
    * relationships and tweets about products specified by 'regex'
    */
-  def buildMatrices(tweets: RDD[(Tweet, String)]) = {
+  def buildMatrices(tweets: RDD[(Tweet, String)], dop: Integer) = {
 
     // count number of tweets by each user on products of interest
-    val tweetsByUser = tweets map {t => t._1.userID -> 1} reduceByKey (
+    val tweetsByUser = tweets map {t => t._1.userID -> 1} coalesce(dop) reduceByKey (
         (a,b) => (a + b))
         
     // twitter graph
-    val graph = read map {t => t(0).toInt -> t(1).toInt}
+    val graph = read map {t => t(0).toInt -> t(1).toInt} coalesce(dop)
             
     // read all graph relationships and find a subgraph induced on users who
     // have tweeted about products of interest
@@ -244,19 +244,19 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
     ranks
   }
 
-  def microBench(regex: String = ".*", numIter: Int = 10, useBagel: Boolean = true) 
+  def microBench(regex: String = ".*", numIter: Int = 10, useBagel: Boolean = true, dop: Integer = 8) 
   : RDD[(Int, Seq[(String, Double)])] = {
     
     val tweets = readTweets(regex)
     
-    microBench(tweets, numIter, useBagel)
+    microBench(tweets, numIter, useBagel, dop)
     
   }
   
-  def microBench(tweets: RDD[(Tweet, String)], numIter: Int, useBagel: Boolean) 
+  def microBench(tweets: RDD[(Tweet, String)], numIter: Int, useBagel: Boolean, dop: Integer) 
   : RDD[(Int, Seq[(String, Double)])] = {
     
-    buildMatrices(tweets)
+    buildMatrices(tweets, dop)
     
     computeTR(useBagel, numIter)
     
