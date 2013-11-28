@@ -1,55 +1,43 @@
 <%= form_tag("/datagen/submit") do %>
 
 <h3>System Settings</h3>
-  <%=label_tag :slide, '$HADOOP_HOME'%>
-  <%= text_field_tag(:hadoop_home, @hadoop_home, :size => 50) %>
-  <%=label_tag :range, '$TPCHDS_LOCAL'%>
+  <%=label_tag :bigframe_home,'$BIGFRAME_HOME'%>
+  <%= text_field_tag(:bigframe_home, @bigframe_home) %>
+  <%=label_tag :hadoop_home, '$HADOOP_HOME'%>
+  <%= text_field_tag(:hadoop_home, @hadoop_home) %>
+  <%=label_tag :tpchds_local, '$TPCHDS_LOCAL'%>
   <%= text_field_tag(:tpchds_local, @tpchds_local) %>
  <hr>
 
 <h3>Data Specification</h3>
   <h5>Data Volume</h5>
-  <%= select_tag(:datasize, options_for_select(['Tiny - around 10GB','Small - around 100GB','Medium - around 1TB','Large - around 10TB']) ) %>
-  <br><br>
 
+  <%= select_tag(:data_volume, options_for_select([
+    ['tiny - around 10GB','tiny'],['small - around 100GB','small'],
+    ['medium - around 1TB','medium'],['large - around 10TB','large']])) %>
+  <br><br>
   <h5>Data Variety</h5>
   <%=label_tag :groupfield, 'Select one or more type(s) of data you want to create.' %>
 
   <%= check_box_tag :relational%> Relational <br>
   <%= check_box_tag :text%> Text  <br>
-  <%= check_box_tag :graph %> Graph <br>
-  <%= check_box_tag :nested %> Nested
+  <%= check_box_tag :graph%> Graph  <br>
 
   <br><br>
 
 
   <h5>Data Velocity</h5>
 
-  <%=label_tag :relvel, 'Relational'%>
-  <%= text_field_tag(:relvel, @relvel) %>
-  <br>
-  <%= select_tag(:datasize, options_for_select(['Rest','Slow','Fast']) ) %>
-  <%=label_tag :textvel, 'Text'%>
-  <%= text_field_tag(:textvel, @textvel) %>
-  <br>
-  <%= select_tag(:datasize, options_for_select(['Rest','Slow','Fast']) ) %>
-  <%=label_tag :graphvel, 'Graph'%>
-  <%= text_field_tag(:tpchds_local, @tpchds_local) %>
-  <br>
-  <%= select_tag(:datasize, options_for_select(['Rest','Slow','Fast']) ) %>
-  <%=label_tag :nestedvel, 'Nested'%>
-  <%= text_field_tag(:nestedvel, @nestedvel) %>
-<br>
-  <%= select_tag(:datasize, options_for_select(['Rest','Slow','Fast']) ) %>
-
+  <%= select_tag(:data_velocity, options_for_select(['rest','slow','fast'] )) %>
   <hr>
 
 <h3>Data Outputs</h3>
 
   <%=label_tag :hadoop_output, 'The HDFS path to store data'%>
-  <%= text_field_tag(:hadoop_home, @hadoop_home, :size => 50) %>
+  <%= text_field_tag(:hdfs_path, @hdfs_path) %>
 <br>
 <br>
 
   <%= submit_tag("Generate Data", :name => 'submit', :class=>"btn btn-large btn-primary" ) %>
 <% end %>
+

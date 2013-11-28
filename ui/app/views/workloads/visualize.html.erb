@@ -75,7 +75,7 @@ svg.append("svg:defs").selectAll("marker")
   .enter().append("svg:marker")
     .attr("id", String)
     .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 30)
+    .attr("refX", 40)
     .attr("refY", -2.0)
     .attr("markerWidth", 6)
     .attr("markerHeight", 6)
@@ -87,7 +87,7 @@ force
     .nodes(nodes)
     .links(links)
     .size([width, height])
-    .linkDistance(200)
+    .linkDistance(300)
     .charge(-1000)
     .on("tick", tick)
     .start();
@@ -120,13 +120,6 @@ label = svg.selectAll("text")
                  return "#path"+d.source.index+"_"+d.target.index; 
               });
 */
-// define the nodes
-node = svg.selectAll("node")
-  .data(force.nodes())
-  .enter()
-  .append("g")
-    .attr("class", "node")
-    .call(force.drag); 
 
 var pi=Math.PI;
 //find number of varieties in node
@@ -159,22 +152,66 @@ nodes[i]["dataVarieties"]=array;
         .value(function(d) { return d.value; });
 
   var arc = d3.svg.arc()
-        .outerRadius(20)
+        .outerRadius(10)
         .innerRadius(0);
 
+        // define the nodes
+node = svg.selectAll("node")
+  .data(force.nodes())
+  .enter()
+  .append("g")
+    .attr("class", "node")
+    .call(force.drag); 
+
+//create expandall button
+var expandAll=svg.append("g");
+
+expandAll.append("svg:rect")
+    .attr('fill',"green")
+    .attr('x',50)
+    .attr('y',30)
+    .attr('width',50)
+    .attr('height',30)
+    .attr('rx',5)
+    .attr('ry',5);
+
+expandAll
+.append("text")
+.attr('style',"fill:white")
+.text("Expand all")
+.attr('x',50)
+.attr('y',50);
+
+//draw circle
     node.selectAll("path")
         .data(function(d, i) {return pie(d.dataVarieties); })
         .enter()
         .append("svg:path")
         .attr("d", arc)
-        .attr("fill", function(d, i) { return color(varietyColorMap[d.data.group]); });;
+        .attr("transform", "translate(" + -40 + "," + 0 + ")")
+        .attr("fill", function(d, i) { return color(varietyColorMap[d.data.group]); });
 
-node.append("text")
-    .text(function(d) { return d.jobId; });
+//draw box
+node.append("svg:circle")
+.attr('y', -20)
+.attr('x', -25)
+        .attr("fill","yellow")
+        .attr("r",30);
 
-node.append("text")
-.attr("dy", 10)
-    .text(function(d) { return d.endTime-d.startTime+" sec"; });
+var nodeText=node.append("text");
+nodeText.append("tspan")
+.attr("x",-15)
+.attr("y",0)
+.text(function(d) { return d.jobId; });
+nodeText.append("tspan")
+.attr("x",-15)
+.attr("y",10)
+.text(function(d) { return d.endTime-d.startTime+" sec"; });
+nodeText.append("tspan")
+.attr("x",-15)
+.attr("y",20)
+.text(function(d) { return d.parallelism+" DoP"; });
+
 
 function stringifyArray(input){
 var string="";
@@ -196,7 +233,7 @@ return string.slice(0, - 1);
 }
 
 var div = node
-.append("foreignObject").attr("width", 150).attr("height", 200)
+.append("foreignObject").attr("width", 250).attr("height", 200)
     .attr("y", -40)
     .attr("x", -20)
   .append("xhtml:body")
@@ -205,7 +242,17 @@ var div = node
     .style("background-color",function(d) { return color(0);})
     .style("display", "none")
     .style("font-size", "10px")
-  .html(function(d) { return "Start:"+d.startTime+"<br>Stop:"+d.endTime+"<br>Variety:"+stringifyVarieties(d.dataVarieties)+"<br>Input:<br>"+stringifyArray(d.rootInputPath)});
+  .html(function(d) { 
+    html="";
+    if (d.mapTasks!=null && d.reduceTasks!=null){
+      html+=d.mapTasks+" map/"+d.reduceTasks+" reduce<br>"
+    }
+    return html+"Start:"+d.startTime+"<br>Stop:"+d.endTime+"<br>Variety:"+stringifyVarieties(d.dataVarieties)+"<br>Input:<br>"+stringifyArray(d.rootInputPath)});
+
+expandAll.on("click",function(d){
+  toggle(svg.selectAll("div"));
+
+});
 
 //display div on dblclick
 node.on("dblclick", function(d) {

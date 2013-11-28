@@ -202,6 +202,7 @@ for ($host = 0; $host < $num_hosts; $host++)
    
    # Create the data.properties file and copy it to the host
    open OUTFILE, ">", "data.properties" or die $!;
+   print OUTFILE qq(host_name = $hosts[$host] \n);
    print OUTFILE qq(scaling_factor = $SCALE_FACTOR \n);
    print OUTFILE qq(num_file_splits = $NUM_FILE_SPLITS \n);
    print OUTFILE qq(first_file_split = $first_file_split \n);

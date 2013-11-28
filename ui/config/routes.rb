@@ -5,9 +5,16 @@ Ui::Application.routes.draw do
   get "home/about"
   get "datagen/index"
   get "datagen/new"
+  get "datagen/log"
+  post "datagen/submit"
   get "execution/index"
+  post "execution/submit"
+  get "execution/log"
+
   post "sessions/destroy"
-#resources :users
+
+
+resources :users
 resources :sessions
   root to: "home#index"
   # The priority is based upon order of creation: first created -> highest priority.

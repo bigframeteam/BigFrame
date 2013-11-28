@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= content_for?(:title) ? yield(:title) : "BigFrame" %></title>
     <%= csrf_meta_tags %>
-
+    <%= stylesheet_link_tag "bootstrapSwitch.css" %>
 
     <!-- Le styles -->
     <style type="text/css">
@@ -65,7 +65,7 @@
             <ul class="nav">
               <li id = "datagen"><%= link_to "Data Generation", :controller=>"datagen", :action=>"index" %></li>
               <li id = "execution"><%= link_to "Execution", :controller=>"execution", :action=>"index"  %></li>
-              <li id = "workload"><%= link_to "Workloads", :controller=>"workloads", :action=>"index" %></li>
+              <li id = "workloads"><%= link_to "Workloads", :controller=>"workloads", :action=>"index" %></li>
               <li><%= link_to "About", :controller=>"home", :action=>"about" %></li>
             </ul>
 
@@ -111,6 +111,7 @@
       </footer>
 
     </div> <!-- /container -->
+    <%= javascript_include_tag "bootstrapSwitch.js" %>
 
   </body>
 </html>

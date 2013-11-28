@@ -30,9 +30,13 @@ gem 'jbuilder', '~> 1.2'
 # Use bootstrap
 gem "twitter-bootstrap-rails"
 
-# Simple_Form
+
+# net ssh
+gem 'net-ssh'
+
 gem 'simple_form'
 
+gem 'delayed_job_active_record'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -41,6 +45,8 @@ end
 
 # Use ActiveModel has_secure_password
  gem 'bcrypt-ruby', '~> 3.0.0'
+
+
 
 # Use unicorn as the app server
 # gem 'unicorn'

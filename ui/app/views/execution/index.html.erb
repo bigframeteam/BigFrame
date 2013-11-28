@@ -1,60 +1,49 @@
-<%= form_tag("/datagen/submit") do %>
+
+<!--# TODO: dynamic drop down meunu for system settings-->
+
+<%= form_tag("/execution/submit") do %>
 
 <h3>Query Specification</h3>
 	<h5>Query Volume</h5>
-  <%= select_tag(:datasize, options_for_select(['Small','Medium ','Large']) ) %>
+  <%= select_tag(:query_volume, options_for_select(['small','medium','large']) ) %>
   <br><br>
 
   <h5>Query Variety</h5>
-  <%= select_tag(:datasize, options_for_select(['Relational data only','Text data only','Mix of relational and text data','Mix of relational, text and graph data'])) %>
+  <%= select_tag(:query_variety, options_for_select([
+    ['relational data only','relational'],['text data only','nested'],['graph only','graph'], 
+    ['mix of relational and text data','relational, nested'],['mix of relational, text and graph data','relational, nested, graph']])) %>
   <br><br>
 
 
   <h5>Query Velocity</h5>
-  <%= select_tag(:datasize, options_for_select(['Exploratory','Continuous'])) %>
+  <%= select_tag(:query_velocity, options_for_select(['exploratory','continuous'])) %>
 
   <hr>
 
-<h3>System Settings</h3>
-<h5>Systems Under Test</h5>
-  <%=label_tag :groupfield, 'Select one or more system(s) under test.' %>
-  <%= check_box_tag :hadoop%> Hadoop <br>
-  <%= check_box_tag :hive%> Hive  <br>
-  <%= check_box_tag :spark%> Spark <br>
-  <%= check_box_tag :shark %> Shark <br>
-  <%= check_box_tag :storm %> Storm <br><br>
+<h3>Systems Under Test</h3>
+<h5>Relational</h5>
+<%= select_tag(:queryengine_relational, options_for_select(['hive','shark','hadoop', 'spark', 'vertica'])) %>
 
+<h5>Text</h5>
+<%= select_tag(:queryengine_nested, options_for_select(['hadoop', 'spark', 'vertica'])) %>
+
+<h5>Graph</h5>
+<%= select_tag(:queryengine_graph, options_for_select(['hadoop', 'spark', 'vertica'])) %>
+
+<!--
 <h5>Global Parameters</h5>
   <%=label_tag :slide, '$HADOOP_HOME'%>
-  <%= text_field_tag(:hadoop_home, @hadoop_home, :size => 50) %>
+  <%= text_field_tag(:hadoop_home, @hadoop_home) %>
   <%=label_tag :range, '$SPARK_HOME'%>
   <%= text_field_tag(:spark_home, @tpchds_local) %>
-
 <hr>
-<h3>Query Outputs</h3>
-
-  <%=label_tag :hadoop_output, 'The path to store output data'%>
-  <%= text_field_tag(:hadoop_home, @hadoop_home, :size => 50) %>
-<hr>
-
+-->
+  <hr>
+<h3>HDFS Root Path</h3>
+  <%=label_tag :path_input, '$HDFS_ROOT_DIR'%>
+  <%= text_field_tag(:hdfs_root_dir, @hadoop_home) %>
+<br>
   <%= submit_tag("Run Query", :name => 'submit', :class=>"btn btn-large btn-primary" ) %>
 
 
 <% end %>
-
-
-Contains the form to execute new queries.
-
-Dropdown (Engine), Hive, Spark
-
-button to go to a config page for each engine?
-
-options:
-Micro/Macro
-what other options?
-
-textfield for output path
-
-button to submit query
-
-goes straight to visualization path for that job (or maybe just the list of running queries)

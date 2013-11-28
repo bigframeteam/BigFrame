@@ -1,2 +1,7 @@
 README.md
 .DS_Store
+target/
+.project
+.classpath
+.cache
+.settings
