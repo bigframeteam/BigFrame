@@ -5,6 +5,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.FileSystem;
@@ -28,6 +30,8 @@ import bigframe.datagen.relational.tpcds.CollectTPCDSstatNaive;
  * 
  */
 public class RawTweetGenHadoop extends RawTweetGen {
+	
+	private static final Log LOG = LogFactory.getLog(RawTweetGenHadoop.class);
 
 	public RawTweetGenHadoop(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
@@ -58,15 +62,6 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		// TODO Auto-generated method stub
 		System.out.println("Generating raw tweets data!");
 
-		CollectTPCDSstatNaive tpcds_stat_collecter = new CollectTPCDSstatNaive();
-		tpcds_stat_collecter.genTBLonHDFS(conf, (int) targetGB, RawTweetGenConstants.PROMOTION_TBL);
-		tpcds_stat_collecter.genTBLonHDFS(conf, (int) targetGB, RawTweetGenConstants.ITEM_TBL);
-
-		Date dateBegin = stringToDate(RawTweetGenConstants.TWEET_BEGINDATE);
-		Date dateEnd = stringToDate(RawTweetGenConstants.TWEET_ENDDATE);
-
-
-		// Separate twitter account into customer and non customer
 		//
 		// Calculate the number twitter account based on the graph volume in GB
 		float nested_proportion = conf.getDataScaleProportions().get(
@@ -75,15 +70,25 @@ public class RawTweetGenHadoop extends RawTweetGen {
 				BigConfConstants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION);
 		float tpcds_proportion = conf.getDataScaleProportions().get(
 				BigConfConstants.BIGFRAME_DATAVOLUME_RELATIONAL_PROPORTION);
-
+		
 		float graph_targetGB = twitter_graph_proportion
 				/ nested_proportion * targetGB;
 		float tpcds_targetGB = tpcds_proportion
 				/ nested_proportion * targetGB;
 
-		Integer num_products = (int) tpcds_stat_collecter
-				.getNumOfItem((int) tpcds_targetGB);
-		assert (num_products != null);
+		CollectTPCDSstatNaive tpcds_stat_collecter = new CollectTPCDSstatNaive();
+		
+		tpcds_stat_collecter.genTBLonHDFS(conf, tpcds_targetGB, RawTweetGenConstants.PROMOTION_TBL);
+		tpcds_stat_collecter.genTBLonHDFS(conf, tpcds_targetGB, RawTweetGenConstants.ITEM_TBL);
+
+		Date dateBegin = stringToDate(RawTweetGenConstants.TWEET_BEGINDATE);
+		Date dateEnd = stringToDate(RawTweetGenConstants.TWEET_ENDDATE);
+
+
+		// Separate twitter account into customer and non customer
+
+		
+//		assert (num_products != null);
 		int num_twitter_user = (int) KroneckerGraphGen
 				.getNodeCount(graph_targetGB);
 
@@ -108,7 +113,6 @@ public class RawTweetGenHadoop extends RawTweetGen {
 			e1.printStackTrace();
 		}
 		
-		//long tweets_per_day = getTweetsPerDay(days_between);
 		int GBPerMapper = RawTweetGenConstants.GB_PER_MAPPER;
 		long tweets_per_mapper = getNumTweetsBySize(GBPerMapper);
 		long total_tweets = getTotalNumTweets();
@@ -122,12 +126,8 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		mapred_config.setLong(RawTweetGenConstants.TIME_END,
 				dateEnd_time_sec);
 		mapred_config.setInt(RawTweetGenConstants.NUM_MAPPERS, num_Mapper);
-//		mapreduce_config.setLong(RawTweetGenConstants.TWEETS_PER_DAY,
-//				tweets_per_day);
 		mapred_config.setLong(RawTweetGenConstants.TWEETS_PER_MAPPER,
 				tweets_per_mapper);
-		mapred_config
-		.setLong(RawTweetGenConstants.NUM_PRODUCT, num_products);
 		mapred_config.setLong(RawTweetGenConstants.NUM_TWITTER_USER,
 				num_twitter_user);
 		mapred_config.setFloat(RawTweetGenConstants.TPCDS_TARGET_GB,

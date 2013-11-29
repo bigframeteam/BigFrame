@@ -70,8 +70,8 @@ public abstract class CollectTPCDSstat {
 
 	}
 
-	public abstract  long getNumOfCustomer(int targetGB);
-	public abstract long getNumOfItem(int targetGB);
+	public abstract  long getNumOfCustomer(float targetGB);
+	public abstract long getNumOfItem(float targetGB);
 
 	public abstract long[] getCustTwitterAcc(float tpcds_targetGB, float graph_targetGB);
 	public abstract long [] getNonCustTwitterAcc(long[] customer_twitterAcc, int num_twitter_user);

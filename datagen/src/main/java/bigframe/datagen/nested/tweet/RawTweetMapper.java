@@ -58,8 +58,8 @@ Mapper<NullWritable, RawTweetInfoWritable, NullWritable, Text> {
 				RawTweetGenConstants.TPCDS_TARGET_GB, 0);
 		float graph_targetGB = mapreduce_config.getFloat(
 				RawTweetGenConstants.GRAPH_TARGET_GB, 0);
-		int num_products = mapreduce_config.getInt(
-				RawTweetGenConstants.NUM_PRODUCT, 0);
+//		int num_products = mapreduce_config.getInt(
+//				RawTweetGenConstants.NUM_PRODUCT, 0);
 
 		CollectTPCDSstat tpcds_stat_collecter = new CollectTPCDSstatNaive();
 		
@@ -108,7 +108,7 @@ Mapper<NullWritable, RawTweetInfoWritable, NullWritable, Text> {
 				+ time_begin, tweet_textGen, tweet_start_ID);
  
 		tweet_gen_dist.init(customer_twitterAcc, non_customer_acc, time_begin, 
-				time_step, promt_info, item_info, num_products, tweet_json);
+				time_step, promt_info, item_info, item_info.getProdName().size(), tweet_json);
 		
 		for(int i = 0; i < tweets_per_mapper; i++) {
 			context.write(null, new Text(tweet_gen_dist.getNextTweet().toString()));

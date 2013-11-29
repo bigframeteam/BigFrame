@@ -162,7 +162,7 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 	}
 
 	
-	public void genTBLonHDFS(Config conf, int targetGB, String table_name) {
+	public void genTBLonHDFS(Config conf, float targetGB, String table_name) {
 		String single_tbl_gen_script = conf.getProp().get(
 				BigConfConstants.BIGFRAME_GEN_SINGLETBL_SCRIPT);
 		// System.out.println("gen promotion tbl script:" +
@@ -381,7 +381,7 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 //		return promt_info;
 //	}
 
-	private int getScaleSlot(int targetGB) {
+	private int getScaleSlot(float targetGB) {
 		int i = 0;
 
 		for (; targetGB > arScaleVolume[i]; i++) {
@@ -403,7 +403,7 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		return res;
 	}
 
-	private long logScale(int tableNum, int targetGB) {
+	private long logScale(int tableNum, float targetGB) {
 		long rowCount = 0;
 		int index = 1, delta;
 		float Offset;
@@ -420,18 +420,18 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 	}
 
 	@Override
-	public long getNumOfCustomer(int targetGB) {
+	public long getNumOfCustomer(float targetGB) {
 		return get_rowcount(4, targetGB) * 1000;
 	}
 
 	@Override
-	public long getNumOfItem(int targetGB) {
+	public long getNumOfItem(float targetGB) {
 		return get_rowcount(11, targetGB) * 2000;
 	}
 
-	private long get_rowcount(int table, int targetGB) {
+	private long get_rowcount(int table, float targetGB) {
 		long baseRowCount = 0;
-		switch (targetGB) {
+		switch ((int)targetGB) {
 		case 100000:
 			baseRowCount = dist_weight(table + 1, 9);
 			break;
