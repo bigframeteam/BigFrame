@@ -15,6 +15,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.Path;
 
 import bigframe.bigif.BigConfConstants;
@@ -35,7 +37,7 @@ public class DataLoaderDriver {
 	 * ***************************************************************
 	 */
 
-	//private static final Log LOG = LogFactory.getLog(DataLoaderDriver.class);
+	private static final Log LOG = LogFactory.getLog(DataLoaderDriver.class);
 
 	private static Map<String, HashSet<String> > supported_engines = new HashMap<String, HashSet<String> >();
 
@@ -246,6 +248,8 @@ public class DataLoaderDriver {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					
+					
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/store_sales"), "store_sales");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/catalog_sales"), "catalog_sales");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/store_sales"), "customer");
@@ -263,9 +267,12 @@ public class DataLoaderDriver {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
+					//dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
+					
+					LOG.info("Begin loading the tweet data");
 					dataloader.load(new Path(line.getOptionValue(SRC)), "tweet");
 					dataloader.load(new Path(line.getOptionValue(SRC)), "entities");
+					LOG.info("End loading the tweet data");
 					
 				}
 				

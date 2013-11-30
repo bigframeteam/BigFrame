@@ -87,8 +87,6 @@ public class RawTweetGenHadoop extends RawTweetGen {
 
 		// Separate twitter account into customer and non customer
 
-		
-//		assert (num_products != null);
 		int num_twitter_user = (int) KroneckerGraphGen
 				.getNodeCount(graph_targetGB);
 
