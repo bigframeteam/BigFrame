@@ -165,16 +165,18 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
    */
   private def computeTR_bagel(numIter:Int = 10, gamma:Double = 0.85, 
       trans: Array[(Int, (Int, Seq[(String, Double)]))], 
-      tele: Array[(Int, Seq[(String, Double)])]) = {
+      tele: Array[(Int, Seq[(String, Double)])], optimizeMemory: Boolean) = {
     
+    val storage = optimizeMemory match { case true => StorageLevel.MEMORY_ONLY_SER case false => StorageLevel.MEMORY_ONLY }
+
     val emptyMsgs = sc.parallelize(List[(Int, TRMessage)]())
 
-    val verts = utils.createVertices(transition, teleport) cache
+    val verts = utils.createVertices(transition, teleport) persist(storage)
     val partitions = verts.partitions.length
     
 //    utils.collectProbabilities(transition, teleport) // hack to use collected probabilities
-    val result = Bagel.run(sc, verts, emptyMsgs, new TRCombiner(), partitions)(
-        utils.compute(trans, tele, numIter, gamma))
+    val result = Bagel.run(sc, verts, emptyMsgs, new TRCombiner(), partitions, storage)(
+        utils.compute(numIter, gamma))
     result map (_._2) map {t => t.id -> t.ranks}
   }
   
@@ -193,7 +195,7 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
    */
   def computeTR(useBagel: Boolean = true, numIter:Int = 10, gamma:Double = 0.85, optimizeMemory: Boolean = true) = {
     if(useBagel) {
-      computeTR_bagel(numIter, gamma, null, null)
+      computeTR_bagel(numIter, gamma, null, null, optimizeMemory)
     }
     else {
      var transitionNew: RDD[(Int, (Int, Seq[(String, Double)]))] = null

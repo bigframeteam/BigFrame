@@ -5,7 +5,7 @@ package bigframe.workflows.BusinessIntelligence.RTG.graph
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext._
-
+import org.apache.spark.HashPartitioner
 /**
  * @author mayuresh
  *
@@ -142,9 +142,9 @@ case class GraphUtilsSpark() {
 //    friends join initialranks map {t => t._1 -> new TRVertex(t._1, t._2._2, 
 //        t._2._1 map {_._1} toList, true)}
     
-    val friends = (transition map {t => t._1._1 -> (t._1._2, t._2)}) groupByKey()
+    val friends = (transition map {t => t._1._1 -> (t._1._2, t._2)}) groupByKey(new HashPartitioner(transition.partitions.length))
     
-    friends join teleport map {t => t._1 -> new TRVertex(t._1, t._2._2, 
+    friends join (teleport, partitioner=friends.partitioner.get) map {t => t._1 -> new TRVertex(t._1, t._2._2, 
             t._2._1 map {_._1} toList, t._2._1, t._2._2, true)}
   }
   
@@ -155,9 +155,7 @@ case class GraphUtilsSpark() {
    * 2. All incoming messages
    * 3. Superstep number
    */
-  def compute (transition: Array[(Int, (Int, Seq[(String, Double)]))], 
-      teleport: Array[(Int, Seq[(String, Double)])], 
-      numIter: Int, gamma: Double):
+  def compute (numIter: Int, gamma: Double):
       (TRVertex, Option[Iterable[TRMessage]], Int) => 
         (TRVertex, Array[TRMessage]) = (self: TRVertex, 
             msgs: Option[Iterable[TRMessage]], superstep: Int) => {
