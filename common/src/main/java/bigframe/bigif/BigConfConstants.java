@@ -47,6 +47,8 @@ public class BigConfConstants {
 	public static final String BIGFRAME_SPARK_LOCAL_DIR = "bigframe.spark.local.dir";
 	public static final String BIGFRAME_SPARK_USE_BAGEL = "bigframe.spark.usebagel";
 	public static final String BIGFRAME_SPARK_DOP = "bigframe.spark.dop";
+	public static final String BIGFRAME_SPARK_COMPRESS_MEMORY = "bigframe.spark.compress";
+	public static final String BIGFRAME_SPARK_MEMORY_FRACTION = "bigframe.spark.memoryFraction";
 
 	/**
 	 * Vertica specific

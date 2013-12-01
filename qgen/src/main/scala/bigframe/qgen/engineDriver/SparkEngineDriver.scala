@@ -32,6 +32,8 @@ LogFactory.getLog(classOf[SparkEngineDriver])
 	private var spark_local_dir: String = ""
 //	private var spark_use_bagel: Boolean = true
 //	private var spark_dop: Integer = 8
+	private var memory_fraction: Float = 0.66f
+	private var compress_memory: Boolean = false
 
 	private var queries: java.util.List[SparkRunnable] = new java.util.ArrayList[SparkRunnable]()
 
@@ -51,6 +53,10 @@ LogFactory.getLog(classOf[SparkEngineDriver])
 			System.setProperty("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
 			// Following statement is ineffective, commenting it
 			// System.setProperty("spark.default.parallelism", spark_dop)
+			System.setProperty("spark.storage.memoryFraction", memory_fraction.toString())
+			System.setProperty("spark.rdd.compress", compress_memory.toString())
+			System.setProperty("spark.shuffle.compress", compress_memory.toString())
+			System.setProperty("spark.broadcast.compress", compress_memory.toString())
 			val sc = new SparkContext(spark_connection_string, "BigFrame", 
 						spark_home_string, Seq(jar_path_string))
 			if(query.runSpark(sc)) {
@@ -78,6 +84,8 @@ LogFactory.getLog(classOf[SparkEngineDriver])
 		spark_home_string = workIF.getSparkHome()
 		spark_local_dir = workIF.getSparkLocalDir()
 //		spark_use_bagel = workIF.getSparkUseBagel()
-//		spark_dop = workIf.getSparkDop()
+//		spark_dop = workIF.getSparkDop()
+		memory_fraction = workIF.getSparkMemoryFraction()
+		compress_memory = workIF.getSparkCompressMemory()
 	}	
 }
