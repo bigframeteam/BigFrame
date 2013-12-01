@@ -31,12 +31,24 @@ SPARK_LOCAL_DIR="/tmp/spark_local"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.local.dir=${SPARK_LOCAL_DIR}"
 
 # Use bagel for Spark
-SPARK_USE_BAGEL=true
+SPARK_USE_BAGEL=false
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.usebagel=${SPARK_USE_BAGEL}"
 
 # Spark degree of parallelism
 SPARK_DOP=8
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.dop=${SPARK_DOP}"
+
+# Spark compress memory
+SPARK_COMPRESS_MEMORY=false
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.compress=${SPARK_COMPRESS_MEMORY}"
+
+# Spark memory fraction
+SPARK_MEMORY_FRACTION=0.5
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.memoryFraction=${SPARK_MEMORY_FRACTION}"
+
+# Spark optimize memory
+SPARK_OPTIMIZE_MEMORY=true
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.optimizeMemory=${SPARK_OPTIMIZE_MEMORY}"
 
 # The Spark Master Address
 SPARK_MASTER=$SPARK_CONNECTION_STRING
