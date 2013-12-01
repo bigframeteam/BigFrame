@@ -13,6 +13,9 @@ import bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportS
 import bigframe.workflows.BusinessIntelligence.text.exploratory.WF_SenAnalyzeSpark
 import bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSalesSpark
 import org.apache.spark.bagel.Bagel
+import org.apache.spark.storage.StorageLevel
+import org.apache.spark.Partitioner._
+import org.apache.spark.HashPartitioner
 
 
 /**
@@ -96,7 +99,9 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
    * Builds transition matrix and teleportation matrix by reading graph 
    * relationships and tweets about products specified by 'regex'
    */
-  def buildMatrices(tweets: RDD[(Tweet, String)], dop: Integer) = {
+  def buildMatrices(tweets: RDD[(Tweet, String)], dop: Integer, optimizeMemory: Boolean) = {
+
+    val storage = optimizeMemory match { case true => StorageLevel.MEMORY_ONLY_SER case false => StorageLevel.MEMORY_ONLY }
 
     // count number of tweets by each user on products of interest
     val tweetsByUser = tweets map {t => t._1.userID -> 1} coalesce(dop) reduceByKey (
@@ -107,7 +112,7 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
             
     // read all graph relationships and find a subgraph induced on users who
     // have tweeted about products of interest
-    friends = utils.filterFriends(graph, tweetsByUser) groupByKey () cache
+    friends = utils.filterFriends(graph, tweetsByUser) groupByKey () persist(storage)
     
     // ratios giving proportion of tweets received from a certain friend 
     // compared to total number of tweets received
@@ -121,7 +126,7 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
     // the value
     val countsByUser = friends join (counts map {
           t => (t._1._1 -> (t._1._2, t._2))} groupByKey ()) mapValues (
-              _._2) cache
+              _._2) persist(storage)
 
     // how similar are two users in terms of what they are tweeting about
     // NOTE: Only considering products of interest. Ideally should look at
@@ -129,17 +134,19 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
     val similarity = utils.similarity(countsByUser, graph)
      
     // transition probabilities as a product of ratios and similarity scores
-    transition = utils.transitionProbabilities(ratios, similarity) cache
+    transition = utils.transitionProbabilities(ratios, similarity)
     
     // number of tweets for each product
     val countsPerProduct = countsByUser flatMap {
-            t => t._2 map (s => s)} reduceByKey ((a,b) => (a + b)) cache
+            t => t._2 map (s => s)} reduceByKey ((a,b) => (a + b))
        
     // teleportation probabilities given by a fraction of number of tweets 
     // about a product coming from a user compared to total number of tweets 
     // on that product
+    val collected = countsPerProduct.collect().toMap
+    val bc = sc.broadcast(collected)
     teleport = utils.teleportProbabilities(
-        countsByUser, countsPerProduct) cache
+        countsByUser, bc)
     
   }
   
@@ -184,28 +191,36 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
    * Returns twitter ranks for every user and for every product 
    * 3. method to use; either of the standalone or bagel 
    */
-  def computeTR(useBagel: Boolean = true, numIter:Int = 10, gamma:Double = 0.85) = {
+  def computeTR(useBagel: Boolean = true, numIter:Int = 10, gamma:Double = 0.85, optimizeMemory: Boolean = true) = {
     if(useBagel) {
       computeTR_bagel(numIter, gamma, null, null)
     }
     else {
-    // save transition and teleport matrices as object files
-    // TODO: remove these files after twitter rank computation
-    val graphPath = basePath.graph_path
-    val tempDir = graphPath.take(1 + graphPath.lastIndexOf('/'))
-    val transitionPath = graphPath + "transition_matrix"
-    println("Saving object file in: " + transitionPath)
-    val teleportPath = graphPath + "teleport_matrix"
-    println("Saving object file in: " + teleportPath)
+     var transitionNew: RDD[(Int, (Int, Seq[(String, Double)]))] = null
+     var teleportNew: RDD[(Int, Seq[(String, Double)])] = null
+     if(optimizeMemory) {
+      // save transition and teleport matrices as object files
+      // TODO: remove these files after twitter rank computation
+      val graphPath = basePath.graph_path
+      val tempDir = graphPath.take(1 + graphPath.lastIndexOf('/'))
+      val transitionPath = tempDir + "transition_matrix"
+      println("Saving object file in: " + transitionPath)
+      val teleportPath = tempDir + "teleport_matrix"
+      println("Saving object file in: " + teleportPath)
 
-    transition map {t => t._1._2 -> (t._1._1, t._2)} saveAsObjectFile(transitionPath)
-    teleport saveAsObjectFile(teleportPath)
+      transition map {t => t._1._2 -> (t._1._1, t._2)} saveAsObjectFile(transitionPath)
+      teleport saveAsObjectFile(teleportPath)
 
-    // read these object files right back to ensure a shorter lineage for repeated access
-    val transitionNew = sc.objectFile[(Int, (Int, Seq[(String, Double)]))](transitionPath).cache
-    val teleportNew = sc.objectFile[(Int, Seq[(String, Double)])](teleportPath).cache
+      // read these object files right back to ensure a shorter lineage for repeated access
+      transitionNew = sc.objectFile[(Int, (Int, Seq[(String, Double)]))](transitionPath).partitionBy(new HashPartitioner(transition.partitions.length)).persist(StorageLevel.MEMORY_ONLY_SER)
+      teleportNew = sc.objectFile[(Int, Seq[(String, Double)])](teleportPath).partitionBy(new HashPartitioner(teleport.partitions.length)).persist(StorageLevel.MEMORY_ONLY_SER)
+     }
+     else {
+      transitionNew = transition map {t => t._1._2 -> (t._1._1, t._2)} partitionBy(new HashPartitioner(transition.partitions.length)) cache()
+      teleportNew = teleport partitionBy(new HashPartitioner(teleport.partitions.length)) cache()
+     }
 
-      computeTR_standalone(numIter, gamma, transitionNew, teleportNew)
+     computeTR_standalone(numIter, gamma, transitionNew, teleportNew, optimizeMemory)
     }
 
   }
@@ -224,7 +239,7 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
    */
   private def computeTR_standalone(numIter:Int = 10, gamma:Double = 0.85,
       trans: RDD[(Int, (Int, Seq[(String, Double)]))], 
-      tele: RDD[(Int, Seq[(String, Double)])]) = {
+      tele: RDD[(Int, Seq[(String, Double)])], optimizeMemory: Boolean) = {
     
     // initial ranks same as teleport
     var ranks = tele
@@ -235,8 +250,20 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
 //    println("initial ranks: ")
 //    ranks.collect().foreach(println)
 
+    // save ranks in object files in each iteration
+    // TODO: remove these files after twitter rank computation
+    val graphPath = basePath.graph_path
+    val tempDir = graphPath.take(1 + graphPath.lastIndexOf('/'))
+    val storage = optimizeMemory match { case true => StorageLevel.MEMORY_ONLY_SER case false => StorageLevel.MEMORY_ONLY }
     for (iter <- 1 to numIter) {
-      ranks = utils.iterateRank(ranks, trans, tele, gamma)
+      val newRanks = utils.iterateRank(ranks, trans, tele, gamma)
+      val rankPath = tempDir + "ranks" + iter 
+      println("Saving ranks in: " + rankPath)
+      newRanks.saveAsObjectFile(rankPath)
+      ranks.unpersist()	//will be replaced by new ranks
+      // read these object files right back to ensure a shorter lineage for rep
+      ranks = sc.objectFile[(Int, Seq[(String, Double)])](rankPath).persist(storage)
+
 //      println("After iteration " + iter + ", ranks: ")
 //      ranks.collect().foreach(println)
     }
@@ -244,21 +271,21 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
     ranks
   }
 
-  def microBench(regex: String = ".*", numIter: Int = 10, useBagel: Boolean = true, dop: Integer = 8) 
+  def microBench(regex: String = ".*", numIter: Int = 10, useBagel: Boolean = true, dop: Integer = 8, optimizeMemory: Boolean = true) 
   : RDD[(Int, Seq[(String, Double)])] = {
     
     val tweets = readTweets(regex)
     
-    microBench(tweets, numIter, useBagel, dop)
+    microBench(tweets, numIter, useBagel, dop, optimizeMemory)
     
   }
   
-  def microBench(tweets: RDD[(Tweet, String)], numIter: Int, useBagel: Boolean, dop: Integer) 
+  def microBench(tweets: RDD[(Tweet, String)], numIter: Int, useBagel: Boolean, dop: Integer, optimizeMemory:Boolean) 
   : RDD[(Int, Seq[(String, Double)])] = {
     
-    buildMatrices(tweets, dop)
+    buildMatrices(tweets, dop, optimizeMemory)
     
-    computeTR(useBagel, numIter)
+    computeTR(useBagel, numIter, 0.85, optimizeMemory)
     
   }
   

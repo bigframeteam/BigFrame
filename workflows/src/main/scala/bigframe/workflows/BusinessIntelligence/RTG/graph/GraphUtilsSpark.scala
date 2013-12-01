@@ -114,10 +114,9 @@ case class GraphUtilsSpark() {
    * 2. countsPerProduct: Number of tweets for each product
    */
   def teleportProbabilities(countsByUser: RDD[(Int, Seq[(String, Int)])], 
-      countsPerProduct: RDD[(String, Int)]) = {
-    val collected = countsPerProduct.collect.toMap
+      countsPerProduct: org.apache.spark.broadcast.Broadcast[Map[String, Int]]) = {
     countsByUser map {t => t._1 -> (t._2 map {
-      s => s._1 -> s._2.toDouble / collected.getOrElse(s._1, 1)})
+      s => s._1 -> s._2.toDouble / countsPerProduct.value.getOrElse(s._1, 1)})
     }
   }
 
@@ -253,8 +252,8 @@ case class GraphUtilsSpark() {
       teleport: RDD[(Int, Seq[(String, Double)])], 
       gamma: Double) = {    
     // transition probability times previous rank weighted by gamma
-    val term1 = trans join ranks map {
-      t => t._1 -> transFactor(t._2._1._2, t._2._2, gamma)
+    val term1 = trans.join(ranks, partitioner=trans.partitioner.get) mapValues {
+      t => transFactor(t._1._2, t._2, gamma)
     } reduceByKey {
       (a, b) => transReducer(a, b)
     }

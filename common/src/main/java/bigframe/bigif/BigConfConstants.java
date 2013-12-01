@@ -49,6 +49,7 @@ public class BigConfConstants {
 	public static final String BIGFRAME_SPARK_DOP = "bigframe.spark.dop";
 	public static final String BIGFRAME_SPARK_COMPRESS_MEMORY = "bigframe.spark.compress";
 	public static final String BIGFRAME_SPARK_MEMORY_FRACTION = "bigframe.spark.memoryFraction";
+	public static final String BIGFRAME_SPARK_OPTIMIZE_MEMORY = "bigframe.spark.optimizeMemory";
 
 	/**
 	 * Vertica specific

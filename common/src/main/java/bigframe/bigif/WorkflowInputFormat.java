@@ -28,6 +28,7 @@ public class WorkflowInputFormat extends Config {
 	private Integer SPARK_DOP = 8;
 	private Boolean SPARK_COMPRESS_MEMORY = false;
 	private Float SPARK_MEMORY_FRACTION = 0.66f;
+	private Boolean SPARK_OPTIMIZE_MEMORY = true;
 	
 	private String VERTICA_HOSTNAMES = "";
 	private String VERTICA_DATABASE = "";
@@ -95,6 +96,10 @@ public class WorkflowInputFormat extends Config {
 
 	public Float getSparkMemoryFraction() {
 		return SPARK_MEMORY_FRACTION;
+	}
+
+	public Boolean getSparkOptimizeMemory() {
+		return SPARK_OPTIMIZE_MEMORY;
 	}
 
 	public String getVerticaHostNames() {
@@ -201,6 +206,10 @@ public class WorkflowInputFormat extends Config {
 			else if (key.equals(BigConfConstants.BIGFRAME_SPARK_MEMORY_FRACTION)) {
 				SPARK_MEMORY_FRACTION = Float.parseFloat(value);
 			}
+
+			else if (key.equals(BigConfConstants.BIGFRAME_SPARK_OPTIMIZE_MEMORY)) {
+				SPARK_OPTIMIZE_MEMORY = Boolean.valueOf(value);
+			}
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_VERTICA_DATABASE)) {
 				VERTICA_DATABASE = value;
@@ -265,6 +274,7 @@ public class WorkflowInputFormat extends Config {
 		System.out.println("Spark DoP: " + SPARK_DOP);
 		System.out.println("Spark compress memory: " + SPARK_COMPRESS_MEMORY);
 		System.out.println("Spark memory fraction: " + SPARK_MEMORY_FRACTION);
+		System.out.println("Spark optimize memory: " + SPARK_OPTIMIZE_MEMORY);
 		
 		System.out.println("Vertica Host Names: " + VERTICA_HOSTNAMES);
 		System.out.println("Vertica Database: " + VERTICA_DATABASE);
