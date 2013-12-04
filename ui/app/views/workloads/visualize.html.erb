@@ -31,6 +31,9 @@ background: transparent;
 svg div { 
   border-radius: 8px;
 }
+.table td{
+padding:0px;
+}
 </style>
 <body>
 
@@ -40,7 +43,7 @@ svg div {
 
 var json=<%=raw @jsondata.to_json%>;
 var width = 1100;
-var height = 500;
+var height = 600;
 var color = d3.scale.category10();
 var force=d3.layout.force()
 var nodes=json["jobs"];
@@ -75,7 +78,7 @@ svg.append("svg:defs").selectAll("marker")
   .enter().append("svg:marker")
     .attr("id", String)
     .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 40)
+    .attr("refX", 20)
     .attr("refY", -2.0)
     .attr("markerWidth", 6)
     .attr("markerHeight", 6)
@@ -107,25 +110,37 @@ path = svg.append("svg:g").selectAll("path")
                  return moveto(d) + lineto(d); 
               }); 
 
-/*
-//create edge labels
-label = svg.selectAll("text") 
-       .data(force.links()) 
-       .enter().append("svg:text") 
-       .attr("font-size", 10) 
-       .attr("dx", 40)
-       .append("svg:textPath") 
-       .attr("xlink:href", 
-              function(d) { 
-                 return "#path"+d.source.index+"_"+d.target.index; 
-              });
-*/
-
 var pi=Math.PI;
 //find number of varieties in node
 //figure out how many are graph, relational, nested
 //define color constants for each type, relational=blue, graph=orange, nested=green
 var varietyColorMap={"relational":0, "graph":1, "nested":2};
+
+// add legend   
+  var legend = svg.append("g")
+    .attr("x", width - 65)
+    .attr("y", 25)
+    .attr("height", 100)
+    .attr("width", 100);
+
+var offset=0;
+  for (var key in varietyColorMap){
+        legend.append("rect")
+          .attr("x", 100)
+          .attr("y", 100+offset*25)
+          .attr("width", 10)
+          .attr("height",10)
+          .style("fill", color(varietyColorMap[key]));
+        
+        legend.append("text")
+          .attr("x", 115)
+          .attr("y", 100 + offset*25 + 8)
+          .attr("height",30)
+          .attr("width",100)
+          .style("fill", color(varietyColorMap[key]))
+          .text(key);
+      offset+=1;
+      }
 
 for (var i=0;i<nodes.length;i++){
   hash={"relational":0, "graph":0, "nested":0};
@@ -162,10 +177,9 @@ node = svg.selectAll("node")
   .append("g")
     .attr("class", "node")
     .call(force.drag); 
-
+/*
 //create expandall button
 var expandAll=svg.append("g");
-
 expandAll.append("svg:rect")
     .attr('fill',"green")
     .attr('x',50)
@@ -174,7 +188,6 @@ expandAll.append("svg:rect")
     .attr('height',30)
     .attr('rx',5)
     .attr('ry',5);
-
 expandAll
 .append("text")
 .attr('style',"fill:white")
@@ -182,36 +195,19 @@ expandAll
 .attr('x',50)
 .attr('y',50);
 
-//draw circle
+expandAll.on("click",function(d){
+  toggle(svg.selectAll("div"));
+});
+*/
+
+//draw variety circle
     node.selectAll("path")
         .data(function(d, i) {return pie(d.dataVarieties); })
         .enter()
         .append("svg:path")
         .attr("d", arc)
-        .attr("transform", "translate(" + -40 + "," + 0 + ")")
+        .attr("transform", "translate(" + 0 + "," + 0 + ")")
         .attr("fill", function(d, i) { return color(varietyColorMap[d.data.group]); });
-
-//draw box
-node.append("svg:circle")
-.attr('y', -20)
-.attr('x', -25)
-        .attr("fill","yellow")
-        .attr("r",30);
-
-var nodeText=node.append("text");
-nodeText.append("tspan")
-.attr("x",-15)
-.attr("y",0)
-.text(function(d) { return d.jobId; });
-nodeText.append("tspan")
-.attr("x",-15)
-.attr("y",10)
-.text(function(d) { return d.endTime-d.startTime+" sec"; });
-nodeText.append("tspan")
-.attr("x",-15)
-.attr("y",20)
-.text(function(d) { return d.parallelism+" DoP"; });
-
 
 function stringifyArray(input){
 var string="";
@@ -232,27 +228,43 @@ function stringifyVarieties(input){
 return string.slice(0, - 1);
 }
 
+//add workflow data
+svg.append("text")
+        .attr("x", 100)             
+        .attr("y", 50)
+        .text("Workflow ID: "+json["workflowId"]);
+svg.append("text")
+        .attr("x", 100)             
+        .attr("y", 60)
+        .text("Runtime: "+(json["endTime"]-json["startTime"]));
+svg.append("text")
+        .attr("x", 100)             
+        .attr("y", 70)
+        .text("Number of jobs: "+json["numJobs"]);
+svg.append("text")
+        .attr("x", 100)             
+        .attr("y", 80)
+        .text("Execution Engine: "+json["executionEngine"]);
+
 var div = node
-.append("foreignObject").attr("width", 250).attr("height", 200)
-    .attr("y", -40)
-    .attr("x", -20)
+.append("foreignObject").attr("width", 250).attr("height", 400)
+    .attr("y", -100)
+    .attr("x", 20)
   .append("xhtml:body")
   .append("div")
     .style("color", "#FFFFFF")
     .style("background-color",function(d) { return color(0);})
-    .style("display", "none")
     .style("font-size", "10px")
   .html(function(d) { 
-    html="";
+    html="<table class='table table-bordered'>";
+    var runTime=d.endTime-d.startTime;
     if (d.mapTasks!=null && d.reduceTasks!=null){
-      html+=d.mapTasks+" map/"+d.reduceTasks+" reduce<br>"
+      html=html+"<tr><td>Map/Reduce</td><td>"+d.mapTasks+" map/"+d.reduceTasks+" reduce</td></tr>"
     }
-    return html+"Start:"+d.startTime+"<br>Stop:"+d.endTime+"<br>Variety:"+stringifyVarieties(d.dataVarieties)+"<br>Input:<br>"+stringifyArray(d.rootInputPath)});
-
-expandAll.on("click",function(d){
-  toggle(svg.selectAll("div"));
-
-});
+    html=html+"<tr><td>Job ID:</td><td>"+d.jobId+"</td></tr><tr><td>Runtime:</td><td>"+runTime+"</td></tr><tr><td>Parallelism:</td><td>"+d.parallelism+"</td></tr><tr><td>Start Time:</td><td>"+d.startTime+"</td></tr><tr><td>End Time:</td><td>"+d.endTime+"</td></tr><tr><td>Variety:</td><td>"+stringifyVarieties(d.dataVarieties)+"</td></tr><tr><td>Input:</td><td>"+stringifyArray(d.rootInputPath);
+    html+="</table>";
+    return html;
+  });
 
 //display div on dblclick
 node.on("dblclick", function(d) {

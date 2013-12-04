@@ -58,10 +58,6 @@ GEM
     mime-types (1.25)
     minitest (4.7.5)
     multi_json (1.8.0)
-<<<<<<< HEAD
-=======
-    net-ssh (2.7.0)
->>>>>>> 2f03651f97e0abe2a0c8ea212bd80b8844e92cea
     polyglot (0.3.3)
     rack (1.5.2)
     rack-test (0.6.2)

@@ -10,7 +10,7 @@ Ui::Application.routes.draw do
   get "execution/index"
   post "execution/submit"
   get "execution/log"
-
+get "execution/configure"
   post "sessions/destroy"
 
 

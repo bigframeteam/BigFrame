@@ -1,0 +1,79 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+<h1>Configuration Options</h1>
+
+<form role="form" class="col-xs-6">
+  <div class="form-group">
+    <label for="SPARK_HOME">SPARK_HOME</label>
+    <input class="form-control" id="SPARK_HOME" placeholder="/usr/spark-0.8.0">
+  </div>
+  <div class="form-group">
+    <label for="SCALA_HOME">SCALA_HOME</label>
+    <input class="form-control" id="SCALA_HOME" placeholder="/usr/scala-2.9.3">
+  </div>
+    <div class="form-group">
+    <label for="SPARK_MEM">SPARK_MEM</label>
+    <input class="form-control" id="SPARK_MEM" placeholder="4g">
+  </div>
+    <div class="form-group">
+    <label for="SPARK_LOCAL_DIR">SPARK_LOCAL_DIR</label>
+    <input class="form-control" id="SPARK_LOCAL_DIR" placeholder="/tmp/spark_local">
+  </div>
+  <div class="form-group">
+    <label for="SPARK_DOP">SPARK_DOP</label>
+    <input class="form-control" id="SPARK_DOP" placeholder="8">
+  </div>
+    <div class="form-group">
+    <label for="SPARK_MEMORY_FRACTION">SPARK_MEMORY_FRACTION</label>
+    <input class="form-control" id="SPARK_MEMORY_FRACTION" placeholder="0.5">
+  </div>
+
+      <div class="form-group">
+    <label for="SPARK_USE_BAGEL">SPARK_USE_BAGEL</label>
+<div class="radio">
+  <label>
+    <input  type="radio" name="SPARK_USE_BAGEL" id="optionsRadios1" value="true" checked>
+    True
+  </label>
+</div>
+<div class="radio">
+  <label>
+    <input type="radio" name="SPARK_USE_BAGEL" id="optionsRadios2" value="false">
+False
+  </label>
+</div>
+  </div>
+
+        <div class="form-group">
+    <label for="SPARK_OPTIMIZE_MEMORY">SPARK_OPTIMIZE_MEMORY</label>
+<div class="radio">
+  <label>
+    <input  type="radio" name="SPARK_OPTIMIZE_MEMORY" id="optionsRadios1" value="true" checked>
+    True
+  </label>
+</div>
+<div class="radio">
+  <label>
+    <input type="radio" name="SPARK_OPTIMIZE_MEMORY" id="optionsRadios2" value="false">
+False
+  </label>
+</div>
+  </div>
+
+        <div class="form-group">
+    <label for="SPARK_COMPRESS_MEMORY">SPARK_COMPRESS_MEMORY</label>
+<div class="radio">
+  <label>
+    <input  type="radio" name="SPARK_COMPRESS_MEMORY" id="optionsRadios1" value="true" checked>
+    True
+  </label>
+</div>
+<div class="radio">
+  <label>
+    <input type="radio" name="SPARK_COMPRESS_MEMORY" id="optionsRadios2" value="false">
+False
+  </label>
+</div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

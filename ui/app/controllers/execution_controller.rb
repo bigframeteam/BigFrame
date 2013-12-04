@@ -19,6 +19,11 @@ class ExecutionController < ApplicationController
   def index
   end
 
+
+def configure
+
+end
+
   #This is called when we click the generate data.
   def submit
   	@bigframe_home = "/home/shlee0605/big/big-0.2"
