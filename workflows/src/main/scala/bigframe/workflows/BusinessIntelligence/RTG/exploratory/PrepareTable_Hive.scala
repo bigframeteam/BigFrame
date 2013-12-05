@@ -669,7 +669,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 				"					`following`:string, " +
 				"					friends_count:string, " +
 				"					geo_enabled:string, " +
-				"					id:bigint, " +
+				"					id:int, " +
 				"					id_str:string, " +
 				"					lang:string, " +
 				"					listed_count:string, " +
@@ -738,6 +738,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		val createGraph = "CREATE TABLE twitter_graph STORED AS orc as select * from twitter_graph_tmp"
 		val createTweets = "CREATE TABLE tweets STORED AS orc as select * from tweets_tmp"
 	
+		stmt.execute(createTweets)
 		stmt.execute(createWebSales)
 		stmt.execute(createCatalogSales)
 		stmt.execute(createStoreSales)
@@ -746,7 +747,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		stmt.execute(createCust)
 		stmt.execute(createDateDim)
 		stmt.execute(createGraph)
-		stmt.execute(createTweets)
+
 		
 		
 		stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'")
