@@ -28,3 +28,4 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.vertica.password=${VERTICA_PASSWORD}"
 # The JDBC Server
 VERTICA_JDBC_SERVER=""
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.vertica.jdbc.server=${VERTICA_JDBC_SERVER}"
+

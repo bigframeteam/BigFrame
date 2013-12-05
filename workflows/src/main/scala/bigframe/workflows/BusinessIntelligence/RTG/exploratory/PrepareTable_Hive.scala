@@ -294,7 +294,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 				"													screen_name:string>>>," +
 				"		favorited string," +
 				"		geo string," +
-				"		id int," +
+				"		id bigint," +
 				"		id_str string," +
 				"		in_reply_to_screen_name string," +
 				"		in_reply_to_status_id string," +
@@ -316,7 +316,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 				"					`following`:string, " +
 				"					friends_count:string, " +
 				"					geo_enabled:string, " +
-				"					id:int, " +
+				"					id:bigint, " +
 				"					id_str:string, " +
 				"					lang:string, " +
 				"					listed_count:string, " +
@@ -646,7 +646,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 				"													screen_name:string>>>," +
 				"		favorited string," +
 				"		geo string," +
-				"		id int," +
+				"		id bigint," +
 				"		id_str string," +
 				"		in_reply_to_screen_name string," +
 				"		in_reply_to_status_id string," +
@@ -668,7 +668,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 				"					`following`:string, " +
 				"					friends_count:string, " +
 				"					geo_enabled:string, " +
-				"					id:int, " +
+				"					id:bigint, " +
 				"					id_str:string, " +
 				"					lang:string, " +
 				"					listed_count:string, " +

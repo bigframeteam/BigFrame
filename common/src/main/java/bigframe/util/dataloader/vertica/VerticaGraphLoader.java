@@ -150,4 +150,10 @@ public class VerticaGraphLoader extends VerticaDataLoader {
 		
 	}
 
+	@Override
+	public void alterBaseTable() throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

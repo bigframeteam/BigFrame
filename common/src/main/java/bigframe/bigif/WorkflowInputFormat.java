@@ -15,6 +15,8 @@ public class WorkflowInputFormat extends Config {
 	
 	private String HADOOP_HOME = "";
 	private String HDFS_ROOT_DIR = "";
+	private String WEBHDFS_ROOT_DIR = "";
+	private String HADOOP_USERNAME = "";
 	
 	private String HIVE_HOME = "";
 	private String HIVE_JDBC_SERVER = "";
@@ -48,6 +50,16 @@ public class WorkflowInputFormat extends Config {
 	
 	public String getHadoopHome() {
 		return HADOOP_HOME;
+	}
+	
+	public String getHadoopUserName() {
+		return HADOOP_USERNAME;
+	}
+	
+	
+	
+	public String getWEBHDFSRootDIR() {
+		return WEBHDFS_ROOT_DIR;
 	}
 	
 	public String getHDFSRootDIR() {
@@ -157,10 +169,17 @@ public class WorkflowInputFormat extends Config {
 				HADOOP_HOME = value;
 			}
 			
-			if (key.equals(BigConfConstants.BIGFRAME_HDFS_ROOTDIR)) {
-				HDFS_ROOT_DIR = value;
+			else if (key.equals(BigConfConstants.BIGFRAME_WEBHDFS_ROOTDIR)) {
+				WEBHDFS_ROOT_DIR = value;
 			}
 			
+			else if (key.equals(BigConfConstants.BIGFRAME_HADOOP_USERNAME)) {
+				HADOOP_USERNAME = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_HDFS_ROOTDIR)) {
+				HDFS_ROOT_DIR = value;
+			}
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_HOME)) {
 				HIVE_HOME = value;
@@ -262,6 +281,8 @@ public class WorkflowInputFormat extends Config {
 		
 		System.out.println("Hadoop Home:" + HADOOP_HOME);
 		System.out.println("Hadoop Root Dir: " + HDFS_ROOT_DIR);
+		System.out.println("Hadoop Username:" + HADOOP_USERNAME);
+		System.out.println("Hadoop Webhdfs Root Dir: " + WEBHDFS_ROOT_DIR);
 		
 		System.out.println("Hive Home: " + HIVE_HOME);
 		System.out.println("Hive JDBC Server: " + HIVE_JDBC_SERVER);

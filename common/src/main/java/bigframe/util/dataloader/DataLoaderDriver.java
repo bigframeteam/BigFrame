@@ -241,7 +241,8 @@ public class DataLoaderDriver {
 				line.getOptionValue(TO).equals(Constants.VERTICA)) {
 			if(line.getOptionValue(APPDOMAIN).equals(BigConfConstants.APPLICATION_BI)) {
 				if(line.getOptionValue(DATATYPE).equals(Constants.RELATIONAL)) {
-					VerticaDataLoader dataloader = new VerticaTpcdsLoader(workflowIF);
+					VerticaDataLoader dataloader = new VerticaTpcdsLoader(workflowIF);			
+					
 					try {
 						dataloader.prepareBaseTable();
 					} catch (SQLException e) {
@@ -249,41 +250,53 @@ public class DataLoaderDriver {
 						e.printStackTrace();
 					}
 					
-					
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/store_sales"), "store_sales");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/catalog_sales"), "catalog_sales");
-					dataloader.load(new Path(line.getOptionValue(SRC)+"/store_sales"), "customer");
+					dataloader.load(new Path(line.getOptionValue(SRC)+"/customer"), "customer");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/web_sales"), "web_sales");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/item"), "item");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/promotion"), "promotion");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/date_dim"), "date_dim");
+					
+					try {
+						dataloader.alterBaseTable();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				
 				else if(line.getOptionValue(DATATYPE).equals(Constants.NESTED)) {
 					VerticaDataLoader dataloader = new VerticaTweetLoader(workflowIF);
+
+					//dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
+					
 					try {
 						dataloader.prepareBaseTable();
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					//dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
+
 					
 					LOG.info("Begin loading the tweet data");
+//					dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
 					dataloader.load(new Path(line.getOptionValue(SRC)), "tweet");
 					dataloader.load(new Path(line.getOptionValue(SRC)), "entities");
 					LOG.info("End loading the tweet data");
+					
+					try {
+						dataloader.alterBaseTable();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 				}
 				
 				else if(line.getOptionValue(DATATYPE).equals(Constants.GRAPH)) {
 					VerticaDataLoader dataloader = new VerticaGraphLoader(workflowIF);
-					try {
-						dataloader.prepareBaseTable();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					
 					dataloader.load(new Path(line.getOptionValue(SRC)), "twitter_graph");
 				}
 				

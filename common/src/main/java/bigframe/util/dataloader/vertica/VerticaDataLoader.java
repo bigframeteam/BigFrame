@@ -71,6 +71,8 @@ public abstract class VerticaDataLoader extends DataLoader {
 	
 	public abstract void prepareBaseTable() throws SQLException;
 	
+	public abstract void alterBaseTable() throws SQLException;
+	
 	public abstract boolean load(Path srcHdfsPath, String table);
 
 }

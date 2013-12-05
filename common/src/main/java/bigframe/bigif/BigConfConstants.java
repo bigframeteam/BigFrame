@@ -25,7 +25,9 @@ public class BigConfConstants {
 	 */
 	public static final String BIGFRAME_HADOOP_HOME = "bigframe.hadoop.home";
 	public static final String BIGFRAME_HDFS_ROOTDIR = "bigframe.hdfs.root.dir";
+	public static final String BIGFRAME_WEBHDFS_ROOTDIR = "bigframe.webhdfs.root.dir";
 	public static final String BIGFRAME_HADOOP_SLAVE = "bigframe.hadoop.slaves";
+	public static final String BIGFRAME_HADOOP_USERNAME = "bigframe.hadoop.username";
 	
 	/**
 	 * Hive specific
