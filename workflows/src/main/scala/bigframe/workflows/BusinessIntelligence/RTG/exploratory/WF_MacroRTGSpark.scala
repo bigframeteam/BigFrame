@@ -40,13 +40,16 @@ class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int, val useBag
 	  val allTweets = textExecutor.read().filter(t => t.products != null && t.products.length > 0)
 	  
 	  // filter tweets by items relevant to promotions
-	  // tuples item_sk -> tweet
-	  val relevantTweets = (allTweets map (t => (t.products(0), t)) coalesce(dop)).join(
-	      promotions map (t => (t._2(4), t._1)), dop).map(t => t._2._1)
-	      
-	  val relevantTweetsWithItem = (relevantTweets map (
-	      t => (t.products(0), t))).join(promotions map (
-	          t => (t._2(4), t._1)), dop).map(t => t._2._1 -> t._2._2)
+          // tuples item_sk -> tweet
+          val promo = promotions.map(t => (t._2(4), t._1)).collect().toMap
+          val bc = sc.broadcast(promo)
+	  println("broadcast:" + bc.value)
+          val relevantTweetsWithItem1 = allTweets map {t => t -> bc.value.getOrElse(t.products(0), "null")} coalesce(dop)
+          val relevantTweetsWithItem = relevantTweetsWithItem1 filter {t => t._2 != "null"}
+	 
+//	  val relevantTweetsWithItem = (relevantTweets map (
+//	      t => (t.products(0), t))).join(promotions map (
+//	          t => (t._2(4), t._1)), dop).map(t => t._2._1 -> t._2._2)
 	 
 	  /**
 	   *  Do graph processing on all the relevant tweets
@@ -56,7 +59,7 @@ class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int, val useBag
 	      relevantTweetsWithItem, numIter, useBagel, dop, optimizeMemory)
 	  
 	  // run sentiment analysis
-	  val scoredTweets = textExecutor addSentimentScore relevantTweets
+	  val scoredTweets = textExecutor addSentimentScore (relevantTweetsWithItem map {_._1})
 	  
 	  val scoredTweetsWithUser = (scoredTweets map (
 	      t => (t.products(0), t))).join(promotions map (
