@@ -316,7 +316,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 				"					`following`:string, " +
 				"					friends_count:string, " +
 				"					geo_enabled:string, " +
-				"					id:bigint, " +
+				"					id:int, " +
 				"					id_str:string, " +
 				"					lang:string, " +
 				"					listed_count:string, " +
@@ -343,6 +343,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 				"	ROW FORMAT SERDE \'org.openx.data.jsonserde.JsonSerDe\'" +
 				"	location \'" + tweets_HDFSPath +"\'"
 					
+		stmt.execute(createTweets)
 		stmt.execute(createWebSales)
 		stmt.execute(createCatalogSales)
 		stmt.execute(createStoreSales)
@@ -351,7 +352,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		stmt.execute(createPromot)
 		stmt.execute(createDateDim)
 		stmt.execute(createGraph)
-		stmt.execute(createTweets)
+
 		
 		stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'")
 		stmt.execute("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'")
