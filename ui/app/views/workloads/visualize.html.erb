@@ -29,7 +29,7 @@ svg body {
 background: transparent;
 }
 svg div { 
-  border-radius: 8px;
+  border-radius: 5px;
 }
 .table td{
 padding:0px;
@@ -116,32 +116,6 @@ var pi=Math.PI;
 //define color constants for each type, relational=blue, graph=orange, nested=green
 var varietyColorMap={"relational":0, "graph":1, "nested":2};
 
-// add legend   
-  var legend = svg.append("g")
-    .attr("x", width - 65)
-    .attr("y", 25)
-    .attr("height", 100)
-    .attr("width", 100);
-
-var offset=0;
-  for (var key in varietyColorMap){
-        legend.append("rect")
-          .attr("x", 100)
-          .attr("y", 100+offset*25)
-          .attr("width", 10)
-          .attr("height",10)
-          .style("fill", color(varietyColorMap[key]));
-        
-        legend.append("text")
-          .attr("x", 115)
-          .attr("y", 100 + offset*25 + 8)
-          .attr("height",30)
-          .attr("width",100)
-          .style("fill", color(varietyColorMap[key]))
-          .text(key);
-      offset+=1;
-      }
-
 for (var i=0;i<nodes.length;i++){
   hash={"relational":0, "graph":0, "nested":0};
   for (var j=0;j<nodes[i].rootInputPath.length;j++){
@@ -212,9 +186,9 @@ expandAll.on("click",function(d){
 function stringifyArray(input){
 var string="";
 for (var i=0;i<input.length;i++){
-  string+=input[i]+"<br>";
+  string+=input[i]+"\n";
 }
-return string;
+return string.slice(0, - 1);
 }
 
 function stringifyVarieties(input){
@@ -229,25 +203,46 @@ return string.slice(0, - 1);
 }
 
 //add workflow data
-svg.append("text")
-        .attr("x", 100)             
-        .attr("y", 50)
-        .text("Workflow ID: "+json["workflowId"]);
-svg.append("text")
-        .attr("x", 100)             
-        .attr("y", 60)
-        .text("Runtime: "+(json["endTime"]-json["startTime"]));
-svg.append("text")
-        .attr("x", 100)             
-        .attr("y", 70)
-        .text("Number of jobs: "+json["numJobs"]);
-svg.append("text")
-        .attr("x", 100)             
-        .attr("y", 80)
-        .text("Execution Engine: "+json["executionEngine"]);
+var workflow = svg
+.append("foreignObject").attr("width", 200).attr("height", 400)
+    .attr("x", 50)
+    .attr("y", 0)
+  .append("xhtml:body")
+  .append("div")
+    .style("color", "#FFFFFF")
+    .style("background-color","#17becf")
+    .style("font-size", "16px")
+  .html(function(d) { 
+    html="<table class='table table-bordered'>";
+    html=html+"<tr><td>Workflow ID:</td><td>"+json["workflowId"]+"</td></tr><tr><td>Runtime:</td><td>"+(json["endTime"]-json["startTime"])+" sec"+"</td></tr><tr><td>Jobs:</td><td>"+json["numJobs"]+"</td></tr><tr><td>Execution Engine:</td><td>"+json["executionEngine"]+"</td></tr>";
+    html+="</table>";
+    return html;
+  });
+  
+// add legend   
+  var legend = svg.append("g");
+  var offset=0;
+  var yPosition=200;
+  for (var key in varietyColorMap){
+        legend.append("rect")
+          .attr("x", 50)
+          .attr("y", yPosition+offset*25)
+          .attr("width", 10)
+          .attr("height",10)
+          .style("fill", color(varietyColorMap[key]));
+        
+        legend.append("text")
+          .attr("x", 65)
+          .attr("y", yPosition + offset*25 + 8)
+          .attr("height",30)
+          .attr("width",100)
+          .style("fill", color(varietyColorMap[key]))
+          .text(key);
+      offset+=1;
+      }
 
 var div = node
-.append("foreignObject").attr("width", 250).attr("height", 400)
+.append("foreignObject").attr("width", 200).attr("height", 400)
     .attr("y", -100)
     .attr("x", 20)
   .append("xhtml:body")
@@ -261,7 +256,7 @@ var div = node
     if (d.mapTasks!=null && d.reduceTasks!=null){
       html=html+"<tr><td>Map/Reduce</td><td>"+d.mapTasks+" map/"+d.reduceTasks+" reduce</td></tr>"
     }
-    html=html+"<tr><td>Job ID:</td><td>"+d.jobId+"</td></tr><tr><td>Runtime:</td><td>"+runTime+"</td></tr><tr><td>Parallelism:</td><td>"+d.parallelism+"</td></tr><tr><td>Start Time:</td><td>"+d.startTime+"</td></tr><tr><td>End Time:</td><td>"+d.endTime+"</td></tr><tr><td>Variety:</td><td>"+stringifyVarieties(d.dataVarieties)+"</td></tr><tr><td>Input:</td><td>"+stringifyArray(d.rootInputPath);
+    html=html+"<tr><td>Job ID:</td><td>"+d.jobId+"</td></tr><tr><td>Runtime:</td><td>"+runTime+" sec"+"</td></tr><tr><td>Parallelism:</td><td>"+d.parallelism+"</td></tr><tr><td>Start Time:</td><td>"+convertDate(d.startTime)+"</td></tr><tr><td>End Time:</td><td>"+convertDate(d.endTime)+"</td></tr><tr><td>Variety:</td><td>"+stringifyVarieties(d.dataVarieties)+"</td></tr><tr><td>Input:</td><td title='"+stringifyArray(d.rootInputPath)+"'>"+"Hover for full path"+"<td></tr>";
     html+="</table>";
     return html;
   });
@@ -279,6 +274,12 @@ e.style("display", 'block');
 tick();
 }
 
+//converts unix time to date
+function convertDate(timestamp){
+  var d = new Date(timestamp*1000).toString().split(' ');
+  return [d[1], d[2], d[3],d[4]].join(' ');
+
+}
 /*
 //fix a node to the left
   for (var i=0;i<nodes.length;i++){
