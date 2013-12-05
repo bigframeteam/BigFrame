@@ -297,7 +297,21 @@ public class DataLoaderDriver {
 				else if(line.getOptionValue(DATATYPE).equals(Constants.GRAPH)) {
 					VerticaDataLoader dataloader = new VerticaGraphLoader(workflowIF);
 					
+					try {
+						dataloader.prepareBaseTable();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 					dataloader.load(new Path(line.getOptionValue(SRC)), "twitter_graph");
+					
+					try {
+						dataloader.alterBaseTable();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				
 				else {
