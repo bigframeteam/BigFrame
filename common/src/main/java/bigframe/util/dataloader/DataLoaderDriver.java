@@ -280,9 +280,9 @@ public class DataLoaderDriver {
 
 					
 					LOG.info("Begin loading the tweet data");
-//					dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
-					dataloader.load(new Path(line.getOptionValue(SRC)), "tweet");
-					dataloader.load(new Path(line.getOptionValue(SRC)), "entities");
+					dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
+//					dataloader.load(new Path(line.getOptionValue(SRC)), "tweet");
+//					dataloader.load(new Path(line.getOptionValue(SRC)), "entities");
 					LOG.info("End loading the tweet data");
 					
 					try {

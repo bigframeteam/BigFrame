@@ -378,6 +378,17 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 			    		return false;
 			    }
 			    
+			    else  if(table.equals("tweetjson")) {
+			    	String copyToTweetJson = "COPY tweetjson SOURCE Hdfs(url='" + workIF.getWEBHDFSRootDIR() +"/nested_data/part-*'," +
+			    			"username='" + workIF.getHadoopUserName() + "')";
+			    	
+			    	if(stmt.execute(copyToTweetJson))
+			    		return true;
+			    	else 
+			    		return false;
+			    	
+			    }
+			    
 			    else {
 			    	System.out.println("Table " + table + " doesn't exist!");
 			    	return false;
