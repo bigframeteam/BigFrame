@@ -3,6 +3,7 @@ package bigframe.workflows.BusinessIntelligence.RTG.exploratory
 import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext
 import SparkContext._
+import org.apache.spark.storage.StorageLevel
 import bigframe.workflows.BaseTablePath
 import bigframe.workflows.runnable.SparkRunnable
 import bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSalesSpark
@@ -39,13 +40,15 @@ class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int, val useBag
 	  // read all tweets
 	  val allTweets = textExecutor.read().filter(t => t.products != null && t.products.length > 0)
 	  
+          val storage = optimizeMemory match { case true => StorageLevel.MEMORY_AND_DISK_SER case false => StorageLevel.MEMORY_ONLY_SER }
+
 	  // filter tweets by items relevant to promotions
           // tuples item_sk -> tweet
           val promo = promotions.map(t => (t._2(4), t._1)).collect().toMap
           val bc = sc.broadcast(promo)
 	  println("broadcast:" + bc.value)
           val relevantTweetsWithItem1 = allTweets map {t => t -> bc.value.getOrElse(t.products(0), "null")} coalesce(dop)
-          val relevantTweetsWithItem = relevantTweetsWithItem1 filter {t => t._2 != "null"}
+          val relevantTweetsWithItem = relevantTweetsWithItem1 filter {t => t._2 != "null"} persist(storage)
 	 
 //	  val relevantTweetsWithItem = (relevantTweets map (
 //	      t => (t.products(0), t))).join(promotions map (
