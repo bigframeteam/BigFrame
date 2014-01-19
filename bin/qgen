@@ -49,5 +49,24 @@ if [ -n "$VERTICA_HOME" ]; then
 	done
 fi
 
+#if [ -n "$SPARK_HOME" ]; then
+#	for jar in `find $SPARK_HOME/assembly/target/$SPARK_SCALA_VERSION -name 'spark*.jar'`; do
+#		QGEN_CLASSPATH+=:$jar
+#	done
+#
+#	for jar in `find $SPARK_HOME/lib_managed/jars -name '*.jar'`; do
+#		QGEN_CLASSPATH+=:$jar
+#	done
+#
+#fi
+
+if [ -n "$SHARK_HOME" ]; then
+	for jar in `find $SHARK_HOME/target/$SPARK_SCALA_VERSION -name 'shark*.jar'`; do
+		QGEN_CLASSPATH+=:$jar
+	done
+fi
+
+
+
 java -cp "$QGEN_CLASSPATH" -XX:MaxPermSize=128M bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
 

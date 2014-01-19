@@ -8,6 +8,7 @@ export SPARK_HOME="/usr/spark-0.8.0"
 # Path of Scala installation home.
 export SCALA_HOME="/usr/scala-2.9.3"
 
+
 # Spark memory parameters, defaults will be used if unspecified
 # Make sure that SPARK_WORKER_MEM and SPARK_WORKER_CORES are set 
 # to their optimal values in the spark_env.sh within Spark installation

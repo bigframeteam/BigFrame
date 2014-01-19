@@ -9,7 +9,7 @@ object BigFrameBuild extends Build {
 	val HADOOP_VERSION = "1.0.4"
 
 	// Spark version to build againt.
-	val SPARK_VERSION = "0.7.3"
+	val SPARK_VERSION = "0.8.1"
 
 	// Scala version
 	val SCALA_VERSION = "2.9.3"
@@ -43,14 +43,15 @@ object BigFrameBuild extends Build {
 		),
 
 		libraryDependencies ++= Seq(
+			"log4j" % "log4j" % "1.2.16" % "provided",
       		"org.scalatest" %% "scalatest" % "1.9.1" % "test",
 	        "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
 	        "org.apache.spark" % "spark-core_2.9.3" % "0.8.0-incubating",
      		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.0-incubating",
+			"edu.berkeley.cs.amplab" % "shark_2.9.3" % "0.8.1" % "provided",
 			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
-			"log4j" % "log4j" % "1.2.16" % "provided",
 			"org.slf4j" % "slf4j-log4j12" % "1.6.1",
 			"commons-configuration" % "commons-configuration" % "1.6" % "provided",
 			"commons-logging" % "commons-logging" % "1.1.1" % "provided",

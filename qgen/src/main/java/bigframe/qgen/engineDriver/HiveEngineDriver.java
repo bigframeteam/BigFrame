@@ -3,6 +3,7 @@ package bigframe.qgen.engineDriver;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,19 +56,26 @@ public class HiveEngineDriver extends EngineDriver {
 			
 			String UDF_JAR = workIF.getProp().get(BigConfConstants.BIGFRAME_UDF_JAR);
 			
-			connection.createStatement().execute("DELETE JAR " + UDF_JAR);
+			
+			Statement stmt = connection.createStatement();
+			stmt.execute("DELETE JAR " + UDF_JAR);
 			LOG.info("Adding UDF JAR " + UDF_JAR + " to hive server");
-			if(connection.createStatement().execute("ADD JAR " + UDF_JAR)) {
+			if(stmt.execute("ADD JAR " + UDF_JAR)) {
 				LOG.info("Adding UDF JAR successful!");
+				stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'");
+				stmt.execute("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'");
+				stmt.execute("set hive.auto.convert.join=false");
 			}
 			else {
 				LOG.error("Adding UDF JAR failed!");
 			}
 			
-			for(HiveRunnable query : queries) {
-				LOG.info("Prepare tables...");
-				query.prepareHiveTables(connection);
-			}
+			
+			if(!workIF.getSkipPrepareTable())
+				for(HiveRunnable query : queries) {
+					LOG.info("Prepare tables...");
+					query.prepareHiveTables(connection);
+				}
 		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

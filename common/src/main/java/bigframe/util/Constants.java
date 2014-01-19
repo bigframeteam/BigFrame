@@ -20,6 +20,7 @@ public class Constants {
 	public static String HIVE = "hive";
 	
 	public static String SHARK = "shark";
+	public static String BAGEL = "bagel";
 	public static String SPARK = "spark";
 	
 	public static String VERTICA = "vertica";

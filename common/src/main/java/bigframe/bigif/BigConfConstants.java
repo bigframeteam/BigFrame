@@ -16,6 +16,10 @@ import bigframe.util.Constants;
  */
 public class BigConfConstants {
 
+	// System Environment Constants
+	public static final String WORKFLOWS_JAR = "WORKFLOWS_JAR";
+	
+	
 	// Properties not related to data and query
 	public static final String BIGFRAME_CONF_DIR = "bigframe.conf.dir";
 	
@@ -29,10 +33,15 @@ public class BigConfConstants {
 	public static final String BIGFRAME_HADOOP_SLAVE = "bigframe.hadoop.slaves";
 	public static final String BIGFRAME_HADOOP_USERNAME = "bigframe.hadoop.username";
 	
+	
+	// SQL related
+	public static final String BIGFRAME_SKIP_PREPARE_TABLE = "bigframe.skip.prepare.table";
+	
 	/**
 	 * Hive specific
 	 */
 	public static final String BIGFRAME_HIVE_HOME = "bigframe.hive.home";
+	public static final String BIGFRAME_HIVE_WAREHOUSE = "bigframe.hive.warehouse";
 	public static final String BIGFRAME_HIVE_JDBC_SERVER = "bigframe.hive.jdbc.server";
 	public static final String BIGFRAME_HIVE_ORC = "bigframe.hive.orc";
 
@@ -40,6 +49,7 @@ public class BigConfConstants {
 	 * Shark specific
 	 */
 	public static final String BIGFRAME_SHARK_HOME = "bigframe.shark.home";
+	public static final String BIGFRAME_SHARK_RC = "bigframe.shark.rc";
 	
 	/**
 	 * Spark specific
