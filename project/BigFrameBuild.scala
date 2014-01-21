@@ -39,16 +39,20 @@ object BigFrameBuild extends Build {
 
     	resolvers ++= Seq(
 	    	"Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-			"spray" at "http://repo.spray.io/"
+			"spray" at "http://repo.spray.io/",
+			"JBoss Repository" at "http://repository.jboss.org/nexus/content/repositories/releases/",
+      		"Cloudera Repository" at "http://repository.cloudera.com/artifactory/cloudera-repos/",
+      		"Local Maven" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
+
 		),
 
 		libraryDependencies ++= Seq(
 			"log4j" % "log4j" % "1.2.16" % "provided",
       		"org.scalatest" %% "scalatest" % "1.9.1" % "test",
 	        "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-	        "org.apache.spark" % "spark-core_2.9.3" % "0.8.0-incubating",
-     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.0-incubating",
-			"edu.berkeley.cs.amplab" % "shark_2.9.3" % "0.8.1" % "provided",
+	        "org.apache.spark" % "spark-core_2.9.3" % "0.8.1-incubating",
+     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.1-incubating",
+			"edu.berkeley.cs.amplab" % "shark_2.9.3" % "0.8.1",
 			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
@@ -104,6 +108,8 @@ object BigFrameBuild extends Build {
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-qgen",
 		
+		retrieveManaged := true,
+
 		excludedJars in assembly <<= (fullClasspath in assembly) map { cp => 
 			cp filter {_.data.getName match { 
 				 case "giraph-*jar" => true

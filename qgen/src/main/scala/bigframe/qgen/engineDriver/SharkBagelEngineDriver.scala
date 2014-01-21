@@ -10,6 +10,8 @@ import bigframe.workflows.runnable.SharkBagelRunnable
 import shark.SharkContext
 import shark.SharkEnv
 
+import org.apache.spark.SparkContext
+
 class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(workIF) {
 
 	var queries: List[SharkBagelRunnable] = scala.List()
@@ -34,16 +36,24 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 		 * Initialize the shark context.
 		 */
 		
-		val sparkMaster = workIF.getSparkMaster()
-		val appName = "BigFrame Benchmark"
-		val sparkHome = workIF.getSparkHome()
-
-		val	jar_path_string = System.getenv(BigConfConstants.WORKFLOWS_JAR)
+//		val sparkMaster = workIF.getSparkMaster()
+//		val appName = "BigFrame Benchmark"
+//		val sparkHome = workIF.getSparkHome()
+//		
+//		val	jar_path_string = System.getenv(BigConfConstants.WORKFLOWS_JAR)
+//		
+//		val sparkContext = new SparkContext(sparkMaster, appName, 
+//						sparkHome, Seq(jar_path_string))
+//		
+//		SharkEnv.sc = sparkContext
+//		
+////		SharkEnv.initWithSharkContext(appName)
+//		val sc = SharkEnv.initWithSharkContext("test")
 		
-//		SharkEnv.initWithSharkContext(appName)
-		val sc = new SharkContext(sparkMaster, appName, sparkHome, Seq(jar_path_string), null)
+		SharkEnv.initWithSharkContext("shark-example")
+		val sc = SharkEnv.sc.asInstanceOf[SharkContext]
 		
-		sc
+		return sc
 	}
 	
 	override def init() = {

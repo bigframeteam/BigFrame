@@ -26,47 +26,78 @@ cd $OLD_PATH
 QGEN_CLASSPATH=$QGEN_JAR
 QGEN_CLASSPATH+=:$WORKFLOWS_JAR
 
-if [ -n "$HADOOP_HOME" ]; then
-	for jar in `find $HADOOP_HOME -name '*.jar'`; do
-		QGEN_CLASSPATH+=:$jar
-	done
-
-	for jar in `find $HADOOP_HOME/lib -name '*.jar'`; do
-		QGEN_CLASSPATH+=:$jar
-	done
-fi
-
-
-if [ -n "$HIVE_HOME" ]; then
-	for jar in `find $HIVE_HOME/lib -name '*.jar'`; do
-		QGEN_CLASSPATH+=:$jar
-	done
-fi
-
-if [ -n "$VERTICA_HOME" ]; then
-	for jar in `find $VERTICA_HOME/java/lib -name '*.jar'`; do
-		QGEN_CLASSPATH+=:$jar
-	done
-fi
-
-#if [ -n "$SPARK_HOME" ]; then
-#	for jar in `find $SPARK_HOME/assembly/target/$SPARK_SCALA_VERSION -name 'spark*.jar'`; do
+#if [ -n "$HADOOP_HOME" ]; then
+#	for jar in `ls $HADOOP_HOME/*.jar`; do
 #		QGEN_CLASSPATH+=:$jar
 #	done
+#
+#	for jar in `find $HADOOP_HOME/lib -name '*.jar'`; do
+#		QGEN_CLASSPATH+=:$jar
+#	done
+#
+	QGEN_CLASSPATH+=:$HADOOP_HOME/conf
+#fi
+
+
+#if [ -n "$HIVE_HOME" ]; then
+#	for jar in `find $HIVE_HOME/lib -name '*.jar'`; do
+#		QGEN_CLASSPATH+=:$jar
+#	done
+#fi
+
+#if [ -n "$VERTICA_HOME" ]; then
+#	for jar in `find $VERTICA_HOME/java/lib -name '*.jar'`; do
+#		QGEN_CLASSPATH+=:$jar
+#	done
+#fi
+
+#if [ -n "$SPARK_HOME" ]; then
+##	for jar in `find $SPARK_HOME/assembly/target/$SPARK_SCALA_VERSION -name 'spark*.jar'`; do
+##		QGEN_CLASSPATH+=:$jar
+##	done
 #
 #	for jar in `find $SPARK_HOME/lib_managed/jars -name '*.jar'`; do
 #		QGEN_CLASSPATH+=:$jar
 #	done
-#
+#	
+#	for jar in `find $SPARK_HOME/lib_managed/bundles -name '*.jar'`; do
+#		QGEN_CLASSPATH+=:$jar
+#	done
+#	
 #fi
 
-if [ -n "$SHARK_HOME" ]; then
-	for jar in `find $SHARK_HOME/target/$SPARK_SCALA_VERSION -name 'shark*.jar'`; do
-		QGEN_CLASSPATH+=:$jar
+for jar in `find $BASE_PATH/lib_managed/jars -name '*.jar'`; do
+	QGEN_CLASSPATH+=:$jar
+done
+
+for jar in `find $BASE_PATH/lib_managed/bundles -name '*.jar'`; do
+	QGEN_CLASSPATH+=:$jar
+done
+
+
+
+#if [ -n "$SHARK_HOME" ]; then
+#	for jar in `find $SHARK_HOME/target/$SPARK_SCALA_VERSION -name 'shark*.jar'`; do
+#		QGEN_CLASSPATH+=:$jar
+#	done
+
+	source $SHARK_HOME/conf/shark-env.sh
+
+	echo "HIVE_HOME: $HIVE_HOME"
+
+	for jar in `find $HIVE_HOME/lib -name '*.jar'`; do
+		# Ignore the logging library since it has already been included with the Spark jar.
+		if [[ "$jar" != *slf4j* ]]; then
+			QGEN_CLASSPATH+=:$jar
+		fi  
 	done
-fi
 
+	export CLASSPATH=$QGEN_CLASSPATH
+	export SPARK_CLASSPATH=$QGEN_CLASSPATH
 
+#fi
+
+echo $QGEN_CLASSPATH > classpath
 
 java -cp "$QGEN_CLASSPATH" -XX:MaxPermSize=128M bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
 

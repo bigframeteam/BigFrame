@@ -86,8 +86,8 @@ class WF_ReportSaleSentimentSharkBagel(basePath: BaseTablePath, hadoop_home: Str
 					"row format delimited fields terminated by \'|\' " + "\n" +
 					"location " + "\'" + web_salesHDFSPath + "\'"
 					
-		sc.runSql(dropWebSales)
-		sc.runSql(createWebSales)
+//		sc.runSql(dropWebSales)
+//		sc.runSql(createWebSales)
 		
 		println(sc.runSql("show tables"))
 	}
