@@ -7,16 +7,16 @@ import bigframe.workflows.BaseTablePath
 
 class PrepareTable_Hive(basePath: BaseTablePath) {
 
-		val itemHDFSPath = basePath.relational_path + "/item"
-		val web_salesHDFSPath = basePath.relational_path + "/web_sales"
-		val catalog_salesHDFSPath = basePath.relational_path + "/catalog_sales"
-		val store_salesHDFSPath = basePath.relational_path + "/store_sales"
-		val promotionHDFSPath = basePath.relational_path + "/promotion"
-		val customerHDFSPath =  basePath.relational_path + "/customer"
-		val date_dimHDFSPath = basePath.relational_path + "/date_dim"
-		
-		val twitter_grapgHDFSPath = basePath.graph_path
-		val tweets_HDFSPath = basePath.nested_path
+	val itemHDFSPath = basePath.relational_path + "/item"
+	val web_salesHDFSPath = basePath.relational_path + "/web_sales"
+	val catalog_salesHDFSPath = basePath.relational_path + "/catalog_sales"
+	val store_salesHDFSPath = basePath.relational_path + "/store_sales"
+	val promotionHDFSPath = basePath.relational_path + "/promotion"
+	val customerHDFSPath =  basePath.relational_path + "/customer"
+	val date_dimHDFSPath = basePath.relational_path + "/date_dim"
+	
+	val twitter_grapgHDFSPath = basePath.graph_path
+	val tweets_HDFSPath = basePath.nested_path
 	
 	/**
 	 * Normal Text File
@@ -26,15 +26,15 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		val stmt = connection.createStatement()
 		
 		
-		val dropWebSales = "DROP TABLE web_sales"
-		val dropStoreSales = "DROP TABLE store_sales"  
-		val dropCatalogSales = "DROP TABLE catalog_sales"
-		val dropItem = "DROP TABLE item"
-		val dropPromot = "DROP TABLE promotion"
-		val dropCust = "DROP TABLE customer"
-		val dropDateDim = "DROP TABLE date_dim"
-		val dropGraph = "DROP TABLE twitter_graph"
-		val dropTweets = "DROP TABLE tweets"
+		val dropWebSales = "DROP TABLE IF EXISTS web_sales"
+		val dropStoreSales = "DROP TABLE IF EXISTS store_sales"  
+		val dropCatalogSales = "DROP TABLE IF EXISTS catalog_sales"
+		val dropItem = "DROP TABLE IF EXISTS item"
+		val dropPromot = "DROP TABLE IF EXISTS promotion"
+		val dropCust = "DROP TABLE IF EXISTS customer"
+		val dropDateDim = "DROP TABLE IF EXISTS date_dim"
+		val dropGraph = "DROP TABLE IF EXISTS twitter_graph"
+		val dropTweets = "DROP TABLE IF EXISTS tweets"
 
 		
 		stmt.execute(dropWebSales)
@@ -368,15 +368,15 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		val stmt = connection.createStatement();
 		
 		
-		val dropWebSalesTmp = "DROP TABLE web_sales_tmp"
-		val dropStoreSalesTmp = "DROP TABLE store_sales_tmp"  
-		val dropCatalogSalesTmp = "DROP TABLE catalog_sales_tmp"
-		val dropItemTmp = "DROP TABLE item_tmp"
-		val dropPromotTmp = "DROP TABLE promotion_tmp"
-		val dropCustTmp = "DROP TABLE customer_tmp"
-		val dropDateDimTmp = "DROP TABLE date_dim_tmp"
-		val dropGraphTmp = "DROP TABLE twitter_graph_tmp"
-		val dropTweetsTmp = "DROP TABLE tweets_tmp"
+		val dropWebSalesTmp = "DROP TABLE IF EXISTS web_sales_tmp"
+		val dropStoreSalesTmp = "DROP TABLE IF EXISTS store_sales_tmp"  
+		val dropCatalogSalesTmp = "DROP TABLE IF EXISTS catalog_sales_tmp"
+		val dropItemTmp = "DROP TABLE IF EXISTS item_tmp"
+		val dropPromotTmp = "DROP TABLE IF EXISTS promotion_tmp"
+		val dropCustTmp = "DROP TABLE IF EXISTS customer_tmp"
+		val dropDateDimTmp = "DROP TABLE IF EXISTS date_dim_tmp"
+		val dropGraphTmp = "DROP TABLE IF EXISTS twitter_graph_tmp"
+		val dropTweetsTmp = "DROP TABLE IF EXISTS tweets_tmp"
 
 		
 		stmt.execute(dropWebSalesTmp)
@@ -698,15 +698,15 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		stmt.execute(createTweetsTmp)
 		
 		
-		val dropWebSales = "DROP TABLE web_sales"
-		val dropStoreSales = "DROP TABLE store_sales"  
-		val dropCatalogSales = "DROP TABLE catalog_sales"
-		val dropItem = "DROP TABLE item"
-		val dropPromot = "DROP TABLE promotion"
-		val dropCust = "DROP TABLE customer"
-		val dropDateDim = "DROP TABLE date_dim"
-		val dropGraph = "DROP TABLE twitter_graph"
-		val dropTweets = "DROP TABLE tweets"
+		val dropWebSales = "DROP TABLE IF EXISTS web_sales"
+		val dropStoreSales = "DROP TABLE IF EXISTS store_sales"  
+		val dropCatalogSales = "DROP TABLE IF EXISTS catalog_sales"
+		val dropItem = "DROP TABLE IF EXISTS item"
+		val dropPromot = "DROP TABLE IF EXISTS promotion"
+		val dropCust = "DROP TABLE IF EXISTS customer"
+		val dropDateDim = "DROP TABLE IF EXISTS date_dim"
+		val dropGraph = "DROP TABLE IF EXISTS twitter_graph"
+		val dropTweets = "DROP TABLE IF EXISTS tweets"
 
 		
 		stmt.execute(dropWebSales)
@@ -755,15 +755,15 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		val stmt = connection.createStatement();
 		
 		
-		val dropWebSalesTmp = "DROP TABLE web_sales_tmp"
-		val dropStoreSalesTmp = "DROP TABLE store_sales_tmp"  
-		val dropCatalogSalesTmp = "DROP TABLE catalog_sales_tmp"
-		val dropItemTmp = "DROP TABLE item_tmp"
-		val dropPromotTmp = "DROP TABLE promotion_tmp"
-		val dropCustTmp = "DROP TABLE customer_tmp"
-		val dropDateDimTmp = "DROP TABLE date_dim_tmp"
-		val dropGraphTmp = "DROP TABLE twitter_graph_tmp"
-		val dropTweetsTmp = "DROP TABLE tweets_tmp"
+		val dropWebSalesTmp = "DROP TABLE IF EXISTS web_sales_tmp"
+		val dropStoreSalesTmp = "DROP TABLE IF EXISTS store_sales_tmp"  
+		val dropCatalogSalesTmp = "DROP TABLE IF EXISTS catalog_sales_tmp"
+		val dropItemTmp = "DROP TABLE IF EXISTS item_tmp"
+		val dropPromotTmp = "DROP TABLE IF EXISTS promotion_tmp"
+		val dropCustTmp = "DROP TABLE IF EXISTS customer_tmp"
+		val dropDateDimTmp = "DROP TABLE IF EXISTS date_dim_tmp"
+		val dropGraphTmp = "DROP TABLE IF EXISTS twitter_graph_tmp"
+		val dropTweetsTmp = "DROP TABLE IF EXISTS tweets_tmp"
 
 		
 		stmt.execute(dropWebSalesTmp)

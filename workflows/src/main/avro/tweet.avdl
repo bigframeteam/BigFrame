@@ -1,0 +1,29 @@
+@namespace("bigframe.avro")
+protocol SparkParquetAvro_TW {
+	import idl "entities.avdl";
+	import idl "user.avdl";
+
+	record Tweet { 
+		union {null, string} contributors;
+		union {null, string} coordinates;
+		union {null, string} created_at;
+		union {null, Entities} entities;
+		union {null, string} favorited;
+		union {null, string} geo;
+		long id;
+		union {null, string} id_str;
+		union {null, string} in_reply_to_screen_name;
+		union {null, string} in_reply_to_status_id;
+		union {null, string} in_reply_to_status_id_str;
+		union {null, string} in_reply_to_user_id;
+		union {null, string} in_reply_to_user_id_str;
+		union {null, string} place;
+		union {null, string} retweet_count;
+		union {null, string} retweeted;
+		union {null, string} source;
+		union {null, string} text;
+		union {null, string} truncated;
+		union {null, User} user;
+	}
+
+}

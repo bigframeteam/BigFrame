@@ -11,7 +11,9 @@ import SparkContext._
  */
 trait SparkRunnable {
 
-  def runSpark(sc: SparkContext): Boolean
+	def prepareSpark(sc: SparkContext): Unit = {}
+	
+	def runSpark(sc: SparkContext): Boolean
   
 }
 

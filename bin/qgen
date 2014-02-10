@@ -76,14 +76,12 @@ done
 
 
 
-#if [ -n "$SHARK_HOME" ]; then
+if [ -n "$SHARK_HOME" ]; then
 #	for jar in `find $SHARK_HOME/target/$SPARK_SCALA_VERSION -name 'shark*.jar'`; do
 #		QGEN_CLASSPATH+=:$jar
 #	done
 
 	source $SHARK_HOME/conf/shark-env.sh
-
-	echo "HIVE_HOME: $HIVE_HOME"
 
 	for jar in `find $HIVE_HOME/lib -name '*.jar'`; do
 		# Ignore the logging library since it has already been included with the Spark jar.
@@ -95,9 +93,7 @@ done
 	export CLASSPATH=$QGEN_CLASSPATH
 	export SPARK_CLASSPATH=$QGEN_CLASSPATH
 
-#fi
-
-echo $QGEN_CLASSPATH > classpath
+fi
 
 java -cp "$QGEN_CLASSPATH" -XX:MaxPermSize=128M bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
 

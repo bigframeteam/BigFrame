@@ -2,6 +2,9 @@ import sbt._
 import Keys._
 import sbtassembly.Plugin._
 import AssemblyKeys._
+import sbtavro.SbtAvro
+//import com.twitter.scrooge.ScroogeSBT
+
 
 object BigFrameBuild extends Build {
 	
@@ -101,9 +104,16 @@ object BigFrameBuild extends Build {
 			"io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
 			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1", 
 			"org.apache.hive" % "hive-exec" % "0.12.0" % "provided",
-			"org.apache.hive" % "hive-common" % "0.12.0" % "provided"
+			"org.apache.hive" % "hive-common" % "0.12.0" % "provided",
+			"com.twitter" % "parquet-avro" % "1.3.2"  excludeAll (
+				ExclusionRule(organization = "org.apache.hadoop")
+			),
+			"org.apache.avro" % "avro" % "1.7.4" % "provided"
+			//"com.twitter" % "scrooge-core_2.9.2" % "3.12.2",
+			//"org.apache.thrift" % "libthrift" % "0.9.0",
+			//"com.twitter" % "finagle-thrift_2.9.2" % "6.10.0"
 		)
-	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
+	) ++ extraAssemblySettings ++ sbtAvroSettings ++ excludeJARfromCOMMON //++ ScroogeSBT.newSettings
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-qgen",
@@ -133,6 +143,10 @@ object BigFrameBuild extends Build {
     	}
 	)
 
+	def sbtAvroSettings() = SbtAvro.avroSettings ++ Seq(
+		javaSource in sbtavro.SbtAvro.avroConfig <<= (sourceDirectory in Compile)(_ / "java")
+	)
+	
 	def excludeJARfromCOMMON() = Seq(
 		excludedJars in assembly <<= (fullClasspath in assembly) map { cp => 
 		  cp filter {_.data.getName == "hadoop-vertica-SNAPSHOT.jar"}

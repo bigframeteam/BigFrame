@@ -16,6 +16,25 @@ class WF_TwitterRankBagel(rankandsuffvec_dir: String, transitmatrix_dir: String,
 		numItr: Int, alpha: Double, numPartition: Int, output_dir: String) 
 		extends Query with BagelRunnable with Serializable {
 
+		// The computation stub for TwitterRank
+	def compute(self: TRVertex, msgs: Option[Array[TRMessage]], superstep: Int)
+		: (TRVertex, Array[TRMessage]) = {
+		val msgSum = msgs.getOrElse(Array[TRMessage]()).map(_.rankShare).sum
+		
+		val newRank = alpha * msgSum + (1-alpha) * self.teleport
+				
+		val halt = superstep >= numItr
+		
+		val msgsOut = 
+			if(!halt)
+				self.outEdges.map(edge =>
+					new TRMessage(edge.targetID, newRank * edge.transitProb)).toArray
+			else
+				Array[TRMessage]()
+		
+		(new TRVertex(self.id, newRank, self.teleport ,self.outEdges, !halt), msgsOut)
+	}
+	
 	def runBagel(sc: SparkContext): Boolean = { 
 		
 		val rankandsuffvec = sc.textFile(rankandsuffvec_dir)
@@ -40,24 +59,7 @@ class WF_TwitterRankBagel(rankandsuffvec_dir: String, transitmatrix_dir: String,
 		
 		val emptyMsgs = sc.parallelize(Array[(String, TRMessage)]())
 
-		// The computation stub for TwitterRank
-		def compute(self: TRVertex, msgs: Option[Array[TRMessage]], superstep: Int)
-			: (TRVertex, Array[TRMessage]) = {
-			val msgSum = msgs.getOrElse(Array[TRMessage]()).map(_.rankShare).sum
-			
-			val newRank = alpha * msgSum + (1-alpha) * self.teleport
-					
-			val halt = superstep >= numItr
-			
-			val msgsOut = 
-				if(!halt)
-					self.outEdges.map(edge =>
-						new TRMessage(edge.targetID, newRank * edge.transitProb)).toArray
-				else
-					Array[TRMessage]()
-			
-			(new TRVertex(self.id, newRank, self.teleport ,self.outEdges, !halt), msgsOut)
-		}
+
 		
 		val result = Bagel.run(sc, verts, emptyMsgs, numPartition)(compute)
 	

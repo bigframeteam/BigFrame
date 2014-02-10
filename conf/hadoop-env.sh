@@ -18,6 +18,11 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hadoop.username=${HADOOP_USERNAME}"
 HIVE_HOME=$HIVE_HOME
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hive.home=${HIVE_HOME}"
 
+# The Hive HOME Directory
+HIVE_WAREHOUSE="hdfs://dbg12:9000/user/hive/warehouse"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hive.warehouse=${HIVE_WAREHOUSE}"
+
+
 # The Hive ORC File Setting
 ORC_SETTING="true"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hive.orc=${ORC_SETTING}"

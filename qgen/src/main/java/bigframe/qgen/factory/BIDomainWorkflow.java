@@ -10,10 +10,8 @@ import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.appDomainInfo.BIDomainInfo;
 import bigframe.qgen.engineDriver.BagelEngineDriver;
-import bigframe.qgen.engineDriver.GiraphEngineDriver;
 import bigframe.qgen.engineDriver.HadoopEngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
-import bigframe.qgen.engineDriver.HiveGiraphEngineDriver;
 import bigframe.qgen.engineDriver.SharkBagelEngineDriver;
 import bigframe.qgen.engineDriver.SharkEngineDriver;
 import bigframe.qgen.engineDriver.SparkEngineDriver;
@@ -75,8 +73,6 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		SharkBagelEngineDriver sharkbagelWorkflow = new SharkBagelEngineDriver(workflowIF);
 		SparkEngineDriver sparkWorkflow = new SparkEngineDriver(workflowIF);
 		VerticaEngineDriver verticaWorkflow = new VerticaEngineDriver(workflowIF);
-		GiraphEngineDriver giraphWorkflow = new GiraphEngineDriver(workflowIF);
-		HiveGiraphEngineDriver hivegiraphWorkflow = new HiveGiraphEngineDriver(workflowIF);
 		
 		/**
 		 * Record the paths for all the base table used. 
@@ -156,10 +152,6 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				
 				else if(dataVariety.contains(Constants.GRAPH)) {					
 					
-					if(graphEngine.equals(Constants.GIRAPH)) {
-						giraphWorkflow.addQuery(new
-								bigframe.workflows.BusinessIntelligence.graph.exploratory.WF_TwitterRankGiraph());
-					}
 					
 					if(graphEngine.equals(Constants.BAGEL)) {
 						
@@ -233,11 +225,6 @@ public class BIDomainWorkflow extends DomainWorkflow {
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10, workflowIF.getHiveORC()));
 				}
 				
-				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.GIRAPH)&& 
-						nestedEngine.equals(Constants.HIVE)) {
-					hivegiraphWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 10, workflowIF.getHiveORC()));
-				}
 				
 				else if(relationalEngine.equals(Constants.SHARK) && graphEngine.equals(Constants.SHARK)&& 
 						nestedEngine.equals(Constants.SHARK)) {
@@ -256,8 +243,11 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				//Relational, Text, Graph for Spark
 				else if(relationalEngine.equals(Constants.SPARK) && graphEngine.equals(Constants.SPARK)&& 
 						nestedEngine.equals(Constants.SPARK)) {
+					//sparkWorkflow.addQuery(new 
+						//	bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_MacroRTGSpark(basePath, 10, workflowIF.getSparkUseBagel(), workflowIF.getSparkDoP(), workflowIF.getSparkOptimizeMemory()));
 					sparkWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_MacroRTGSpark(basePath, 10, workflowIF.getSparkUseBagel(), workflowIF.getSparkDoP(), workflowIF.getSparkOptimizeMemory()));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentSpark(basePath, 
+									workflowIF.getHadoopHome(), 10, 0.85, workflowIF.getSparkDoP(), true));
 				}
 				//Relational, Text for Spark
 				else if(nestedEngine.equals(Constants.SPARK) && nestedEngine.equals(Constants.SPARK)) {
@@ -282,11 +272,6 @@ public class BIDomainWorkflow extends DomainWorkflow {
 			workflows.add(sparkWorkflow);
 		if(verticaWorkflow.numOfQueries() > 0)
 			workflows.add(verticaWorkflow);
-		if(giraphWorkflow.numOfQueries() > 0)
-			workflows.add(giraphWorkflow);
-		if(hivegiraphWorkflow.numOfQueries() > 0)
-			workflows.add(hivegiraphWorkflow);
-		
 		return workflows;
 	}
 

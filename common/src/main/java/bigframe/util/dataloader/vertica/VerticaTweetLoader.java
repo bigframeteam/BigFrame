@@ -1,7 +1,6 @@
 package bigframe.util.dataloader.vertica;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.sql.SQLException;
@@ -9,7 +8,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -22,10 +20,8 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import com.vertica.hadoop.VerticaOutputFormat;
 import com.vertica.hadoop.VerticaRecord;
 
-import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.WorkflowInputFormat;
 //import bigframe.util.TableNotFoundException;
 import bigframe.util.parser.JsonParser;

@@ -31,29 +31,22 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 		queries = query :: queries
 	}
 	
+	/**
+	* Initialize the shark context according to Shark 0.8
+	*/
 	def initSharkContext(): SharkContext = {
-		/**
-		 * Initialize the shark context.
-		 */
+
+	
+		val	jar_path_string = System.getenv(BigConfConstants.WORKFLOWS_JAR)
+
+		System.setProperty("MASTER", workIF.getSparkMaster())
 		
-//		val sparkMaster = workIF.getSparkMaster()
-//		val appName = "BigFrame Benchmark"
-//		val sparkHome = workIF.getSparkHome()
-//		
-//		val	jar_path_string = System.getenv(BigConfConstants.WORKFLOWS_JAR)
-//		
-//		val sparkContext = new SparkContext(sparkMaster, appName, 
-//						sparkHome, Seq(jar_path_string))
-//		
-//		SharkEnv.sc = sparkContext
-//		
-////		SharkEnv.initWithSharkContext(appName)
-//		val sc = SharkEnv.initWithSharkContext("test")
-		
-		SharkEnv.initWithSharkContext("shark-example")
+		SharkEnv.stop
+		SharkEnv.initWithSharkContext("BigFrame Benchmark")
 		val sc = SharkEnv.sc.asInstanceOf[SharkContext]
+		sc.addJar(jar_path_string)
 		
-		return sc
+		sc
 	}
 	
 	override def init() = {
@@ -61,9 +54,13 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 		LOG.info("Prepare Shark+Bagel Tables");
 		
 		try {
+			
 			Class.forName("shark.SharkContext")
-			val sc = initSharkContext()
-			queries.foreach(q => q.prepareSharkBagelTables(sc))
+			
+			if(!workIF.getSkipPrepareTable()) {
+				val sc = initSharkContext()
+				queries.foreach(q => q.prepareSharkBagelTables(sc))
+			}
 			
 		} catch {
 			case e: ClassNotFoundException => LOG.error("Shark jar is not found in the classpath")
@@ -76,6 +73,11 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 		try {
 			Class.forName("shark.SharkContext")
 			val sc = initSharkContext()
+			
+			sc.runSql("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'");
+			sc.runSql("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'");
+			sc.runSql("set mapred.reduce.tasks=40");
+			
 			queries.foreach(q => {
 				if(q.runSharkBagel(sc))
 					LOG.info("Query Finished")
