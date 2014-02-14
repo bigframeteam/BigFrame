@@ -16,7 +16,8 @@ import shark.{SharkContext, SharkEnv}
 import bigframe.workflows.BusinessIntelligence.graph.exploratory.WF_TwitterRankBagel
 
 class WF_ReportSaleSentimentSharkBagel(basePath: BaseTablePath, hadoop_home: String, hiveWarehouse: String, 
-		numItr: Int, val useRC: Boolean, val numPartition: Int = 10)
+		numItr: Int, val useRC: Boolean, val numPartition: Int = 10, 
+		val baseTableSnappy: Boolean)
 		extends Query with SharkBagelRunnable {
 
 	val twitterRank_path = basePath.relational_path  + "/../twitterrank"
@@ -32,7 +33,7 @@ class WF_ReportSaleSentimentSharkBagel(basePath: BaseTablePath, hadoop_home: Str
 		val table_preparer = new PrepareTable_SharkC(basePath)
 		
 		if(useRC)
-			table_preparer.prepareTableImplRC(sc)
+			table_preparer.prepareTableImplRC(sc, baseTableSnappy)
 		else
 			table_preparer.prepareTableImplText(sc)
 	}

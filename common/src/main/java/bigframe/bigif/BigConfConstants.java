@@ -50,6 +50,7 @@ public class BigConfConstants {
 	 */
 	public static final String BIGFRAME_SHARK_HOME = "bigframe.shark.home";
 	public static final String BIGFRAME_SHARK_RC = "bigframe.shark.rc";
+	public static final String BIGFRAME_SHARK_ENABLE_SNAPPY = "bigframe.shark.enable.snappy";
 	
 	/**
 	 * Spark specific

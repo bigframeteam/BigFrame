@@ -27,6 +27,7 @@ public class WorkflowInputFormat extends Config {
 	
 	private String SHARK_HOME = "";
 	private boolean SHARK_RC = true;
+	private boolean SHARK_SNAPPY = true;
 	
 	private String SPARK_HOME = "";
 	private String SPARK_MASTER = "";
@@ -97,6 +98,10 @@ public class WorkflowInputFormat extends Config {
 	
 	public boolean getSharkRC() {
 		return SHARK_RC;
+	}
+	
+	public boolean getSharkSnappy() {
+		return SHARK_SNAPPY;
 	}
 	
 	public String getSparkHome() {
@@ -226,6 +231,12 @@ public class WorkflowInputFormat extends Config {
 			else if (key.equals(BigConfConstants.BIGFRAME_SHARK_RC)) {
 				SHARK_RC = Boolean.valueOf(value);
 			}
+			
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_SHARK_ENABLE_SNAPPY)) {
+				SHARK_SNAPPY = Boolean.valueOf(value);
+			}
+			
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_SPARK_HOME)) {
 				SPARK_HOME = value;

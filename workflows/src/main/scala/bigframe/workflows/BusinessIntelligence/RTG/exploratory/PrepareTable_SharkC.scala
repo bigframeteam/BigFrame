@@ -359,7 +359,7 @@ class PrepareTable_SharkC(basePath: BaseTablePath) {
 	/**
 	 * RC file is used and also enable Snappy Compression.
 	 */
-	def prepareTableImplRC(sc: SharkContext): Unit = {
+	def prepareTableImplRC(sc: SharkContext, baseTableSnappy: Boolean): Unit = {
 		
 		println("Creating RC file...")
 		
@@ -715,9 +715,11 @@ class PrepareTable_SharkC(basePath: BaseTablePath) {
 		sc.runSql(dropGraph)
 		sc.runSql(dropTweets)
 		
-		sc.runSql("SET hive.exec.compress.output=true")
-		sc.runSql("SET mapred.output.compression.type=BLOCK")
-		sc.runSql("SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec")
+		if(baseTableSnappy) {
+			sc.runSql("SET hive.exec.compress.output=true")
+			sc.runSql("SET mapred.output.compression.type=BLOCK")
+			sc.runSql("SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec")
+		}
 		
 		val createWebSales = "CREATE TABLE web_sales STORED AS rcfile as select * from web_sales_tmp"
 		val createCatalogSales = "CREATE TABLE catalog_sales STORED AS rcfile as select * from catalog_sales_tmp"

@@ -237,7 +237,8 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					sharkbagelWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentSharkBagel(basePath, 
 									workflowIF.getHadoopHome(), workflowIF.getHiveWareHouse(), 
-									10, workflowIF.getSharkRC(), workflowIF.getSparkDoP()));
+									10, workflowIF.getSharkRC(), workflowIF.getSparkDoP(), 
+									workflowIF.getSharkSnappy()));
 				}
 				
 				//Relational, Text, Graph for Spark
