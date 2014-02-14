@@ -24,7 +24,7 @@ class PrepareTable_SharkC(basePath: BaseTablePath) {
 		
 		val dropWebSales = "DROP TABLE IF EXISTS web_sales"
 		val dropStoreSales = "DROP TABLE IF EXISTS store_sales"  
-		val dropCatalogSales = "DROP TABLE IF EXISTScatalog_sales"
+		val dropCatalogSales = "DROP TABLE IF EXISTS catalog_sales"
 		val dropItem = "DROP TABLE IF EXISTS item"
 		val dropPromot = "DROP TABLE IF EXISTS promotion"
 		val dropCust = "DROP TABLE IF EXISTS customer"
