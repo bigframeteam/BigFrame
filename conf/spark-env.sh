@@ -31,6 +31,10 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.shark.home=${SHARK_HOME}"
 SHARK_RC="true"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.shark.rc=${SHARK_RC}"
 
+# The Spark Home Directory
+SHARK_ENABLE_SNAPPY="true"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.shark.enable.snappy=${SHARK_ENABLE_SNAPPY}"
+
 
 # Local directory for Spark scratch space
 SPARK_LOCAL_DIR="/tmp/spark_local"
