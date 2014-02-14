@@ -48,7 +48,14 @@ class WF_ReportSaleSentimentSharkBagel(basePath: BaseTablePath, hadoop_home: Str
 	
 	
 	def runSharkBagelImpl1(sc: SharkContext) : Boolean = {
-			
+		
+			if(baseTableSnappy) {
+				sc.runSql("SET hive.exec.compress.output=true")
+				sc.runSql("SET mapred.output.compression.type=BLOCK")
+				sc.runSql("SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec")
+			}
+		
+		
 			val drop_promotionSelected = "DROP TABLE IF EXISTS promotionSelected_cached"
 			val create_promotionSelected = "CREATE TABLE promotionSelected_cached AS" +
 					"	SELECT p_promo_id as promo_id, p_item_sk as item_sk, p_start_date_sk as start_date_sk, p_end_date_sk as end_date_sk " +

@@ -113,7 +113,7 @@ object BigFrameBuild extends Build {
 			//"org.apache.thrift" % "libthrift" % "0.9.0",
 			//"com.twitter" % "finagle-thrift_2.9.2" % "6.10.0"
 		)
-	) ++ extraAssemblySettings ++ sbtAvroSettings ++ excludeJARfromCOMMON //++ ScroogeSBT.newSettings
+	) ++ extraAssemblySettings ++ excludeJARfromCOMMON // ++ sbtAvroSettings  //++ ScroogeSBT.newSettings
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-qgen",
