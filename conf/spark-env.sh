@@ -27,6 +27,11 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.home=${SPARK_HOME}"
 SHARK_HOME=$SHARK_HOME
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.shark.home=${SHARK_HOME}"
 
+# Use Shark RC file or not
+SHARK_RC="true"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.shark.rc=${SHARK_RC}"
+
+
 # Local directory for Spark scratch space
 SPARK_LOCAL_DIR="/tmp/spark_local"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.local.dir=${SPARK_LOCAL_DIR}"

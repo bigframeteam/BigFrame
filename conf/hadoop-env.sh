@@ -27,6 +27,10 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hive.warehouse=${HIVE_WAREHOUSE}"
 ORC_SETTING="true"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hive.orc=${ORC_SETTING}"
 
+# Skip Prepare Tables
+SKIP_PREPARE_TABLE="false"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.skip.prepare.table=${SKIP_PREPARE_TABLE}"
+
 
 # The Hive JDBC Server Address
 HIVE_JDBC_SERVER="jdbc:hive://localhost:10000/default"
