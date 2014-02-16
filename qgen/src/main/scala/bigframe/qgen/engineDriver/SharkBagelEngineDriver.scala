@@ -13,7 +13,7 @@ import shark.SharkEnv
 import org.apache.spark.SparkContext
 
 class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(workIF) {
-
+	private var spark_dop: Integer = 8
 	var queries: List[SharkBagelRunnable] = scala.List()
 	
 	val LOG = LogFactory.getLog(classOf[SharkBagelEngineDriver]);
@@ -21,7 +21,9 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 //	val scClassName = classOf[SharkContext].getName
 //	
 //	val scclass = Class.forName("shark.SharkContext")
-	
+
+	var sc: SharkContext = null
+
 	override def numOfQueries(): Int = {
 		// TODO Auto-generated method stub
 		return queries.length
@@ -35,7 +37,9 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 	* Initialize the shark context according to Shark 0.8
 	*/
 	def initSharkContext(): SharkContext = {
-
+		
+		if(sc != null)
+			sc
 	
 		val	jar_path_string = System.getenv(BigConfConstants.WORKFLOWS_JAR)
 
@@ -43,7 +47,7 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 		
 		SharkEnv.stop
 		SharkEnv.initWithSharkContext("BigFrame Benchmark")
-		val sc = SharkEnv.sc.asInstanceOf[SharkContext]
+		sc = SharkEnv.sc.asInstanceOf[SharkContext]
 		sc.addJar(jar_path_string)
 		
 		sc
@@ -79,6 +83,8 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 			sc.runSql("set mapred.reduce.tasks=40");
 			
 			queries.foreach(q => {
+				spark_dop = workIF.getSparkDoP()
+				//System.setProperty("spark.default.parallelism", spark_dop.toString())
 				if(q.runSharkBagel(sc))
 					LOG.info("Query Finished")
 				else
