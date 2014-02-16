@@ -50,14 +50,15 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.updatescript=${TPCDS_UPDATE_SCR
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.singletblgen.script=${GEN_PROMTTBL_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.conf.dir=${CONF_DIR}"
 
+SCALA_VERSION="2.9.3"
 
-COMMON_JAR=`ls $BASE_DIR/common/target/scala-2.9.3/bigframe-common-assembly*.jar`
+COMMON_JAR=`ls $BASE_DIR/common/target/scala-$SCALA_VERSION/bigframe-common-assembly*.jar`
 
-DATAGEN_JAR=`ls $BASE_DIR/datagen/target/scala-2.9.3/bigframe-datagen-assembly*.jar`
+DATAGEN_JAR=`ls $BASE_DIR/datagen/target/scala-$SCALA_VERSION/bigframe-datagen-assembly*.jar`
 
-QGEN_JAR=`ls $BASE_DIR/qgen/target/scala-2.9.3/bigframe-qgen-assembly*.jar`
+QGEN_JAR=`ls $BASE_DIR/qgen/target/scala-$SCALA_VERSION/bigframe-qgen-assembly*.jar`
 
-WORKFLOWS_JAR=`ls $BASE_DIR/workflows/target/scala-2.9.3/bigframe-workflows-assembly*.jar`
+WORKFLOWS_JAR=`ls $BASE_DIR/workflows/target/scala-$SCALA_VERSION/bigframe-workflows-assembly*.jar`
 
 # Please do not remove the following, Spark's engine driver requires this jar while launching a standalone application
 export WORKFLOWS_JAR
