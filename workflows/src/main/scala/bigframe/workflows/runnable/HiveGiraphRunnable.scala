@@ -21,4 +21,7 @@ trait HiveGiraphRunnable {
 	 * Run the benchmark query
 	 */
 	def runHiveGiraph(giraph_config: GiraphConfiguration, connection: Connection): Boolean
+
+	def cleanUpHiveGiraph(connection: Connection): Unit
+
 }

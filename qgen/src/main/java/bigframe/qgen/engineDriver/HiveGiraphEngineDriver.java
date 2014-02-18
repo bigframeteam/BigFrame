@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Statement;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -80,7 +81,7 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 			if(!workIF.getSkipPrepareTable())
 				for(HiveGiraphRunnable query : queries) {
 					LOG.info("Prepare tables...");
-					query.prepareHiveTables(connection);
+					query.prepareHiveGiraphTables(connection);
 				}
 		
 		} catch (SQLException e) {

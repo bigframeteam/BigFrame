@@ -63,4 +63,8 @@ class WF_TwitterRankGiraph extends Query with GiraphRunnable {
 		
 		return if(job.run(true)) true else false 
 	}
+
+	def  cleanUpHiveGiraph() {
+		
+	}
 }

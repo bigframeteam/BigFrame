@@ -155,5 +155,7 @@ class WF_TwitterRankHiveGiraph extends Query with HiveGiraphRunnable {
 //		if (job.run(true)) return true else return false
 		return false
 	}
-
+	override def cleanUpHiveGiraph(connection: Connection): Unit = {
+		//cleanUpHiveGiraphImpl1(connection)
+	}
 }
