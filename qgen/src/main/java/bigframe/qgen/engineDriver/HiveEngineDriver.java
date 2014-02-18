@@ -3,6 +3,7 @@ package bigframe.qgen.engineDriver;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +24,10 @@ public class HiveEngineDriver extends EngineDriver {
 	private Connection connection;
 	private List<HiveRunnable> queries = new ArrayList<HiveRunnable>();
 	private static String driverName = "org.apache.hadoop.hive.jdbc.HiveDriver";
-	
+
 	private static final Log LOG = LogFactory.getLog(HiveEngineDriver.class);
 	//private static int hiveServer_version = 1;
-	
+
 	public HiveEngineDriver(WorkflowInputFormat workIF) {
 		super(workIF);
 		// TODO Auto-generated constructor stub
@@ -52,38 +53,45 @@ public class HiveEngineDriver extends EngineDriver {
 			}
 			else
 				LOG.info("Successful!!!");
-			
+
 			String UDF_JAR = workIF.getProp().get(BigConfConstants.BIGFRAME_UDF_JAR);
-			
-			connection.createStatement().execute("DELETE JAR " + UDF_JAR);
+
+
+			Statement stmt = connection.createStatement();
+			stmt.execute("DELETE JAR " + UDF_JAR);
 			LOG.info("Adding UDF JAR " + UDF_JAR + " to hive server");
-			if(connection.createStatement().execute("ADD JAR " + UDF_JAR)) {
+			if(stmt.execute("ADD JAR " + UDF_JAR)) {
 				LOG.info("Adding UDF JAR successful!");
+				stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'");
+				stmt.execute("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'");
+				stmt.execute("set hive.auto.convert.join=false");
 			}
 			else {
 				LOG.error("Adding UDF JAR failed!");
 			}
-			
-			for(HiveRunnable query : queries) {
-				LOG.info("Prepare tables...");
-				query.prepareHiveTables(connection);
-			}
-		
+
+
+			if(!workIF.getSkipPrepareTable())
+				for(HiveRunnable query : queries) {
+					LOG.info("Prepare tables...");
+					query.prepareHiveTables(connection);
+				}
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(1);
 		}
 	}
-	
+
 	public void addQuery(HiveRunnable query) {
 		queries.add(query);
 	}
-	
+
 	@Override
 	public void run() {
 		LOG.info("Running Hive Query");
-		
+
 		for(HiveRunnable query : queries) {
 			if(query.runHive(connection))
 				LOG.info("Query Finished");
@@ -95,11 +103,11 @@ public class HiveEngineDriver extends EngineDriver {
 	@Override
 	public void cleanup() {
 
-		
+
 		for(HiveRunnable query : queries) {
 			query.cleanUpHive(connection);
 		}
-		
+
 		if(connection != null) {
 			try {
 				connection.close();

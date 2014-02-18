@@ -19,6 +19,8 @@ public class BigConfConstants {
 	// Properties not related to data and query
 	public static final String BIGFRAME_CONF_DIR = "bigframe.conf.dir";
 	
+	public static final String BIGFRAME_SKIP_PREPARE_TABLE = "bigframe.skip.prepare.table";
+
 	// Properties for the home dir of each engine
 	/**
 	 * Hadoop specific
@@ -28,13 +30,15 @@ public class BigConfConstants {
 	public static final String BIGFRAME_WEBHDFS_ROOTDIR = "bigframe.webhdfs.root.dir";
 	public static final String BIGFRAME_HADOOP_SLAVE = "bigframe.hadoop.slaves";
 	public static final String BIGFRAME_HADOOP_USERNAME = "bigframe.hadoop.username";
-	
+	public static final String BIGFRAME_HIVE_WAREHOUSE = "bigframe.hive.warehouse";
+	public static final String BIGFRAME_HIVE_SNAPPY = "bigframe.hive.snappy";
 	/**
 	 * Hive specific
 	 */
 	public static final String BIGFRAME_HIVE_HOME = "bigframe.hive.home";
 	public static final String BIGFRAME_HIVE_JDBC_SERVER = "bigframe.hive.jdbc.server";
 	public static final String BIGFRAME_HIVE_ORC = "bigframe.hive.orc";
+
 
 	/**
 	 * Shark specific

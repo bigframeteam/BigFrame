@@ -62,20 +62,26 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 				LOG.info("Successful!!!");
 			
 			String UDF_JAR = workIF.getProp().get(BigConfConstants.BIGFRAME_UDF_JAR);
-			
-			connection.createStatement().execute("DELETE JAR " + UDF_JAR);
+
+
+			Statement stmt = connection.createStatement();
+			stmt.execute("DELETE JAR " + UDF_JAR);
 			LOG.info("Adding UDF JAR " + UDF_JAR + " to hive server");
-			if(connection.createStatement().execute("ADD JAR " + UDF_JAR)) {
+			if(stmt.execute("ADD JAR " + UDF_JAR)) {
 				LOG.info("Adding UDF JAR successful!");
+				stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'");
+				stmt.execute("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'");
+				stmt.execute("set hive.auto.convert.join=false");
 			}
 			else {
 				LOG.error("Adding UDF JAR failed!");
 			}
-			
-			for(HiveGiraphRunnable query : queries) {
-				LOG.info("Prepare tables...");
-				query.prepareHiveGiraphTables(connection);
-			}
+
+			if(!workIF.getSkipPrepareTable())
+				for(HiveGiraphRunnable query : queries) {
+					LOG.info("Prepare tables...");
+					query.prepareHiveTables(connection);
+				}
 		
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -97,7 +103,10 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 
 	@Override
 	public void cleanup() {
-		
+		for(HiveGiraphRunnable query : queries) {
+			query.cleanUpHiveGiraph(connection);
+		}
+
 		if(connection != null) {
 			try {
 				connection.close();
@@ -106,7 +115,6 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 				e.printStackTrace();
 			}
 		}
-
 	}
 	
 	public void addQuery(HiveGiraphRunnable query) {

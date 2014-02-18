@@ -209,13 +209,13 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.HIVE)&& 
 						nestedEngine.equals(Constants.HIVE)) {
 					hiveWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10, workflowIF.getHiveORC()));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10, workflowIF.getHiveORC(), workflowIF.getHiveSnappy()));
 				}
 				
 				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.GIRAPH)&& 
 						nestedEngine.equals(Constants.HIVE)) {
 					hivegiraphWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 10, workflowIF.getHiveORC()));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 10, workflowIF.getHiveORC(),workflowIF.getHiveSnappy()));
 				}
 				
 //				else if(relationalEngine.equals(Constants.SHARK) && graphEngine.equals(Constants.SHARK)&& 

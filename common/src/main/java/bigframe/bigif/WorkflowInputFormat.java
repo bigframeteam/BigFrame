@@ -18,10 +18,14 @@ public class WorkflowInputFormat extends Config {
 	private String WEBHDFS_ROOT_DIR = "";
 	private String HADOOP_USERNAME = "";
 	
+	private boolean SKIP_PREPARE_TABLE = false;
+
 	private String HIVE_HOME = "";
+	private String HIVE_WAREHOUSE = "";
 	private String HIVE_JDBC_SERVER = "";
-	private boolean HIVE_ORC = true;
-	
+	private boolean HIVE_ORC = false;
+	private boolean HIVE_SNAPPY = false;
+
 	private String SHARK_HOME = "";
 	private String SPARK_HOME = "";
 	private String SPARK_MASTER = "";
@@ -57,7 +61,10 @@ public class WorkflowInputFormat extends Config {
 	}
 	
 	
-	
+	public boolean getSkipPrepareTable() {
+		return SKIP_PREPARE_TABLE;
+	}
+
 	public String getWEBHDFSRootDIR() {
 		return WEBHDFS_ROOT_DIR;
 	}
@@ -77,7 +84,15 @@ public class WorkflowInputFormat extends Config {
 	public boolean getHiveORC() {
 		return HIVE_ORC;
 	}
-	
+
+	public boolean getHiveSnappy() {
+		return HIVE_SNAPPY;
+	}
+
+	public String getHiveWareHouse() {
+		return HIVE_WAREHOUSE;
+	}
+
 	public String getSharkHome() {
 		return SHARK_HOME;
 	}
@@ -181,10 +196,18 @@ public class WorkflowInputFormat extends Config {
 				HDFS_ROOT_DIR = value;
 			}
 			
+			else if (key.equals(BigConfConstants.BIGFRAME_SKIP_PREPARE_TABLE)) {
+				SKIP_PREPARE_TABLE = Boolean.valueOf(value);
+			}
+	
 			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_HOME)) {
 				HIVE_HOME = value;
 			}
 			
+			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_WAREHOUSE)) {
+				HIVE_WAREHOUSE = value;
+			}
+	
 			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_JDBC_SERVER)) {
 				HIVE_JDBC_SERVER = value;
 			}
@@ -193,6 +216,10 @@ public class WorkflowInputFormat extends Config {
 				HIVE_ORC = Boolean.valueOf(value);
 			}
 			
+			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_SNAPPY)) {
+				HIVE_SNAPPY = Boolean.valueOf(value);
+			}
+
 			else if (key.equals(BigConfConstants.BIGFRAME_SHARK_HOME)) {
 				SHARK_HOME = value;
 			}

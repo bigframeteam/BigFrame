@@ -11,21 +11,59 @@ import org.apache.giraph.conf.GiraphConfiguration
 import java.sql.Connection
 import java.sql.SQLException
 
-class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, val useOrc: Boolean) extends Query with HiveGiraphRunnable {
+class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, val useOrc: Boolean, val useSnappy: Boolean) extends Query with HiveGiraphRunnable {
 
 	override def printDescription(): Unit = {}
 	
 	
 	override def prepareHiveGiraphTables(connection: Connection): Unit = {
-		
 		val tablePreparator = new PrepareTable_Hive(basePath)
 		
 	    if(useOrc == true) {
-   		    tablePreparator.prepareTableImpl2(connection)
+   		    if(useSnappy == true) {
+   		    	tablePreparator.prepareTableImpl3(connection)
+   		    }
+   		    else {
+   		    	tablePreparator.prepareTableImpl2(connection)
+   		    }
 	    }
 	    else {
 	        tablePreparator.prepareTableImpl1(connection)
 	    }
+	}
+	
+	def cleanUpHiveGiraphImpl1(connection: Connection): Unit = {
+		
+		val stmt = connection.createStatement()	
+		
+		val list_drop = Seq("DROP TABLE IF EXISTS promotionSelected",
+							"DROP VIEW IF EXISTS promotedProduct",
+							"DROP VIEW IF EXISTS RptSalesByProdCmpn",
+							"DROP TABLE IF EXISTS relevantTweet",
+							"DROP VIEW IF EXISTS senAnalyse",
+							"DROP TABLE IF EXISTS tweetByUser",
+							"DROP TABLE IF EXISTS tweetByProd",
+							"DROP VIEW IF EXISTS sumFriendTweets",
+							"DROP TABLE IF EXISTS mentionProb",
+							"DROP VIEW IF EXISTS simUserByProd",
+							"DROP TABLE IF EXISTS transitMatrix",
+							"DROP VIEW IF EXISTS randSuffVec",
+							"DROP TABLE IF EXISTS initialRank")
+		
+		list_drop.foreach(stmt.execute(_))
+									
+		for(iteration <- 1 to num_iter) {
+							
+			val drop_twitterRank = "DROP TABLE IF EXISTS twitterRank"+iteration
+
+			stmt.execute(drop_twitterRank)
+				
+		}
+	}
+
+
+	override def cleanUpHiveGiraph(connection: Connection): Unit = {
+		cleanUpHiveGiraphImpl1(connection)
 	}
 
 	def runHiveGiraphImpl1(giraph_config: GiraphConfiguration, connection: Connection) : Boolean = {
