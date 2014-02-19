@@ -1130,6 +1130,6 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		stmt.execute(createDateDim)
 		stmt.execute(createGraph)
 
-
+		stmt.execute("set hive.exec.compress.output=false")
 	}
 }
