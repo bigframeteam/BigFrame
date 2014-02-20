@@ -64,7 +64,6 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 			
 			String UDF_JAR = workIF.getProp().get(BigConfConstants.BIGFRAME_UDF_JAR);
 
-
 			Statement stmt = connection.createStatement();
 			stmt.execute("DELETE JAR " + UDF_JAR);
 			LOG.info("Adding UDF JAR " + UDF_JAR + " to hive server");
@@ -77,7 +76,10 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 			else {
 				LOG.error("Adding UDF JAR failed!");
 			}
-
+			
+			int dop = workIF.getSparkDoP();
+			stmt.execute("set hive.exec.reducers.max"+dop);
+			
 			if(!workIF.getSkipPrepareTable())
 				for(HiveGiraphRunnable query : queries) {
 					LOG.info("Prepare tables...");
