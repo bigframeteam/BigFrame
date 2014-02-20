@@ -750,7 +750,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 	 */
 	def prepareTableImpl3(connection: Connection): Unit = {
 
-		println("Creating RC file...")
+		println("Creating ORC file...")
 
 		val stmt = connection.createStatement();
 
@@ -1085,15 +1085,15 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		stmt.execute(createTweetsTmp)
 
 
-		val dropWebSales = "DROP TABLE web_sales"
-		val dropStoreSales = "DROP TABLE store_sales"  
-		val dropCatalogSales = "DROP TABLE catalog_sales"
-		val dropItem = "DROP TABLE item"
-		val dropPromot = "DROP TABLE promotion"
-		val dropCust = "DROP TABLE customer"
-		val dropDateDim = "DROP TABLE date_dim"
-		val dropGraph = "DROP TABLE twitter_graph"
-		val dropTweets = "DROP TABLE tweets"
+		val dropWebSales = "DROP TABLE IF EXISTS web_sales"
+		val dropStoreSales = "DROP TABLE IF EXISTS store_sales"  
+		val dropCatalogSales = "DROP TABLE IF EXISTS catalog_sales"
+		val dropItem = "DROP TABLE IF EXISTS item"
+		val dropPromot = "DROP TABLE IF EXISTS promotion"
+		val dropCust = "DROP TABLE IF EXISTS customer"
+		val dropDateDim = "DROP TABLE IF EXISTS date_dim"
+		val dropGraph = "DROP TABLE IF EXISTS twitter_graph"
+		val dropTweets = "DROP TABLE IF EXISTS tweets"
 
 
 		stmt.execute(dropWebSales)
@@ -1110,15 +1110,15 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		stmt.execute("SET mapred.output.compression.type=BLOCK")
 		stmt.execute("SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec")
 
-		val createWebSales = "CREATE TABLE web_sales STORED AS rcfile as select * from web_sales_tmp"
-		val createCatalogSales = "CREATE TABLE catalog_sales STORED AS rcfile as select * from catalog_sales_tmp"
-		val createStoreSales = "CREATE TABLE store_sales STORED AS rcfile as select * from store_sales_tmp"
-		val createItem = "CREATE TABLE item STORED AS rcfile as select * from item_tmp"
-		val createPromot = "CREATE TABLE promotion STORED AS rcfile as select * from promotion_tmp"
-		val createCust = "CREATE TABLE customer STORED AS rcfile as select * from customer_tmp"
-		val createDateDim = "CREATE TABLE date_dim STORED AS rcfile as select * from date_dim_tmp"
-		val createGraph = "CREATE TABLE twitter_graph STORED AS rcfile as select * from twitter_graph_tmp"
-		val createTweets = "CREATE TABLE tweets STORED AS rcfile as select * from tweets_tmp"
+		val createWebSales = "CREATE TABLE web_sales STORED AS orc as select * from web_sales_tmp"
+		val createCatalogSales = "CREATE TABLE catalog_sales STORED AS orc as select * from catalog_sales_tmp"
+		val createStoreSales = "CREATE TABLE store_sales STORED AS orc as select * from store_sales_tmp"
+		val createItem = "CREATE TABLE item STORED AS orc as select * from item_tmp"
+		val createPromot = "CREATE TABLE promotion STORED AS orc as select * from promotion_tmp"
+		val createCust = "CREATE TABLE customer STORED AS orc as select * from customer_tmp"
+		val createDateDim = "CREATE TABLE date_dim STORED AS orc as select * from date_dim_tmp"
+		val createGraph = "CREATE TABLE twitter_graph STORED AS orc as select * from twitter_graph_tmp"
+		val createTweets = "CREATE TABLE tweets STORED AS orc as select * from tweets_tmp"
 
 		stmt.execute(createTweets)
 		stmt.execute(createWebSales)
