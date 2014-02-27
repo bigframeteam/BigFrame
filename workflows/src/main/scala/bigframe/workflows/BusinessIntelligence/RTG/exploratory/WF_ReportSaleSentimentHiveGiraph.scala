@@ -299,7 +299,7 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 					"		(SELECT senAnalyse.item_sk, sum(rank_score * sentiment_score) as total_sentiment" +
 					"		FROM senAnalyse JOIN  twitterRank "+
 					"		ON senAnalyse.item_sk = twitterRank.item_sk " +
-					"		WHERE senAnalyse.user_id = twitterRank.user_id" +
+					"		AND senAnalyse.user_id = twitterRank.user_id" +
 					"		GROUP BY" +
 					"		senAnalyse.item_sk) t" +
 					"	JOIN RptSalesByProdCmpn " +
