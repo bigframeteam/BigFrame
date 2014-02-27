@@ -310,7 +310,7 @@ class WF_ReportSaleSentimentSharkBagel(basePath: BaseTablePath, hadoop_home: Str
 						"		(SELECT senAnalyse.item_sk, sum(rank_score * sentiment_score) as total_sentiment" +
 						"		FROM senAnalyse JOIN " + twitterRank +
 						"		ON senAnalyse.item_sk = " + twitterRank + ".item_sk " +
-						"		WHERE senAnalyse.user_id = " + twitterRank +".user_id" +
+						"		AND senAnalyse.user_id = " + twitterRank +".user_id" +
 						"		GROUP BY" +
 						"		senAnalyse.item_sk) t" +
 						"	JOIN RptSalesByProdCmpn " +
