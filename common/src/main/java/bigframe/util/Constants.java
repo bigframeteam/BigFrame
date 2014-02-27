@@ -8,6 +8,9 @@ package bigframe.util;
  */
 public class Constants {
 	
+	public static String APACHE_HADOOP = "apache-hadoop";
+	public static String CLOUDERA_HADOOP = "cloudera-hadoop";
+	
 	public static String RELATIONAL = "relational";
 	public static String GRAPH = "graph";
 	public static String NESTED = "nested";
@@ -25,9 +28,15 @@ public class Constants {
 	
 	public static String VERTICA = "vertica";
 	
+	public static String IMPALA = "impala";
 	
 	public static String GIRAPH = "giraph";
 	
 	public static String MICRO = "micro";
 	public static String MACRO = "macro";
+	
+	public static String TEXT_FORMAT = "text";
+	public static String PARQUET_FORMAT = "parquet";
+	public static String ORC_FORMAT = "orc";
+	public static String MIXED_FORMAT = "mixed";
 }

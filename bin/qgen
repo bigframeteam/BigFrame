@@ -66,8 +66,25 @@ QGEN_CLASSPATH+=:$WORKFLOWS_JAR
 #	
 #fi
 
-for jar in `find $BASE_PATH/lib_managed/jars -name '*.jar'`; do
+for jar in `find $BASE_PATH/qgen/lib_managed -name '*.jar'`; do
 	QGEN_CLASSPATH+=:$jar
+done
+
+for jar in `find $BASE_PATH/lib_managed/jars -name '*.jar'`; do
+	if [ -n "$IMPALA_HOME" ]; then
+	# Ignore the lib libthrift since it has already been included with in qgen/lib_managed.
+	# To avoid possible version conflict
+		if [[ "$jar" != *libthrift* ]]; then
+			QGEN_CLASSPATH+=:$jar
+		fi 
+		
+		if [[ "$jar" != hive* ]]; then
+			QGEN_CLASSPATH+=:$jar
+		fi 
+
+	else
+		QGEN_CLASSPATH+=:$jar
+	fi
 done
 
 for jar in `find $BASE_PATH/lib_managed/bundles -name '*.jar'`; do
@@ -94,6 +111,7 @@ if [ -n "$SHARK_HOME" ]; then
 	export SPARK_CLASSPATH=$QGEN_CLASSPATH
 
 fi
+
 
 java -cp "$QGEN_CLASSPATH" -XX:MaxPermSize=128M bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
 
