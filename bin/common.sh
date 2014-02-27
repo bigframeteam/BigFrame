@@ -44,6 +44,9 @@ CONF_DIR=$BASE_DIR/conf
 # Get the user-defined vertica parameters
 . "$BASE_DIR"/conf/vertica-env.sh
 
+# Get the user-defined vertica parameters
+. "$BASE_DIR"/conf/impala-env.sh
+
 
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.script=${TPCDS_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.updatescript=${TPCDS_UPDATE_SCRIPT}"

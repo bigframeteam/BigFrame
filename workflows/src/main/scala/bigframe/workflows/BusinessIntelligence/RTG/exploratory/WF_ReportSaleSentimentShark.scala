@@ -21,9 +21,9 @@ class WF_ReportSaleSentimentShark(basePath: BaseTablePath, num_iter: Int, val us
 		val tablePreparator = new PrepareTable_Hive(basePath)
 		
 		if(useRC)
-			tablePreparator.prepareTableImpl3(connection)
+			tablePreparator.prepareTableRCFile(connection)
 		else
-			tablePreparator.prepareTableImpl1(connection)
+			tablePreparator.prepareTableTextFile(connection)
 	}
 	
 	def cleanUpSharkImpl1(connection: Connection): Unit = {

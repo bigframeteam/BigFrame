@@ -429,6 +429,15 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		return get_rowcount(11, targetGB) * 2000;
 	}
 
+	/**
+	 * Get the number of row based on table ID and target size in GB.
+	 * Please refer to the tpcds source code to find the IDs corresponding to 
+	 * their table names.
+	 * 
+	 * @param table
+	 * @param targetGB
+	 * @return
+	 */
 	private long get_rowcount(int table, float targetGB) {
 		long baseRowCount = 0;
 		switch ((int)targetGB) {

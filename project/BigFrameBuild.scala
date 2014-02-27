@@ -5,17 +5,20 @@ import AssemblyKeys._
 import sbtavro.SbtAvro
 //import com.twitter.scrooge.ScroogeSBT
 
+import scala.util.Properties.{ envOrNone => env } 
 
 object BigFrameBuild extends Build {
 	
 	// Hadoop version to build against.
-	val HADOOP_VERSION = "1.0.4"
+	val DEFAULT_HADOOP_VERSION = "1.0.4"
 
 	// Spark version to build againt.
 	val SPARK_VERSION = "0.8.1"
 
 	// Scala version
 	val SCALA_VERSION = "2.9.3"
+
+	lazy val cloudera_hadoop = env("CLOUDERA_HADOOP")
 	
 	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, workflows)
 
@@ -40,11 +43,13 @@ object BigFrameBuild extends Build {
 		fork := false,
 		javaOptions += "-Xmx1024m",
 
+		retrieveManaged := true,
+
     	resolvers ++= Seq(
 	    	"Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
 			"spray" at "http://repo.spray.io/",
 			"JBoss Repository" at "http://repository.jboss.org/nexus/content/repositories/releases/",
-      		"Cloudera Repository" at "http://repository.cloudera.com/artifactory/cloudera-repos/",
+      		"Cloudera Repository" at "https://repository.cloudera.com/artifactory/cloudera-repos/",
       		"Local Maven" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
 
 		),
@@ -53,19 +58,37 @@ object BigFrameBuild extends Build {
 			"log4j" % "log4j" % "1.2.16" % "provided",
       		"org.scalatest" %% "scalatest" % "1.9.1" % "test",
 	        "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-	        "org.apache.spark" % "spark-core_2.9.3" % "0.8.1-incubating",
-     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.1-incubating",
-			"edu.berkeley.cs.amplab" % "shark_2.9.3" % "0.8.1",
-			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
 			"org.slf4j" % "slf4j-log4j12" % "1.6.1",
 			"commons-configuration" % "commons-configuration" % "1.6" % "provided",
+			"org.apache.spark" % "spark-core_2.9.3" % "0.8.1-incubating" % "provided",
+     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.1-incubating" % "provided",
+			"edu.berkeley.cs.amplab" % "shark_2.9.3" % "0.8.1" % "provided",
 			"commons-logging" % "commons-logging" % "1.1.1" % "provided",
 			"com.novocode" % "junit-interface" % "0.10-M2" % "test"
-		)
-										)
+		) ++ hadoopSettings
+
+		
+
+	)
 			
+	def hadoopSettings = {
+		
+		cloudera_hadoop match {
+		case Some("true") =>
+			Seq(
+	        	"org.apache.hadoop" % "hadoop-core" % "2.2.0-mr1-cdh5.0.0-beta-2" % "provided",
+	        	"org.apache.hadoop" % "hadoop-common" % "2.2.0-cdh5.0.0-beta-2" % "provided",
+				"net.java.dev.jets3t" % "jets3t" % "0.6.1" % "provided"
+			)
+		
+		case _ =>
+			Seq(
+	        	"org.apache.hadoop" % "hadoop-core" % DEFAULT_HADOOP_VERSION % "provided"
+			)
+		}
+	}
 
 	def rootSettings = sharedSettings ++ Seq(
 		publish := {}
@@ -100,12 +123,13 @@ object BigFrameBuild extends Build {
 		//	"repo.codahale.com" at "http://repo.codahale.com"
 		//),	
 
+
 		libraryDependencies ++= Seq(
 			"io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
 			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1", 
 			"org.apache.hive" % "hive-exec" % "0.12.0" % "provided",
 			"org.apache.hive" % "hive-common" % "0.12.0" % "provided",
-			"com.twitter" % "parquet-avro" % "1.3.2"  excludeAll (
+			"com.twitter" % "parquet-avro" % "1.3.2" % "provided"  excludeAll (
 				ExclusionRule(organization = "org.apache.hadoop")
 			),
 			"org.apache.avro" % "avro" % "1.7.4" % "provided"
@@ -118,14 +142,17 @@ object BigFrameBuild extends Build {
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-qgen",
 		
-		retrieveManaged := true,
-
 		excludedJars in assembly <<= (fullClasspath in assembly) map { cp => 
 			cp filter {_.data.getName match { 
 				 case "giraph-*jar" => true
 				 case _  => false
 				}}
-		}
+		},
+		
+		mergeStrategy in assembly := {
+     		case m if m startsWith "org/apache/thrift" => MergeStrategy.discard
+      		case _ => MergeStrategy.first
+    	}
 
 		//libraryDependencies ++= Seq(
 		//	"org.apache.spark" % "spark-mllib_2.9.3" % "0.8.0-incubating"

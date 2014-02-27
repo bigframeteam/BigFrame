@@ -21,7 +21,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 	/**
 	 * Normal Text File
 	 */
-	def prepareTableImpl1(connection: Connection): Unit = {
+	def prepareTableTextFile(connection: Connection): Unit = {
 		
 		val stmt = connection.createStatement()
 		
@@ -361,7 +361,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 	/**
 	 * ORC file is used
 	 */
-	def prepareTableImpl2(connection: Connection): Unit = {
+	def prepareTableORCFile(connection: Connection): Unit = {
 		
 		println("Creating ORC file...")
 		
@@ -748,7 +748,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 	/**
 	 * RC file is used and also enable Snappy Compression.
 	 */
-	def prepareTableImpl3(connection: Connection): Unit = {
+	def prepareTableRCFile(connection: Connection): Unit = {
 		
 		println("Creating RC file...")
 		

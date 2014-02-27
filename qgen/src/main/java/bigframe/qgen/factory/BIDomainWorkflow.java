@@ -12,6 +12,8 @@ import bigframe.bigif.appDomainInfo.BIDomainInfo;
 import bigframe.qgen.engineDriver.BagelEngineDriver;
 import bigframe.qgen.engineDriver.HadoopEngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
+import bigframe.qgen.engineDriver.ImpalaEngineDriver;
+import bigframe.qgen.engineDriver.ImpalaHiveEngineDriver;
 import bigframe.qgen.engineDriver.SharkBagelEngineDriver;
 import bigframe.qgen.engineDriver.SharkEngineDriver;
 import bigframe.qgen.engineDriver.SparkEngineDriver;
@@ -73,6 +75,8 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		SharkBagelEngineDriver sharkbagelWorkflow = new SharkBagelEngineDriver(workflowIF);
 		SparkEngineDriver sparkWorkflow = new SparkEngineDriver(workflowIF);
 		VerticaEngineDriver verticaWorkflow = new VerticaEngineDriver(workflowIF);
+		ImpalaEngineDriver impalaWorkflow = new ImpalaEngineDriver(workflowIF);
+		ImpalaHiveEngineDriver impalahiveWorkflow = new ImpalaHiveEngineDriver(workflowIF);
 		
 		/**
 		 * Record the paths for all the base table used. 
@@ -255,6 +259,20 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					sparkWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RT.exploratory.WF_PromotionAnalyzeSpark(basePath, workflowIF.getSparkDoP()));
 				}
+				
+				//Relational, Text for Spark
+				else if(relationalEngine.equals(Constants.IMPALA) && graphEngine.equals(Constants.IMPALA)&& 
+						nestedEngine.equals(Constants.IMPALA)) {
+					impalaWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentImpala(basePath));
+				}
+				
+				else if(relationalEngine.equals(Constants.IMPALA) && graphEngine.equals(Constants.IMPALA)&& 
+						nestedEngine.equals(Constants.HIVE)) {
+					impalahiveWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentImpalaHive(basePath, 10, 
+									workflowIF.getHiveORC(), workflowIF.getSharkSnappy(), workflowIF.getImpalaHiveFileFormat()));
+				}
 			}
 		}
 		
@@ -271,6 +289,10 @@ public class BIDomainWorkflow extends DomainWorkflow {
 			workflows.add(sharkbagelWorkflow);
 		if((Integer)sparkWorkflow.numOfQueries() > 0)
 			workflows.add(sparkWorkflow);
+		if((Integer)impalaWorkflow.numOfQueries() > 0)
+			workflows.add(impalaWorkflow);
+		if((Integer)impalahiveWorkflow.numOfQueries() > 0)
+			workflows.add(impalahiveWorkflow);
 		if(verticaWorkflow.numOfQueries() > 0)
 			workflows.add(verticaWorkflow);
 		return workflows;

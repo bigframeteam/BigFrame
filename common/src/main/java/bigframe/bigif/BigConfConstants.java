@@ -27,6 +27,7 @@ public class BigConfConstants {
 	/**
 	 * Hadoop specific
 	 */
+	public static final String BIGFRAME_HADOOP_DISTRIBUTION = "bigframe.hadoop.distribution";
 	public static final String BIGFRAME_HADOOP_HOME = "bigframe.hadoop.home";
 	public static final String BIGFRAME_HDFS_ROOTDIR = "bigframe.hdfs.root.dir";
 	public static final String BIGFRAME_WEBHDFS_ROOTDIR = "bigframe.webhdfs.root.dir";
@@ -43,6 +44,8 @@ public class BigConfConstants {
 	public static final String BIGFRAME_HIVE_HOME = "bigframe.hive.home";
 	public static final String BIGFRAME_HIVE_WAREHOUSE = "bigframe.hive.warehouse";
 	public static final String BIGFRAME_HIVE_JDBC_SERVER = "bigframe.hive.jdbc.server";
+	public static final String BIGFRAME_HIVE_JDBC_USERNAME = "bigframe.hive.jdbc.username";
+	public static final String BIGFRAME_HIVE_JDBC_PASSWORD = "bigframe.hive.jdbc.password";
 	public static final String BIGFRAME_HIVE_ORC = "bigframe.hive.orc";
 
 	/**
@@ -74,6 +77,15 @@ public class BigConfConstants {
 	public static final String BIGFRAME_VERTICA_DATABASE = "bigframe.vertica.database";
 	public static final String BIGFRAME_VERTICA_JDBC_SERVER = "bigframe.vertica.jdbc.server";
 	public static final String BIGFRAME_VERTICA_HOME = "bigframe.vertica.home";
+	
+	/**
+	 * Impala specific
+	 * 
+	 */
+	public static final String BIGFRAME_IMPALA_JDBC_SERVER = "bigframe.impala.jdbc.server";
+	
+	public static final String BIGFRAME_IMPALAHIVE_FILE_FORMAT = "bigframe.impalahive.file.format";
+	
 	
 	/**
 	 * Kafka specific

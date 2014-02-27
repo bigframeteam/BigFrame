@@ -10,9 +10,9 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
-import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.graph.GraphCellInputFormat;
+import bigframe.util.MapRedConfig;
 
 
 
@@ -41,20 +41,18 @@ public class KronGraphGenHadoop extends KroneckerGraphGen {
 
 		long nodeCount = KroneckerGraphGen.getNodeCount(targetGB);
 		steps = (int) (Math.log(nodeCount)/Math.log(2));
-		float realgraphGB = KroneckerGraphGen.getRealGraphGB(targetGB);
+//		float realgraphGB = KroneckerGraphGen.getRealGraphGB(targetGB);
 		
 		int nodePerMapper = KnonGraphConstants.NODEGEN_PER_MAPPER;
 		int num_Mappers = (int) (nodeCount / nodePerMapper) * (int) (nodeCount / nodePerMapper);
 
-		Configuration mapreduce_config = new Configuration();
-		mapreduce_config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
-		mapreduce_config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/mapred-site.xml"));
-		mapreduce_config.setInt(KnonGraphConstants.NUM_STEPS, steps);
-		mapreduce_config.setInt(KnonGraphConstants.NUM_MAPPERS, num_Mappers);
+		Configuration mapred_config = MapRedConfig.getConfiguration(conf);
+		mapred_config.setInt(KnonGraphConstants.NUM_STEPS, steps);
+		mapred_config.setInt(KnonGraphConstants.NUM_MAPPERS, num_Mappers);
 
 
 		try {
-			Job job = new Job(mapreduce_config);
+			Job job = new Job(mapred_config);
 
 			Path outputDir = new Path(hdfs_path);
 			FileOutputFormat.setOutputPath(job, outputDir);

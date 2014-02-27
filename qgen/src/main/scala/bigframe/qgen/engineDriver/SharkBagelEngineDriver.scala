@@ -68,15 +68,15 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 	}
 	
 	override def run() = {
-		LOG.info("Running Shark+Bagel Query");
+		LOG.info("Running Shark+Bagel Query")
 		
 		try {
 			Class.forName("shark.SharkContext")
 			val sc = initSharkContext()
 			
-			sc.runSql("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'");
-			sc.runSql("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'");
-			sc.runSql("set mapred.reduce.tasks=40");
+			sc.runSql("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'")
+			sc.runSql("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'")
+			sc.runSql("set mapred.reduce.tasks=40")
 			
 			queries.foreach(q => {
 				if(q.runSharkBagel(sc))
