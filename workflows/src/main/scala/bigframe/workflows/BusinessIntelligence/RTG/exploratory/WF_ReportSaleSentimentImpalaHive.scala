@@ -343,8 +343,6 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 		
 		return false	
 		
-		true 
-		
 	}
 	
 	def runImpalaHiveImpl2(impala_connect: Connection, hive_connect: Connection): Boolean = { 

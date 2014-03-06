@@ -64,7 +64,9 @@ object BigFrameBuild extends Build {
 			"commons-configuration" % "commons-configuration" % "1.6" % "provided",
 			"org.apache.spark" % "spark-core_2.9.3" % "0.8.1-incubating" % "provided",
      		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.1-incubating" % "provided",
-			"edu.berkeley.cs.amplab" % "shark_2.9.3" % "0.8.1" % "provided",
+			"edu.berkeley.cs.amplab" % "shark_2.9.3" % "0.8.1" excludeAll (
+				ExclusionRule(organization = "org.apache.thrift")
+			), // cannot make it "provided" when using sharkcontext
 			"commons-logging" % "commons-logging" % "1.1.1" % "provided",
 			"com.novocode" % "junit-interface" % "0.10-M2" % "test"
 		) ++ hadoopSettings

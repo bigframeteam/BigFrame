@@ -39,12 +39,6 @@ QGEN_CLASSPATH+=:$WORKFLOWS_JAR
 #fi
 
 
-#if [ -n "$HIVE_HOME" ]; then
-#	for jar in `find $HIVE_HOME/lib -name '*.jar'`; do
-#		QGEN_CLASSPATH+=:$jar
-#	done
-#fi
-
 #if [ -n "$VERTICA_HOME" ]; then
 #	for jar in `find $VERTICA_HOME/java/lib -name '*.jar'`; do
 #		QGEN_CLASSPATH+=:$jar
@@ -66,24 +60,19 @@ QGEN_CLASSPATH+=:$WORKFLOWS_JAR
 #	
 #fi
 
-for jar in `find $BASE_PATH/qgen/lib_managed -name '*.jar'`; do
-	QGEN_CLASSPATH+=:$jar
-done
-
 for jar in `find $BASE_PATH/lib_managed/jars -name '*.jar'`; do
 	if [ -n "$IMPALA_HOME" ]; then
 	# Ignore the lib libthrift since it has already been included with in qgen/lib_managed.
 	# To avoid possible version conflict
-		if [[ "$jar" != *libthrift* ]]; then
+		if [[ "$jar" != *libthrift* && "$jar" != *hive* ]]; then
 			QGEN_CLASSPATH+=:$jar
 		fi 
 		
-		if [[ "$jar" != hive* ]]; then
+	else
+		# ignore this for shark since it uses bundled Hive 0.9.0
+		if [[ "$jar" != *hive* && "$jar" != *antlr* && "$jar" != *libthrift-0.9.0.jar && "$jar" != *datanucleus* ]]; then
 			QGEN_CLASSPATH+=:$jar
 		fi 
-
-	else
-		QGEN_CLASSPATH+=:$jar
 	fi
 done
 
@@ -91,6 +80,17 @@ for jar in `find $BASE_PATH/lib_managed/bundles -name '*.jar'`; do
 	QGEN_CLASSPATH+=:$jar
 done
 
+if [ -n "$IMPALA_HOME" ]; then
+	for jar in `find $BASE_PATH/qgen/lib_managed/impala -name '*.jar'`; do
+		QGEN_CLASSPATH+=:$jar
+	done
+fi
+
+if [ -n "$HIVE_HOME" ]; then
+	for jar in `find $HIVE_HOME/lib -name '*.jar'`; do
+		QGEN_CLASSPATH+=:$jar
+	done
+fi
 
 
 if [ -n "$SHARK_HOME" ]; then
@@ -112,6 +112,6 @@ if [ -n "$SHARK_HOME" ]; then
 
 fi
 
-
+echo $QGEN_CLASSPATH
 java -cp "$QGEN_CLASSPATH" -XX:MaxPermSize=128M bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
 
