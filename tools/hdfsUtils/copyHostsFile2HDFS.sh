@@ -37,5 +37,6 @@ do
 	ssh $host "$HADOOP_HOME/bin/hadoop fs -put $LOCAL_DIR/* $HDFS_DIR" &
 done
 
+wait
 
 

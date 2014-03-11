@@ -91,6 +91,9 @@ class ImpalaHiveEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 			_.cleanUpImpalaHive(impala_connect, hive_connect)
 		}
 		
+		impala_connect.close()
+		hive_connect.close()
+		
 	}
 
 }

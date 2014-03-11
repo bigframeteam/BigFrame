@@ -43,8 +43,11 @@ SPLIT_JAR=$TOOLS_DIR/hdfsUtils/splitHDFSfile.jar
 
 # Re-splits the files into number of hosts
 
+TEMP_DIR=COPYHDFS2HOST_TEM_DIR
+
 hadoop jar $SPLIT_JAR bigframe.util.SplitHDFSfile $HDFS_DIR $INTER_DIR $NUM_HOST
 
+#hadoop fs -rmr $TEMP_DIR
 # Get the set of files in the HDFS directory
 
 FILES=($(hadoop fs -ls $INTER_DIR | grep part-* | awk '{print $NF}'))

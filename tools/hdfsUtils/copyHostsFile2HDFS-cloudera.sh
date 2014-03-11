@@ -39,5 +39,7 @@ do
 	ssh $host "sudo -u hdfs $HADOOP_COMMAND fs -put $LOCAL_DIR/* $HDFS_DIR" &
 done
 
+wait
+
 
 

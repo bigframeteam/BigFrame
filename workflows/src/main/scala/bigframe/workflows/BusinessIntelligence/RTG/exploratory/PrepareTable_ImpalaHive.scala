@@ -797,7 +797,36 @@ class PrepareTable_ImpalaHive(basePath: BaseTablePath) {
 		impala_stmt.executeUpdate(insertCust)
 		impala_stmt.executeUpdate(insertGraph)
 
+		impala_stmt.close()
+		hive_stmt.close()
+		
+		
+		computeStat_Impala(impala_connect)
+		
 	}
 	
+	def computeStat_Impala (impala_connect: Connection) = {
+		
+		val impala_stmt = impala_connect.createStatement()
+		
+		println("Computing impala table statistic...")
+		val computeStatWebSales = "COMPUTE STATS web_sales"
+		val computeStatCatalogSales = "COMPUTE STATS catalog_sales"
+		val computeStatStoreSales = "COMPUTE STATS store_sales"
+		val computeStatItem = "COMPUTE STATS item"
+		val computeStatPromt = "COMPUTE STATS promotion"
+		val computeStatCust = "COMPUTE STATS customer"
+		val computeStatTwitterGraph = "COMPUTE STATS twitter_graph"
+
+		impala_stmt.execute(computeStatWebSales)
+		impala_stmt.execute(computeStatCatalogSales)
+		impala_stmt.execute(computeStatStoreSales)
+		impala_stmt.execute(computeStatItem)
+		impala_stmt.execute(computeStatPromt)
+		impala_stmt.execute(computeStatCust)
+		impala_stmt.execute(computeStatTwitterGraph)
+		
+		impala_stmt.close()
+	}
 	
 }

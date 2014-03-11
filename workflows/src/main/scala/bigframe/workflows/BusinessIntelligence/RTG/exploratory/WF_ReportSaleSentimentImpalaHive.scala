@@ -326,11 +326,13 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 					"	ON t.item_sk = RptSalesByProdCmpn.item_sk"				
 			
 			if (impala_stmt.execute(query_RptSAProdCmpn)) {
-				impala_stmt.close();
+				impala_stmt.close()
+				hive_stmt.close()
 				return true
 			}
 			else{ 
-				impala_stmt.close();
+				impala_stmt.close()
+				hive_stmt.close()
 				return false
 			}
 
@@ -453,6 +455,8 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 			 */
 			impala_stmt.execute("invalidate metadata")
 			
+			
+			LOG.info("Impala Execution: Get tweetByUser Begin")
 			val drop_tweetByUser = "DROP TABLE IF EXISTS tweetByUser"
 			val create_tweetByUser = "CREATE TABLE tweetByUser (user_id int, num_tweets bigint)"
 				
@@ -465,7 +469,9 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 			impala_stmt.execute(drop_tweetByUser)
 			impala_stmt.execute(create_tweetByUser)
 			impala_stmt.execute(query_tweetByUser)
+			LOG.info("Hive Execution: Get tweetByUser End")
 					
+			LOG.info("Impala Execution: Get tweetByProd Begin")
 			val drop_tweetByProd = "DROP TABLE IF EXISTS tweetByProd"
 			val create_tweetByProd = "CREATE TABLE tweetByProd (item_sk int, num_tweets bigint)"
 				
@@ -478,10 +484,14 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 			impala_stmt.execute(drop_tweetByProd)
 			impala_stmt.execute(create_tweetByProd)
 			impala_stmt.execute(query_tweetByProd)
-
+			LOG.info("Impala Execution: Get tweetByProd End")	
 							
+			LOG.info("Impala Execution: Get sumFriendTweets Begin")
 			val drop_sumFriendTweets = "DROP VIEW IF EXISTS sumFriendTweets"
 			val create_sumFriendTweets = "CREATE VIEW sumFriendTweets (follower_id, num_friend_tweets) AS" +
+//			val create_sumFriendTweets = "CREATE TABLE sumFriendTweets (follower_id int, num_friend_tweets bigint)"
+//				
+//			val query_sunFriendTweets = "INSERT INTO TABLE sumFriendTweets" +
 					"	SELECT user_id, " +
 					"		CASE WHEN num_friend_tweets > 0 THEN num_friend_tweets" +
 					"			 ELSE 0" +
@@ -490,7 +500,7 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 					"		(SELECT user_id, sum(friend_tweets) as num_friend_tweets" +
 					"		FROM tweetByUser LEFT OUTER JOIN" +
 					"			(SELECT follower_id, friend_id, num_tweets as friend_tweets" +
-					"			FROM tweetByUser JOIN twitter_graph" +
+					"			FROM twitter_graph JOIN tweetByUser" +
 					"	 		ON tweetByUser.user_id = twitter_graph.friend_id) f" +
 					"		ON tweetByUser.user_id = f.follower_id" +
 					"		GROUP BY " +
@@ -498,8 +508,10 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 				
 			impala_stmt.execute(drop_sumFriendTweets)
 			impala_stmt.execute(create_sumFriendTweets)
+//			impala_stmt.execute(query_sunFriendTweets)
+			LOG.info("Impala Execution: Get sumFriendTweets End")
 			
-			
+			LOG.info("Impala Execution: Get mentionProb Begin")
 			val drop_mentionProb = "DROP TABLE IF EXISTS mentionProb"
 			val create_mentionProb = "CREATE TABLE mentionProb (item_sk int, user_id int, prob double)"
 				
@@ -515,15 +527,18 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 			impala_stmt.execute(drop_mentionProb)
 			impala_stmt.execute(create_mentionProb)
 			impala_stmt.execute(query_mentionProb)
+			LOG.info("Impala Execution: Get mentionProb Begin")
 
-			
+			LOG.info("Impala Execution: Get simUserByProd Begin")
 			val drop_simUserByProd = "DROP VIEW IF EXISTS simUserByProd"
-			val create_simUserByProd = "CREATE VIEW simUserByProd " +
-					"	(item_sk, follower_id, friend_id, similarity) AS" +
+			val create_simUserByProd = "CREATE VIEW simUserByProd (item_sk, follower_id, friend_id, similarity) AS" +
+//			val create_simUserByProd = "CREATE TABLE simUserByProd (item_sk int, follower_id int, friend_id int, similarity double)"
+//				
+//			val query_simUserByProd = "INSERT INTO TABLE simUserByProd"	+
 					"	SELECT f.item_sk, follower_id, friend_id, (1 - ABS(follower_prob - prob)) as similarity" +
 					"	FROM " +
 					"		(SELECT item_sk, follower_id, friend_id, prob as follower_prob" +
-					"		FROM mentionProb JOIN twitter_graph " +
+					"		FROM twitter_graph JOIN  mentionProb" +
 					"		ON mentionProb.user_id = twitter_graph.follower_id) f" +
 					"	JOIN mentionProb " +
 					"	ON	f.friend_id = mentionProb.user_id AND f.item_sk=mentionProb.item_sk"
@@ -532,9 +547,11 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 			
 			impala_stmt.execute(drop_simUserByProd)
 			impala_stmt.execute(create_simUserByProd)
-					
-					
+//			impala_stmt.execute(query_simUserByProd)		
+			LOG.info("Impala Execution: Get simUserByProd Begin")
 
+			
+			LOG.info("Impala Execution: Get transitMatrix Begin")
 			val drop_transitMatrix = "DROP TABLE IF EXISTS transitMatrix"
 			val create_transitMatrix = "CREATE TABLE transitMatrix (item_sk int, follower_id int, friend_id int, transit_prob double)" 
 				
@@ -553,8 +570,9 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 			impala_stmt.execute(drop_transitMatrix)
 			impala_stmt.execute(create_transitMatrix)
 			impala_stmt.execute(query_transitMatrix)
+			LOG.info("Impala Execution: Get transitMatrix End")
 			
-			
+			LOG.info("Impala Execution: Get randSuffVec Begin")
 			val drop_randSufferVec = "DROP TABLE IF EXISTS randSuffVec"
 			val create_randSuffVec = "CREATE TABLE randSuffVec (item_sk int, user_id int, prob double)" 
 				
@@ -571,7 +589,10 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 			impala_stmt.execute(drop_randSufferVec)
 			impala_stmt.execute(create_randSuffVec)
 			impala_stmt.execute(query_randSuffVec)
+			LOG.info("Impala Execution: Get randSuffVec End")
 			
+			
+			LOG.info("Impala Execution: Get initialRank Begin")
 			val drop_initalRank = "DROP TABLE IF EXISTS initialRank"
 			val create_initialRank = "CREATE TABLE initialRank (item_sk int, user_id int, rank_score double)" 
 				
@@ -591,10 +612,12 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 			impala_stmt.execute(drop_initalRank)
 			impala_stmt.execute(create_initialRank)
 			impala_stmt.execute(query_initialRank)
+			LOG.info("Impala Execution: Get initialRank End")
 					
 			val alpha = 0.85
 			for(iteration <- 1 to num_iter) {
 						
+				LOG.info("Impala Execution: Get TwitterRank" + iteration +" Begin")
 				val twitterRank_previous = if(iteration == 1) "initialRank" else "twitterRank"+(iteration-1)	
 				val drop_twitterRank = "DROP TABLE IF EXISTS twitterRank"+iteration
 				val create_twitterRank = "CREATE TABLE twitterRank"+iteration+" (item_sk int, user_id int, rank_score double)"
@@ -616,9 +639,11 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 				impala_stmt.execute(drop_twitterRank)
 				impala_stmt.execute(create_twitterRank)
 				impala_stmt.execute(query_twitterRank)
+				LOG.info("Impala Execution: Get TwitterRank" + iteration +" End")
 				
 			}
 			
+			LOG.info("Impala Execution: Get TwitterRank RptSAProdCmpn Begin")
 			val drop_RptSAProdCmpn = "DROP TABLE IF EXISTS RptSAProdCmpn"
 			val create_RptSAProdCmpn = "CREATE TABLE RptSAProdCmpn (promo_id string, item_sk int, totalsales double , total_sentiment double)"
 					
@@ -640,18 +665,28 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 					"	ON t.item_sk = RptSalesByProdCmpn.item_sk"				
 			
 			if (impala_stmt.execute(query_RptSAProdCmpn)) {
+				impala_stmt.close
+				hive_stmt.close
+				LOG.info("Impala Execution: Get RptSAProdCmpn End")
 				return true
 			}
 			else{ 
+				impala_stmt.close
+				hive_stmt.close
 				return false
 			}
 
 		} catch {
 			case sqle :
-				SQLException => sqle.printStackTrace()
+				SQLException => {
+					sqle.printStackTrace()
+				}
 			case e :
-				Exception => e.printStackTrace()
+				Exception => {
+					e.printStackTrace()
+				}
 		} 
+		
 		
 		return false	
 	
@@ -732,11 +767,13 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 		hive_stmt.execute("DROP TABLE IF EXISTS relevantTweet")
 		hive_stmt.execute("DROP TABLE IF EXISTS senAnalyse")
 		
+		hive_stmt.close()
+		impala_stmt.close()
+		
 	}
 	
 	def cleanUpImpalaHive(impala_connect: Connection, hive_connect: Connection): Unit = {
 		
-		return 
 		if(fileFormat == Constants.ORC_FORMAT)
 			cleanUpImpalaHiveImpl1(impala_connect, hive_connect)
 		else if(fileFormat == Constants.PARQUET_FORMAT)
