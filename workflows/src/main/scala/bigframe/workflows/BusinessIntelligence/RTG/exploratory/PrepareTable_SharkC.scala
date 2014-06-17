@@ -363,7 +363,6 @@ class PrepareTable_SharkC(basePath: BaseTablePath) {
 		
 		println("Creating RC file...")
 		
-		
 		val dropWebSalesTmp = "DROP TABLE IF EXISTS web_sales_tmp"
 		val dropStoreSalesTmp = "DROP TABLE IF EXISTS store_sales_tmp"  
 		val dropCatalogSalesTmp = "DROP TABLE IF EXISTS catalog_sales_tmp"

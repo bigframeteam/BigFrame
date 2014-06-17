@@ -13,7 +13,7 @@ import shark.SharkEnv
 import org.apache.spark.SparkContext
 
 class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(workIF) {
-	private var spark_dop: Integer = 8
+	private var spark_dop: Integer = workIF.getSparkDoP()
 	var queries: List[SharkBagelRunnable] = scala.List()
 	
 	val LOG = LogFactory.getLog(classOf[SharkBagelEngineDriver]);
@@ -39,11 +39,12 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 	def initSharkContext(): SharkContext = {
 		
 		if(sc != null)
-			sc
+			return sc
 	
 		val	jar_path_string = System.getenv(BigConfConstants.WORKFLOWS_JAR)
 
 		System.setProperty("MASTER", workIF.getSparkMaster())
+		System.setProperty("spark.shuffle.consolidateFiles", "true")
 		
 		SharkEnv.stop
 		SharkEnv.initWithSharkContext("BigFrame Benchmark")
@@ -80,7 +81,7 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 			
 			sc.runSql("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'")
 			sc.runSql("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'")
-			sc.runSql("set mapred.reduce.tasks=40")
+			sc.runSql("set mapred.reduce.tasks=" + spark_dop)
 			
 			queries.foreach(q => {
 				spark_dop = workIF.getSparkDoP()

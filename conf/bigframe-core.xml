@@ -156,7 +156,7 @@
 	
 	<property>
 		<name>bigframe.queryengine.graph</name>
-		<value>hadoop</value>
+		<value>vertica</value>
 	</property>
 	
 	<property>
