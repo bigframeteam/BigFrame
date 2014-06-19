@@ -129,8 +129,8 @@ object BigFrameBuild extends Build {
 		libraryDependencies ++= Seq(
 			"io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
 			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1", 
-			"org.apache.hive" % "hive-exec" % "0.12.0" % "provided",
-			"org.apache.hive" % "hive-common" % "0.12.0" % "provided",
+			"org.apache.hive" % "hive-exec" % "0.11.0" % "provided",
+			"org.apache.hive" % "hive-common" % "0.11.0" % "provided",
 			"com.twitter" % "parquet-avro" % "1.3.2" % "provided"  excludeAll (
 				ExclusionRule(organization = "org.apache.hadoop")
 			),
@@ -139,7 +139,7 @@ object BigFrameBuild extends Build {
 			//"org.apache.thrift" % "libthrift" % "0.9.0",
 			//"com.twitter" % "finagle-thrift_2.9.2" % "6.10.0"
 		)
-	) ++ extraAssemblySettings ++ excludeJARfromCOMMON // ++ sbtAvroSettings  //++ ScroogeSBT.newSettings
+	) ++ extraAssemblySettings ++ excludeJARfromCOMMON ++ sbtAvroSettings  //++ ScroogeSBT.newSettings
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-qgen",
@@ -173,7 +173,7 @@ object BigFrameBuild extends Build {
 	)
 
 	def sbtAvroSettings() = SbtAvro.avroSettings ++ Seq(
-		javaSource in sbtavro.SbtAvro.avroConfig <<= (sourceDirectory in Compile)(_ / "java")
+		//javaSource in sbtavro.SbtAvro.avroConfig <<= (sourceDirectory in Compile)(_ / "java")
 	)
 	
 	def excludeJARfromCOMMON() = Seq(

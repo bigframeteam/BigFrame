@@ -137,5 +137,18 @@ if [ "$SHARK_IN_USE" = true ]; then
 	fi
 fi
 
+if [ "$HIVE_IN_USE" = true ]; then
+	if [ -n "$HIVE_HOME" ]; then
+		for jar in `find $HIVE_HOME/lib -name '*.jar'`; do
+			QGEN_CLASSPATH+=:$jar
+		done
+	else
+		echo "HIVE_HOME is not set!"
+		exit
+	fi
+fi
+
+echo $QGEN_CLASSPATH
+
 java -cp "$QGEN_CLASSPATH" -XX:MaxPermSize=128M bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
 
