@@ -256,7 +256,7 @@ class TwitterRankDriver(val basePath: BaseTablePath) {
     // TODO: remove these files after twitter rank computation
     val graphPath = basePath.graph_path
     val tempDir = graphPath.take(1 + graphPath.lastIndexOf('/'))
-    val storage = optimizeMemory match { case true => StorageLevel.MEMORY_ONLY_SER case false => StorageLevel.MEMORY_ONLY }
+    val storage = optimizeMemory match { case true => StorageLevel.MEMORY_AND_DISK_SER case false => StorageLevel.MEMORY_ONLY_SER }
     for (iter <- 1 to numIter) {
       val newRanks = utils.iterateRank(ranks, trans, tele, gamma)
       val rankPath = tempDir + "ranks" + iter 

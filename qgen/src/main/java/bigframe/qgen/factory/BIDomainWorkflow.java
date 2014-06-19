@@ -12,6 +12,7 @@ import bigframe.bigif.appDomainInfo.BIDomainInfo;
 import bigframe.qgen.engineDriver.BagelEngineDriver;
 import bigframe.qgen.engineDriver.HadoopEngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
+import bigframe.qgen.engineDriver.HiveGiraphEngineDriver;
 import bigframe.qgen.engineDriver.ImpalaEngineDriver;
 import bigframe.qgen.engineDriver.ImpalaHiveEngineDriver;
 import bigframe.qgen.engineDriver.SharkBagelEngineDriver;
@@ -69,6 +70,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		 * The currently supported engines
 		 */
 		HiveEngineDriver hiveWorkflow = new HiveEngineDriver(workflowIF);
+		HiveGiraphEngineDriver hivegiraphWorkflow = new HiveGiraphEngineDriver(workflowIF);
 		HadoopEngineDriver hadoopWorkflow = new HadoopEngineDriver(workflowIF);
 		SharkEngineDriver sharkWorkflow = new SharkEngineDriver(workflowIF);
 		BagelEngineDriver bagelWorkflow = new BagelEngineDriver(workflowIF);
@@ -226,14 +228,21 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.HIVE)&& 
 						nestedEngine.equals(Constants.HIVE)) {
 					hiveWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10, workflowIF.getHiveORC()));
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10, workflowIF.getHiveORC(), workflowIF.getHiveSnappy()));
 				}
 				
+
 				
 				else if(relationalEngine.equals(Constants.SHARK) && graphEngine.equals(Constants.SHARK)&& 
 						nestedEngine.equals(Constants.SHARK)) {
 					sharkWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentShark(basePath, 10, workflowIF.getSharkRC()));
+				}
+				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.GIRAPH)&& 
+						nestedEngine.equals(Constants.HIVE)) {
+					hivegiraphWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 10, workflowIF.getHiveORC()));
+
 				}
 				
 				else if(relationalEngine.equals(Constants.SHARK) && graphEngine.equals(Constants.BAGEL)&& 
@@ -279,6 +288,8 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		// Check if we have queries to run
 		if(hiveWorkflow.numOfQueries() > 0)
 			workflows.add(hiveWorkflow);
+		if(hivegiraphWorkflow.numOfQueries() > 0)
+			workflows.add(hivegiraphWorkflow);
 		if(hadoopWorkflow.numOfQueries() > 0)
 			workflows.add(hadoopWorkflow);
 		if(sharkWorkflow.numOfQueries() > 0)

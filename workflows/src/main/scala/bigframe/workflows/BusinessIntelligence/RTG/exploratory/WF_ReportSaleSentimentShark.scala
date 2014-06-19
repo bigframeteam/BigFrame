@@ -12,7 +12,6 @@ import scala.collection.JavaConversions._
 class WF_ReportSaleSentimentShark(basePath: BaseTablePath, num_iter: Int, val useRC: Boolean) extends Query  with SharkRunnable{
 
 	def printDescription(): Unit = {}
-
 	
 	/*
 	 * Prepeare the basic tables before run the Shark query
@@ -43,6 +42,7 @@ class WF_ReportSaleSentimentShark(basePath: BaseTablePath, num_iter: Int, val us
 							"DROP TABLE IF EXISTS transitMatrix_cached",
 							"DROP TABLE IF EXISTS randSuffVec_cached",
 							"DROP TABLE IF EXISTS initialRank_cached")
+
 		
 		list_drop.foreach(stmt.execute(_))
 									
@@ -54,7 +54,8 @@ class WF_ReportSaleSentimentShark(basePath: BaseTablePath, num_iter: Int, val us
 				
 		}
 	}
-	
+
+
 	override def cleanUpShark(connection: Connection): Unit = {
 		cleanUpSharkImpl1(connection)
 	}
