@@ -29,61 +29,7 @@ QGEN_CLASSPATH+=:$WORKFLOWS_JAR
 QGEN_CLASSPATH+=:$HADOOP_HOME/conf
 
 
-# Check which system is used in the workflow
-HADOOP_IN_USE=false
-SPARK_IN_USE=false
-VERTICA_IN_USE=false
-IMPALA_IN_USE=false
-SHARK_IN_USE=false
-HIVE_IN_USE=false
-GIRAPH_IN_USE=false
-
-BIGFRAME_CORE_XML=$BASE_PATH/conf/bigframe-core.xml
-VALUES=$(xmllint --shell conf/bigframe-core.xml <<<"cat /configuration/property/value/text()" | grep -v "^/ >") 
-
-if [[ $VALUES == *hadoop* ]]
-then
-	echo "Hadoop is used";
-	HADOOP_IN_USE=true
-fi
-
-if [[ $VALUES == *spark* ]]
-then
-	echo "Spark is used";
-	SPARK_IN_USE=true
-fi
-
-if [[ $VALUES == *vertica* ]]
-then
-	echo "Vertica is used";
-	VERTICA_IN_USE=true
-fi
-
-if [[ $VALUES == *impala* ]]
-then
-	echo "Impala is used";
-	IMPALA_IN_USE=true
-fi
-
-if [[ $VALUES == *shark* ]]
-then
-	echo "Shark is used";
-	SHARK_IN_USE=true
-fi
-
-if [[ $VALUES == *hive* ]]
-then
-	echo "Hive is used";
-	HIVE_IN_USE=true
-fi
-
-if [[ $VALUES == *giraph* ]]
-then
-	echo "Giraph is used";
-	GIRAPH_IN_USE=true
-fi
-
-for jar in `find $BASE_PATH/lib_managed/jars -name '*.jar'`; do
+for jar in `find $BASE_PATH/lib_managed -name '*.jar'`; do
 	if [ "$IMPALA_IN_USE" = true ]; then
 	# Ignore the lib libthrift since it has already been included with in qgen/lib_managed.
 	# To avoid possible version conflict
@@ -93,7 +39,7 @@ for jar in `find $BASE_PATH/lib_managed/jars -name '*.jar'`; do
 		
 	elif [ "$SHARK_IN_USE" = true ]; then
 		# ignore this for shark since it uses bundled Hive 0.9.0
-		if [[ "$jar" != *hive* && "$jar" != *antlr* && "$jar" != *libthrift-0.9.0.jar && "$jar" != *datanucleus* ]]; then
+		if [[ "$jar" != *hive* && "$jar" != *antlr* && "$jar" != *libthrift-0.9.0.jar && "$jar" != *datanucleus* && "$jar" != *jackson-databind* ]]; then
 			QGEN_CLASSPATH+=:$jar
 		fi 
 	else
@@ -101,38 +47,20 @@ for jar in `find $BASE_PATH/lib_managed/jars -name '*.jar'`; do
 	fi
 done
 
-for jar in `find $BASE_PATH/lib_managed/bundles -name '*.jar'`; do
-	QGEN_CLASSPATH+=:$jar
-done
+if [ "$VERTICA_IN_USE" = true ]; then
+	for jar in `find $BASE_PATH/workflows/lib_vertica -name '*.jar'`; do
+		QGEN_CLASSPATH+=:$jar
+	done
+fi
 
 
 if [ "$IMPALA_IN_USE" = true ]; then
 	if [ -n "$IMPALA_HOME" ]; then
-		for jar in `find $BASE_PATH/qgen/lib_managed/impala -name '*.jar'`; do
+		for jar in `find $IMPALA/lib -name '*.jar'`; do
 			QGEN_CLASSPATH+=:$jar
 		done
 	else
 		echo "IMPALA_HOME is not set!"
-		exit
-	fi
-fi
-
-if [ "$SHARK_IN_USE" = true ]; then
-	if [ -n "$SHARK_HOME" ]; then
-		source $SHARK_HOME/conf/shark-env.sh
-
-		for jar in `find $HIVE_HOME/lib -name '*.jar'`; do
-		# Ignore the logging library since it has already been included with the Spark jar.
-			if [[ "$jar" != *slf4j* ]]; then
-				QGEN_CLASSPATH+=:$jar
-			fi  
-		done
-	
-		export CLASSPATH=$QGEN_CLASSPATH
-		export SPARK_CLASSPATH=$QGEN_CLASSPATH
-	
-	else
-		echo "SHARK_HOME is not set!"
 		exit
 	fi
 fi
@@ -148,7 +76,34 @@ if [ "$HIVE_IN_USE" = true ]; then
 	fi
 fi
 
-echo $QGEN_CLASSPATH
+if [ "$SHARK_IN_USE" = true ]; then
+	if [ -n "$SHARK_HOME" ]; then
+		source $SHARK_HOME/conf/shark-env.sh
+
+		for jar in `find $HIVE_HOME/lib -name '*.jar'`; do
+		# Ignore the logging library since it has already been included with the Spark jar.
+			if [[ "$jar" != *slf4j* ]]; then
+				QGEN_CLASSPATH+=:$jar
+			fi  
+		done
+	else
+		echo "SHARK_HOME is not set!"
+		exit
+	fi
+
+	if [ -n "$SPARK_HOME" ]; then
+		for jar in `find $SPARK_HOME/lib_managed -name '*.jar'`; do
+			QGEN_CLASSPATH+=:$jar
+		done
+	else
+		echo "SPARK_HOME is not set!"
+		exit
+	fi
+	
+	export CLASSPATH=$QGEN_CLASSPATH
+	export SPARK_CLASSPATH=$QGEN_CLASSPATH
+
+fi
 
 java -cp "$QGEN_CLASSPATH" -XX:MaxPermSize=128M bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
 

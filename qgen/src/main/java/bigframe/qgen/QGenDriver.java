@@ -202,8 +202,8 @@ public class QGenDriver {
 
 
 		// Replace conf which user define in the bigframe-core config file
-		Map<String,String> user_bigdata_inputformat = user_conf.getBigDataInputFormat().getProp();
-		Map<String,String> user_bigquery_inputformat = user_conf.getBigQueryInputFormat().getProp();
+		Map<String,String> user_bigdata_inputformat = user_conf.getBigDataInputFormat().get();
+		Map<String,String> user_bigquery_inputformat = user_conf.getBigQueryInputFormat().get();
 
 		for (Map.Entry<String, String> entry : user_bigdata_inputformat.entrySet()) {
 			conf.getBigDataInputFormat().set(entry.getKey(), entry.getValue());

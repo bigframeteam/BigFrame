@@ -11,7 +11,7 @@ import org.apache.giraph.conf.GiraphConfiguration
 import java.sql.Connection
 import java.sql.SQLException
 
-class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, val useOrc: Boolean) extends Query with HiveGiraphRunnable {
+class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, val useOrc: Boolean, num_giraph_workers: Int) extends Query with HiveGiraphRunnable {
 
 	override def printDescription(): Unit = {}
 	
@@ -34,7 +34,7 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 			
 		try {
 			val stmt = connection.createStatement();			
-						
+			
 //			val lower = 1
 //			val upper = 300
 			
@@ -284,7 +284,7 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 			stmt.execute(drop_twitterRank)
 			stmt.execute(create_twitterRank)
 			
-			val computeTwitterRank = new WF_TwitterRankGiraph()
+			val computeTwitterRank = new WF_TwitterRankGiraph(num_giraph_workers)
 			computeTwitterRank.runGiraph(giraph_config)
 								
 			

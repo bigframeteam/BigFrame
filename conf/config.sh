@@ -13,9 +13,17 @@
 # GLOBAL PARAMETERS USED BY DATA GENERATOR (REQUIRED)
 ###################################################################
 
+# The Hadoop Distribution, only support apache-hadoop1, cloudera-hadoop1 currently
+HADOOP_DIST=apache-hadoop1
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hadoop.distribution=${HADOOP_DIST}"
+
 # The Hadoop Home Directory
 HADOOP_HOME=$HADOOP_HOME
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hadoop.home=${HADOOP_HOME}"
+
+# The directory that contains the configuration files of Hadoop 
+HADOOP_CONF_DIR=$HADOOP_HOME/conf
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hadoop.conf=${HADOOP_CONF_DIR}" 
 
 # The Hadoop slave file
 HADOOP_SLAVES=$HADOOP_HOME/conf/slaves

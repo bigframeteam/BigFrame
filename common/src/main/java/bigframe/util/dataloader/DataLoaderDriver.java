@@ -60,8 +60,6 @@ public class DataLoaderDriver {
 	private static String CONF = "conf";
 	private static String HELP = "help";
 
-	
-
 
 
 	private static void printUsage(PrintStream out) {
@@ -250,14 +248,17 @@ public class DataLoaderDriver {
 						e.printStackTrace();
 					}
 					
+					LOG.info("Begin loading the relational data");
+					
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/store_sales"), "store_sales");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/catalog_sales"), "catalog_sales");
-					dataloader.load(new Path(line.getOptionValue(SRC)+"/customer"), "customer");
+					//dataloader.load(new Path(line.getOptionValue(SRC)+"/customer"), "customer");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/web_sales"), "web_sales");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/item"), "item");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/promotion"), "promotion");
 					dataloader.load(new Path(line.getOptionValue(SRC)+"/date_dim"), "date_dim");
 					
+					LOG.info("End loading the relational data");
 					try {
 						dataloader.alterBaseTable();
 					} catch (SQLException e) {
@@ -280,9 +281,21 @@ public class DataLoaderDriver {
 
 					
 					LOG.info("Begin loading the tweet data");
-					dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
-//					dataloader.load(new Path(line.getOptionValue(SRC)), "tweet");
-//					dataloader.load(new Path(line.getOptionValue(SRC)), "entities");
+					String TWEET_STORE_TYPE = workflowIF.get().containsKey(BigConfConstants.TWEET_STORE_FORMAT) 
+							? workflowIF.get().get(BigConfConstants.TWEET_STORE_FORMAT) : "" ;
+					
+					if(TWEET_STORE_TYPE.equals(BigConfConstants.TWEET_AS_STRING))
+						dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
+					else if(TWEET_STORE_TYPE.equals(BigConfConstants.TWEET_NORMALIZED)) {
+						dataloader.load(new Path(line.getOptionValue(SRC)), "tweet");
+						dataloader.load(new Path(line.getOptionValue(SRC)), "entities");
+					}
+					else {
+						LOG.error("Please Specify the storage format for tweet data. Available types:" 
+								+ BigConfConstants.TWEET_AS_STRING + "," + BigConfConstants.TWEET_NORMALIZED);
+						LOG.error("For example: " + "-D" + BigConfConstants.TWEET_STORE_FORMAT +"="+BigConfConstants.TWEET_AS_STRING);
+						System.exit(-1);
+					}
 					LOG.info("End loading the tweet data");
 					
 					try {
@@ -304,7 +317,11 @@ public class DataLoaderDriver {
 						e.printStackTrace();
 					}
 					
+					LOG.info("Begin loading the graph data");
+					
 					dataloader.load(new Path(line.getOptionValue(SRC)), "twitter_graph");
+					
+					LOG.info("End loading the graph data");
 					
 					try {
 						dataloader.alterBaseTable();

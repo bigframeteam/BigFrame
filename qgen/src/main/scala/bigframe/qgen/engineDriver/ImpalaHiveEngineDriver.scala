@@ -12,6 +12,8 @@ import java.sql.DriverManager
 import java.sql.SQLException
 import java.sql.Statement
 
+import scala.collection.JavaConversions._
+
 object ImpalaHiveEngineDriver {
 	val driverName = "org.apache.hive.jdbc.HiveDriver";
 	val LOG  = LogFactory.getLog(classOf[ImpalaHiveEngineDriver]);
@@ -37,27 +39,33 @@ class ImpalaHiveEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 			Class.forName(ImpalaEngineDriver.driverName)
 			
 
-			ImpalaHiveEngineDriver.LOG.info("Connectiong to JDBC server for Impala!!!");
+			ImpalaHiveEngineDriver.LOG.info("Connecting to JDBC server for Impala!!!");
 			impala_connect = DriverManager.getConnection(workIF.getImpalaJDBCServer(), "", "");
     	  
-			ImpalaHiveEngineDriver.LOG.info("Connectiong to JDBC server for Hive!!!");
+			ImpalaHiveEngineDriver.LOG.info("Connecting to JDBC server for Hive!!!");
 			hive_connect = DriverManager.getConnection(workIF.getHiveJDBCServer(), workIF.getHiveJDBCUserName(), 
 					workIF.getHiveJDBCPassword());
 			
 			if(impala_connect == null || hive_connect == null) {
 				ImpalaHiveEngineDriver.LOG.error("Cannot connect to JDBC server! " +
 						"Make sure the HiveServer is running!")
-				System.exit(1);
+				System.exit(1)
 			}
 			else
 				ImpalaHiveEngineDriver.LOG.info("Successful!!!")
 			
-			val UDF_JAR = workIF.getProp().get(BigConfConstants.BIGFRAME_UDF_JAR);
+			val UDF_JAR = workIF.get(BigConfConstants.BIGFRAME_UDF_JAR);
 			
 			val hive_stmt = hive_connect.createStatement()
 			
 			hive_stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'");
 			hive_stmt.execute("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'");
+			
+			val properties = workIF.get()
+			
+			properties.foreach{
+				prop => hive_stmt.execute("set " + prop._1 + "=" + prop._2)
+			}
 			
 			if(!workIF.getSkipPrepareTable())
 				queries.foreach{
@@ -66,9 +74,15 @@ class ImpalaHiveEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 				}
 		
 		} catch  {
-			case e: ClassNotFoundException => ImpalaHiveEngineDriver.LOG.error("Impala JDBC Driver " +
-					"is not found in the classpath")
-			case e: SQLException => e.printStackTrace()
+			case e: ClassNotFoundException => {
+				ImpalaHiveEngineDriver.LOG.error("Impala JDBC Driver is not found in the classpath")
+				System.exit(1)
+			}
+			case e: SQLException => {
+				e.printStackTrace()
+				System.exit(1)
+			}
+			
 		}
 		
 	}

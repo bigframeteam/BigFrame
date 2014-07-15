@@ -77,40 +77,7 @@ public class VerticaGraphLoader extends VerticaDataLoader {
 	@Override
 	public boolean load(Path srcHdfsPath, String table) {
 		// TODO Auto-generated method stub
-//		Configuration mapred_config = new Configuration();
-//		
-//		mapred_config.addResource(new Path(workIF.getHadoopHome()
-//				+ "/conf/core-site.xml"));
-//		mapred_config.addResource(new Path(workIF.getHadoopHome()
-//				+ "/conf/mapred-site.xml"));
-//		
-//		mapred_config.set(MAPRED_VERTICA_DATABASE, workIF.getVerticaDatabase());
-//		mapred_config.set(MAPRED_VERTICA_USERNAME, workIF.getVerticaUserName());
-//		mapred_config.set(MAPRED_VERTICA_PASSWORD, workIF.getVerticaPassword());
-//		mapred_config.set(MAPRED_VERTICA_HOSTNAMES, workIF.getVerticaHostNames());
-//		mapred_config.set(MAPRED_VERTICA_PORT, workIF.getVerticaPort().toString());
-		
-		
-//		try {
-//			
-//			mapred_config.set(MAPRED_VERTICA_TABLE_NAME, table);
-//			
-//			Job job = new Job(mapred_config);
-//		    
-//			FileInputFormat.setInputPaths(job, srcHdfsPath);
-//	
-//		    job.setJobName("Load data to Table " + table);
-//		    
-//		    job.setOutputKeyClass(Text.class);
-//		    job.setOutputValueClass(VerticaRecord.class);
-//		    
-//		    job.setOutputFormatClass(VerticaOutputFormat.class);
-//		    
-//		    job.setJarByClass(VerticaTpcdsLoader.class);
-//		    job.setMapperClass(Map.class);
-//		    //job.setReducerClass(Reduce.class);
-//		    
-//		    job.setNumReduceTasks(0);
+
 		 
 	    	initConnection();
 	    	try {
@@ -119,7 +86,7 @@ public class VerticaGraphLoader extends VerticaDataLoader {
 			    if(table.equals("twitter_graph")){
 	//			    VerticaOutputFormat.setOutput(job, "twitter_graph", true, "friend_id int", "follower_id int");
 			    	String copyToTwitterGraph = "COPY twitter_graph SOURCE Hdfs(url='" + workIF.getWEBHDFSRootDIR() + 
-			    			"/graph_data/part-*'," +
+			    			srcHdfsPath + "/part-*'," +
 			    			"username='" + workIF.getHadoopUserName() + "')";
 			    	
 			    	if(stmt.execute(copyToTwitterGraph))
@@ -140,18 +107,7 @@ public class VerticaGraphLoader extends VerticaDataLoader {
 			}
 		    
 		    closeConnection();
-//		
-//			return job.waitForCompletion(true);
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
 		
 		return false;
 	}

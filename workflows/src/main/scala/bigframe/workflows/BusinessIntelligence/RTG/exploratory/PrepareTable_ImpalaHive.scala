@@ -2,7 +2,14 @@ package bigframe.workflows.BusinessIntelligence.RTG.exploratory
 
 import bigframe.workflows.BaseTablePath
 
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+
 import java.sql.Connection
+
+object PrepareTable_ImpalaHive {
+	val LOG  = LogFactory.getLog(classOf[PrepareTable_ImpalaHive]);
+}
 
 class PrepareTable_ImpalaHive(basePath: BaseTablePath) {
 
@@ -290,7 +297,7 @@ class PrepareTable_ImpalaHive(basePath: BaseTablePath) {
 	def prepareTableTextFileFormat(impala_connect: Connection, hive_connect: Connection): Unit = {
 //			val preparor = new PrepareTable_Hive(basePath)
 //			preparor.prepareTableTextFile(hive_connect)
-		println("Creating Text files...")
+		PrepareTable_ImpalaHive.LOG.info("Creating Text files...")
 		
 		val hive_stmt = hive_connect.createStatement()
 		val impala_stmt = impala_connect.createStatement()
@@ -378,7 +385,7 @@ class PrepareTable_ImpalaHive(basePath: BaseTablePath) {
 	def prepareTableORCFileFormat(impala_connect: Connection, hive_connect: Connection, 
 			isBaseTableCompress: Boolean) = {
 				
-		println("Creating ORC file...")
+		PrepareTable_ImpalaHive.LOG.info("Creating ORC file...")
 		
 		val hive_stmt = hive_connect.createStatement();
 		
@@ -513,7 +520,7 @@ class PrepareTable_ImpalaHive(basePath: BaseTablePath) {
 	def prepareTableParquetFormat(impala_connect: Connection, hive_connect: Connection, 
 			isBaseTableCompress: Boolean) = {
 				
-		println("Creating Parquet files...")
+		PrepareTable_ImpalaHive.LOG.info("Creating Parquet files...")
 		
 		val hive_stmt = hive_connect.createStatement()
 		val impala_stmt = impala_connect.createStatement()
@@ -652,7 +659,7 @@ class PrepareTable_ImpalaHive(basePath: BaseTablePath) {
 	def prepareTableMixedParquetORCFormat(impala_connect: Connection, hive_connect: Connection, 
 			isBaseTableCompress: Boolean) = {
 				
-		println("Creating mixed Parquet and ORC files...")
+		PrepareTable_ImpalaHive.LOG.info("Creating mixed Parquet and ORC files...")
 		
 		val hive_stmt = hive_connect.createStatement()
 		val impala_stmt = impala_connect.createStatement()
@@ -809,7 +816,7 @@ class PrepareTable_ImpalaHive(basePath: BaseTablePath) {
 		
 		val impala_stmt = impala_connect.createStatement()
 		
-		println("Computing impala table statistic...")
+		PrepareTable_ImpalaHive.LOG.info("Computing impala table statistic...")
 		val computeStatWebSales = "COMPUTE STATS web_sales"
 		val computeStatCatalogSales = "COMPUTE STATS catalog_sales"
 		val computeStatStoreSales = "COMPUTE STATS store_sales"

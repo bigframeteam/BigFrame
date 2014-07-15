@@ -31,7 +31,14 @@ public abstract class Config {
 		reloadConf();
 	}
 	
-	public Map<String,String> getProp() {
+	public String get(String key) {
+		if (properties.containsKey(key))
+			return properties.get(key);
+		else
+			return "";
+	}
+	
+	public Map<String,String> get() {
 		return properties;
 	}
 	

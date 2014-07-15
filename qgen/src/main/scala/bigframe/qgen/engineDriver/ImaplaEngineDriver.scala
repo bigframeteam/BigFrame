@@ -47,7 +47,7 @@ class ImpalaEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(workI
 			else
 				ImpalaEngineDriver.LOG.info("Successful!!!")
 			
-			val UDF_JAR = workIF.getProp().get(BigConfConstants.BIGFRAME_UDF_JAR);
+			val UDF_JAR = workIF.get(BigConfConstants.BIGFRAME_UDF_JAR);
 			
 			val stmt = connection.createStatement()
 //			stmt.execute("DELETE JAR " + UDF_JAR)

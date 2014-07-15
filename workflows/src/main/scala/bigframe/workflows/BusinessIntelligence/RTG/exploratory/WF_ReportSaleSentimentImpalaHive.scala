@@ -498,10 +498,15 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 					"		END" +
 					"	FROM" +
 					"		(SELECT user_id, sum(friend_tweets) as num_friend_tweets" +
-					"		FROM tweetByUser LEFT OUTER JOIN" +
+//					"		FROM tweetByUser LEFT OUTER JOIN" +
+//					"			(SELECT follower_id, friend_id, num_tweets as friend_tweets" +
+//					"			FROM twitter_graph JOIN tweetByUser" +
+//					"	 		ON tweetByUser.user_id = twitter_graph.friend_id) f" +
+//					"		ON tweetByUser.user_id = f.follower_id" +
+					"		FROM " +
 					"			(SELECT follower_id, friend_id, num_tweets as friend_tweets" +
 					"			FROM twitter_graph JOIN tweetByUser" +
-					"	 		ON tweetByUser.user_id = twitter_graph.friend_id) f" +
+					"	 		ON tweetByUser.user_id = twitter_graph.friend_id) f RIGHT OUTER JOIN tweetByUser" +
 					"		ON tweetByUser.user_id = f.follower_id" +
 					"		GROUP BY " +
 					"		user_id) result"
@@ -530,11 +535,11 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 			LOG.info("Impala Execution: Get mentionProb Begin")
 
 			LOG.info("Impala Execution: Get simUserByProd Begin")
-			val drop_simUserByProd = "DROP VIEW IF EXISTS simUserByProd"
-			val create_simUserByProd = "CREATE VIEW simUserByProd (item_sk, follower_id, friend_id, similarity) AS" +
-//			val create_simUserByProd = "CREATE TABLE simUserByProd (item_sk int, follower_id int, friend_id int, similarity double)"
+			val drop_simUserByProd = "DROP TABLE IF EXISTS simUserByProd"
+//			val create_simUserByProd = "CREATE VIEW simUserByProd (item_sk, follower_id, friend_id, similarity) AS" +
+			val create_simUserByProd = "CREATE TABLE simUserByProd (item_sk int, follower_id int, friend_id int, similarity double)"
 //				
-//			val query_simUserByProd = "INSERT INTO TABLE simUserByProd"	+
+			val query_simUserByProd = "INSERT INTO TABLE simUserByProd"	+
 					"	SELECT f.item_sk, follower_id, friend_id, (1 - ABS(follower_prob - prob)) as similarity" +
 					"	FROM " +
 					"		(SELECT item_sk, follower_id, friend_id, prob as follower_prob" +
@@ -547,8 +552,8 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 			
 			impala_stmt.execute(drop_simUserByProd)
 			impala_stmt.execute(create_simUserByProd)
-//			impala_stmt.execute(query_simUserByProd)		
-			LOG.info("Impala Execution: Get simUserByProd Begin")
+			impala_stmt.execute(query_simUserByProd)		
+			LOG.info("Impala Execution: Get simUserByProd End")
 
 			
 			LOG.info("Impala Execution: Get transitMatrix Begin")
@@ -737,7 +742,7 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 	}
 	
 	def cleanUpImpalaHiveImpl2(impala_connect: Connection, hive_connect: Connection): Unit = {
-		LOG.info("Droping Parquet and ORC Tables...")
+		LOG.info("Droping Intermediate Tables...")
 		
 		val hive_stmt = hive_connect.createStatement()	
 		val impala_stmt = impala_connect.createStatement()	

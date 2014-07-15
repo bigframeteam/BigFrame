@@ -15,6 +15,7 @@ import bigframe.datagen.graph.kroneckerGraph.KroneckerGraphGen;
 import bigframe.datagen.relational.tpcds.CollectTPCDSstat;
 import bigframe.datagen.relational.tpcds.CollectTPCDSstatNaive;
 import bigframe.datagen.util.RandomSeeds;
+import bigframe.util.MapRedConfig;
 
 import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
@@ -103,9 +104,8 @@ public class TwitterMappingGenNaive extends TwitterMappingGen {
 		// TODO Auto-generated method stub
 		try {
 			Path path = new Path(hdfs_path);
-			Configuration config = new Configuration();
-			config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
-			FileSystem fileSystem = FileSystem.get(config);
+			Configuration mapred_config = MapRedConfig.getConfiguration(conf);
+			FileSystem fileSystem = FileSystem.get(mapred_config);
 			
 			if (!fileSystem.exists(path))
 				fileSystem.mkdirs(path);

@@ -5,15 +5,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.sql.Statement;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
 import org.apache.giraph.conf.GiraphConfiguration;
 import org.apache.log4j.Logger;
 
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.WorkflowInputFormat;
+import bigframe.util.MapRedConfig;
 import bigframe.workflows.runnable.HiveGiraphRunnable;
 
 public class HiveGiraphEngineDriver extends EngineDriver {
@@ -27,12 +28,9 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 
 	public HiveGiraphEngineDriver(WorkflowInputFormat workIF) {
 		super(workIF);
-		giraph_config = new GiraphConfiguration();
+		Configuration mapred_config = MapRedConfig.getConfiguration(workIF);
+		giraph_config = new GiraphConfiguration(mapred_config);
 		Configuration.addDefaultResource("giraph-site.xml");
-		giraph_config.addResource(new Path(workIF.getHadoopHome()
-				+ "/conf/core-site.xml"));
-		giraph_config.addResource(new Path(workIF.getHadoopHome()
-				+ "/conf/mapred-site.xml"));
 	}
 
 	@Override
@@ -64,7 +62,7 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 			
 			
 			
-			String UDF_JAR = workIF.getProp().get(BigConfConstants.BIGFRAME_UDF_JAR);
+			String UDF_JAR = workIF.get().get(BigConfConstants.BIGFRAME_UDF_JAR);
 
 			Statement stmt = connection.createStatement();
 			stmt.execute("DELETE JAR " + UDF_JAR);
@@ -73,7 +71,6 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 				LOG.info("Adding UDF JAR successful!");
 				stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'");
 				stmt.execute("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'");
-				stmt.execute("set hive.auto.convert.join=false");
 			}
 			else {
 				LOG.error("Adding UDF JAR failed!");
@@ -82,8 +79,17 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 			// HIVE will throw error when drop an nonexisting table
 			stmt.execute("set hive.exec.drop.ignorenonexistent = true");
 			
-			int dop = workIF.getSparkDoP();
-			stmt.execute("set hive.exec.reducers.max"+dop);
+			Map<String, String> properties = workIF.get();
+			
+			for(Map.Entry<String, String> entry : properties.entrySet()) {
+				stmt.execute("set " + entry.getKey() + "=" + entry.getValue());
+			}
+			
+//			int dop = workIF.getSparkDoP();
+//			stmt.execute("set hive.auto.convert.join=false");
+//			stmt.execute("set hive.exec.parallel=true");
+//			stmt.execute("set hive.exec.reducers.max="+dop);
+//			stmt.execute("set mapred.job.reuse.jvm.num.tasks=10");
 			
 			if(!workIF.getSkipPrepareTable())
 				for(HiveGiraphRunnable query : queries) {

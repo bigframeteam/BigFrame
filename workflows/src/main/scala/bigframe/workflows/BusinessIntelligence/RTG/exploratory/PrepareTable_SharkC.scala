@@ -740,6 +740,7 @@ class PrepareTable_SharkC(basePath: BaseTablePath) {
 		sc.runSql(createDateDim)
 		sc.runSql(createGraph)
 
+		sc.runSql("SET hive.exec.compress.output=false")
 		
 	}
 }

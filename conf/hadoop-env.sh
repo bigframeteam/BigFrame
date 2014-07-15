@@ -6,7 +6,7 @@ HDFS_ROOT_DIR="hdfs://localhost:9000/bigframe_test"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hdfs.root.dir=${HDFS_ROOT_DIR}"
 
 # The WebHDFS Root Directory to store the generated data
-WEBHDFS_ROOT_DIR="http://localhost:50070/webhdfs/v1/user/cszahe/"
+WEBHDFS_ROOT_DIR="http://localhost:50070/webhdfs/v1/user/cszahe"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.webhdfs.root.dir=${WEBHDFS_ROOT_DIR}"
 
 # The username can access the HDFS_ROOT_DIR

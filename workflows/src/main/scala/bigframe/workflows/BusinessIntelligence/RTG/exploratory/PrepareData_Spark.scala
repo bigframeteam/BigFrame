@@ -1,12 +1,5 @@
 package bigframe.workflows.BusinessIntelligence.RTG.exploratory
 
-import parquet.hadoop.{ParquetOutputFormat, ParquetInputFormat}
-import parquet.column.ColumnReader
-import parquet.filter.ColumnRecordFilter._
-import parquet.filter.ColumnPredicates._
-import parquet.avro.{AvroParquetOutputFormat, AvroWriteSupport, AvroReadSupport}
-import parquet.filter.{RecordFilter, UnboundRecordFilter}
-
 import com.google.common.io.Files
 
 import java.io.File

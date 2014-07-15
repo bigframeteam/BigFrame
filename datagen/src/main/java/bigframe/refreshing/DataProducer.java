@@ -19,7 +19,7 @@ public abstract class DataProducer implements Callable<Object>{
 		
 		Properties props = new Properties();
 		
-		String kafka_broker_list = bigdataIF.getProp().get(BigConfConstants.BIGFRAME_KAFKA_BROKER_LIST);
+		String kafka_broker_list = bigdataIF.get().get(BigConfConstants.BIGFRAME_KAFKA_BROKER_LIST);
 		
 		props.put("metadata.broker.list", kafka_broker_list);
 		props.put("serializer.class", "kafka.serializer.StringEncoder");

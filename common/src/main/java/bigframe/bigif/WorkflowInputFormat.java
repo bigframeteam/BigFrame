@@ -1,10 +1,9 @@
 package bigframe.bigif;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import bigframe.util.Config;
+import bigframe.util.SparkConfig;
 
 /**
  * A class to record all the information related to workflow drivers.
@@ -13,7 +12,9 @@ import bigframe.util.Config;
  */
 public class WorkflowInputFormat extends Config {
 	
+	
 	private String HADOOP_HOME = "";
+	private String HADOOP_CONF_DIR = "";
 	private String HDFS_ROOT_DIR = "";
 	private String WEBHDFS_ROOT_DIR = "";
 	private String HADOOP_USERNAME = "";
@@ -28,6 +29,8 @@ public class WorkflowInputFormat extends Config {
 	private boolean SKIP_PREPARE_TABLE = false;
 	private boolean HIVE_SNAPPY = false;
 
+	private Integer GIRAPH_NUM_WORKERS = 1;
+	
 	private String SHARK_HOME = "";
 	private boolean SHARK_RC = true;
 	private boolean SHARK_SNAPPY = true;
@@ -57,11 +60,12 @@ public class WorkflowInputFormat extends Config {
 	
 	private String ZOOKEEPER_CONNECT = ""; 
 	
-	public WorkflowInputFormat() {
-	}
-	
 	public String getHadoopHome() {
 		return HADOOP_HOME;
+	}
+	
+	public String getHadoopConfDir() {
+		return HADOOP_CONF_DIR;
 	}
 	
 	public String getHadoopUserName() {
@@ -109,6 +113,11 @@ public class WorkflowInputFormat extends Config {
 		return HIVE_WAREHOUSE;
 	}
 
+	public Integer getGiraphNumWorkers() {
+		return GIRAPH_NUM_WORKERS;
+	}
+
+	
 	public String getSharkHome() {
 		return SHARK_HOME;
 	}
@@ -215,6 +224,10 @@ public class WorkflowInputFormat extends Config {
 				HADOOP_HOME = value;
 			}
 			
+			else if (key.equals(BigConfConstants.BIGFRAME_HADOOP_CONF)) {
+				HADOOP_CONF_DIR = value;
+			}
+			
 			else if (key.equals(BigConfConstants.BIGFRAME_WEBHDFS_ROOTDIR)) {
 				WEBHDFS_ROOT_DIR = value;
 			}
@@ -257,6 +270,10 @@ public class WorkflowInputFormat extends Config {
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_SNAPPY)) {
 				HIVE_SNAPPY = Boolean.valueOf(value);
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_GIRAPH_NUM_WORKERS)) {
+				GIRAPH_NUM_WORKERS = Integer.valueOf(value);
 			}
 
 			else if (key.equals(BigConfConstants.BIGFRAME_SHARK_HOME)) {

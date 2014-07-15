@@ -50,9 +50,9 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 		}
 
 		hdfs_path = conf.getDataStoredPath().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_RELATIONAL);
-		local_dir = conf.getProp().get(BigConfConstants.BIGFRAME_TPCDS_LOCAL);
-		datagen_script = conf.getProp().get(BigConfConstants.BIGFRAME_TPCDS_SCRIPT);
-		hadoop_slaves = conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_SLAVE);
+		local_dir = conf.get().get(BigConfConstants.BIGFRAME_TPCDS_LOCAL);
+		datagen_script = conf.get().get(BigConfConstants.BIGFRAME_TPCDS_SCRIPT);
+		hadoop_slaves = conf.get().get(BigConfConstants.BIGFRAME_HADOOP_SLAVE);
 		
 		datagen_script_path = (new File(datagen_script)).getParentFile().getAbsolutePath();
 	}

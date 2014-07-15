@@ -47,6 +47,9 @@ CONF_DIR=$BASE_DIR/conf
 # Get the user-defined vertica parameters
 . "$BASE_DIR"/conf/impala-env.sh
 
+# Get the user-defined vertica parameters
+. "$BASE_DIR"/conf/giraph-env.sh
+
 
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.script=${TPCDS_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.updatescript=${TPCDS_UPDATE_SCRIPT}"
@@ -68,7 +71,60 @@ export WORKFLOWS_JAR
 
 # UDF used by Hive and Shark
 UDF_JAR=$WORKFLOWS_JAR
-
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.udf.jar=${UDF_JAR}"
 
-#SENTIMENT_JAR= `ls $BASE_DIR/sentiment/target/scala-2.9.3/bigframe-workflows-assembly*.jar`
+# Check which system is used in the workflow
+HADOOP_IN_USE=false
+SPARK_IN_USE=false
+VERTICA_IN_USE=false
+IMPALA_IN_USE=false
+SHARK_IN_USE=false
+HIVE_IN_USE=false
+GIRAPH_IN_USE=false
+
+BIGFRAME_CORE_XML=$BASE_DIR/conf/bigframe-core.xml
+VALUES=$(xmllint --shell $BIGFRAME_CORE_XML <<<"cat /configuration/property/value/text()" | grep -v "^/ >") 
+
+if [[ $VALUES == *hadoop* ]]
+then
+	echo "Hadoop is used";
+	HADOOP_IN_USE=true
+fi
+
+if [[ $VALUES == *spark* ]]
+then
+	echo "Spark is used";
+	SPARK_IN_USE=true
+fi
+
+if [[ $VALUES == *vertica* ]]
+then
+	echo "Vertica is used";
+	VERTICA_IN_USE=true
+fi
+
+if [[ $VALUES == *impala* ]]
+then
+	echo "Impala is used";
+	IMPALA_IN_USE=true
+fi
+
+if [[ $VALUES == *shark* ]]
+then
+	echo "Shark is used";
+	SHARK_IN_USE=true
+fi
+
+if [[ $VALUES == *hive* ]]
+then
+	echo "Hive is used";
+	HIVE_IN_USE=true
+fi
+
+if [[ $VALUES == *giraph* ]]
+then
+	echo "Giraph is used";
+	GIRAPH_IN_USE=true
+fi
+
+

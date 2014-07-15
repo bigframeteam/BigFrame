@@ -1,5 +1,7 @@
 package bigframe.qgen.engineDriver
 
+import scala.collection.JavaConversions._
+
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 
@@ -44,12 +46,20 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 		val	jar_path_string = System.getenv(BigConfConstants.WORKFLOWS_JAR)
 
 		System.setProperty("MASTER", workIF.getSparkMaster())
-		System.setProperty("spark.shuffle.consolidateFiles", "true")
+		
+		workIF.get().foreach( prop => System.setProperty(prop._1, prop._2))
+		
+		//System.setProperty("spark.shuffle.consolidateFiles", "true")
 		
 		SharkEnv.stop
 		SharkEnv.initWithSharkContext("BigFrame Benchmark")
 		sc = SharkEnv.sc.asInstanceOf[SharkContext]
 		sc.addJar(jar_path_string)
+		
+		sc.runSql("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'")
+		sc.runSql("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'")
+		//sc.runSql("set mapred.reduce.tasks=" + spark_dop)
+		workIF.get().foreach( prop => sc.runSql("set " + prop._1 + "=" + prop._2))
 		
 		sc
 	}
@@ -78,10 +88,6 @@ class SharkBagelEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(w
 		try {
 			Class.forName("shark.SharkContext")
 			val sc = initSharkContext()
-			
-			sc.runSql("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'")
-			sc.runSql("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'")
-			sc.runSql("set mapred.reduce.tasks=" + spark_dop)
 			
 			queries.foreach(q => {
 				spark_dop = workIF.getSparkDoP()

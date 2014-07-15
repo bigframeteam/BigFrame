@@ -95,8 +95,10 @@ if (!$ENV{'HADOOP_HOME'})
    exit(-1);
 }
 
+
+
 # Execute the hadoop-env.sh script for environmental variable definitions
-!system qq(. \$HADOOP_HOME/conf/hadoop-env.sh) or die $!;
+# !system qq(. \$HADOOP_HOME/conf/hadoop-env.sh) or die $!;
 my $hadoop_home = $ENV{'HADOOP_HOME'};
 my $ssh_opts = ($ENV{'HADOOP_SSH_OPTS'}) ? $ENV{'HADOOP_SSH_OPTS'} : "";
 
@@ -127,6 +129,7 @@ if ($status == 0) {
 }
 
 println qq(Creating all the HDFS directories);
+!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR) or die $!;
 !system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/call_center) or die $!;
 !system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/catalog_page) or die $!;
 !system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/catalog_returns) or die $!;

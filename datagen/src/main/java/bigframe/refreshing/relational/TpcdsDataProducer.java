@@ -264,14 +264,14 @@ public class TpcdsDataProducer extends DataProducer {
 		System.out.println("Loading the prepared data for TPCDS...");
 		
 		Configuration mapred_config = new Configuration();
-		mapred_config.addResource(new Path(bigdataIF.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
-		mapred_config.addResource(new Path(bigdataIF.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/mapred-site.xml"));	
+		mapred_config.addResource(new Path(bigdataIF.get().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
+		mapred_config.addResource(new Path(bigdataIF.get().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/mapred-site.xml"));	
 	
 		try {
 			FileSystem fs;
 			fs = FileSystem.get(mapred_config);
 			
-			Path stream_data_path = new Path(bigdataIF.getProp().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_RELATIONAL) + "_streaming");
+			Path stream_data_path = new Path(bigdataIF.get().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_RELATIONAL) + "_streaming");
 			
 			if(!fs.exists(stream_data_path)) {
 				System.out.println("Target path: " + stream_data_path + " not exists!");

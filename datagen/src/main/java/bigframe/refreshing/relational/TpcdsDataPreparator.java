@@ -40,9 +40,9 @@ public class TpcdsDataPreparator extends DataPreparator {
 		
 		hdfs_dir = bigdataIF.getDataStoredPath().
 				get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_RELATIONAL) + "_streaming";
-		local_dir = bigdataIF.getProp().get(BigConfConstants.BIGFRAME_TPCDS_LOCAL);
-		dataupdate_script = bigdataIF.getProp().get(BigConfConstants.BIGFRAME_TPCDS_UPDATESCRIPT);
-		hadoop_slaves = bigdataIF.getProp().get(BigConfConstants.BIGFRAME_HADOOP_SLAVE);
+		local_dir = bigdataIF.get().get(BigConfConstants.BIGFRAME_TPCDS_LOCAL);
+		dataupdate_script = bigdataIF.get().get(BigConfConstants.BIGFRAME_TPCDS_UPDATESCRIPT);
+		hadoop_slaves = bigdataIF.get().get(BigConfConstants.BIGFRAME_HADOOP_SLAVE);
 		
 		dageupdate_script_path = (new File(dataupdate_script)).getParentFile().getAbsolutePath();
 		

@@ -25,47 +25,12 @@ cd $OLD_PATH
 
 DATAGEN_CLASSPATH=$DATAGEN_JAR
 
-#for jar in `find $HADOOP_HOME -name '*.jar'`; do
-#	DATAGEN_CLASSPATH+=:$jar
-#done
-#
-#
-#for jar in `find $HADOOP_HOME/lib -name '*.jar'`; do
-#	DATAGEN_CLASSPATH+=:$jar
-#done
-#
-#
-#if [ -n "$IMPALA_HOME" ] 
-#then 
-#	HDFS_JARS=$HADOOP_HOME/../hadoop-hdfs
-#	for jar in `find $HDFS_JARS -name '*.jar'`;do
-#		DATAGEN_CLASSPATH+=$jar
-#	done
-#
-#	for jar in `find $HDFS_JARS/lib -name '*.jar'`;do
-#		DATAGEN_CLASSPATH+=$jar
-#	done
-#fi
-
-for jar in `find $BASE_PATH/lib_managed/jars -name '*.jar'`; do
-	if [ -n "$IMPALA_HOME" ]; then
-	# Ignore the lib libthrift since it has already been included with in qgen/lib_managed.
-	# To avoid possible version conflict
-		if [[ "$jar" != *libthrift* ]]; then
-			DATAGEN_CLASSPATH+=:$jar
-		fi 
-	else
+for jar in `find $BASE_PATH/lib_managed -name '*.jar'`; do
+	# The protobuf-java version used in these jar 
+	# could be incompactable with the hadoop ones 
+	if [[ "$jar" != *spark* && "$jar" != *shark* && "$jar" != *hive* ]]; then
 		DATAGEN_CLASSPATH+=:$jar
 	fi
 done
-
-for jar in `find $BASE_PATH/lib_managed/bundles -name '*.jar'`; do
-	DATAGEN_CLASSPATH+=:$jar
-done
-
-
-
-
-echo $DATAGEN_CLASSPATH
 
 java -cp "$DATAGEN_CLASSPATH" bigframe.datagen.DataGenDriver $BIGFRAME_OPTS "$@"

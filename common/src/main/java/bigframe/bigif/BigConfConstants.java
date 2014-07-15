@@ -31,6 +31,7 @@ public class BigConfConstants {
 	 */
 	public static final String BIGFRAME_HADOOP_DISTRIBUTION = "bigframe.hadoop.distribution";
 	public static final String BIGFRAME_HADOOP_HOME = "bigframe.hadoop.home";
+	public static final String BIGFRAME_HADOOP_CONF = "bigframe.hadoop.conf";
 	public static final String BIGFRAME_HDFS_ROOTDIR = "bigframe.hdfs.root.dir";
 	public static final String BIGFRAME_WEBHDFS_ROOTDIR = "bigframe.webhdfs.root.dir";
 	public static final String BIGFRAME_HADOOP_SLAVE = "bigframe.hadoop.slaves";
@@ -48,7 +49,13 @@ public class BigConfConstants {
 	public static final String BIGFRAME_HIVE_JDBC_PASSWORD = "bigframe.hive.jdbc.password";
 	public static final String BIGFRAME_HIVE_ORC = "bigframe.hive.orc";
 
+	
+	/**
+	 * Giraph specific
+	 */
 
+	public static final String  BIGFRAME_GIRAPH_NUM_WORKERS = "bigframe.giraph.num.workers";
+	
 	/**
 	 * Shark specific
 	 */
@@ -78,6 +85,12 @@ public class BigConfConstants {
 	public static final String BIGFRAME_VERTICA_DATABASE = "bigframe.vertica.database";
 	public static final String BIGFRAME_VERTICA_JDBC_SERVER = "bigframe.vertica.jdbc.server";
 	public static final String BIGFRAME_VERTICA_HOME = "bigframe.vertica.home";
+	
+	
+	public static final String TWEET_STORE_FORMAT = "tweet.store.format";
+	public static final String TWEET_AS_STRING = "string";
+	public static final String TWEET_NORMALIZED = "normalized";
+	public static final String TWEET_AS_OBJECT = "object";
 	
 	/**
 	 * Impala specific

@@ -270,51 +270,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 			FileInputFormat.setInputPaths(job, srcHdfsPath);
 	
 		    job.setJobName("Transforming tweet for table: " + table);
-		    
-//		    job.setOutputKeyClass(Text.class);
-//		    job.setOutputValueClass(VerticaRecord.class);
-//		    
-//		    job.setOutputFormatClass(VerticaOutputFormat.class);
-//		    
-//		    job.setJarByClass(VerticaTpcdsLoader.class);
-//		    job.setMapperClass(Map.class);
-//		    //job.setReducerClass(Reduce.class);
-//		    
-//		    job.setNumReduceTasks(0);
-//		 
-//		    if(table.equals("entities"))
-//			    VerticaOutputFormat.setOutput(job, "entities", true, "tweet_id int", "urls varchar(100)",
-//			    		"hashtag varchar(50)", "user_mentions varchar(200)");
-//		   
-//		    else if(table.equals("user"))
-//			    VerticaOutputFormat.setOutput(job, "users", true, "profile_sidebar_border_color char(20)", 
-//			    		"name varchar(70)", "profile_sidebar_fill_color char(20)", "profile_background_tile char(20)",
-//			    		"profile_image_url varchar(70)", "location varchar(20)", "created_at  TIMESTAMP WITH TIMEZONE",
-//			    		"id_str char(20)", "follow_request_sent varchar(20)", "profile_link_color char(20)", 
-//			    		"favourites_count int",  "url varchar(70)", "contributors_enabled BOOLEAN", "utc_offset varchar(20)",
-//			    		"id int", "profile_use_background_image varchar(70)", "listed_count int", "protected BOOLEAN",
-//			    		"lang char(20)", "profile_text_color char(20)", "followers_count int", "time_zone char(20)",
-//			    		"verified boolean", "geo_enabled boolean", "profile_background_color varchar(70)",
-//			    		"notifications boolean", "description varchar(200)", "friends_count int", "profile_background_image_url varchar(120)",
-//			    		"statuses_count int", "screen_name char(20)", "following boolean", "show_all_inline_media boolean");
-//		    
-//		    else if(table.equals("tweet")) 
-//		    	VerticaOutputFormat.setOutput(job, "tweet", true, "coordinates char(20)", "created_at TIMESTAMP WITHOUT TIME ZONE",
-//		    			"favorited boolean", "truncated boolean", "id_str char(20)", "in_reply_to_user_id_str char(20)",
-//		    			"text varchar(200)", "contributors char(20)", "id int", "retweet_count int", "in_reply_to_status_id_str char(20)",
-//		    			"geo char(20)", "retweeted boolean", "in_reply_to_user_id int", "user_id int", "in_reply_to_screen_name char(20)",
-//		    			"source char(20)", "place char(20)", "in_reply_to_status_id int");
-//		    
-//		    else if(table.equals("tweetjson"))
-//		    	VerticaOutputFormat.setOutput(job, "tweetjson", true, "json varchar(10000)");
-//		    
-//		    else {
-//		    	//throw new TableNotFoundException("Table " + table + " doesn't exist!");
-//		    	System.out.println("Table " + table + " doesn't exist!");
-//		    	return false;
-//		    }
 		
-		    
 		    job.setOutputKeyClass(NullWritable.class);
 		    job.setOutputValueClass(Text.class);
 		    
@@ -339,7 +295,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 					
 			    	if(job.waitForCompletion(true)) {
 			    	
-				    	String copyToTweet = "COPY tweet SOURCE Hdfs(url='" + workIF.getWEBHDFSRootDIR() +"/"+TWEET_TEMP_DIR+"/part-*'," +
+				    	String copyToTweet = "COPY tweet SOURCE Hdfs(url='" + workIF.getWEBHDFSRootDIR() + TWEET_TEMP_DIR + "/part-*'," +
 				    			"username='" + workIF.getHadoopUserName() + "')";
 				    	
 				    	if(stmt.execute(copyToTweet))
@@ -362,7 +318,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 					
 			    	if(job.waitForCompletion(true)) {
 			    	
-				    	String copyToEntites = "COPY entities SOURCE Hdfs(url='" + workIF.getWEBHDFSRootDIR() +"/"+ENTITIES_TEMP_DIR+"/part-*'," +
+				    	String copyToEntites = "COPY entities SOURCE Hdfs(url='" + workIF.getWEBHDFSRootDIR() + ENTITIES_TEMP_DIR+"/part-*'," +
 				    			"username='" + workIF.getHadoopUserName() + "')";
 				    	
 				    	if(stmt.execute(copyToEntites))
@@ -375,7 +331,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 			    }
 			    
 			    else  if(table.equals("tweetjson")) {
-			    	String copyToTweetJson = "COPY tweetjson SOURCE Hdfs(url='" + workIF.getWEBHDFSRootDIR() +"/nested_data/part-*'," +
+			    	String copyToTweetJson = "COPY tweetjson SOURCE Hdfs(url='" + workIF.getWEBHDFSRootDIR() + srcHdfsPath + "/part-*'," +
 			    			"username='" + workIF.getHadoopUserName() + "')";
 			    	
 			    	if(stmt.execute(copyToTweetJson))

@@ -208,8 +208,8 @@ public class DataGenDriver {
 
 
 		// Replace conf with user define parameter
-		Map<String,String> user_datagen_conf = user_conf.getBigDataInputFormat().getProp();
-		Map<String,String> user_querygen_conf = user_conf.getBigQueryInputFormat().getProp();
+		Map<String,String> user_datagen_conf = user_conf.getBigDataInputFormat().get();
+		Map<String,String> user_querygen_conf = user_conf.getBigQueryInputFormat().get();
 
 		for (Map.Entry<String, String> entry : user_datagen_conf.entrySet()) {
 			conf.getBigDataInputFormat().set(entry.getKey(), entry.getValue());

@@ -23,6 +23,7 @@ import bigframe.bigif.BigConfConstants;
 import bigframe.datagen.graph.kroneckerGraph.KroneckerGraphGen;
 import bigframe.datagen.nested.tweet.RawTweetGenConstants;
 import bigframe.util.Config;
+import bigframe.util.MapRedConfig;
 import bigframe.datagen.util.RandomSeeds;
 import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
@@ -163,7 +164,7 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 
 	
 	public void genTBLonHDFS(Config conf, float targetGB, String table_name) {
-		String single_tbl_gen_script = conf.getProp().get(
+		String single_tbl_gen_script = conf.get().get(
 				BigConfConstants.BIGFRAME_GEN_SINGLETBL_SCRIPT);
 		// System.out.println("gen promotion tbl script:" +
 		// promt_tbl_gen_script);
@@ -191,11 +192,8 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 
 		try {
 			Path hdfs_path = new Path(table_name + ".dat");
-			Configuration config = new Configuration();
-			config.addResource(new Path(conf.getProp().get(
-					BigConfConstants.BIGFRAME_HADOOP_HOME)
-					+ "/conf/core-site.xml"));
-			FileSystem fileSystem = FileSystem.get(config);
+			Configuration mapred_config = MapRedConfig.getConfiguration(conf);
+			FileSystem fileSystem = FileSystem.get(mapred_config);
 			if (fileSystem.exists(hdfs_path)) {
 				fileSystem.delete(hdfs_path, true);
 			}

@@ -1,5 +1,7 @@
 package bigframe.workflows.BusinessIntelligence.graph.exploratory
 
+import bigframe.bigif.WorkflowInputFormat
+
 import bigframe.workflows.runnable.GiraphRunnable
 import bigframe.workflows.Query
 
@@ -17,13 +19,13 @@ import org.apache.hadoop.io.NullWritable
  * 
  *  @authou andy 
  */
-class WF_TwitterRankGiraph extends Query with GiraphRunnable {
+class WF_TwitterRankGiraph(num_workers: Int) extends Query with GiraphRunnable {
 
 	def printDescription(): Unit = {}
 
 	override def runGiraph( giraph_config: GiraphConfiguration): Boolean = {
 		
-		val workers = 2
+		val workers = num_workers
 		
 		var giraph_config_copy = new GiraphConfiguration(giraph_config)
 		var job = new GiraphJob(giraph_config_copy, getClass.getName);	

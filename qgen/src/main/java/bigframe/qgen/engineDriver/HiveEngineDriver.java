@@ -54,7 +54,7 @@ public class HiveEngineDriver extends EngineDriver {
 			else
 				LOG.info("Successful!!!");
 
-			String UDF_JAR = workIF.getProp().get(BigConfConstants.BIGFRAME_UDF_JAR);
+			String UDF_JAR = workIF.get().get(BigConfConstants.BIGFRAME_UDF_JAR);
 
 			Statement stmt = connection.createStatement();
 			stmt.execute("DELETE JAR " + UDF_JAR);

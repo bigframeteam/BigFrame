@@ -18,8 +18,8 @@ object BigFrameBuild extends Build {
 	// Scala version
 	val SCALA_VERSION = "2.9.3"
 
-	lazy val cloudera_hadoop = env("CLOUDERA_HADOOP")
-	
+	lazy val hadoopVersion = scala.util.Properties.envOrElse("BIGFRAME_HADOOP_VERSION", DEFAULT_HADOOP_VERSION)
+
 	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, workflows)
 
 	lazy val common = Project(id = "common", base = file("common"), settings = commonSettings)
@@ -62,11 +62,9 @@ object BigFrameBuild extends Build {
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
 			"org.slf4j" % "slf4j-log4j12" % "1.6.1",
 			"commons-configuration" % "commons-configuration" % "1.6" % "provided",
-			"org.apache.spark" % "spark-core_2.9.3" % "0.8.1-incubating" % "provided",
-     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.1-incubating" % "provided",
-			"edu.berkeley.cs.amplab" % "shark_2.9.3" % "0.8.1" excludeAll (
-				ExclusionRule(organization = "org.apache.thrift")
-			), // cannot make it "provided" when using sharkcontext
+			"org.apache.spark" % "spark-core_2.9.3" % "0.8.1-incubating" % "provided" intransitive(),
+     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.1-incubating" % "provided" intransitive(),
+			"edu.berkeley.cs.amplab" % "shark_2.9.3" % "0.8.1" intransitive(), // cannot make it "provided" when using sharkcontext
 			"commons-logging" % "commons-logging" % "1.1.1" % "provided",
 			"com.novocode" % "junit-interface" % "0.10-M2" % "test"
 		) ++ hadoopSettings
@@ -76,20 +74,9 @@ object BigFrameBuild extends Build {
 	)
 			
 	def hadoopSettings = {
-		
-		cloudera_hadoop match {
-		case Some("true") =>
-			Seq(
-	        	"org.apache.hadoop" % "hadoop-core" % "2.2.0-mr1-cdh5.0.0-beta-2" % "provided",
-	        	"org.apache.hadoop" % "hadoop-common" % "2.2.0-cdh5.0.0-beta-2" % "provided",
-				"net.java.dev.jets3t" % "jets3t" % "0.6.1" % "provided"
-			)
-		
-		case _ =>
-			Seq(
-	        	"org.apache.hadoop" % "hadoop-core" % DEFAULT_HADOOP_VERSION % "provided"
-			)
-		}
+		Seq(
+	    	"org.apache.hadoop" % "hadoop-client" % hadoopVersion % "provided"
+		)
 	}
 
 	def rootSettings = sharedSettings ++ Seq(
@@ -106,13 +93,13 @@ object BigFrameBuild extends Build {
 		resolvers += "Apache repo" at "https://repository.apache.org/content/repositories/releases",
 
 		libraryDependencies ++= Seq(
-			"org.apache.kafka" % "kafka_2.9.2" % "0.8.0-beta1" exclude("com.sun.jmx","jmxri")
+			"org.apache.kafka" % "kafka_2.9.2" % "0.8.0-beta1" % "provided" exclude("com.sun.jmx","jmxri")
 		 	exclude("com.sun.jdmk","jmxtools"),
-			"com.typesafe.akka" % "akka-actor" % "2.0.5",
-			"com.typesafe.akka" % "akka-kernel" % "2.0.5",
-			"com.typesafe.akka" % "akka-slf4j"    % "2.0.5",
-			"com.typesafe.akka" % "akka-remote"   % "2.0.5",
-			"com.typesafe.akka" % "akka-agent"    % "2.0.5", 
+			"com.typesafe.akka" % "akka-actor" % "2.0.5" % "provided",
+			"com.typesafe.akka" % "akka-kernel" % "2.0.5" % "provided",
+			"com.typesafe.akka" % "akka-slf4j"    % "2.0.5" % "provided",
+			"com.typesafe.akka" % "akka-remote"   % "2.0.5" % "provided",
+			"com.typesafe.akka" % "akka-agent"    % "2.0.5" % "provided", 
 			"com.typesafe.akka" % "akka-testkit"  % "2.0.5"% "test"
 		)
 
@@ -128,13 +115,15 @@ object BigFrameBuild extends Build {
 
 		libraryDependencies ++= Seq(
 			"io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
-			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1", 
-			"org.apache.hive" % "hive-exec" % "0.11.0" % "provided",
-			"org.apache.hive" % "hive-common" % "0.11.0" % "provided",
-			"com.twitter" % "parquet-avro" % "1.3.2" % "provided"  excludeAll (
+			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1" excludeAll (
 				ExclusionRule(organization = "org.apache.hadoop")
 			),
-			"org.apache.avro" % "avro" % "1.7.4" % "provided"
+			"org.apache.hive" % "hive-exec" % "0.11.0" % "provided" intransitive()
+			//"org.apache.hive" % "hive-common" % "0.11.0" % "provided",
+			//"com.twitter" % "parquet-avro" % "1.3.2" % "provided"  excludeAll (
+			//	ExclusionRule(organization = "org.apache.hadoop")
+			//),
+			//"org.apache.avro" % "avro" % "1.7.4" % "provided"
 			//"com.twitter" % "scrooge-core_2.9.2" % "3.12.2",
 			//"org.apache.thrift" % "libthrift" % "0.9.0",
 			//"com.twitter" % "finagle-thrift_2.9.2" % "6.10.0"
@@ -156,20 +145,19 @@ object BigFrameBuild extends Build {
       		case _ => MergeStrategy.first
     	}
 
-		//libraryDependencies ++= Seq(
-		//	"org.apache.spark" % "spark-mllib_2.9.3" % "0.8.0-incubating"
-		//)
-
 	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 
 	def extraAssemblySettings() = Seq(test in assembly := {}) ++ Seq(
 		mergeStrategy in assembly := {
      		case m if m startsWith "org/apache/commons/logging" => MergeStrategy.last
+			// exclude this to avoid conflict, since jerkson use a version of jackson-databind < spark's 
+			case m if m startsWith "com/fasterxml/jackson/databind/module/SimpleSerializers.class" => MergeStrategy.discard
       		case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
       		case m if m.toLowerCase.matches("meta-inf.*\\.sf$") => MergeStrategy.discard
       		case "reference.conf" => MergeStrategy.concat
       		case _ => MergeStrategy.first
     	}
+
 	)
 
 	def sbtAvroSettings() = SbtAvro.avroSettings ++ Seq(

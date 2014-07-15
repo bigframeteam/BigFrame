@@ -9,6 +9,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
 
 import bigframe.bigif.WorkflowInputFormat;
+import bigframe.util.MapRedConfig;
 import bigframe.workflows.runnable.HadoopRunnable;
 
 
@@ -31,11 +32,7 @@ public class HadoopEngineDriver extends EngineDriver {
 	@Override
 	public void init() {
 		// TODO Auto-generated method stub
-		mapred_config = new Configuration();
-		mapred_config.addResource(new Path(workIF.getHadoopHome()
-				+ "/conf/core-site.xml"));
-		mapred_config.addResource(new Path(workIF.getHadoopHome()
-				+ "/conf/mapred-site.xml"));
+		mapred_config = MapRedConfig.getConfiguration(workIF);
 	}
 
 	@Override

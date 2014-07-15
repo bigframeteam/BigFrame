@@ -68,7 +68,7 @@ class WF_ReportSaleSentimentVertica(basePath: BaseTablePath, num_iter: Int, json
 			val lower = 1
 			val upper = 300
 			
-			LOG.info("Running the Report Sales Sentiment workflow with json de-normalized")
+			LOG.info("Running the Report Sales Sentiment workflow with json normalized")
 			val drop_promotionSelected = "DROP TABLE IF EXISTS promotionSelected"
 			val create_promotionSelected = "CREATE TABLE promotionSelected (promo_id char(16), item_sk int," +
 					"start_date_sk int, end_date_sk int)"
