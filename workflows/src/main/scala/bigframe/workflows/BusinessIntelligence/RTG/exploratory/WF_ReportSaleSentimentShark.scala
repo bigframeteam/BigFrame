@@ -9,7 +9,7 @@ import bigframe.workflows.BaseTablePath
 
 import scala.collection.JavaConversions._
 
-class WF_ReportSaleSentimentShark(basePath: BaseTablePath, num_iter: Int, val useRC: Boolean) extends Query  with SharkRunnable{
+class WF_ReportSaleSentimentShark(basePath: BaseTablePath, num_iter: Int, val useRC: Boolean, useSnappy: Boolean) extends Query  with SharkRunnable{
 
 	def printDescription(): Unit = {}
 	
@@ -20,7 +20,7 @@ class WF_ReportSaleSentimentShark(basePath: BaseTablePath, num_iter: Int, val us
 		val tablePreparator = new PrepareTable_Hive(basePath)
 		
 		if(useRC)
-			tablePreparator.prepareTableRCFile(connection)
+			tablePreparator.prepareTableRCFile(connection, useSnappy)
 		else
 			tablePreparator.prepareTableTextFile(connection)
 	}

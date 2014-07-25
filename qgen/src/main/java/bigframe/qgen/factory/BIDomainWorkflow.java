@@ -250,7 +250,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 						nestedEngine.equals(Constants.SHARK)) {
 					sharkWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentShark(basePath, 10, 
-									workflowIF.getSharkRC()));
+									workflowIF.getSharkRC(), workflowIF.getHiveSnappy()));
 				}
 				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.GIRAPH)&& 
 						nestedEngine.equals(Constants.HIVE)) {
