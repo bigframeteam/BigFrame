@@ -11,7 +11,8 @@ import org.apache.giraph.conf.GiraphConfiguration
 import java.sql.Connection
 import java.sql.SQLException
 
-class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, val useOrc: Boolean, num_giraph_workers: Int) extends Query with HiveGiraphRunnable {
+class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, val useOrc: Boolean, 
+		num_giraph_workers: Int, baseTableSanppyEnable: Boolean = true) extends Query with HiveGiraphRunnable {
 
 	override def printDescription(): Unit = {}
 	
@@ -21,7 +22,7 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 		val tablePreparator = new PrepareTable_Hive(basePath)
 		
 	    if(useOrc == true) {
-   		    tablePreparator.prepareTableORCFile(connection)
+   		    tablePreparator.prepareTableORCFile(connection, baseTableSanppyEnable)
 	    }
 	    else {
 	        tablePreparator.prepareTableTextFile(connection)

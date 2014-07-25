@@ -361,7 +361,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 	/**
 	 * ORC file is used
 	 */
-	def prepareTableORCFile(connection: Connection): Unit = {
+	def prepareTableORCFile(connection: Connection, snappyEnable: Boolean): Unit = {
 		
 		println("Creating ORC file...")
 		
@@ -717,10 +717,12 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		stmt.execute(dropDateDim)
 		stmt.execute(dropGraph)
 		stmt.execute(dropTweets)
-
-		stmt.execute("SET hive.exec.compress.output=true")
-		stmt.execute("SET mapred.output.compression.type=BLOCK")
-		stmt.execute("SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec")
+		
+		if (snappyEnable) {
+			stmt.execute("SET hive.exec.compress.output=true")
+			stmt.execute("SET mapred.output.compression.type=BLOCK")
+			stmt.execute("SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec")
+		}
 
 		val createWebSales = "CREATE TABLE web_sales STORED AS orc as select * from web_sales_tmp"
 		val createCatalogSales = "CREATE TABLE catalog_sales STORED AS orc as select * from catalog_sales_tmp"
@@ -748,7 +750,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 	/**
 	 * RC file is used and also enable Snappy Compression.
 	 */
-	def prepareTableRCFile(connection: Connection): Unit = {
+	def prepareTableRCFile(connection: Connection, snappyEnable: Boolean): Unit = {
 		
 		println("Creating RC file...")
 		
@@ -1106,9 +1108,11 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		stmt.execute(dropGraph)
 		stmt.execute(dropTweets)
 		
-		stmt.execute("SET hive.exec.compress.output=true")
-		stmt.execute("SET mapred.output.compression.type=BLOCK")
-		stmt.execute("SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec")
+		if (snappyEnable) {
+			stmt.execute("SET hive.exec.compress.output=true")
+			stmt.execute("SET mapred.output.compression.type=BLOCK")
+			stmt.execute("SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec")
+		}
 		
 		val createWebSales = "CREATE TABLE web_sales STORED AS rcfile as select * from web_sales_tmp"
 		val createCatalogSales = "CREATE TABLE catalog_sales STORED AS rcfile as select * from catalog_sales_tmp"

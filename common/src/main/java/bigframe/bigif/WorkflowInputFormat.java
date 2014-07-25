@@ -19,6 +19,8 @@ public class WorkflowInputFormat extends Config {
 	private String WEBHDFS_ROOT_DIR = "";
 	private String HADOOP_USERNAME = "";
 	
+	
+	
 
 	private String HIVE_HOME = "";
 	private String HIVE_WAREHOUSE = "";
@@ -268,7 +270,7 @@ public class WorkflowInputFormat extends Config {
 				HIVE_ORC = Boolean.valueOf(value);
 			}
 			
-			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_SNAPPY)) {
+			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_ENABLE_SNAPPY)) {
 				HIVE_SNAPPY = Boolean.valueOf(value);
 			}
 			

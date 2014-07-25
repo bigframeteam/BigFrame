@@ -255,9 +255,10 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.GIRAPH)&& 
 						nestedEngine.equals(Constants.HIVE)) {
 					int num_giraph_workers = workflowIF.getGiraphNumWorkers();
+					boolean hive_snappy = workflowIF.getHiveSnappy();
 					hivegiraphWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 10, 
-									workflowIF.getHiveORC(), num_giraph_workers));
+									workflowIF.getHiveORC(), num_giraph_workers, hive_snappy));
 
 				}
 				

@@ -41,7 +41,7 @@ public class BigConfConstants {
 	/**
 	 * Hive specific
 	 */
-	public static final String BIGFRAME_HIVE_SNAPPY = "bigframe.hive.snappy";
+	public static final String BIGFRAME_HIVE_ENABLE_SNAPPY = "bigframe.hive.enable.snappy";
 	public static final String BIGFRAME_HIVE_HOME = "bigframe.hive.home";
 	public static final String BIGFRAME_HIVE_WAREHOUSE = "bigframe.hive.warehouse";
 	public static final String BIGFRAME_HIVE_JDBC_SERVER = "bigframe.hive.jdbc.server";
