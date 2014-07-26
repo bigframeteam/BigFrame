@@ -1,9 +1,7 @@
-/**
- *
- */
 package bigframe.workflows.BusinessIntelligence.RTG.graph
 
 /**
+ * Not compatible with Spark versions higher than 0.9
  * @author mayuresh
  *
  */

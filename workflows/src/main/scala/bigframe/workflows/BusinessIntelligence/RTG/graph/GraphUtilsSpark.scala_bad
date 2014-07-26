@@ -1,12 +1,11 @@
-/**
- * 
- */
 package bigframe.workflows.BusinessIntelligence.RTG.graph
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext._
 import org.apache.spark.HashPartitioner
+
 /**
+ * Not compatible with Spark versions higher than 0.9
  * @author mayuresh
  *
  */

@@ -9,10 +9,10 @@ object BigFrameBuild extends Build {
 	val HADOOP_VERSION = "1.0.4"
 
 	// Spark version to build againt.
-	val SPARK_VERSION = "0.7.3"
+	val SPARK_VERSION = "1.0.1"
 
 	// Scala version
-	val SCALA_VERSION = "2.9.3"
+	val SCALA_VERSION = "2.10.3"
 	
 	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, workflows)
 
@@ -43,10 +43,10 @@ object BigFrameBuild extends Build {
 		),
 
 		libraryDependencies ++= Seq(
-      		"org.scalatest" %% "scalatest" % "1.9.1" % "test",
-	        "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-	        "org.apache.spark" % "spark-core_2.9.3" % "0.8.0-incubating",
-     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.0-incubating",
+			"org.scalatest" %% "scalatest" % "1.9.1" % "test",
+			"org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
+			"org.apache.spark" % "spark-core_2.10" % SPARK_VERSION,
+			"org.apache.spark" % "spark-hive_2.10" % SPARK_VERSION,
 			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",

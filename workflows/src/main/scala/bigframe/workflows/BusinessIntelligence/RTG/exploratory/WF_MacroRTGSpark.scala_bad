@@ -12,6 +12,9 @@ import bigframe.workflows.BusinessIntelligence.RTG.graph.TwitterRankDriver
 import bigframe.workflows.BusinessIntelligence.RTG.graph.GraphUtilsSpark
 import bigframe.workflows.util.DateUtils
 
+/**
+* Not compatible with Spark's versions higher than 0.9
+*/
 class WF_MacroRTGSpark(val basePath: BaseTablePath, val numIter: Int, val useBagel: Boolean, val dop: Integer, val optimizeMemory: Boolean) extends SparkRunnable {
     final var OUTPUT_PATH = "OUTPUT_PATH"
     private var output_path: String = System.getenv(OUTPUT_PATH) + "/spark/macro_rel_nested_graph"

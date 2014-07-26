@@ -17,7 +17,9 @@ import bigframe.qgen.engineDriver.HiveEngineDriver;
 import bigframe.qgen.engineDriver.HiveGiraphEngineDriver;
 import bigframe.qgen.engineDriver.SharkEngineDriver;
 import bigframe.qgen.engineDriver.SparkEngineDriver;
+import bigframe.qgen.engineDriver.SparkSQLEngineDriver;
 import bigframe.qgen.engineDriver.EngineDriver;
+
 import bigframe.qgen.engineDriver.VerticaEngineDriver;
 import bigframe.util.Constants;
 import bigframe.workflows.BaseTablePath;
@@ -74,6 +76,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		VerticaEngineDriver verticaWorkflow = new VerticaEngineDriver(workflowIF);
 		GiraphEngineDriver giraphWorkflow = new GiraphEngineDriver(workflowIF);
 		HiveGiraphEngineDriver hivegiraphWorkflow = new HiveGiraphEngineDriver(workflowIF);
+		SparkSQLEngineDriver sparkSQLWorkflow = new SparkSQLEngineDriver(workflowIF);
 		
 		/**
 		 * Record the paths for all the base table used. 
@@ -146,8 +149,8 @@ public class BIDomainWorkflow extends DomainWorkflow {
 								bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSales(basePath)); 
 					}
 					else if(relationalEngine.equals(Constants.SPARK)) {
-						sparkWorkflow.addQuery(new 
-								bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSalesSpark(basePath)); 
+					//	sparkWorkflow.addQuery(new 
+					//			bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSalesSpark(basePath)); 
 					}
 				}
 				
@@ -166,8 +169,8 @@ public class BIDomainWorkflow extends DomainWorkflow {
 								bigframe.workflows.BusinessIntelligence.text.exploratory.WF_SenAnalyze(basePath));
 					}
 					else if(nestedEngine.equals(Constants.SPARK)) {
-						sparkWorkflow.addQuery(new 
-								bigframe.workflows.BusinessIntelligence.text.exploratory.WF_SenAnalyzeSpark(basePath, "[aA].*"));
+					//	sparkWorkflow.addQuery(new 
+					//			bigframe.workflows.BusinessIntelligence.text.exploratory.WF_SenAnalyzeSpark(basePath, "[aA].*"));
 					}
 					
 					
@@ -211,29 +214,34 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					hiveWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10, workflowIF.getHiveORC()));
 				}
-				
+				else if(relationalEngine.equals(Constants.SPARKSQL) && graphEngine.equals(Constants.SPARKSQL)&& 
+						nestedEngine.equals(Constants.SPARKSQL)) {
+					System.out.println("SparkSQL workflow added");
+					sparkSQLWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentSparkSQL(basePath, 10, workflowIF.getHiveORC()));
+				}
 				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.GIRAPH)&& 
 						nestedEngine.equals(Constants.HIVE)) {
 					hivegiraphWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 10, workflowIF.getHiveORC()));
 				}
 				
-//				else if(relationalEngine.equals(Constants.SHARK) && graphEngine.equals(Constants.SHARK)&& 
-//						nestedEngine.equals(Constants.SHARK)) {
-//					sharkWorkflow.addQuery(new 
-//							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath, 10));
-//				}
+/*				else if(relationalEngine.equals(Constants.SHARK) && graphEngine.equals(Constants.SHARK)&& 
+						nestedEngine.equals(Constants.SHARK)) {
+					sharkWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentiment(basePath, 10));
+				}*/
 				
 				//Relational, Text, Graph for Spark
 				else if(relationalEngine.equals(Constants.SPARK) && graphEngine.equals(Constants.SPARK)&& 
 						nestedEngine.equals(Constants.SPARK)) {
-					sparkWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_MacroRTGSpark(basePath, 10, workflowIF.getSparkUseBagel(), workflowIF.getSparkDoP(), workflowIF.getSparkOptimizeMemory()));
-				}
+				//	sparkWorkflow.addQuery(new 
+				//			bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_MacroRTGSpark(basePath, 10, workflowIF.getSparkUseBagel(), workflowIF.getSparkDoP(), workflowIF.getSparkOptimizeMemory()));
+				} 
 				//Relational, Text for Spark
 				else if(nestedEngine.equals(Constants.SPARK) && nestedEngine.equals(Constants.SPARK)) {
-					sparkWorkflow.addQuery(new 
-							bigframe.workflows.BusinessIntelligence.RT.exploratory.WF_PromotionAnalyzeSpark(basePath, workflowIF.getSparkDoP()));
+				//	sparkWorkflow.addQuery(new 
+				//			bigframe.workflows.BusinessIntelligence.RT.exploratory.WF_PromotionAnalyzeSpark(basePath, workflowIF.getSparkDoP()));
 				}
 			}
 		}
@@ -241,6 +249,8 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		// Check if we have queries to run
 		if(hiveWorkflow.numOfQueries() > 0)
 			workflows.add(hiveWorkflow);
+		if(sparkSQLWorkflow.numOfQueries() > 0)
+			workflows.add(sparkSQLWorkflow);
 		if(hadoopWorkflow.numOfQueries() > 0)
 			workflows.add(hadoopWorkflow);
 		if(sharkWorkflow.numOfQueries() > 0)
@@ -266,7 +276,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 	protected boolean isBigIFvalid() {
 		// TODO Auto-generated method stub
 		// Need to do a lot of sanity tests, including:
-		
+			
 		Set<String> queryVariety = domainInfo.getQueryVariety();
 		Set<String> queryVelocity = domainInfo.getQueryVelocity();
 		Map<String, Set<String> > querySupportEngine = domainInfo.getQuerySupportEngine();
@@ -303,6 +313,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		
 		else if (!querySupportEngine.get(Constants.RELATIONAL)
 				.contains(bigqueryIF.getQueryRunningEngine().get(Constants.RELATIONAL))) {
+			
 			LOG.error("unsupported query engine for data type:" + 
 					bigqueryIF.getQueryRunningEngine().get(Constants.RELATIONAL));
 			LOG.error("Only these are supported:");
