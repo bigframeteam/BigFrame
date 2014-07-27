@@ -444,8 +444,8 @@ class WF_ReportSaleSentimentVertica(basePath: BaseTablePath, num_iter: Int, json
 					"		SELECT item_sk, user_id, text" +
 					"		FROM " +
 					"			(SELECT user_id, hashtag, to_timestamp(created_at, 'WW Mon DD HH:MI:SS TZ YYYY') as created_at, text" +
-					"			FROM (SELECT twitter(json) over(partition by hash(json)) from tweetjson) foo) t1 ," +
-					//"			FROM (SELECT twitter(json) over() from tweetjson) foo) t1 ," +
+					//"			FROM (SELECT twitter(json) over(partition by hash(json)) from tweetjson) foo) t1 ," +
+					"			FROM (SELECT twitter(json) over() from tweetjson) foo) t1 ," +
 					"			(SELECT item_sk, product_name, start_date, d_date as end_date" +
 					"			FROM " +
 					"				(SELECT item_sk, product_name, d_date as start_date, end_date_sk" +
