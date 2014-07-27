@@ -154,8 +154,12 @@ public:
             std::string  inStr = getStringSafe(input.getStringRef(0));
 
             bool success = reader.parse(inStr, root, false);
-            if (!success)
-                vt_report_error(0, "Malformed JSON text");
+            if (!success) {
+				printf("Malformed JSON text!\n");
+				printf("%s\n", inStr);
+				continue;
+                // vt_report_error(0, "Malformed JSON text");
+			}
                 
      
             std::string created_at = root.get("created_at", "").asString();
