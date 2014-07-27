@@ -180,10 +180,10 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 		initConnection(); 
 		Statement stmt = connection.createStatement();
 		connection.setAutoCommit(false);
-		String [] drop_table = {"DROP TABLE IF EXISTS users",
-								"DROP TABLE IF EXISTS entities",
-								"DROP TABLE IF EXISTS tweetjson",
-								"DROP TABLE IF EXISTS tweet"};
+		String [] drop_table = {"DROP TABLE IF EXISTS users cascade",
+								"DROP TABLE IF EXISTS entities cascade",
+								"DROP TABLE IF EXISTS tweetjson cascade",
+								"DROP TABLE IF EXISTS tweet cascade"};
 		
 		for(String str : drop_table) {
 			stmt.addBatch(str);
