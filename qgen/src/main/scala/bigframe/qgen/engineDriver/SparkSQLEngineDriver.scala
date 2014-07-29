@@ -5,6 +5,7 @@ import java.util.List
 import scala.collection.JavaConversions._
 
 import org.apache.spark.rdd.RDD
+import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.hive.HiveContext
 import SparkContext._
@@ -39,22 +40,13 @@ private var compress_memory: Boolean = false
 
 private var queries: java.util.List[SparkSQLRunnable] = new java.util.ArrayList[SparkSQLRunnable]()
 
+private var hc: HiveContext = null
 def numOfQueries(): Int = {
 queries.size()
 }
 
 def init() {
 readEnvVars()
-}
-
-def run() {	
-//init()
-LOG.info("Running SparkSQL Query");
-System.out.println("--Running SparkSQL Query");
-
-for(query: SparkSQLRunnable <- queries) {
-System.setProperty("spark.eventLog.enabled", "true")
-System.setProperty("spark.eventLog.dir", spark_local_dir + "/event_log")
 System.setProperty("spark.local.dir", spark_local_dir)
 System.setProperty("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
 // Following statement is ineffective, commenting it
@@ -63,39 +55,67 @@ System.setProperty("spark.storage.memoryFraction", memory_fraction.toString())
 System.setProperty("spark.rdd.compress", compress_memory.toString())
 System.setProperty("spark.shuffle.compress", compress_memory.toString())
 System.setProperty("spark.broadcast.compress", compress_memory.toString())
-val sc = new SparkContext(spark_connection_string, "BigFrame",
-spark_home_string, Seq(jar_path_string))
+System.setProperty("spark.eventLog.enabled", "true")
+System.setProperty("spark.eventLog.dir", spark_local_dir + "/event_log")
 
-val hc = new org.apache.spark.sql.hive.HiveContext(sc)
+val sc = createSparkContext()//new SparkContext(spark_connection_string, "BigFrame",
+//spark_home_string, Seq(jar_path_string))
 
+hc = new HiveContext(sc)
 
-if(query.runSparkSQL(hc)) {
-LOG.info("Query Finished");
-}
-else {
-LOG.error("Query failed");
-}
-}
+LOG.info("Preparing tables...");
+for(query: SparkSQLRunnable <- queries) {
+      query.prepareHiveTables(hc);
 }
 
+}
+
+def run() {	
+ //init()
+ LOG.info("Running SparkSQL Query");
+
+ for(query: SparkSQLRunnable <- queries) {
+  if(query.runSparkSQL(hc)) {
+    LOG.info("Query Finished");
+  }
+  else {
+    LOG.error("Query failed");
+  }
+ }
+}
+
+  def createSparkContext(): SparkContext = {
+    val execUri = System.getenv("SPARK_EXECUTOR_URI")
+    val jars = Seq(jar_path_string)
+    val conf = new SparkConf()
+      .setMaster(spark_connection_string)
+      .setSparkHome(spark_home_string)
+      .setAppName("BigFrame")
+      .setJars(jars)
+    if (execUri != null) {
+      conf.set("spark.executor.uri", execUri)
+    }
+    val sparkContext = new SparkContext(conf)
+    LOG.info("Created spark context..")
+    sparkContext
+  }
 
 def cleanup() {
 
 }
 
 def addQuery(q: SparkSQLRunnable) {
-// TODO Auto-generated method stub
-queries.add(q)
+  queries.add(q)
 }
 
 private def readEnvVars() {
-spark_connection_string = workIF.getSparkMaster()
-jar_path_string = System.getenv(JAR_PATH)
-spark_home_string = workIF.getSparkHome()
-spark_local_dir = workIF.getSparkLocalDir()
-// spark_use_bagel = workIF.getSparkUseBagel()
-// spark_dop = workIF.getSparkDop()
-memory_fraction = workIF.getSparkMemoryFraction()
-compress_memory = workIF.getSparkCompressMemory()
+  spark_connection_string = workIF.getSparkMaster()
+  jar_path_string = System.getenv(JAR_PATH)
+  spark_home_string = workIF.getSparkHome()
+  spark_local_dir = workIF.getSparkLocalDir()
+  // spark_use_bagel = workIF.getSparkUseBagel()
+  // spark_dop = workIF.getSparkDop()
+  memory_fraction = workIF.getSparkMemoryFraction()
+  compress_memory = workIF.getSparkCompressMemory()
 }	
 }

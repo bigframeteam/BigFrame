@@ -420,9 +420,7 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
    * Run the benchmark query
    */
   def runSparkSQL(hc: HiveContext): Boolean = {
-	System.out.println("Starting sparksql workflow");
     return runHiveImpl1(hc)
-
   }
 
 }
