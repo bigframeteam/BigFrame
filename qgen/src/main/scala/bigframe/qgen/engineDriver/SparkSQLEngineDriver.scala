@@ -47,14 +47,15 @@ queries.size()
 
 def init() {
 readEnvVars()
+
 System.setProperty("spark.local.dir", spark_local_dir)
-System.setProperty("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+//System.setProperty("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
 // Following statement is ineffective, commenting it
 // System.setProperty("spark.default.parallelism", spark_dop)
 System.setProperty("spark.storage.memoryFraction", memory_fraction.toString())
 System.setProperty("spark.rdd.compress", compress_memory.toString())
 System.setProperty("spark.shuffle.compress", compress_memory.toString())
-System.setProperty("spark.broadcast.compress", compress_memory.toString())
+//System.setProperty("spark.broadcast.compress", compress_memory.toString())
 System.setProperty("spark.eventLog.enabled", "true")
 System.setProperty("spark.eventLog.dir", spark_local_dir + "/event_log")
 
@@ -71,10 +72,12 @@ for(query: SparkSQLRunnable <- queries) {
 }
 
 def run() {	
- //init()
+// init()
  LOG.info("Running SparkSQL Query");
-
+System.out.println("QUERIES:");
+System.out.println(queries);
  for(query: SparkSQLRunnable <- queries) {
+ 
   if(query.runSparkSQL(hc)) {
     LOG.info("Query Finished");
   }

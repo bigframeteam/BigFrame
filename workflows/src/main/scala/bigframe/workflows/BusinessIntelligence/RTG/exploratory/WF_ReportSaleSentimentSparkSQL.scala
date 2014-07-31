@@ -48,15 +48,15 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
     //val stmt = connection.createStatement()	
 
     val list_drop = Seq("DROP TABLE IF EXISTS promotionSelected",
-      "DROP VIEW IF EXISTS promotedProduct",
-      "DROP VIEW IF EXISTS RptSalesByProdCmpn",
+      "DROP TABLE IF EXISTS promotedProduct",
+      "DROP TABLE IF EXISTS RptSalesByProdCmpn",
       "DROP TABLE IF EXISTS relevantTweet",
-      "DROP VIEW IF EXISTS senAnalyse",
+      "DROP TABLE IF EXISTS senAnalyse",
       "DROP TABLE IF EXISTS tweetByUser",
       "DROP TABLE IF EXISTS tweetByProd",
-      "DROP VIEW IF EXISTS sumFriendTweets",
+      "DROP TABLE IF EXISTS sumFriendTweets",
       "DROP TABLE IF EXISTS mentionProb",
-      "DROP VIEW IF EXISTS simUserByProd",
+      "DROP TABLE IF EXISTS simUserByProd",
       "DROP TABLE IF EXISTS transitMatrix",
       "DROP TABLE IF EXISTS randSuffVec",
       "DROP TABLE IF EXISTS initialRank")
@@ -102,19 +102,31 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 	hc.hql(create_promotionSelected)
 	hc.hql(query_promotionSelected)
 
-	val drop_promotedProduct = "DROP VIEW IF EXISTS promotedProduct"
-	val create_promotedProduct = "CREATE VIEW promotedProduct (item_sk, product_name, start_date_sk, end_date_sk) AS" +
+	val drop_promotedProduct = "DROP TABLE IF EXISTS promotedProduct"
+//	val drop_promotedProduct_v = "DROP VIEW IF EXISTS promotedProduct"
+     /*val create_promotedProduct = "CREATE TABLE promotedProduct (item_sk string, product_name string, start_date_sk string, end_date_sk string) AS" +
 		" SELECT i_item_sk, i_product_name, start_date_sk, end_date_sk " +
 		" FROM item JOIN promotionSelected " +
 		" ON item.i_item_sk = promotionSelected.item_sk" +
-		" WHERE i_product_name IS NOT NULL"
+		" WHERE i_product_name IS NOT NULL"*/
+
+	val create_promotedProduct = "CREATE TABLE promotedProduct (item_sk string, product_name string, start_date_sk string, end_date_sk string)"
+
+        val insert_promotedProduct = "INSERT INTO TABLE promotedProduct SELECT i_item_sk, i_product_name, start_date_sk, end_date_sk " +
+                " FROM item JOIN promotionSelected " +
+                " ON item.i_item_sk = promotionSelected.item_sk" +
+                " WHERE i_product_name IS NOT NULL"
+
 	//stmt.execute(drop_promotedProduct)
 	//stmt.execute(create_promotedProduct)
+       // hc.hql(drop_promotedProduct_v)
 	hc.hql(drop_promotedProduct)
 	hc.hql(create_promotedProduct)
+        hc.hql(insert_promotedProduct)
 
-	val drop_RptSalesByProdCmpn = "DROP VIEW IF EXISTS RptSalesByProdCmpn"
-	val create_RptSalesByProdCmpn = "CREATE VIEW RptSalesByProdCmpn (promo_id, item_sk, totalsales) AS" +
+	val drop_RptSalesByProdCmpn = "DROP TABLE IF EXISTS RptSalesByProdCmpn"
+ 	val drop_RptSalesByProdCmpn_v = "DROP VIEW IF EXISTS RptSalesByProdCmpn"
+	/*val create_RptSalesByProdCmpn = "CREATE VIEW RptSalesByProdCmpn (promo_id, item_sk, totalsales) AS" +
 		" SELECT promotionSelected.promo_id, promotionSelected.item_sk, sum(price*quantity) as totalsales " +
 		" FROM" +
 		" (SELECT ws_sold_date_sk as sold_date_sk, ws_item_sk as item_sk, ws_sales_price as price, ws_quantity as quantity " +
@@ -132,19 +144,43 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 		" AND" +
 		" sold_date_sk <= promotionSelected.end_date_sk" +
 		" GROUP BY" +
-		" promotionSelected.promo_id, promotionSelected.item_sk "
+		" promotionSelected.promo_id, promotionSelected.item_sk "*/
+
+
+        val create_RptSalesByProdCmpn = "CREATE TABLE RptSalesByProdCmpn (promo_id string, item_sk string, totalsales string)"
+   	val insert_RptSalesByProdCmpn = "INSERT INTO TABLE RptSalesByProdCmpn" +
+                " SELECT promotionSelected.promo_id, promotionSelected.item_sk, sum(price*quantity) as totalsales " +
+                " FROM" +
+                " (SELECT ws_sold_date_sk as sold_date_sk, ws_item_sk as item_sk, ws_sales_price as price, ws_quantity as quantity " +
+                " FROM web_sales " +
+                " UNION ALL" +
+                " SELECT ss_sold_date_sk as sold_date_sk, ss_item_sk as item_sk, ss_sales_price as price, ss_quantity as quantity " +
+                " FROM store_sales" +
+                " UNION ALL" +
+                " SELECT cs_sold_date_sk as sold_date_sk, cs_item_sk as item_sk, cs_sales_price as price, cs_quantity as quantity" +
+                " FROM catalog_sales) sales" +
+                " JOIN promotionSelected " +
+                " ON sales.item_sk = promotionSelected.item_sk" +
+                " WHERE " +
+                " promotionSelected.start_date_sk <= sold_date_sk " +
+                " AND" +
+                " sold_date_sk <= promotionSelected.end_date_sk" +
+                " GROUP BY" +
+                " promotionSelected.promo_id, promotionSelected.item_sk "
 	//stmt.execute(drop_RptSalesByProdCmpn)	
 	//stmt.execute(create_RptSalesByProdCmpn)
 	hc.hql(drop_RptSalesByProdCmpn)
+	hc.hql(drop_RptSalesByProdCmpn_v)
 	hc.hql(create_RptSalesByProdCmpn)
+	hc.hql(insert_RptSalesByProdCmpn)
 
 	val drop_relevantTweet = "DROP TABLE IF EXISTS relevantTweet"
-	val drop_t1 = "DROP TABLE IF EXISTS t1"
-	val drop_t3 = "DROP TABLE IF EXISTS t3"
+	//val drop_t1 = "DROP TABLE IF EXISTS t1"
+	//val drop_t3 = "DROP TABLE IF EXISTS t3"
 	val create_relevantTweet = "CREATE TABLE relevantTweet" +
 		" (item_sk int, user_id int, text string)"
-
-	/*val query_relevantTweet = " INSERT INTO TABLE relevantTweet" +
+        /*
+	val query_relevantTweet = " INSERT INTO TABLE relevantTweet" +
 		" SELECT item_sk, user_id, text" +
 		" FROM " +
 		" (SELECT user.id as user_id, text, created_at, entities.hashtags[0] as hashtag" +
@@ -162,6 +198,23 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 		" ON t1.hashtag = t3.product_name" +
 		" WHERE isWithinDate(created_at, start_date, end_date)"*/
 
+        	val query_relevantTweet	= " INSERT INTO TABLE relevantTweet" +
+" SELECT item_sk, user_id, text" +
+" FROM " +
+" (SELECT user.id as user_id, text, created_at, entities.hashtags[0] as hashtag" +
+" FROM tweets" +
+" WHERE size(entities.hashtags) > 0 ) t1 " +
+" JOIN " +	
+" (SELECT item_sk, product_name, start_date, d_date as end_date" +
+" FROM " +
+" (SELECT item_sk, product_name, d_date as start_date, end_date_sk" +
+" FROM promotedProduct JOIN date_dim" +
+" ON promotedProduct.start_date_sk = date_dim.d_date_sk) t2 " +
+" JOIN date_dim " +
+" ON t2.end_date_sk = date_dim.d_date_sk) t3" +
+" ON t1.hashtag = t3.product_name" +
+" WHERE isWithinDate(created_at, start_date, end_date)"     
+        /*
 	val t1_create = "CREATE TABLE t1" +
 		" (user_id int, text string, created_at string, hashtag string)"
 
@@ -180,25 +233,19 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 		" FROM t1 JOIN t3 " + 
 		" ON t1.hashtag = t3.product_name" + 
 		" WHERE isWithinDate(created_at, start_date, end_date)"
-
+*/
 	//stmt.execute(drop_relevantTweet)
 	//stmt.execute(create_relevantTweet)
 	//stmt.execute(query_relevantTweet)
 
 	hc.hql(drop_relevantTweet)
-	hc.hql(drop_t1)
-	hc.hql(drop_t3)
 	hc.hql(create_relevantTweet)
-	hc.hql(t1_create)
-	hc.hql(t1_insert)
-	hc.hql(t3_create)
-	hc.hql(t3_insert)
 	hc.hql(query_relevantTweet)
 
-	val drop_senAnalyse = "DROP VIEW IF EXISTS senAnalyse"
-	val create_senAnalyse = "CREATE VIEW senAnalyse" +
-		" (item_sk, user_id, sentiment_score) AS" +
-		" SELECT item_sk, user_id, sum(sentiment(text)) as sum_score" +
+	val drop_senAnalyse = "DROP TABLE IF EXISTS senAnalyse"
+	val drop_senAnalyse_v = "DROP VIEW IF EXISTS senAnalyse"
+	val create_senAnalyse = "CREATE TABLE senAnalyse (item_sk string, user_id string, sentiment_score string)" 
+	val insert_senAnalyse =	"INSERT INTO TABLE senAnalyse SELECT item_sk, user_id, sum(sentiment(text)) as sum_score" +
 		" FROM relevantTweet" +
 		" GROUP BY" +
 		" item_sk, user_id"
@@ -206,7 +253,9 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 	//stmt.execute(drop_senAnalyse)
 	//stmt.execute(create_senAnalyse)
 	hc.hql(drop_senAnalyse)
+	hc.hql(drop_senAnalyse_v)
 	hc.hql(create_senAnalyse)
+	hc.hql(insert_senAnalyse)
 
 	val drop_tweetByUser = "DROP TABLE IF EXISTS tweetByUser"
 	val create_tweetByUser = "CREATE TABLE tweetByUser (user_id int, num_tweets int)"
@@ -240,11 +289,14 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 	hc.hql(create_tweetByProd)
 	hc.hql(query_tweetByProd)
 
-	val drop_sumFriendTweets = "DROP VIEW IF EXISTS sumFriendTweets"
-	val create_sumFriendTweets = "CREATE VIEW sumFriendTweets (follower_id, num_friend_tweets) AS" +
-		" SELECT user_id, " +
+	val drop_sumFriendTweets = "DROP TABLE IF EXISTS sumFriendTweets"
+	val drop_sumFriendTweets_v = "DROP VIEW IF EXISTS sumFriendTweets"
+	val drop_f = "DROP TABLE IF EXISTS f"
+	val drop_result = "DROP TABLE IF EXISTS result"
+	/*val create_sumFriendTweets = "CREATE TABLE sumFriendTweets (user_id int, num_friend_tweets int)" 
+	val insert_sumFriendTweets = 	" INSERT INTO TABLE sumFriendTweets SELECT user_id, " +
 		" CASE WHEN num_friend_tweets > 0 THEN num_friend_tweets" +
-		" ELSE 0L" +
+		" ELSE 0" +
 		" END" +
 		" FROM" +
 		" (SELECT user_id, sum(friend_tweets) as num_friend_tweets" +
@@ -254,12 +306,48 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 		" ON tweetByUser.user_id = twitter_graph.friend_id) f" +
 		" ON tweetByUser.user_id = f.follower_id" +
 		" GROUP BY " +
-		" user_id) result"
+		" user_id) result"*/
+	/*val insert_sumFriendTweets =  " INSERT INTO TABLE sumFriendTweets SELECT user_id, " +
+                " CASE WHEN num_friend_tweets > 0 THEN num_friend_tweets" +
+                " ELSE 0L" +
+                " END" +
+                " FROM" +
+                " (SELECT user_id, sum(friend_tweets) as num_friend_tweets" +
+                " FROM tweetByUser LEFT OUTER JOIN" +
+                " (SELECT follower_id, friend_id, num_tweets as friend_tweets" +
+                " FROM tweetByUser JOIN twitter_graph" +
+                " ON tweetByUser.user_id = twitter_graph.friend_id) f" +
+                " ON tweetByUser.user_id = f.follower_id" +
+                " GROUP BY " +
+                " user_id) result"*/
+
+/*	val create_sumFriendTweets = "CREATE TABLE sumFriendTweets AS SELECT user_id as follower_id, (CASE WHEN num_friend_tweets > 0 THEN num_friend_tweets ELSE 0L END) as num_friend_tweets FROM (SELECT user_id, sum(friend_tweets) as num_friend_tweets FROM tweetByUser LEFT OUTER JOIN (SELECT follower_id, friend_id, num_tweets as friend_tweets FROM tweetByUser JOIN twitter_graph ON tweetByUser.user_id = twitter_graph.friend_id) f ON tweetByUser.user_id = f.follower_id GROUP BY  user_id) result"
+*/
+
+val f_create = "CREATE TABLE f (follower_id int, friend_id int, friend_tweets int)"
+
+val f_insert = "INSERT INTO TABLE f SELECT follower_id, friend_id, num_tweets as friend_tweets FROM tweetByUser JOIN twitter_graph ON tweetByUser.user_id = twitter_graph.friend_id"
+
+val result_create = "CREATE TABLE result (user_id int, num_friend_tweets int)"
+
+val result_insert = "SELECT user_id, sum(f.num_tweets) FROM tweetByUser LEFT OUTER JOIN f ON tweetByUser.user_id = f.follower_id GROUP BY user_id"
+
+val create_sumFriendTweets = "CREATE TABLE sumFriendTweets AS SELECT user_id as follower_id, (CASE WHEN num_friend_tweets > 0 THEN num_friend_tweets ELSE 0L END) as num_friend_tweets FROM result"
+
 
 	//stmt.execute(drop_sumFriendTweets)
 	//stmt.execute(create_sumFriendTweets)
 	hc.hql(drop_sumFriendTweets)
+	hc.hql(drop_f)
+	hc.hql(drop_result)
+	hc.hql(f_create)
+	hc.hql(f_insert)
+	hc.hql(result_create)
+	hc.hql(result_insert)
+	
+	//hc.hql(drop_sumFriendTweets_v)
 	hc.hql(create_sumFriendTweets)
+	//hc.hql(insert_sumFriendTweets)
 
 	val drop_mentionProb = "DROP TABLE IF EXISTS mentionProb"
 	val create_mentionProb = "CREATE TABLE mentionProb (item_sk int, user_id int, prob float)"
@@ -281,10 +369,11 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 	hc.hql(create_mentionProb)
 	hc.hql(query_mentionProb)
 
-	val drop_simUserByProd = "DROP VIEW IF EXISTS simUserByProd"
-	val create_simUserByProd = "CREATE VIEW simUserByProd " +
-		" (item_sk, follower_id, friend_id, similarity) AS" +
-		" SELECT f.item_sk, follower_id, friend_id, (1 - ABS(follower_prob - prob)) as similarity" +
+	val drop_simUserByProd = "DROP TABLE IF EXISTS simUserByProd"
+	val drop_simUserByProd_v = "DROP VIEW IF EXISTS sumUserByProd"
+	val create_simUserByProd = "CREATE TABLE simUserByProd " +
+		" (item_sk string, follower_id string, friend_id string, similarity string)" 
+	val insert_simUserByProd = 	"INSERT INTO TABLE simUserByProd SELECT f.item_sk, follower_id, friend_id, (1 - ABS(follower_prob - prob)) as similarity" +
 		" FROM " +
 		" (SELECT item_sk, follower_id, friend_id, prob as follower_prob" +
 		" FROM mentionProb JOIN twitter_graph " +
@@ -295,7 +384,9 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 	//stmt.execute(drop_simUserByProd)
 	//stmt.execute(create_simUserByProd)
 	hc.hql(drop_simUserByProd)
+	hc.hql(drop_simUserByProd_v)
 	hc.hql(create_simUserByProd)
+	hc.hql(insert_simUserByProd)
 
 	val drop_transitMatrix = "DROP TABLE IF EXISTS transitMatrix"
 	val create_transitMatrix = "CREATE TABLE transitMatrix (item_sk int, follower_id int, friend_id int, transit_prob float)"
