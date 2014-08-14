@@ -3,6 +3,7 @@ package bigframe.qgen.engineDriver;
 import org.apache.log4j.Logger;
 
 import bigframe.bigif.WorkflowInputFormat;
+import bigframe.workflows.events.BigFrameListenerBus;
 
 
 /**
@@ -27,7 +28,7 @@ public class CompositeEngineDriver extends EngineDriver {
 	}
 
 	@Override
-	public void run() {
+	public void run(BigFrameListenerBus eventBus) {
 		// TODO Auto-generated method stub
 
 	}

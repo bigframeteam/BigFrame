@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.WorkflowInputFormat;
+import bigframe.workflows.events.BigFrameListenerBus;
 import bigframe.workflows.runnable.HiveGiraphRunnable;
 
 public class HiveGiraphEngineDriver extends EngineDriver {
@@ -84,7 +85,7 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 	}
 
 	@Override
-	public void run() {
+	public void run(BigFrameListenerBus eventBus) {
 		LOG.info("Running HiveGiraph queries!");
 		for(HiveGiraphRunnable query : queries) {
 			if(query.runHiveGiraph(giraph_config, connection))

@@ -9,6 +9,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
 
 import bigframe.bigif.WorkflowInputFormat;
+import bigframe.workflows.events.BigFrameListenerBus;
 import bigframe.workflows.runnable.HadoopRunnable;
 
 
@@ -39,7 +40,7 @@ public class HadoopEngineDriver extends EngineDriver {
 	}
 
 	@Override
-	public void run() {
+	public void run(BigFrameListenerBus eventBus) {
 		System.out.println("Running Hadoop Query");
 		for(HadoopRunnable query : queries) {
 			init();

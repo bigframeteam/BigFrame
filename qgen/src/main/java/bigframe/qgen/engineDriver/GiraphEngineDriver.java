@@ -10,6 +10,7 @@ import org.apache.giraph.conf.GiraphConfiguration;
 import org.apache.log4j.Logger;
 
 import bigframe.bigif.WorkflowInputFormat;
+import bigframe.workflows.events.BigFrameListenerBus;
 import bigframe.workflows.runnable.GiraphRunnable;
 
 public class GiraphEngineDriver extends EngineDriver {
@@ -38,7 +39,7 @@ public class GiraphEngineDriver extends EngineDriver {
 	}
 
 	@Override
-	public void run() {
+	public void run(BigFrameListenerBus eventBus) {
 		LOG.info("Running Giraph queries!");
 		
 		for(GiraphRunnable query : queries) {

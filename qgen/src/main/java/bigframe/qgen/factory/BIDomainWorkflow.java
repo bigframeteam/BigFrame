@@ -216,7 +216,6 @@ public class BIDomainWorkflow extends DomainWorkflow {
 				}
 				else if(relationalEngine.equals(Constants.SPARKSQL) && graphEngine.equals(Constants.SPARKSQL)&& 
 						nestedEngine.equals(Constants.SPARKSQL)) {
-					System.out.println("SparkSQL workflow added");
 					sparkSQLWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentSparkSQL(basePath, 10, workflowIF.getHiveORC()));
 				}

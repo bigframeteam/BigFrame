@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import bigframe.bigif.WorkflowInputFormat;
+import bigframe.workflows.events.BigFrameListenerBus;
 import bigframe.workflows.runnable.HiveRunnable;
 import bigframe.workflows.runnable.SharkRunnable;
 import bigframe.workflows.runnable.VerticaRunnable;
@@ -68,7 +69,7 @@ public class VerticaEngineDriver extends EngineDriver {
 	}
 
 	@Override
-	public void run() {
+	public void run(BigFrameListenerBus eventBus) {
 		LOG.info("Running Vertica Query");
 		
 		for(VerticaRunnable query : queries) {

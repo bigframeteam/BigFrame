@@ -1,6 +1,7 @@
 package bigframe.qgen.engineDriver;
 
 import bigframe.bigif.WorkflowInputFormat;
+import bigframe.workflows.events.BigFrameListenerBus;
 
 
 /**
@@ -20,7 +21,7 @@ public abstract class EngineDriver {
 	
 	public abstract void init();
 	
-	public abstract void run();
+	public abstract void run(BigFrameListenerBus eventBus);
 	
 	public abstract void cleanup();
 }

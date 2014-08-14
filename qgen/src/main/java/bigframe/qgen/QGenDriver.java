@@ -24,6 +24,7 @@ import bigframe.bigif.BigConfConstants;
 import bigframe.qgen.engineDriver.EngineDriver;
 import bigframe.qgen.factory.WorkflowFactory;
 import bigframe.util.parser.XMLBigFrameInputParser;
+import bigframe.workflows.events.BigFrameListenerBus;
 
 /**
  * Entrance of the workflow running program
@@ -227,6 +228,10 @@ public class QGenDriver {
 		conf.printConf();
 
 
+		// Initialize a listener bus
+		BigFrameListenerBus eventBus = new BigFrameListenerBus();
+		// TODO: Add a listener from data-hooks jar
+		
 		//If mode equals run-query, then collect the set of hard-coded queries and 
 		// delegate the job to their corresponding driver to run them
 		
@@ -237,7 +242,7 @@ public class QGenDriver {
 			if(workflows != null)
 				for(EngineDriver workflow : workflows) {
 					workflow.init();
-					workflow.run();
+					workflow.run(eventBus);
 					workflow.cleanup();
 				}
 		}

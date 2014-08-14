@@ -4,18 +4,14 @@
 package bigframe.workflows.BusinessIntelligence.text.exploratory
 
 import java.sql.Connection
-
 import java.util.concurrent.{Executors, ExecutorService}
 import java.util.concurrent.Future
-
 import bigframe.workflows.Query
 import bigframe.workflows.runnable.HadoopRunnable
 import bigframe.workflows.runnable.HiveRunnable
 import bigframe.workflows.BaseTablePath
-
-//import bigframe.workflows.BusinessIntelligence.text.exploratory.SenAnalyzeHadoop;
-
 import org.apache.hadoop.conf.Configuration
+import bigframe.workflows.events.BigFrameListenerBus
 
 /**
  * A Class can run sentiment analysis on different engines.
@@ -141,7 +137,8 @@ class WF_SenAnalyze(basePath : BaseTablePath) extends Query with HadoopRunnable
 	/**
 	 * Run the benchmark query
 	 */
-	override def runHive(connection: Connection): Boolean = {
+	override def runHive(connection: Connection, 
+	    eventBus: BigFrameListenerBus): Boolean = {
 		
 		val stmt = connection.createStatement();
 		

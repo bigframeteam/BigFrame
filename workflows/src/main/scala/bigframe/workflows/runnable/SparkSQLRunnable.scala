@@ -1,6 +1,7 @@
 package bigframe.workflows.runnable
 
 import org.apache.spark.sql.hive.HiveContext
+import bigframe.workflows.events.BigFrameListenerBus
 
 /**
 * Implement this interface such that a query can be run on hive.
@@ -18,7 +19,7 @@ def prepareHiveTables(hc:HiveContext): Unit
 /**
 * Run the benchmark query
 */
-def runSparkSQL(hc:HiveContext): Boolean
+def runSparkSQL(hc:HiveContext, eventBus:BigFrameListenerBus): Boolean
 
 def cleanUpHive(hc:HiveContext): Unit
 }

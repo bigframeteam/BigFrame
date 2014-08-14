@@ -1,6 +1,7 @@
 package bigframe.workflows.runnable
 
 import java.sql.Connection
+import bigframe.workflows.events.BigFrameListenerBus
 
 /**
  * Implement this interface such that a query can be run on hive.
@@ -18,7 +19,8 @@ trait HiveRunnable {
 	/**
 	 * Run the benchmark query
 	 */
-	def runHive(connection: Connection): Boolean
+	def runHive(connection: Connection, 
+	    eventBus: BigFrameListenerBus): Boolean
 	
 	def cleanUpHive(connection: Connection): Unit
 }

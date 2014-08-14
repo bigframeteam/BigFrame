@@ -12,10 +12,8 @@ import bigframe.workflows.runnable.HiveRunnable
 import bigframe.workflows.runnable.SharkRunnable
 import bigframe.workflows.runnable.HadoopRunnable
 import bigframe.workflows.runnable.VerticaRunnable
-
-
-
 import scala.collection.JavaConversions._
+import bigframe.workflows.events.BigFrameListenerBus
 
 /**
  * Q1 for BI domain, the SQL are specified in hive.
@@ -350,7 +348,8 @@ class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable
 	/**
 	 * Submit the query to hiveserver.
 	 */
-	override def runHive(connection: Connection): Boolean = {
+	override def runHive(connection: Connection, 
+	    eventBus: BigFrameListenerBus): Boolean = {
 		try {
 			val stmt = connection.createStatement()
 			
@@ -373,7 +372,8 @@ class WF_ReportSales(basePath : BaseTablePath) extends Query with HiveRunnable
 		/**
 		 *  Shark is compatible with Hive.
 		 */
-		runHive(connection)
+//		runHive(connection)
+		false
 	}
 	
 	

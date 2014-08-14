@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.WorkflowInputFormat;
+import bigframe.workflows.events.BigFrameListenerBus;
 import bigframe.workflows.runnable.SharkRunnable;
 
 
@@ -83,7 +84,7 @@ public class SharkEngineDriver extends EngineDriver {
 	}
 	
 	@Override
-	public void run() {
+	public void run(BigFrameListenerBus eventBus) {
 		System.out.println("Running Shark Query");
 		
 		for(SharkRunnable query : queries) {

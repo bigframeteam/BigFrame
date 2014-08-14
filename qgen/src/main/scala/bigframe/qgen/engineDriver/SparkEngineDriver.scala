@@ -3,11 +3,9 @@ package bigframe.qgen.engineDriver
 import java.util.ArrayList
 import java.util.List
 import scala.collection.JavaConversions._
-
 import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext
 import SparkContext._
-
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import bigframe.workflows.BusinessIntelligence.text.exploratory._
@@ -15,6 +13,7 @@ import bigframe.workflows.BusinessIntelligence.relational.exploratory._
 import bigframe.bigif.WorkflowInputFormat
 import bigframe.workflows.runnable.SparkRunnable
 import java.io.File
+import bigframe.workflows.events.BigFrameListenerBus
 
 
 class SparkEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(workIF) {
@@ -45,7 +44,7 @@ LogFactory.getLog(classOf[SparkEngineDriver])
 	  	readEnvVars()
 	}
 	
-	def run() {	
+	def run(eventBus: BigFrameListenerBus) {	
 		init()
 		LOG.info("Running Spark Query");
 		for(query: SparkRunnable <- queries) {

@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.WorkflowInputFormat;
+import bigframe.workflows.events.BigFrameListenerBus;
 import bigframe.workflows.runnable.HiveRunnable;
 
 /**
@@ -81,11 +82,11 @@ public class HiveEngineDriver extends EngineDriver {
 	}
 	
 	@Override
-	public void run() {
+	public void run(BigFrameListenerBus eventBus) {
 		LOG.info("Running Hive Query");
 		
 		for(HiveRunnable query : queries) {
-			if(query.runHive(connection))
+			if(query.runHive(connection, eventBus))
 				LOG.info("Query Finished");
 			else
 				LOG.info("Query failed");
