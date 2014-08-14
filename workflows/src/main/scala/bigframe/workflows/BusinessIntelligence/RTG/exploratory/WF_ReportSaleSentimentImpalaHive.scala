@@ -706,6 +706,8 @@ class WF_ReportSaleSentimentImpalaHive(basePath: BaseTablePath, num_iter: Int = 
 			return runImpalaHiveImpl2(impala_connect, hive_connect)
 		else if(fileFormat == Constants.MIXED_FORMAT)
 			return runImpalaHiveImpl2(impala_connect, hive_connect)
+		else if(fileFormat == Constants.TEXT_FORMAT)
+			return runImpalaHiveImpl2(impala_connect, hive_connect)
 		else
 			return false
 		
