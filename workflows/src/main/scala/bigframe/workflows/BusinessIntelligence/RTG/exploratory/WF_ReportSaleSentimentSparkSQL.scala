@@ -80,9 +80,9 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 
   def runHiveImpl1(hc: HiveContext, eventBus: BigFrameListenerBus): Boolean = {
     
-    eventBus.postToAll(new WorkflowStartedEvent("SparkSQL"));
+    eventBus.post(new WorkflowStartedEvent("SparkSQL"));
 
-    eventBus.postToAll(new ComponentStartedEvent("filter promotions", "spark"))
+    eventBus.post(new ComponentStartedEvent("filter promotions", "spark"))
 
 	val drop_promotionSelected = "DROP TABLE IF EXISTS promotionSelected"
 	val create_promotionSelected = "CREATE TABLE promotionSelected (promo_id string, item_sk int," +
@@ -96,15 +96,15 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 		" FROM promotion " +
 		" WHERE p_item_sk IS NOT NULL AND p_start_date_sk IS NOT NULL AND p_end_date_sk IS NOT NULL"
 
-	eventBus.postToAll(new QueryStartedEvent(query_promotionSelected, "spark"))
+	eventBus.post(new QueryStartedEvent(query_promotionSelected, "spark"))
 
 	hc.hql(drop_promotionSelected)
 	hc.hql(create_promotionSelected)
 	hc.hql(query_promotionSelected)
 
-	eventBus.postToAll(new QueryCompletedEvent(query_promotionSelected, "spark"))
-    eventBus.postToAll(new ComponentCompletedEvent("filter promotions", "spark"))
-    eventBus.postToAll(new ComponentStartedEvent("filter products", "spark"))
+	eventBus.post(new QueryCompletedEvent(query_promotionSelected, "spark"))
+    eventBus.post(new ComponentCompletedEvent("filter promotions", "spark"))
+    eventBus.post(new ComponentStartedEvent("filter products", "spark"))
 
     val drop_promotedProduct = "DROP TABLE IF EXISTS promotedProduct"
 	val drop_promotedProduct_v = "DROP VIEW IF EXISTS promotedProduct"
@@ -121,16 +121,16 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
                 " ON item.i_item_sk = promotionSelected.item_sk" +
                 " WHERE i_product_name IS NOT NULL"
 
-	eventBus.postToAll(new QueryStartedEvent(insert_promotedProduct, "spark"))
+	eventBus.post(new QueryStartedEvent(insert_promotedProduct, "spark"))
 
 	hc.hql(drop_promotedProduct_v)
 	hc.hql(drop_promotedProduct)
 	hc.hql(create_promotedProduct)
 	hc.hql(insert_promotedProduct)
 
-	eventBus.postToAll(new QueryCompletedEvent(insert_promotedProduct, "spark"))
-    eventBus.postToAll(new ComponentCompletedEvent("filter products", "spark"))
-    eventBus.postToAll(new ComponentStartedEvent("sales report", "spark"))
+	eventBus.post(new QueryCompletedEvent(insert_promotedProduct, "spark"))
+    eventBus.post(new ComponentCompletedEvent("filter products", "spark"))
+    eventBus.post(new ComponentStartedEvent("sales report", "spark"))
         
 	val drop_RptSalesByProdCmpn = "DROP TABLE IF EXISTS RptSalesByProdCmpn"
  	val drop_RptSalesByProdCmpn_v = "DROP VIEW IF EXISTS RptSalesByProdCmpn"
@@ -176,16 +176,16 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
                 " GROUP BY" +
                 " promotionSelected.promo_id, promotionSelected.item_sk "
 
-	eventBus.postToAll(new QueryStartedEvent(insert_RptSalesByProdCmpn, "spark"))
+	eventBus.post(new QueryStartedEvent(insert_RptSalesByProdCmpn, "spark"))
 
 	hc.hql(drop_RptSalesByProdCmpn)
 	hc.hql(drop_RptSalesByProdCmpn_v)
 	hc.hql(create_RptSalesByProdCmpn)
 	hc.hql(insert_RptSalesByProdCmpn)
 
-	eventBus.postToAll(new QueryCompletedEvent(insert_RptSalesByProdCmpn, "spark"))
-    eventBus.postToAll(new ComponentCompletedEvent("sales report", "spark"))
-    eventBus.postToAll(new ComponentStartedEvent("filter tweets", "spark"))
+	eventBus.post(new QueryCompletedEvent(insert_RptSalesByProdCmpn, "spark"))
+    eventBus.post(new ComponentCompletedEvent("sales report", "spark"))
+    eventBus.post(new ComponentStartedEvent("filter tweets", "spark"))
 		
 	val drop_relevantTweet = "DROP TABLE IF EXISTS relevantTweet"
 	//val drop_t1 = "DROP TABLE IF EXISTS t1"
@@ -230,15 +230,15 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 		" WHERE isWithinDate(created_at, start_date, end_date)"
 */
 
-	eventBus.postToAll(new QueryStartedEvent(query_relevantTweet, "spark"))
+	eventBus.post(new QueryStartedEvent(query_relevantTweet, "spark"))
 
 	hc.hql(drop_relevantTweet)
 	hc.hql(create_relevantTweet)
 	hc.hql(query_relevantTweet)
 
-	eventBus.postToAll(new QueryCompletedEvent(query_relevantTweet, "spark"))
-    eventBus.postToAll(new ComponentCompletedEvent("filter tweets", "spark"))
-    eventBus.postToAll(new ComponentStartedEvent("sentiment analysis", "spark"))
+	eventBus.post(new QueryCompletedEvent(query_relevantTweet, "spark"))
+    eventBus.post(new ComponentCompletedEvent("filter tweets", "spark"))
+    eventBus.post(new ComponentStartedEvent("sentiment analysis", "spark"))
 		
 	val drop_senAnalyse = "DROP TABLE IF EXISTS senAnalyse"
 	val drop_senAnalyse_v = "DROP VIEW IF EXISTS senAnalyse"
@@ -248,16 +248,16 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 		" GROUP BY" +
 		" item_sk, user_id"
 
-	eventBus.postToAll(new QueryStartedEvent(insert_senAnalyse, "spark"))
+	eventBus.post(new QueryStartedEvent(insert_senAnalyse, "spark"))
 
 	hc.hql(drop_senAnalyse)
 	hc.hql(drop_senAnalyse_v)
 	hc.hql(create_senAnalyse)
 	hc.hql(insert_senAnalyse)
 
-	eventBus.postToAll(new QueryCompletedEvent(insert_senAnalyse, "spark"))
-    eventBus.postToAll(new ComponentCompletedEvent("sentiment analysis", "spark"))
-    eventBus.postToAll(new ComponentStartedEvent("transition matrices", "spark"))
+	eventBus.post(new QueryCompletedEvent(insert_senAnalyse, "spark"))
+    eventBus.post(new ComponentCompletedEvent("sentiment analysis", "spark"))
+    eventBus.post(new ComponentStartedEvent("transition matrices", "spark"))
 		
 	val drop_tweetByUser = "DROP TABLE IF EXISTS tweetByUser"
 	val create_tweetByUser = "CREATE TABLE tweetByUser (user_id int, num_tweets int)"
@@ -268,13 +268,13 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 		" GROUP BY" +
 		" user_id"
 
-	eventBus.postToAll(new QueryStartedEvent(query_tweetByUser, "spark"))
+	eventBus.post(new QueryStartedEvent(query_tweetByUser, "spark"))
 
 	hc.hql(drop_tweetByUser)
 	hc.hql(create_tweetByUser)
 	hc.hql(query_tweetByUser)
 
-	eventBus.postToAll(new QueryCompletedEvent(query_tweetByUser, "spark"))
+	eventBus.post(new QueryCompletedEvent(query_tweetByUser, "spark"))
 
 	val drop_tweetByProd = "DROP TABLE IF EXISTS tweetByProd"
 	val create_tweetByProd = "CREATE TABLE tweetByProd (item_sk int, num_tweets int)"
@@ -285,13 +285,13 @@ class WF_ReportSaleSentimentSparkSQL(basePath: BaseTablePath, num_iter: Int, val
 		" GROUP BY" +
 		" item_sk"
 
-	eventBus.postToAll(new QueryStartedEvent(query_tweetByProd, "spark"))
+	eventBus.post(new QueryStartedEvent(query_tweetByProd, "spark"))
 
 	hc.hql(drop_tweetByProd)
 	hc.hql(create_tweetByProd)
 	hc.hql(query_tweetByProd)
 
-	eventBus.postToAll(new QueryCompletedEvent(query_tweetByProd, "spark"))
+	eventBus.post(new QueryCompletedEvent(query_tweetByProd, "spark"))
 
 	val drop_sumFriendTweets = "DROP TABLE IF EXISTS sumFriendTweets"
 	val drop_sumFriendTweets_v = "DROP VIEW IF EXISTS sumFriendTweets"
@@ -345,18 +345,18 @@ val create_sumFriendTweets = "CREATE TABLE sumFriendTweets AS SELECT user_id as 
 	hc.hql(drop_result)
 
 	hc.hql(f_create)
-	eventBus.postToAll(new QueryStartedEvent(f_insert, "spark"))
+	eventBus.post(new QueryStartedEvent(f_insert, "spark"))
 	hc.hql(f_insert)
-	eventBus.postToAll(new QueryCompletedEvent(f_insert, "spark"))
+	eventBus.post(new QueryCompletedEvent(f_insert, "spark"))
 
 	hc.hql(result_create)
-	eventBus.postToAll(new QueryStartedEvent(result_create, "spark"))
+	eventBus.post(new QueryStartedEvent(result_create, "spark"))
 	hc.hql(result_insert)
-	eventBus.postToAll(new QueryCompletedEvent(result_create, "spark"))
+	eventBus.post(new QueryCompletedEvent(result_create, "spark"))
 	
-	eventBus.postToAll(new QueryStartedEvent(create_sumFriendTweets, "spark"))
+	eventBus.post(new QueryStartedEvent(create_sumFriendTweets, "spark"))
 	hc.hql(create_sumFriendTweets)
-	eventBus.postToAll(new QueryCompletedEvent(create_sumFriendTweets, "spark"))
+	eventBus.post(new QueryCompletedEvent(create_sumFriendTweets, "spark"))
 
 	val drop_mentionProb = "DROP TABLE IF EXISTS mentionProb"
 	val create_mentionProb = "CREATE TABLE mentionProb (item_sk int, user_id int, prob float)"
@@ -370,13 +370,13 @@ val create_sumFriendTweets = "CREATE TABLE sumFriendTweets AS SELECT user_id as 
 		" item_sk, user_id) r" +
 		" ON tweetByUser.user_id = r.user_id"
 
-	eventBus.postToAll(new QueryStartedEvent(query_mentionProb, "spark"))
+	eventBus.post(new QueryStartedEvent(query_mentionProb, "spark"))
 
 	hc.hql(drop_mentionProb)
 	hc.hql(create_mentionProb)
 	hc.hql(query_mentionProb)
 
-	eventBus.postToAll(new QueryCompletedEvent(query_mentionProb, "spark"))
+	eventBus.post(new QueryCompletedEvent(query_mentionProb, "spark"))
 
 	val drop_simUserByProd = "DROP TABLE IF EXISTS simUserByProd"
 	val drop_simUserByProd_v = "DROP VIEW IF EXISTS sumUserByProd"
@@ -390,14 +390,14 @@ val create_sumFriendTweets = "CREATE TABLE sumFriendTweets AS SELECT user_id as 
 		" JOIN mentionProb " +
 		" ON f.friend_id = mentionProb.user_id AND f.item_sk=mentionProb.item_sk"
 
-	eventBus.postToAll(new QueryStartedEvent(insert_simUserByProd, "spark"))
+	eventBus.post(new QueryStartedEvent(insert_simUserByProd, "spark"))
 
 	hc.hql(drop_simUserByProd)
 	hc.hql(drop_simUserByProd_v)
 	hc.hql(create_simUserByProd)
 	hc.hql(insert_simUserByProd)
 
-	eventBus.postToAll(new QueryCompletedEvent(insert_simUserByProd, "spark"))
+	eventBus.post(new QueryCompletedEvent(insert_simUserByProd, "spark"))
 
 	val drop_transitMatrix = "DROP TABLE IF EXISTS transitMatrix"
 	val create_transitMatrix = "CREATE TABLE transitMatrix (item_sk int, follower_id int, friend_id int, transit_prob float)"
@@ -414,13 +414,13 @@ val create_sumFriendTweets = "CREATE TABLE sumFriendTweets AS SELECT user_id as 
 		" JOIN tweetByUser" +
 		" ON t3.friend_id = tweetByUser.user_id"
 
-	eventBus.postToAll(new QueryStartedEvent(query_transitMatrix, "spark"))
+	eventBus.post(new QueryStartedEvent(query_transitMatrix, "spark"))
 
 	hc.hql(drop_transitMatrix)
 	hc.hql(create_transitMatrix)
 	hc.hql(query_transitMatrix)
 
-	eventBus.postToAll(new QueryCompletedEvent(query_transitMatrix, "spark"))
+	eventBus.post(new QueryCompletedEvent(query_transitMatrix, "spark"))
 
 	val drop_randSufferVec = "DROP TABLE IF EXISTS randSuffVec"
 	val create_randSuffVec = "CREATE TABLE randSuffVec (item_sk int, user_id int, prob float)"
@@ -435,15 +435,15 @@ val create_sumFriendTweets = "CREATE TABLE sumFriendTweets AS SELECT user_id as 
 	" JOIN tweetByProd t2" +
 	" ON t1.item_sk = t2.item_sk"
 
-	eventBus.postToAll(new QueryStartedEvent(query_randSuffVec, "spark"))
+	eventBus.post(new QueryStartedEvent(query_randSuffVec, "spark"))
 
 	hc.hql(drop_randSufferVec)
 	hc.hql(create_randSuffVec)
 	hc.hql(query_randSuffVec)
 
-	eventBus.postToAll(new QueryCompletedEvent(query_randSuffVec, "spark"))
-	eventBus.postToAll(new ComponentCompletedEvent("transition matrices", "spark"))
-	eventBus.postToAll(new ComponentStartedEvent("twitter rank", "spark"))
+	eventBus.post(new QueryCompletedEvent(query_randSuffVec, "spark"))
+	eventBus.post(new ComponentCompletedEvent("transition matrices", "spark"))
+	eventBus.post(new ComponentStartedEvent("twitter rank", "spark"))
 
 	val drop_initalRank = "DROP TABLE IF EXISTS initialRank"
 	val create_initialRank = "CREATE TABLE initialRank (item_sk int, user_id int, rank_score float)"
@@ -461,13 +461,13 @@ val create_sumFriendTweets = "CREATE TABLE sumFriendTweets AS SELECT user_id as 
 		" item_sk) t2 JOIN mentionProb" +
 		" ON t2.item_sk = mentionProb.item_sk"
 
-	eventBus.postToAll(new QueryStartedEvent(query_initialRank, "spark"))
+	eventBus.post(new QueryStartedEvent(query_initialRank, "spark"))
 
 	hc.hql(drop_initalRank)
 	hc.hql(create_initialRank)
 	hc.hql(query_initialRank)
 
-	eventBus.postToAll(new QueryCompletedEvent(query_initialRank, "spark"))
+	eventBus.post(new QueryCompletedEvent(query_initialRank, "spark"))
 
 	val alpha = 0.85
 	for (iteration <- 1 to num_iter) {
@@ -490,17 +490,17 @@ val create_sumFriendTweets = "CREATE TABLE sumFriendTweets AS SELECT user_id as 
 	  " RIGHT OUTER JOIN randSUffVec t4" +
 	  " ON t3.item_sk = t4.item_sk AND t3.follower_id = t4.user_id"
 
-	eventBus.postToAll(new QueryStartedEvent(query_twitterRank, "spark"))
+	eventBus.post(new QueryStartedEvent(query_twitterRank, "spark"))
 
 	hc.hql(drop_twitterRank)
 	hc.hql(create_twitterRank)
 	hc.hql(query_twitterRank)
 
-	eventBus.postToAll(new QueryCompletedEvent(query_twitterRank, "spark"))
+	eventBus.post(new QueryCompletedEvent(query_twitterRank, "spark"))
 	}
 
-    eventBus.postToAll(new ComponentCompletedEvent("twitter rank", "spark"))
-    eventBus.postToAll(new ComponentStartedEvent("report generation", "spark"))
+    eventBus.post(new ComponentCompletedEvent("twitter rank", "spark"))
+    eventBus.post(new ComponentStartedEvent("report generation", "spark"))
 		
 	val drop_RptSAProdCmpn = "DROP TABLE IF EXISTS RptSAProdCmpn"
 	val create_RptSAProdCmpn = "CREATE TABLE RptSAProdCmpn (promo_id string, item_sk int, totalsales float , total_sentiment float)"
@@ -519,17 +519,17 @@ val create_sumFriendTweets = "CREATE TABLE sumFriendTweets AS SELECT user_id as 
 	" JOIN RptSalesByProdCmpn " +
 	" ON t.item_sk = RptSalesByProdCmpn.item_sk"
 
-	eventBus.postToAll(new QueryStartedEvent(query_RptSAProdCmpn, "spark"))
+	eventBus.post(new QueryStartedEvent(query_RptSAProdCmpn, "spark"))
 
 	hc.hql(drop_RptSAProdCmpn)
 	hc.hql(create_RptSAProdCmpn)
 	hc.hql(query_RptSAProdCmpn)
 
-	eventBus.postToAll(new QueryCompletedEvent(query_RptSAProdCmpn, "spark"))
+	eventBus.post(new QueryCompletedEvent(query_RptSAProdCmpn, "spark"))
 
-    eventBus.postToAll(new ComponentCompletedEvent("report generation", "spark"))
+    eventBus.post(new ComponentCompletedEvent("report generation", "spark"))
 		
-    eventBus.postToAll(new WorkflowCompletedEvent("SparkSQL"));
+    eventBus.post(new WorkflowCompletedEvent("SparkSQL"));
 	
 	return true
   }

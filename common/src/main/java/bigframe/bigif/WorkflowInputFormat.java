@@ -44,6 +44,13 @@ public class WorkflowInputFormat extends Config {
 	private String KAFKA_BROKER_LIST = "";
 	
 	private String ZOOKEEPER_CONNECT = ""; 
+
+	// thoth related parameters
+	private boolean ADD_LISTENER = false;
+	private String METADATA_DB_NAME = "";
+	private String METADATA_DB_CONNECTION = "";
+	private String METADATA_DB_USERNAME = "";
+	private String METADATA_DB_PASSWORD = "";
 	
 	public WorkflowInputFormat() {
 	}
@@ -153,6 +160,26 @@ public class WorkflowInputFormat extends Config {
 	
 	public String getZooKeeperConnect() {
 		return ZOOKEEPER_CONNECT;
+	}
+	
+	public Boolean getAddListener() {
+		return ADD_LISTENER;
+	}
+
+	public String getMetadataDBName() {
+		return METADATA_DB_NAME;
+	}
+	
+	public String getMetadataDBConnection() {
+		return METADATA_DB_CONNECTION;
+	}
+	
+	public String getMetadataDBUsername() {
+		return METADATA_DB_USERNAME;
+	}
+	
+	public String getMetadataDBPassword() {
+		return METADATA_DB_PASSWORD;
 	}
 	
 	public void reload() {
@@ -271,6 +298,26 @@ public class WorkflowInputFormat extends Config {
 			else if (key.equals(BigConfConstants.BIGFRAME_ZOOKEEPER_CONNECT)) {
 				ZOOKEEPER_CONNECT = value;
 			}
+
+			else if (key.equals(BigConfConstants.BIGFRAME_ADD_LISTENER)) {
+				ADD_LISTENER = Boolean.valueOf(value);
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_METADATA_DB_NAME)) {
+				METADATA_DB_NAME = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_METADATA_DB_CONNECTION)) {
+				METADATA_DB_CONNECTION = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_METADATA_DB_USERNAME)) {
+				METADATA_DB_USERNAME = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_METADATA_DB_PASSWORD)) {
+				METADATA_DB_PASSWORD = value;
+			}
 		}
 		
 	}
@@ -307,5 +354,11 @@ public class WorkflowInputFormat extends Config {
 		System.out.println("Kafka Home: " + KAFKA_HOME);
 		System.out.println("Kafka Broker List: " + KAFKA_BROKER_LIST);
 		System.out.println("ZooKeeper Connect: " + ZOOKEEPER_CONNECT);
+		
+		System.out.println("Thoth add listener: " + ADD_LISTENER);
+		System.out.println("Thoth DB name: " + METADATA_DB_NAME);
+		System.out.println("Thoth DB connection: " + METADATA_DB_CONNECTION);
+		System.out.println("Thoth DB username: " + METADATA_DB_USERNAME);
+		System.out.println("Thoth DB password: " + METADATA_DB_PASSWORD);
 	}
 }

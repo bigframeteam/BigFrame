@@ -81,6 +81,16 @@ public class BigConfConstants {
 	 */
 	public static final String BIGFRAME_UDF_JAR = "bigframe.udf.jar";
 	
+	/**
+	 * Thoth specific
+	 */
+	public static final String BIGFRAME_ADD_LISTENER = "bigframe.thoth.addlistener";
+	public static final String BIGFRAME_METADATA_DB_NAME = "bigframe.thoth.db.name";
+	public static final String BIGFRAME_METADATA_DB_CONNECTION = "bigframe.thoth.db.connection";
+	public static final String BIGFRAME_METADATA_DB_USERNAME = "bigframe.thoth.db.username";
+	public static final String BIGFRAME_METADATA_DB_PASSWORD = "bigframe.thoth.db.password";
+
+	
 	// Properties related to data refreshing
 	public static final String BIGFRAME_REFRESH_LOCAL = "bigframe.refresh.local";
 	
@@ -151,6 +161,7 @@ public class BigConfConstants {
 			Arrays.asList(QUERYTYPES));
 
 	public static final Map<String, Integer> DATAVOLUME_MAP;
+
 	static {
 		DATAVOLUME_MAP = new HashMap<String, Integer>();
 		DATAVOLUME_MAP.put("test", 1);

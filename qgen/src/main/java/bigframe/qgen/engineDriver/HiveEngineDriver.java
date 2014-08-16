@@ -3,6 +3,7 @@ package bigframe.qgen.engineDriver;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import bigframe.workflows.runnable.HiveRunnable;
  */
 public class HiveEngineDriver extends EngineDriver {
 	private Connection connection;
+	private Statement stmt;
 	private List<HiveRunnable> queries = new ArrayList<HiveRunnable>();
 	private static String driverName = "org.apache.hadoop.hive.jdbc.HiveDriver";
 	
@@ -56,25 +58,44 @@ public class HiveEngineDriver extends EngineDriver {
 			
 			String UDF_JAR = workIF.getProp().get(BigConfConstants.BIGFRAME_UDF_JAR);
 			
-			connection.createStatement().execute("DELETE JAR " + UDF_JAR);
+			stmt = connection.createStatement();
+			stmt.execute("DELETE JAR " + UDF_JAR);
 			LOG.info("Adding UDF JAR " + UDF_JAR + " to hive server");
-			if(connection.createStatement().execute("ADD JAR " + UDF_JAR)) {
+			if(stmt.execute("ADD JAR " + UDF_JAR)) {
 				LOG.info("Adding UDF JAR successful!");
 			}
 			else {
 				LOG.error("Adding UDF JAR failed!");
 			}
-			
-			for(HiveRunnable query : queries) {
-				LOG.info("Prepare tables...");
-				query.prepareHiveTables(connection);
-			}
+			init(connection);
 		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+	
+	public void init(Connection connection) {
+		try {
+			if(connection == null) {
+				System.out.println("Null connection");
+				System.exit(1);
+			}
+			if(stmt == null) {
+				stmt = connection.createStatement();
+			}
+
+			for(HiveRunnable query : queries) {
+				LOG.info("Prepare tables...");
+				query.prepareHiveTables(connection);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
 	}
 	
 	public void addQuery(HiveRunnable query) {
@@ -100,15 +121,19 @@ public class HiveEngineDriver extends EngineDriver {
 		for(HiveRunnable query : queries) {
 			query.cleanUpHive(connection);
 		}
-		
-		if(connection != null) {
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+		try {
+			if(stmt != null) {
+				stmt.close();
 			}
+			if(connection != null) {
+				connection.close();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 
 	}
 

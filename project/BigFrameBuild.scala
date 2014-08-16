@@ -6,7 +6,7 @@ import AssemblyKeys._
 object BigFrameBuild extends Build {
 	
 	// Hadoop version to build against.
-	val HADOOP_VERSION = "1.0.4"
+	val HADOOP_VERSION = "1.2.1"
 
 	// Spark version to build againt.
 	val SPARK_VERSION = "1.0.1"

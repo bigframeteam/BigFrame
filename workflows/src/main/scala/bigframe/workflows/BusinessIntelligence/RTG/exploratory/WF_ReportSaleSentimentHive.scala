@@ -81,12 +81,12 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 	def runHiveImpl1(connection: Connection, 
 	    eventBus: BigFrameListenerBus) : Boolean = {
 
-	  eventBus.postToAll(new WorkflowStartedEvent("Hive"));
+	  eventBus.post(new WorkflowStartedEvent("Hive"));
 			
 		try {
 			val stmt = connection.createStatement();			
 								
-			eventBus.postToAll(new ComponentStartedEvent("filter promotions", "hive"))
+			eventBus.post(new ComponentStartedEvent("filter promotions", "hive"))
 
 			val drop_promotionSelected = "DROP TABLE IF EXISTS promotionSelected"
 			val create_promotionSelected = "CREATE TABLE promotionSelected (promo_id string, item_sk int," +
@@ -100,15 +100,15 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"	FROM promotion " +
 					"	WHERE p_item_sk IS NOT NULL AND p_start_date_sk IS NOT NULL AND p_end_date_sk IS NOT NULL"
 
-			eventBus.postToAll(new QueryStartedEvent(query_promotionSelected, "hive"))
+			eventBus.post(new QueryStartedEvent(query_promotionSelected, "hive"))
 
 			stmt.execute(drop_promotionSelected)
 			stmt.execute(create_promotionSelected)
 			stmt.execute(query_promotionSelected)
 
-			eventBus.postToAll(new QueryCompletedEvent(query_promotionSelected, "hive"))
-			eventBus.postToAll(new ComponentCompletedEvent("filter promotions", "hive"))
-			eventBus.postToAll(new ComponentStartedEvent("filter products", "hive"))
+			eventBus.post(new QueryCompletedEvent(query_promotionSelected, "hive"))
+			eventBus.post(new ComponentCompletedEvent("filter promotions", "hive"))
+			eventBus.post(new ComponentStartedEvent("filter products", "hive"))
 			
 			val drop_promotedProduct = "DROP VIEW IF EXISTS promotedProduct"
 			val drop_promotedProduct_t = "DROP TABLE IF EXISTS promotedProduct"
@@ -118,15 +118,15 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"	ON item.i_item_sk = promotionSelected.item_sk" +
 					"	WHERE i_product_name IS NOT NULL"
 
-			eventBus.postToAll(new QueryStartedEvent(create_promotedProduct, "hive"))
+			eventBus.post(new QueryStartedEvent(create_promotedProduct, "hive"))
 
 			stmt.execute(drop_promotedProduct)
 			stmt.execute(drop_promotedProduct_t)
 			stmt.execute(create_promotedProduct)	
 							
-			eventBus.postToAll(new QueryCompletedEvent(create_promotedProduct, "hive"))
-			eventBus.postToAll(new ComponentCompletedEvent("filter products", "hive"))
-			eventBus.postToAll(new ComponentStartedEvent("sales report", "hive"))
+			eventBus.post(new QueryCompletedEvent(create_promotedProduct, "hive"))
+			eventBus.post(new ComponentCompletedEvent("filter products", "hive"))
+			eventBus.post(new ComponentStartedEvent("sales report", "hive"))
         			
 			val drop_RptSalesByProdCmpn = "DROP VIEW IF EXISTS RptSalesByProdCmpn"
 			val drop_RptSalesByProdCmpn_t = "DROP TABLE IF EXISTS RptSalesByProdCmpn"
@@ -150,15 +150,15 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"	GROUP BY" + 
 					"		promotionSelected.promo_id, promotionSelected.item_sk "
 
-			eventBus.postToAll(new QueryStartedEvent(create_RptSalesByProdCmpn, "hive"))
+			eventBus.post(new QueryStartedEvent(create_RptSalesByProdCmpn, "hive"))
 
 			stmt.execute(drop_RptSalesByProdCmpn)		
 			stmt.execute(drop_RptSalesByProdCmpn_t)	
 			stmt.execute(create_RptSalesByProdCmpn)
 			
-			eventBus.postToAll(new QueryCompletedEvent(create_RptSalesByProdCmpn, "hive"))
-			eventBus.postToAll(new ComponentCompletedEvent("sales report", "hive"))
-			eventBus.postToAll(new ComponentStartedEvent("filter tweets", "hive"))
+			eventBus.post(new QueryCompletedEvent(create_RptSalesByProdCmpn, "hive"))
+			eventBus.post(new ComponentCompletedEvent("sales report", "hive"))
+			eventBus.post(new ComponentStartedEvent("filter tweets", "hive"))
 		
 			val drop_relevantTweet = "DROP TABLE IF EXISTS relevantTweet"
 			val create_relevantTweet = "CREATE TABLE relevantTweet" +
@@ -181,15 +181,15 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"		ON t1.hashtag = t3.product_name" +
 					"		WHERE isWithinDate(created_at, start_date, end_date)"
 
-			eventBus.postToAll(new QueryStartedEvent(query_relevantTweet, "hive"))
+			eventBus.post(new QueryStartedEvent(query_relevantTweet, "hive"))
 
 			stmt.execute(drop_relevantTweet)
 			stmt.execute(create_relevantTweet)
 			stmt.execute(query_relevantTweet)
 			
-			eventBus.postToAll(new QueryCompletedEvent(query_relevantTweet, "hive"))
-			eventBus.postToAll(new ComponentCompletedEvent("filter tweets", "hive"))
-			eventBus.postToAll(new ComponentStartedEvent("sentiment analysis", "hive"))
+			eventBus.post(new QueryCompletedEvent(query_relevantTweet, "hive"))
+			eventBus.post(new ComponentCompletedEvent("filter tweets", "hive"))
+			eventBus.post(new ComponentStartedEvent("sentiment analysis", "hive"))
 
 			val drop_senAnalyse = "DROP VIEW IF EXISTS senAnalyse"
 			val drop_senAnalyse_t = "DROP TABLE IF EXISTS senAnalyse"
@@ -200,15 +200,15 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"	GROUP BY" +
 					"	item_sk, user_id"
 			
-			eventBus.postToAll(new QueryStartedEvent(create_senAnalyse, "hive"))
+			eventBus.post(new QueryStartedEvent(create_senAnalyse, "hive"))
 		
 			stmt.execute(drop_senAnalyse)
 			stmt.execute(drop_senAnalyse_t)
 			stmt.execute(create_senAnalyse)
 			
-			eventBus.postToAll(new QueryCompletedEvent(create_senAnalyse, "hive"))
-			eventBus.postToAll(new ComponentCompletedEvent("sentiment analysis", "hive"))
-			eventBus.postToAll(new ComponentStartedEvent("transition matrices", "hive"))
+			eventBus.post(new QueryCompletedEvent(create_senAnalyse, "hive"))
+			eventBus.post(new ComponentCompletedEvent("sentiment analysis", "hive"))
+			eventBus.post(new ComponentStartedEvent("transition matrices", "hive"))
 			
 			val drop_tweetByUser = "DROP TABLE IF EXISTS tweetByUser"
 			val create_tweetByUser = "CREATE TABLE tweetByUser (user_id int, num_tweets int)"
@@ -219,13 +219,13 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"	GROUP BY" +
 					"	user_id"
 			
-			eventBus.postToAll(new QueryStartedEvent(query_tweetByUser, "hive"))
+			eventBus.post(new QueryStartedEvent(query_tweetByUser, "hive"))
 
 			stmt.execute(drop_tweetByUser)
 			stmt.execute(create_tweetByUser)
 			stmt.execute(query_tweetByUser)
 					
-			eventBus.postToAll(new QueryCompletedEvent(query_tweetByUser, "hive"))
+			eventBus.post(new QueryCompletedEvent(query_tweetByUser, "hive"))
 
 			val drop_tweetByProd = "DROP TABLE IF EXISTS tweetByProd"
 			val create_tweetByProd = "CREATE TABLE tweetByProd (item_sk int, num_tweets int)"
@@ -236,13 +236,13 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"	GROUP BY" +
 					"	item_sk"
 																																																																																																																		
-			eventBus.postToAll(new QueryStartedEvent(query_tweetByProd, "hive"))
+			eventBus.post(new QueryStartedEvent(query_tweetByProd, "hive"))
 
 			stmt.execute(drop_tweetByProd)
 			stmt.execute(create_tweetByProd)
 			stmt.execute(query_tweetByProd)
 
-			eventBus.postToAll(new QueryCompletedEvent(query_tweetByProd, "hive"))
+			eventBus.post(new QueryCompletedEvent(query_tweetByProd, "hive"))
 							
 			val drop_sumFriendTweets = "DROP VIEW IF EXISTS sumFriendTweets"
 			val drop_sumFriendTweets_t = "DROP TABLE IF EXISTS sumFriendTweets"
@@ -261,13 +261,13 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"		GROUP BY " +
 					"		user_id) result"
 				
-			eventBus.postToAll(new QueryStartedEvent(create_sumFriendTweets, "hive"))
+			eventBus.post(new QueryStartedEvent(create_sumFriendTweets, "hive"))
 
 			stmt.execute(drop_sumFriendTweets)
 			stmt.execute(drop_sumFriendTweets_t)
 			stmt.execute(create_sumFriendTweets)
 			
-			eventBus.postToAll(new QueryCompletedEvent(create_sumFriendTweets, "hive"))
+			eventBus.post(new QueryCompletedEvent(create_sumFriendTweets, "hive"))
 			
 			val drop_mentionProb = "DROP TABLE IF EXISTS mentionProb"
 			val create_mentionProb = "CREATE TABLE mentionProb (item_sk int, user_id int, prob float)"
@@ -281,13 +281,13 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"		item_sk, user_id) r" +
 					"	ON tweetByUser.user_id = r.user_id"
 				
-			eventBus.postToAll(new QueryStartedEvent(query_mentionProb, "hive"))
+			eventBus.post(new QueryStartedEvent(query_mentionProb, "hive"))
 
 			stmt.execute(drop_mentionProb)
 			stmt.execute(create_mentionProb)
 			stmt.execute(query_mentionProb)
 
-			eventBus.postToAll(new QueryCompletedEvent(query_mentionProb, "hive"))
+			eventBus.post(new QueryCompletedEvent(query_mentionProb, "hive"))
 			
 			val drop_simUserByProd = "DROP VIEW IF EXISTS simUserByProd"
 			val drop_simUserByProd_t = "DROP TABLE IF EXISTS simUserByProd"
@@ -301,13 +301,13 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"	JOIN mentionProb " +
 					"	ON	f.friend_id = mentionProb.user_id AND f.item_sk=mentionProb.item_sk"
 		
-			eventBus.postToAll(new QueryStartedEvent(create_simUserByProd, "hive"))
+			eventBus.post(new QueryStartedEvent(create_simUserByProd, "hive"))
 			
 			stmt.execute(drop_simUserByProd)
 			stmt.execute(drop_simUserByProd_t)
 			stmt.execute(create_simUserByProd)
 					
-			eventBus.postToAll(new QueryCompletedEvent(create_simUserByProd, "hive"))		
+			eventBus.post(new QueryCompletedEvent(create_simUserByProd, "hive"))		
 
 			val drop_transitMatrix = "DROP TABLE IF EXISTS transitMatrix"
 			val create_transitMatrix = "CREATE TABLE transitMatrix (item_sk int, follower_id int, friend_id int, transit_prob float)" 
@@ -324,13 +324,13 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"	JOIN tweetByUser" +
 					"	ON t3.friend_id = tweetByUser.user_id"
 				
-			eventBus.postToAll(new QueryStartedEvent(query_transitMatrix, "hive"))
+			eventBus.post(new QueryStartedEvent(query_transitMatrix, "hive"))
 
 			stmt.execute(drop_transitMatrix)
 			stmt.execute(create_transitMatrix)
 			stmt.execute(query_transitMatrix)
 
-			eventBus.postToAll(new QueryCompletedEvent(query_transitMatrix, "hive"))
+			eventBus.post(new QueryCompletedEvent(query_transitMatrix, "hive"))
 			
 			val drop_randSufferVec = "DROP TABLE IF EXISTS randSuffVec"
 			val create_randSuffVec = "CREATE TABLE randSuffVec (item_sk int, user_id int, prob float)" 
@@ -345,15 +345,15 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"	JOIN tweetByProd t2" +
 					"	ON t1.item_sk = t2.item_sk"
 				
-			eventBus.postToAll(new QueryStartedEvent(query_randSuffVec, "hive"))
+			eventBus.post(new QueryStartedEvent(query_randSuffVec, "hive"))
 
 			stmt.execute(drop_randSufferVec)
 			stmt.execute(create_randSuffVec)
 			stmt.execute(query_randSuffVec)
 			
-			eventBus.postToAll(new QueryCompletedEvent(query_randSuffVec, "hive"))
-			eventBus.postToAll(new ComponentCompletedEvent("transition matrices", "hive"))
-			eventBus.postToAll(new ComponentStartedEvent("twitter rank", "hive"))
+			eventBus.post(new QueryCompletedEvent(query_randSuffVec, "hive"))
+			eventBus.post(new ComponentCompletedEvent("transition matrices", "hive"))
+			eventBus.post(new ComponentStartedEvent("twitter rank", "hive"))
 
 			val drop_initalRank = "DROP TABLE IF EXISTS initialRank"
 			val create_initialRank = "CREATE TABLE initialRank (item_sk int, user_id int, rank_score float)" 
@@ -371,13 +371,13 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"		item_sk) t2 JOIN mentionProb" +
 					"	ON t2.item_sk = mentionProb.item_sk"
 				
-			eventBus.postToAll(new QueryStartedEvent(query_initialRank, "hive"))
+			eventBus.post(new QueryStartedEvent(query_initialRank, "hive"))
 			
 			stmt.execute(drop_initalRank)
 			stmt.execute(create_initialRank)
 			stmt.execute(query_initialRank)
 					
-			eventBus.postToAll(new QueryCompletedEvent(query_initialRank, "hive"))
+			eventBus.post(new QueryCompletedEvent(query_initialRank, "hive"))
 
 			val alpha = 0.85
 			for(iteration <- 1 to num_iter) {
@@ -400,17 +400,17 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 						"	RIGHT OUTER JOIN randSUffVec t4" +
 						"	ON t3.item_sk = t4.item_sk AND t3.follower_id = t4.user_id"
 			
-				eventBus.postToAll(new QueryStartedEvent(query_twitterRank, "hive"))
+				eventBus.post(new QueryStartedEvent(query_twitterRank, "hive"))
 
 				stmt.execute(drop_twitterRank)
 				stmt.execute(create_twitterRank)
 				stmt.execute(query_twitterRank)
 
-				eventBus.postToAll(new QueryCompletedEvent(query_twitterRank, "hive"))
+				eventBus.post(new QueryCompletedEvent(query_twitterRank, "hive"))
 			}
 			
-			eventBus.postToAll(new ComponentCompletedEvent("twitter rank", "hive"))
-			eventBus.postToAll(new ComponentStartedEvent("report generation", "hive"))
+			eventBus.post(new ComponentCompletedEvent("twitter rank", "hive"))
+			eventBus.post(new ComponentStartedEvent("report generation", "hive"))
 			
 			val drop_RptSAProdCmpn = "DROP TABLE IF EXISTS RptSAProdCmpn"
 			val create_RptSAProdCmpn = "CREATE TABLE RptSAProdCmpn (promo_id string, item_sk int, totalsales float , total_sentiment float)"
@@ -432,18 +432,18 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"	JOIN RptSalesByProdCmpn " +
 					"	ON t.item_sk = RptSalesByProdCmpn.item_sk"				
 
-			eventBus.postToAll(new QueryStartedEvent(query_RptSAProdCmpn, "hive"))
+			eventBus.post(new QueryStartedEvent(query_RptSAProdCmpn, "hive"))
 			
 			if (stmt.execute(query_RptSAProdCmpn)) {
-				eventBus.postToAll(new QueryCompletedEvent(query_RptSAProdCmpn, "hive"))
-				eventBus.postToAll(new ComponentCompletedEvent("report generation", "hive"))
-				eventBus.postToAll(new WorkflowCompletedEvent("Hive"));
+				eventBus.post(new QueryCompletedEvent(query_RptSAProdCmpn, "hive"))
+				eventBus.post(new ComponentCompletedEvent("report generation", "hive"))
+				eventBus.post(new WorkflowCompletedEvent("Hive"));
 				stmt.close();
 				return true
 			}
 			else{ 
-				eventBus.postToAll(new ComponentCompletedEvent("report generation", "hive"))
-				eventBus.postToAll(new WorkflowCompletedEvent("Hive"));
+				eventBus.post(new ComponentCompletedEvent("report generation", "hive"))
+				eventBus.post(new WorkflowCompletedEvent("Hive"));
 				stmt.close();
 				return false
 			}

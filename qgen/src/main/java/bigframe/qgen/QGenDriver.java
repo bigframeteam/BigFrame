@@ -19,9 +19,15 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import edu.duke.dbmsplus.datahooks.conf.HiveServerCredentials;
+import edu.duke.dbmsplus.datahooks.conf.MetadataDatabaseCredentials;
+import edu.duke.dbmsplus.datahooks.listener.BigFrameListenerImpl;
+
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.BigConfConstants;
+import bigframe.bigif.WorkflowInputFormat;
 import bigframe.qgen.engineDriver.EngineDriver;
+import bigframe.qgen.engineDriver.HiveEngineDriver;
 import bigframe.qgen.factory.WorkflowFactory;
 import bigframe.util.parser.XMLBigFrameInputParser;
 import bigframe.workflows.events.BigFrameListenerBus;
@@ -229,8 +235,15 @@ public class QGenDriver {
 
 
 		// Initialize a listener bus
+		Boolean addListener = conf.getWorkflowInputFormat().getAddListener();
 		BigFrameListenerBus eventBus = new BigFrameListenerBus();
-		// TODO: Add a listener from data-hooks jar
+		BigFrameListenerImpl listener = null;
+		if(addListener) {
+			setMetadataDBConfig(conf.getWorkflowInputFormat());
+			listener = new BigFrameListenerImpl(System.getenv("WORKFLOWS_JAR")); 
+			eventBus.addListener(listener);
+		}
+		eventBus.start();
 		
 		//If mode equals run-query, then collect the set of hard-coded queries and 
 		// delegate the job to their corresponding driver to run them
@@ -241,7 +254,16 @@ public class QGenDriver {
 			List<EngineDriver> workflows = workflowFactory.createWorkflows();
 			if(workflows != null)
 				for(EngineDriver workflow : workflows) {
-					workflow.init();
+					// HACK: To make sure we have a single connection to hiveserver,
+					// the connection object is passed to Hive driver
+					if(addListener && workflow.getClass().getName().equals(
+							HiveEngineDriver.class.getName())) {
+						listener.turnOffSemanticQuery();
+						((HiveEngineDriver) workflow).init(
+								listener.getHiveConnection());
+					} else {
+						workflow.init();
+					}
 					workflow.run(eventBus);
 					workflow.cleanup();
 				}
@@ -253,5 +275,25 @@ public class QGenDriver {
 
 		}
 
+		// stop the listener bus
+		eventBus.stop();
+		if(addListener) {
+			// cleanup the listener
+			listener.cleanup();
+		}
+	}
+
+	private static void setMetadataDBConfig(
+			WorkflowInputFormat config) {
+		// MySQL metadata db config
+		MetadataDatabaseCredentials.DB_NAME = config.getMetadataDBName();
+		MetadataDatabaseCredentials.CONNECTION_STRING = config.getMetadataDBConnection();
+		MetadataDatabaseCredentials.USERNAME = config.getMetadataDBUsername();
+		MetadataDatabaseCredentials.PASSWORD = config.getMetadataDBPassword();
+		
+		// Hiveserver config
+		HiveServerCredentials.CONNECTION_STRING = config.getHiveJDBCServer();
+		HiveServerCredentials.USERNAME = "";
+		HiveServerCredentials.PASSWORD = "";
 	}
 }
