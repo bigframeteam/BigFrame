@@ -287,7 +287,8 @@ public class QGenDriver {
 			WorkflowInputFormat config) {
 		// MySQL metadata db config
 		MetadataDatabaseCredentials.DB_NAME = config.getMetadataDBName();
-		MetadataDatabaseCredentials.CONNECTION_STRING = config.getMetadataDBConnection();
+		MetadataDatabaseCredentials.CONNECTION_STRING = 
+				config.getMetadataDBConnection() + config.getMetadataDBName();
 		MetadataDatabaseCredentials.USERNAME = config.getMetadataDBUsername();
 		MetadataDatabaseCredentials.PASSWORD = config.getMetadataDBPassword();
 		

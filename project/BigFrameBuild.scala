@@ -20,9 +20,9 @@ object BigFrameBuild extends Build {
 
 	lazy val datagen = Project(id = "datagen", base = file("datagen"), settings = datagenSettings) dependsOn(common)
 
-	lazy val workflows = Project(id = "workflows", base = file("workflows"), settings = workflowsSettings) dependsOn(common)
+	lazy val workflows = Project(id = "workflows", base = file("workflows"), settings = workflowsSettings).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*) dependsOn(common)
 
-	lazy val qgen = Project(id = "qgen", base = file("qgen"), settings = qgenSettings) dependsOn(common, workflows)
+	lazy val qgen = Project(id = "qgen", base = file("qgen"), settings = qgenSettings).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*) dependsOn(common, workflows)
 
 
 	def sharedSettings = Defaults.defaultSettings ++ Seq(
@@ -118,7 +118,7 @@ object BigFrameBuild extends Build {
 
 	def extraAssemblySettings() = Seq(test in assembly := {}) ++ Seq(
 		mergeStrategy in assembly := {
-     		case m if m startsWith "org/apache/commons/logging" => MergeStrategy.last
+     		case m if m startsWith "org/apache/commons/logging" => MergeStrategy.discard
       		case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
       		case m if m.toLowerCase.matches("meta-inf.*\\.sf$") => MergeStrategy.discard
       		case "reference.conf" => MergeStrategy.concat

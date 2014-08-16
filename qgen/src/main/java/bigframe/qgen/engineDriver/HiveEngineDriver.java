@@ -82,6 +82,7 @@ public class HiveEngineDriver extends EngineDriver {
 				System.out.println("Null connection");
 				System.exit(1);
 			}
+			this.connection = connection;
 			if(stmt == null) {
 				stmt = connection.createStatement();
 			}
