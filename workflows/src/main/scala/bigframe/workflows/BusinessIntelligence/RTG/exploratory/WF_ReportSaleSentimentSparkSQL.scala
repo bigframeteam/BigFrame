@@ -379,7 +379,7 @@ val create_sumFriendTweets = "CREATE TABLE sumFriendTweets AS SELECT user_id as 
 	eventBus.post(new QueryCompletedEvent(query_mentionProb, "spark"))
 
 	val drop_simUserByProd = "DROP TABLE IF EXISTS simUserByProd"
-	val drop_simUserByProd_v = "DROP VIEW IF EXISTS sumUserByProd"
+	val drop_simUserByProd_v = "DROP VIEW IF EXISTS simUserByProd"
 	val create_simUserByProd = "CREATE TABLE simUserByProd " +
 		" (item_sk string, follower_id string, friend_id string, similarity string)" 
 	val insert_simUserByProd = 	"INSERT INTO TABLE simUserByProd SELECT f.item_sk, follower_id, friend_id, (1 - ABS(follower_prob - prob)) as similarity" +

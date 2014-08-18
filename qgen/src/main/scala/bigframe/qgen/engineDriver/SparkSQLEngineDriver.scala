@@ -16,6 +16,7 @@ import bigframe.bigif.WorkflowInputFormat
 import bigframe.workflows.runnable.SparkSQLRunnable
 import java.io.File
 import bigframe.workflows.events.BigFrameListenerBus
+import org.apache.spark.scheduler.SparkListener
 
 
 
@@ -41,6 +42,11 @@ class SparkSQLEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(wor
 	private var hc: HiveContext = null
 	def numOfQueries(): Int = {
 			queries.size()
+	}
+
+	def init(sparkListener: SparkListener) {
+		init()
+		hc.sparkContext.addSparkListener(sparkListener)
 	}
 
 	def init() {

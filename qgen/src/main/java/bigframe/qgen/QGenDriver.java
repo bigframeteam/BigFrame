@@ -28,6 +28,7 @@ import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.WorkflowInputFormat;
 import bigframe.qgen.engineDriver.EngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
+import bigframe.qgen.engineDriver.SparkSQLEngineDriver;
 import bigframe.qgen.factory.WorkflowFactory;
 import bigframe.util.parser.XMLBigFrameInputParser;
 import bigframe.workflows.events.BigFrameListenerBus;
@@ -261,7 +262,11 @@ public class QGenDriver {
 						listener.turnOffSemanticQuery();
 						((HiveEngineDriver) workflow).init(
 								listener.getHiveConnection());
-					} else {
+					} else if(addListener && workflow.getClass().getName().equals(
+							SparkSQLEngineDriver.class.getName())) {
+						((SparkSQLEngineDriver) workflow).init(
+								listener.getSparkListener());
+					}else {
 						workflow.init();
 					}
 					workflow.run(eventBus);
@@ -286,7 +291,6 @@ public class QGenDriver {
 	private static void setMetadataDBConfig(
 			WorkflowInputFormat config) {
 		// MySQL metadata db config
-		MetadataDatabaseCredentials.DB_NAME = config.getMetadataDBName();
 		MetadataDatabaseCredentials.CONNECTION_STRING = 
 				config.getMetadataDBConnection() + config.getMetadataDBName();
 		MetadataDatabaseCredentials.USERNAME = config.getMetadataDBUsername();
