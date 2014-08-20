@@ -350,9 +350,9 @@ val create_sumFriendTweets = "CREATE TABLE sumFriendTweets AS SELECT user_id as 
 	eventBus.post(new QueryCompletedEvent(f_insert, "spark"))
 
 	hc.hql(result_create)
-	eventBus.post(new QueryStartedEvent(result_create, "spark"))
+	eventBus.post(new QueryStartedEvent(result_insert, "spark"))
 	hc.hql(result_insert)
-	eventBus.post(new QueryCompletedEvent(result_create, "spark"))
+	eventBus.post(new QueryCompletedEvent(result_insert, "spark"))
 	
 	eventBus.post(new QueryStartedEvent(create_sumFriendTweets, "spark"))
 	hc.hql(create_sumFriendTweets)
