@@ -100,13 +100,13 @@ public class VerticaTpcdsLoader extends VerticaDataLoader{
 		initConnection(); 
 		Statement stmt = connection.createStatement();
 		connection.setAutoCommit(false);
-		String [] drop_table = {"DROP TABLE IF EXISTS customer",
-								"DROP TABLE IF EXISTS catalog_sales", 
-								"DROP TABLE IF EXISTS web_sales",
-								"DROP TABLE IF EXISTS item",
-								"DROP TABLE IF EXISTS promotion",
-								"DROP TABLE IF EXISTS date_dim",
-								"DROP TABLE IF EXISTS store_sales"};
+		String [] drop_table = {"DROP TABLE IF EXISTS customer cascade",
+								"DROP TABLE IF EXISTS catalog_sales cascade", 
+								"DROP TABLE IF EXISTS web_sales cascade",
+								"DROP TABLE IF EXISTS item cascade",
+								"DROP TABLE IF EXISTS promotion cascade",
+								"DROP TABLE IF EXISTS date_dim cascade",
+								"DROP TABLE IF EXISTS store_sales cascade"};
 		
 		for(String str : drop_table) {
 			stmt.addBatch(str);

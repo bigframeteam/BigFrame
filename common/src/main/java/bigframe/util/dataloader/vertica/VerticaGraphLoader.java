@@ -123,7 +123,7 @@ public class VerticaGraphLoader extends VerticaDataLoader {
 		initConnection(); 
 		Statement stmt = connection.createStatement();
 		connection.setAutoCommit(false);
-		String [] drop_table = {"DROP TABLE IF EXISTS twitter_graph"};
+		String [] drop_table = {"DROP TABLE IF EXISTS twitter_graph cascade"};
 		
 		for(String str : drop_table) {
 			stmt.addBatch(str);
