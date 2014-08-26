@@ -259,6 +259,7 @@ public class QGenDriver {
 					// the connection object is passed to Hive driver
 					if(addListener && workflow.getClass().getName().equals(
 							HiveEngineDriver.class.getName())) {
+						listener.addHiveExecHook();
 						listener.turnOffSemanticQuery();
 						((HiveEngineDriver) workflow).init(
 								listener.getHiveConnection());
