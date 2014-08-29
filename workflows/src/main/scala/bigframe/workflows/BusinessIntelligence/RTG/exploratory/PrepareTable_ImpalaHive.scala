@@ -763,7 +763,6 @@ class PrepareTable_ImpalaHive(basePath: BaseTablePath) {
 			hive_stmt.execute("SET mapred.output.compression.type=BLOCK")
 			hive_stmt.execute("SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec")
 			
-			impala_stmt.execute("use parquet_compression")
 			impala_stmt.execute("SET PARQUET_COMPRESSION_CODEC=snappy")
 		}
 		
