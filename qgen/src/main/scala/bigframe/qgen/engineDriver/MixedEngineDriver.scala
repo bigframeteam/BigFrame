@@ -1,5 +1,12 @@
+/**
+ *
+ */
 package bigframe.qgen.engineDriver
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList
 import java.util.List
 import scala.collection.JavaConversions._
@@ -9,17 +16,20 @@ import org.apache.spark.sql.hive.HiveContext
 import SparkContext._
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
+import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.WorkflowInputFormat
-import bigframe.workflows.runnable.SparkSQLRunnable
+import bigframe.workflows.runnable.MixedRunnable
 import bigframe.workflows.events.BigFrameListenerBus
 import org.apache.spark.scheduler.SparkListener
 
+/**
+ * @author mayuresh
+ *
+ */
+class MixedEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(workIF) {
 
-
-class SparkSQLEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(workIF) {
-
-	final var JAR_PATH = "WORKFLOWS_JAR"
-	final var LOG: Log = LogFactory.getLog(classOf[SparkSQLEngineDriver])
+  	final var JAR_PATH = "WORKFLOWS_JAR"
+	final var LOG: Log = LogFactory.getLog(classOf[MixedEngineDriver])
 
 	private var spark_connection_string: String = ""
 	private var spark_home_string: String = ""
@@ -30,7 +40,11 @@ class SparkSQLEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(wor
 	private var memory_fraction: Float = 0.66f
 	private var compress_memory: Boolean = false
 
-	private var queries: java.util.List[SparkSQLRunnable] = new java.util.ArrayList[SparkSQLRunnable]()
+	private var connection: Connection = null
+	private var stmt: Statement = null
+	private val driverName = "org.apache.hadoop.hive.jdbc.HiveDriver"
+
+	private var queries: java.util.List[MixedRunnable] = new java.util.ArrayList[MixedRunnable]()
 
 	private var hc: HiveContext = null
 	def numOfQueries(): Int = {
@@ -38,11 +52,66 @@ class SparkSQLEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(wor
 	}
 
 	def init(sparkListener: SparkListener) {
-		init()
 		hc.sparkContext.addSparkListener(sparkListener)
 	}
 
 	def init() {
+		try {
+			Class.forName(driverName);
+        } catch { case e: ClassNotFoundException =>
+        	// TODO Auto-generated catch block
+        	e.printStackTrace();
+        	System.exit(1);
+        }
+
+		try {
+			LOG.info("Connectiong to Hive JDBC server!!!");
+			connection = DriverManager.getConnection(workIF.getHiveJDBCServer(), "", "");
+			if(connection == null) {
+				LOG.error("Cannot connect to JDBC server! " +
+						"Make sure the HiveServer is running!");
+				System.exit(1);
+			}
+			else
+				LOG.info("Successful!!!");
+			
+			val UDF_JAR = workIF.getProp().get(BigConfConstants.BIGFRAME_UDF_JAR);
+			
+			stmt = connection.createStatement();
+			stmt.execute("DELETE JAR " + UDF_JAR);
+			LOG.info("Adding UDF JAR " + UDF_JAR + " to hive server");
+			if(stmt.execute("ADD JAR " + UDF_JAR)) {
+				LOG.info("Adding UDF JAR successful!");
+			}
+			else {
+				LOG.error("Adding UDF JAR failed!");
+			}
+			init(connection);
+		
+		} catch { case e: SQLException =>
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+	}
+
+	def init(conn: Connection) {
+		try {
+			if(conn == null) {
+				System.out.println("Null connection");
+				System.exit(1);
+			}
+			connection = conn;
+			if(stmt == null) {
+				stmt = connection.createStatement();
+			}
+		} catch { case e: SQLException =>
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
 		readEnvVars()
 
 		System.setProperty("spark.local.dir", spark_local_dir)
@@ -62,27 +131,11 @@ class SparkSQLEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(wor
 		hc = new HiveContext(sc)
 
 		LOG.info("Preparing tables...");
-		for(query: SparkSQLRunnable <- queries) {
-			query.prepareHiveTables(hc);
+		for(query: MixedRunnable <- queries) {
+			query.prepareHiveTables(hc, connection);
 		}
 	}
-
-	def run(eventBus: BigFrameListenerBus) {	
-		// init()
-		LOG.info("Running SparkSQL Query");
-		System.out.println("QUERIES:");
-		System.out.println(queries);
-		for(query: SparkSQLRunnable <- queries) {
-
-			if(query.runSparkSQL(hc, eventBus)) {
-				LOG.info("Query Finished");
-			}
-			else {
-				LOG.error("Query failed");
-			}
-		}
-	}
-
+	
 	def createSparkContext(): SparkContext = {
 			val execUri = System.getenv("SPARK_EXECUTOR_URI")
 			val jars = Seq(jar_path_string)
@@ -99,11 +152,42 @@ class SparkSQLEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(wor
 			sparkContext
 	}
 
+	def run(eventBus: BigFrameListenerBus) {	
+		// init()
+		LOG.info("Running mixed workflow");
+		System.out.println("QUERIES:");
+		System.out.println(queries);
+		for(query: MixedRunnable <- queries) {
+
+			if(query.runMixedFlow(hc, connection, eventBus)) {
+				LOG.info("Query Finished");
+			}
+			else {
+				LOG.error("Query failed");
+			}
+		}
+	}
+
 	def cleanup() {
+		for(query <- queries) {
+			query.cleanUp(hc, connection);
+		}
+
+		try {
+			if(stmt != null) {
+				stmt.close();
+			}
+			if(connection != null) {
+				connection.close();
+			}
+		} catch { case e: Exception =>
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
-	def addQuery(q: SparkSQLRunnable) {
+	def addQuery(q: MixedRunnable) {
 		queries.add(q)
 	}
 
@@ -116,5 +200,5 @@ class SparkSQLEngineDriver(workIF: WorkflowInputFormat) extends EngineDriver(wor
 		// spark_dop = workIF.getSparkDop()
 		memory_fraction = workIF.getSparkMemoryFraction()
 		compress_memory = workIF.getSparkCompressMemory()
-	}	
+	}
 }

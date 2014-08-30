@@ -1,20 +1,10 @@
 package bigframe.workflows.BusinessIntelligence.RTG.exploratory
 
-import java.util.concurrent.{Executors, ExecutorService}
-import java.util.concurrent.Future
 import java.sql.Connection
 import java.sql.SQLException
 import bigframe.workflows.Query
-import bigframe.workflows.runnable.HadoopRunnable
-import bigframe.workflows.runnable.VerticaRunnable
 import bigframe.workflows.runnable.HiveRunnable
-import bigframe.workflows.runnable.SharkRunnable
 import bigframe.workflows.BaseTablePath
-import bigframe.workflows.BusinessIntelligence.relational.exploratory.PromotedProdHadoop
-import bigframe.workflows.BusinessIntelligence.relational.exploratory.ReportSalesHadoop
-import bigframe.workflows.BusinessIntelligence.text.exploratory.FilterTweetHadoop
-import bigframe.workflows.BusinessIntelligence.text.exploratory.SenAnalyzeHadoop
-import bigframe.workflows.BusinessIntelligence.text.exploratory.SenAnalyzeConstant
 import org.apache.hadoop.conf.Configuration
 import scala.collection.JavaConversions._
 import bigframe.workflows.events.BigFrameListenerBus

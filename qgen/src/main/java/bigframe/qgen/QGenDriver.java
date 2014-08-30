@@ -28,6 +28,7 @@ import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.WorkflowInputFormat;
 import bigframe.qgen.engineDriver.EngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
+import bigframe.qgen.engineDriver.MixedEngineDriver;
 import bigframe.qgen.engineDriver.SparkSQLEngineDriver;
 import bigframe.qgen.factory.WorkflowFactory;
 import bigframe.util.parser.XMLBigFrameInputParser;
@@ -267,7 +268,17 @@ public class QGenDriver {
 							SparkSQLEngineDriver.class.getName())) {
 						((SparkSQLEngineDriver) workflow).init(
 								listener.getSparkListener());
-					}else {
+					} else if(addListener && workflow.getClass().getName().equals(
+							MixedEngineDriver.class.getName())) {
+						listener.addHiveExecHook();
+						// turning off semantic analysis because it's getting called twice for hive queries,
+						// but not getting called at all for spark queries. FIND A SOLUTION.
+						listener.turnOffSemanticQuery();
+						((MixedEngineDriver) workflow).init(
+								listener.getHiveConnection());
+						((MixedEngineDriver) workflow).init(
+								listener.getSparkListener());
+					} else {
 						workflow.init();
 					}
 					workflow.run(eventBus);

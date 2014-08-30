@@ -15,6 +15,7 @@ import bigframe.qgen.engineDriver.GiraphEngineDriver;
 import bigframe.qgen.engineDriver.HadoopEngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
 import bigframe.qgen.engineDriver.HiveGiraphEngineDriver;
+import bigframe.qgen.engineDriver.MixedEngineDriver;
 import bigframe.qgen.engineDriver.SharkEngineDriver;
 import bigframe.qgen.engineDriver.SparkEngineDriver;
 import bigframe.qgen.engineDriver.SparkSQLEngineDriver;
@@ -77,6 +78,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		GiraphEngineDriver giraphWorkflow = new GiraphEngineDriver(workflowIF);
 		HiveGiraphEngineDriver hivegiraphWorkflow = new HiveGiraphEngineDriver(workflowIF);
 		SparkSQLEngineDriver sparkSQLWorkflow = new SparkSQLEngineDriver(workflowIF);
+		MixedEngineDriver mixedWorkflow = new MixedEngineDriver(workflowIF);
 		
 		/**
 		 * Record the paths for all the base table used. 
@@ -219,6 +221,21 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					sparkSQLWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentSparkSQL(basePath, 10, workflowIF.getHiveORC()));
 				}
+				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.SPARKSQL)&& 
+						nestedEngine.equals(Constants.HIVE)) {
+					mixedWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "HHS"));
+				}
+				else if(relationalEngine.equals(Constants.SPARKSQL) && graphEngine.equals(Constants.SPARKSQL)&& 
+						nestedEngine.equals(Constants.HIVE)) {
+					mixedWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "HSS"));
+				}
+				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.SPARKSQL)&& 
+						nestedEngine.equals(Constants.SPARKSQL)) {
+					mixedWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "SHS"));
+				}
 				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.GIRAPH)&& 
 						nestedEngine.equals(Constants.HIVE)) {
 					hivegiraphWorkflow.addQuery(new 
@@ -262,6 +279,8 @@ public class BIDomainWorkflow extends DomainWorkflow {
 			workflows.add(giraphWorkflow);
 		if(hivegiraphWorkflow.numOfQueries() > 0)
 			workflows.add(hivegiraphWorkflow);
+		if(mixedWorkflow.numOfQueries() > 0)
+			workflows.add(mixedWorkflow);
 		
 		return workflows;
 	}
