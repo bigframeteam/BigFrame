@@ -11,8 +11,7 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import bigframe.workflows.util.TextTextPair;
 
 
-public class RankAndSuffecVecVertexInputFormat <E extends Writable,
-	M extends Writable> extends TextVertexValueInputFormat<Text, Text, E, M>{
+public class RankAndSuffecVecVertexInputFormat <E extends Writable, M extends Writable> extends TextVertexValueInputFormat<Text, Text, E, M>{
 	
 
 	@Override

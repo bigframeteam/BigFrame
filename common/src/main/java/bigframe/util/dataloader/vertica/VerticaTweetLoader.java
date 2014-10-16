@@ -162,9 +162,52 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 
 			}
 			
-//			else if(tableName.equals("users")) {
-//				JSONObject users_json = (JSONObject) tweet_json.get("users");
-//			}
+			else if(tableName.equals("users")) {
+				JSONObject users_json = (JSONObject) tweet_json.get("users");
+				
+				atts.add( (String) users_json.get("profile_sidebar_border_color") );
+				atts.add( (String) users_json.get("name") );
+				atts.add( (String) users_json.get("profile_sidebar_fill_color") );
+				atts.add( (String) users_json.get("profile_background_tile") );
+				atts.add( (String) users_json.get("profile_image_url") );
+				atts.add( (String) users_json.get("location") );
+				atts.add( (String) users_json.get("created_at") );
+				atts.add( (String) users_json.get("id_str") );
+				atts.add( (String) users_json.get("follow_request_sent") );
+				atts.add( (String) users_json.get("profile_link_color") );
+				atts.add( (String) users_json.get("favourites_count") );
+				atts.add( (String) users_json.get("url") );
+				atts.add( ((Boolean) users_json.get("contributors_enabled")).toString() );
+				atts.add( (String) users_json.get("utc_offset") );
+				atts.add( (String) users_json.get("id") );
+				atts.add( (String) users_json.get("profile_use_background_image") );
+				atts.add( (String) users_json.get("listed_count") );
+				atts.add( ((Boolean) users_json.get("protected")).toString() );
+				atts.add( (String) users_json.get("lang") );
+				atts.add( (String) users_json.get("profile_text_color") );
+				atts.add( (String) users_json.get("followers_count") );
+				atts.add( (String) users_json.get("time_zone") );
+				atts.add( (String) users_json.get("verified") );
+				atts.add( (String) users_json.get("geo_enabled") );
+				atts.add( (String) users_json.get("profile_background_color") );
+				atts.add( (String) users_json.get("description") );
+				atts.add( (String) users_json.get("friends_count") );
+				atts.add( (String) users_json.get("profile_background_image_url") );
+				atts.add( (String) users_json.get("statuses_count") );
+				atts.add( (String) users_json.get("screen_name") );
+				atts.add( (String) users_json.get("following") );
+				atts.add( (String) users_json.get("show_all_inline_media") );
+				
+				
+				for(int i = 0; i < atts.size(); i++) {
+					record.append(atts.get(i));
+					if(i<atts.size()-1)
+						record.append("|");
+				}
+				
+				context.write(null, new Text(record.toString()));
+				
+			}
 			
 			else if(tableName.equals("tweetjson")) {
 				context.write(null, value);

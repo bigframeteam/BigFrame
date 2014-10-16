@@ -432,19 +432,35 @@ class WF_ReportSaleSentimentVertica(basePath: BaseTablePath, num_iter: Int, json
 			stmt.execute(create_RptSalesByProdCmpn)
 						
 			
+			
+			
+			LOG.info("Begin to transfer tweets")
+			
+			val drop_tweet = "DROP TABLE IF EXISTS tweet_extract"
+			val create_tweet = "CREATE TABLE tweet_extract (user_id int, hashtag varchar(50), created_at TIMESTAMP, text varchar(200))"
+			val query_tweet = "INSERT INTO tweet_extract" +
+					"	SELECT user_id, hashtag, to_timestamp(created_at, 'WW Mon DD HH:MI:SS TZ YYYY') as created_at, text" +
+					"	FROM (SELECT twitter(json) over(partition by hash(json)) FROM tweetjson)"
+			
+			stmt.execute(drop_tweet)
+			stmt.execute(create_tweet)
+			stmt.execute(query_tweet)
+				
+			LOG.info("Finish transferring tweets")
+			
 			val drop_relevantTweet = "DROP TABLE IF EXISTS relevantTweet"
 			val create_relevantTweet = "CREATE TABLE relevantTweet" +
 					"	(item_sk int, user_id int, text varchar(200) )"
 			
 			stmt.execute(drop_relevantTweet)
 			stmt.execute(create_relevantTweet)
-			
 			LOG.info("Begin to get the set of relevant tweets")
 			val query_relevantTweet = "INSERT INTO relevantTweet" +
 					"		SELECT item_sk, user_id, text" +
 					"		FROM " +
-					"			(SELECT user_id, hashtag, to_timestamp(created_at, 'WW Mon DD HH:MI:SS TZ YYYY') as created_at, text" +
-					"			FROM (SELECT twitter(json) over(partition by hash(json)) from tweetjson) foo) t1 ," +
+					"			tweet_extract," +
+//					"			(SELECT user_id, hashtag, to_timestamp(created_at, 'WW Mon DD HH:MI:SS TZ YYYY') as created_at, text" +
+//					"			FROM (SELECT twitter(json) over(partition by hash(json)) from tweetjson) foo) t1 ," +
 //					"			FROM (SELECT twitter(json) over() from tweetjson) foo) t1 ," +
 					"			(SELECT item_sk, product_name, start_date, d_date as end_date" +
 					"			FROM " +
