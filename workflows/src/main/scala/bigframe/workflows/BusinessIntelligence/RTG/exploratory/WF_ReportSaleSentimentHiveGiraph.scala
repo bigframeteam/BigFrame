@@ -5,7 +5,7 @@ import bigframe.workflows.Query
 import bigframe.workflows.BaseTablePath
 import bigframe.workflows.BusinessIntelligence.graph.exploratory.WF_TwitterRankGiraph
 
-
+import org.apache.log4j.Logger
 import org.apache.giraph.conf.GiraphConfiguration
 
 import java.sql.Connection
@@ -14,6 +14,7 @@ import java.sql.SQLException
 class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, val useOrc: Boolean, 
 		num_giraph_workers: Int, baseTableSanppyEnable: Boolean = true) extends Query with HiveGiraphRunnable {
 
+	val LOG = Logger.getLogger(classOf[WF_ReportSaleSentimentHiveGiraph])
 	override def printDescription(): Unit = {}
 	
 	
@@ -39,7 +40,7 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 //			val lower = 1
 //			val upper = 300
 			
-			
+			LOG.info("Hive Execution: Get promotionSelected Begin")
 			val drop_promotionSelected = "DROP TABLE IF EXISTS promotionSelected"
 			val create_promotionSelected = "CREATE TABLE promotionSelected (promo_id string, item_sk int," +
 					"start_date_sk int, end_date_sk int)"
@@ -89,6 +90,8 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 			stmt.execute(drop_RptSalesByProdCmpn)			
 			stmt.execute(create_RptSalesByProdCmpn)
 			
+			LOG.info("Hive Execution: Get Relevant Tweets Begin")
+			
 			val drop_relevantTweet = "DROP TABLE IF EXISTS relevantTweet"
 			val create_relevantTweet = "CREATE TABLE relevantTweet" +
 					"	(item_sk int, user_id int, text string)"
@@ -126,7 +129,7 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 			stmt.execute(drop_senAnalyse)
 			stmt.execute(create_senAnalyse)
 			
-			
+			LOG.info("Hive Execution: Get tweetByUser Begin")
 			val drop_tweetByUser = "DROP TABLE IF EXISTS tweetByUser"
 			val create_tweetByUser = "CREATE TABLE tweetByUser (user_id int, num_tweets int)"
 				
@@ -140,6 +143,7 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 			stmt.execute(create_tweetByUser)
 			stmt.execute(query_tweetByUser)
 					
+			LOG.info("Hive Execution: Get tweetByProd Begin")
 			val drop_tweetByProd = "DROP TABLE IF EXISTS tweetByProd"
 			val create_tweetByProd = "CREATE TABLE tweetByProd (item_sk int, num_tweets int)"
 				
@@ -173,7 +177,7 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 			stmt.execute(drop_sumFriendTweets)
 			stmt.execute(create_sumFriendTweets)
 			
-			
+			LOG.info("Hive Execution: Get mentionProb Begin")
 			val drop_mentionProb = "DROP TABLE IF EXISTS mentionProb"
 			val create_mentionProb = "CREATE TABLE mentionProb (item_sk int, user_id int, prob float)"
 				
@@ -208,7 +212,7 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 			stmt.execute(create_simUserByProd)
 					
 					
-
+			LOG.info("Hive Execution: Get transitMatrix Begin")
 			val drop_transitMatrix = "DROP TABLE IF EXISTS transitMatrix"
 			val create_transitMatrix = "CREATE TABLE transitMatrix (item_sk int, follower_id int, friend_id int, transit_prob float)" 
 //				
@@ -262,7 +266,7 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 			stmt.execute(create_initialRank)
 //			stmt.execute(query_initialRank)
 			
-			
+			LOG.info("Hive Execution: Get rankAndsuffervec Begin")
 			val drop_rankAndsuffvec = "DROP TABLE IF EXISTS rankAndsuffervec"
 			val create_rankAndsuffvec = "CREATE TABLE rankAndsuffervec AS" +
 					"	SELECT initialRank.item_sk, initialRank.user_id, rank_score, prob" +
@@ -277,6 +281,7 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 			/**
 			 * Implement TwitterRank by Giraph
 			 */
+			LOG.info("Giraph Execution: Get twitterRank Begin")
 			val drop_twitterRank = "DROP TABLE IF EXISTS twitterRank"
 			val create_twitterRank = "CREATE EXTERNAL TABLE twitterRank (item_sk int, user_id int, rank_score float)" +
 					"	row format delimited fields terminated by \'|\' " +
@@ -288,7 +293,7 @@ class WF_ReportSaleSentimentHiveGiraph(basePath: BaseTablePath, num_iter: Int, v
 			val computeTwitterRank = new WF_TwitterRankGiraph(num_giraph_workers)
 			computeTwitterRank.runGiraph(giraph_config)
 								
-			
+			LOG.info("Hive Execution: Get RptSAProdCmpn Begin")
 			val drop_RptSAProdCmpn = "DROP TABLE IF EXISTS RptSAProdCmpn"
 			val create_RptSAProdCmpn = "CREATE TABLE RptSAProdCmpn (promo_id string, item_sk int, totalsales float , total_sentiment float)"
 					
