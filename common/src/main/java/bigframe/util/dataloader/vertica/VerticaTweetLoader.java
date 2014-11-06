@@ -163,7 +163,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 			}
 			
 			else if(tableName.equals("users")) {
-				JSONObject users_json = (JSONObject) tweet_json.get("users");
+				JSONObject users_json = (JSONObject) tweet_json.get("user");
 				
 				atts.add( (String) users_json.get("profile_sidebar_border_color") );
 				atts.add( (String) users_json.get("name") );
@@ -177,12 +177,12 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 				atts.add( (String) users_json.get("profile_link_color") );
 				atts.add( (String) users_json.get("favourites_count") );
 				atts.add( (String) users_json.get("url") );
-				atts.add( ((Boolean) users_json.get("contributors_enabled")).toString() );
+				atts.add( (String) users_json.get("contributors_enabled") );
 				atts.add( (String) users_json.get("utc_offset") );
-				atts.add( (String) users_json.get("id") );
+				atts.add( ((Long) users_json.get("id")).toString() );
 				atts.add( (String) users_json.get("profile_use_background_image") );
 				atts.add( (String) users_json.get("listed_count") );
-				atts.add( ((Boolean) users_json.get("protected")).toString() );
+				atts.add( (String) users_json.get("protected") );
 				atts.add( (String) users_json.get("lang") );
 				atts.add( (String) users_json.get("profile_text_color") );
 				atts.add( (String) users_json.get("followers_count") );
@@ -190,6 +190,7 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 				atts.add( (String) users_json.get("verified") );
 				atts.add( (String) users_json.get("geo_enabled") );
 				atts.add( (String) users_json.get("profile_background_color") );
+				atts.add( (String) users_json.get("notifications") );
 				atts.add( (String) users_json.get("description") );
 				atts.add( (String) users_json.get("friends_count") );
 				atts.add( (String) users_json.get("profile_background_image_url") );
@@ -236,10 +237,10 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 			
     	String createUsers = "CREATE TABLE users (profile_sidebar_border_color char(20)," +
 			    		"name varchar(70), profile_sidebar_fill_color char(20), profile_background_tile char(20), "+
-			    		"profile_image_url varchar(70), location varchar(20), created_at  TIMESTAMP WITH TIMEZONE," +
+			    		"profile_image_url varchar(70), location varchar(20), created_at  char(10)," +
 			    		"id_str char(20), follow_request_sent varchar(20), profile_link_color char(20)," + 
-			    		"favourites_count char(10),  url varchar(70), contributors_enabled BOOLEAN, utc_offset varchar(20)," +
-			    		"id char(10), profile_use_background_image varchar(70), listed_count char(10), protected BOOLEAN," +
+			    		"favourites_count char(10),  url varchar(70), contributors_enabled char(10), utc_offset varchar(20)," +
+			    		"id int, profile_use_background_image varchar(70), listed_count char(10), protected char(10)," +
 			    		"lang char(20), profile_text_color char(20), followers_count char(10), time_zone char(20)," +
 			    		"verified char(10), geo_enabled char(10), profile_background_color varchar(70)," +
 			    		"notifications char(10), description varchar(200), friends_count char(10), profile_background_image_url varchar(120),"+
@@ -365,6 +366,29 @@ public class VerticaTweetLoader extends VerticaDataLoader {
 				    			"username='" + workIF.getHadoopUserName() + "')";
 				    	
 				    	if(stmt.execute(copyToEntites))
+				    		return true;
+				    	else 
+				    		return false;
+			    	}
+			    	else
+			    		return false;
+			    }
+			    
+			    else  if(table.equals("users")) {
+					String hdfs_dir = USERS_TEMP_DIR;
+					Path outputDir = new Path(hdfs_dir);	
+
+					if(fs.exists(outputDir))
+						fs.delete(outputDir, true);
+			    	
+					FileOutputFormat.setOutputPath(job, outputDir);
+					
+			    	if(job.waitForCompletion(true)) {
+			    	
+				    	String copyToUsers = "COPY users SOURCE Hdfs(url='" + workIF.getWEBHDFSRootDIR() + USERS_TEMP_DIR+"/part-*'," +
+				    			"username='" + workIF.getHadoopUserName() + "')";
+				    	
+				    	if(stmt.execute(copyToUsers))
 				    		return true;
 				    	else 
 				    		return false;

@@ -287,6 +287,7 @@ public class DataLoaderDriver {
 					if(TWEET_STORE_TYPE.equals(BigConfConstants.TWEET_AS_STRING))
 						dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
 					else if(TWEET_STORE_TYPE.equals(BigConfConstants.TWEET_NORMALIZED)) {
+						dataloader.load(new Path(line.getOptionValue(SRC)), "users");
 						dataloader.load(new Path(line.getOptionValue(SRC)), "tweet");
 						dataloader.load(new Path(line.getOptionValue(SRC)), "entities");
 					}
