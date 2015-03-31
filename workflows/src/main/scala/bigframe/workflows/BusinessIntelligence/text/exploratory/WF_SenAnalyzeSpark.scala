@@ -12,6 +12,8 @@ import bigframe.workflows.util.SenExtractorFactory
 import bigframe.workflows.util.SentimentExtractor
 
 
+
+
 class WF_SenAnalyzeSpark(basePath : BaseTablePath, regex: String = "*") extends SparkRunnable {
     final var OUTPUT_PATH = "OUTPUT_PATH"
     private var output_path: String = System.getenv(OUTPUT_PATH) + "/spark/nested"

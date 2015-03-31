@@ -15,7 +15,7 @@ class DateUtils extends Serializable {
         java.util.Locale.ENGLISH) 
   
     def apply() = {
-      println("Apply in DateUtils")
+      //println("Apply in DateUtils")
 	  tweetDateFormat.setLenient(true)
 	  tpcdsDateFormat.setLenient(true)   
     }
@@ -25,7 +25,7 @@ class DateUtils extends Serializable {
      */
     private def fromTweetToDate(date_string: String): Date = {
     	val date = try {
-    	  println("Parsing tweet date: " + date_string)
+    	  //println("Parsing tweet date: " + date_string)
     	  return tweetDateFormat.parse(date_string)
     	} catch {
     	  case e: Exception => println(e) 
@@ -38,7 +38,7 @@ class DateUtils extends Serializable {
      */
     private def fromTpcdsToDate(date_string: String): Date = {
     	val date = try {
-    	  println("Parsing TPCDS date: " + date_string)
+    	  //println("Parsing TPCDS date: " + date_string)
     	  return tpcdsDateFormat.parse(date_string)
     	} catch {
     	  case e: Exception => println(e) 
@@ -51,7 +51,7 @@ class DateUtils extends Serializable {
      */
     def isDateWithin(tweet_date_string: String, from_date_string: String, 
         to_date_string: String): Boolean = {
-      println("Trying to find whether " + tweet_date_string + " is within " + from_date_string + " and " + to_date_string)
+      //println("Trying to find whether " + tweet_date_string + " is within " + from_date_string + " and " + to_date_string)
       val tweet_date = fromTweetToDate(tweet_date_string)
       val from_date = fromTpcdsToDate(from_date_string)
       val to_date = fromTpcdsToDate(to_date_string)

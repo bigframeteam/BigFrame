@@ -21,7 +21,7 @@ import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.graph.kroneckerGraph.KroneckerGraphGen;
 import bigframe.datagen.relational.tpcds.CollectTPCDSstatNaive;
-
+import bigframe.util.MapRedConfig;
 
 /**
  * Hadoop implementation of the raw tweet generator.
@@ -93,13 +93,7 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		long dateBegin_time_sec = dateBegin.getTime() / 1000;
 		long dateEnd_time_sec = dateEnd.getTime() / 1000;
 
-		Configuration mapred_config = new Configuration();
-		mapred_config.addResource(new Path(conf.getProp().get(
-				BigConfConstants.BIGFRAME_HADOOP_HOME)
-				+ "/conf/core-site.xml"));
-		mapred_config.addResource(new Path(conf.getProp().get(
-				BigConfConstants.BIGFRAME_HADOOP_HOME)
-				+ "/conf/mapred-site.xml"));
+		Configuration mapred_config = MapRedConfig.getConfiguration(conf);
 
 		try {
 			DistributedCache.addCacheFile(new URI(RawTweetGenConstants.PROMOTION_TBL+".dat"), 

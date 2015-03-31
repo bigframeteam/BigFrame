@@ -164,7 +164,24 @@ public class VerticaGraphLoader extends VerticaDataLoader {
 
 	@Override
 	public void prepareBaseTable() throws SQLException {
-		// TODO Auto-generated method stub
+		initConnection(); 
+		Statement stmt = connection.createStatement();
+		connection.setAutoCommit(false);
+		String [] drop_table = {"DROP TABLE IF EXISTS twitter_graph"};
+		
+		for(String str : drop_table) {
+			stmt.addBatch(str);
+		}
+		
+		String createWebSales = "create table twitter_graph(friend_id int, follower_id int)"; 
+		stmt.addBatch(createWebSales);
+		
+		
+		System.out.println("Preparing base tables!");
+		stmt.executeBatch();
+		connection.commit();		
+		
+		closeConnection();
 		
 	}
 

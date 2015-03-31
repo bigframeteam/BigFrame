@@ -1,0 +1,25 @@
+@namespace("bigframe.avro")
+protocol SparkParquetAvro_P {
+
+	record Promotion {
+		int p_promo_sk;
+		union {null, string} p_promo_id;
+		union {null, int} p_start_date_sk;
+		union {null, int} p_end_date_sk;
+		union {null, int} p_item_sk;
+		union {null, float} p_cost;
+		union {null, int} p_response_target;
+		union {null, string} p_promo_name;
+		union {null, string} p_channel_dmail;
+		union {null, string} p_channel_email;
+		union {null, string} p_channel_catalog;
+		union {null, string} p_channel_tv;
+		union {null, string} p_channel_radio;
+		union {null, string} p_channel_press;
+		union {null, string} p_channel_event;
+		union {null, string} p_channel_demo;
+		union {null, string} p_channel_details;
+		union {null, string} p_purpose;
+		union {null, string} p_discount_active; 
+	}
+}

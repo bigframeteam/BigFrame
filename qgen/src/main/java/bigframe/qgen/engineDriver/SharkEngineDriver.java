@@ -3,6 +3,7 @@ package bigframe.qgen.engineDriver;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,19 +58,25 @@ public class SharkEngineDriver extends EngineDriver {
 			
 			String UDF_JAR = workIF.getProp().get(BigConfConstants.BIGFRAME_UDF_JAR);
 			
-			connection.createStatement().execute("DELETE JAR " + UDF_JAR);
-			LOG.info("Adding UDF JAR " + UDF_JAR + " to shark server");
-			if(connection.createStatement().execute("ADD JAR " + UDF_JAR)) {
+			Statement stmt = connection.createStatement();
+			stmt.execute("DELETE JAR " + UDF_JAR);
+			LOG.info("Adding UDF JAR " + UDF_JAR + " to hive server");
+			if(stmt.execute("ADD JAR " + UDF_JAR)) {
 				LOG.info("Adding UDF JAR successful!");
+				stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'");
+				stmt.execute("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'");
+//				stmt.execute("set hive.auto.convert.join=false");
+				stmt.execute("set mapred.reduce.tasks=40");
 			}
 			else {
 				LOG.error("Adding UDF JAR failed!");
 			}
 			
-			for(SharkRunnable query : queries) {
-				LOG.info("Prepare tables...");
-				query.prepareSharkTables(connection);
-			}
+			if(!workIF.getSkipPrepareTable())
+				for(SharkRunnable query : queries) {
+					LOG.info("Prepare tables...");
+					query.prepareSharkTables(connection);
+				}
 		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -84,7 +91,7 @@ public class SharkEngineDriver extends EngineDriver {
 	
 	@Override
 	public void run() {
-		System.out.println("Running Shark Query");
+		LOG.info("Running Shark Query");
 		
 		for(SharkRunnable query : queries) {
 			if(query.runShark(connection))

@@ -1,0 +1,10 @@
+@namespace("bigframe.avro")
+protocol SparkParquetAvro_URL {
+
+	record Url {
+		union {null, string} expanded_url;
+		union {null, array<int>} indices;
+		union {null, string} url;
+	}
+
+}

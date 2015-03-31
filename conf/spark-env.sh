@@ -8,6 +8,7 @@ export SPARK_HOME="/usr/spark-1.0.1"
 # Path of Scala installation home.
 export SCALA_HOME="/usr/scala-2.10.3"
 
+
 # Spark memory parameters, defaults will be used if unspecified
 # Make sure that SPARK_WORKER_MEM and SPARK_WORKER_CORES are set 
 # to their optimal values in the spark_env.sh within Spark installation
@@ -25,6 +26,15 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.spark.home=${SPARK_HOME}"
 # The Shark Home
 SHARK_HOME=$SHARK_HOME
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.shark.home=${SHARK_HOME}"
+
+# Use Shark RC file or not
+SHARK_RC="true"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.shark.rc=${SHARK_RC}"
+
+# The Spark Home Directory
+SHARK_ENABLE_SNAPPY="true"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.shark.enable.snappy=${SHARK_ENABLE_SNAPPY}"
+
 
 # Local directory for Spark scratch space
 SPARK_LOCAL_DIR="/tmp/spark_local"

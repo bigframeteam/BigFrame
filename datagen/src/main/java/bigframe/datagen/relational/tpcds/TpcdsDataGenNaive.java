@@ -9,8 +9,6 @@ import org.apache.log4j.Logger;
 
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigDataInputFormat;
-import bigframe.datagen.DataGenerator;
-import bigframe.datagen.relational.RelationalDataGen;
 import bigframe.datagen.relational.twittermapping.TwitterMappingGenNaive;
 
 /**
@@ -29,7 +27,7 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 	private String local_dir;
 	private String datagen_script;
 	private String hadoop_slaves;
-	private String dagegen_script_path;
+	private String datagen_script_path;
 	
 	TwitterMappingGenNaive twitter_mapping;
 	
@@ -56,7 +54,7 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 		datagen_script = conf.getProp().get(BigConfConstants.BIGFRAME_TPCDS_SCRIPT);
 		hadoop_slaves = conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_SLAVE);
 		
-		dagegen_script_path = (new File(datagen_script)).getParentFile().getAbsolutePath();
+		datagen_script_path = (new File(datagen_script)).getParentFile().getAbsolutePath();
 	}
 
 	public void setHDFSPATH(String path) {
@@ -67,7 +65,7 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 	@Override
 	public void generate() {
 		// TODO Auto-generated method stub
-		System.out.println("Generating TPCDS data");
+		LOG.info("Generating TPCDS data");
 		
 		String cmd = "perl " 
 				   + datagen_script + " " 
@@ -80,7 +78,7 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 		
 		try {
             Runtime rt = Runtime.getRuntime();
-            Process proc = rt.exec(cmd, null, new File(dagegen_script_path));
+            Process proc = rt.exec(cmd, null, new File(datagen_script_path));
             
             InputStream stderr =  proc.getErrorStream();
             InputStream stdout = proc.getInputStream();

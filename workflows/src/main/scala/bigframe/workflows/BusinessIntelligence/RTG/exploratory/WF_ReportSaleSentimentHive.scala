@@ -34,10 +34,10 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 		val tablePreparator = new PrepareTable_Hive(basePath)
 		
 	    if(useOrc == true) {
-   		    tablePreparator.prepareTableImpl2(connection)
+   		    tablePreparator.prepareTableORCFile(connection)
 	    }
 	    else {
-	        tablePreparator.prepareTableImpl1(connection)
+	        tablePreparator.prepareTableTextFile(connection)
 	    }
 	}
 	

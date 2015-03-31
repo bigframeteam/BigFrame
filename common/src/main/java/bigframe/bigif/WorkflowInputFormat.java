@@ -19,10 +19,18 @@ public class WorkflowInputFormat extends Config {
 	private String HADOOP_USERNAME = "";
 	
 	private String HIVE_HOME = "";
+	private String HIVE_WAREHOUSE = "";
 	private String HIVE_JDBC_SERVER = "";
+	private String HIVE_JDBC_USERNAME = "";
+	private String HIVE_JDBC_PASSWORD = "";
 	private boolean HIVE_ORC = true;
 	
+	private boolean SKIP_PREPARE_TABLE = false;
+	
 	private String SHARK_HOME = "";
+	private boolean SHARK_RC = true;
+	private boolean SHARK_SNAPPY = true;
+	
 	private String SPARK_HOME = "";
 	private String SPARK_MASTER = "";
 	private String SPARK_LOCAL_DIR = "";
@@ -39,6 +47,9 @@ public class WorkflowInputFormat extends Config {
 	private String VERTICA_PASSWORD = "";
 	private String VERTICA_JDBC_SERVER = "";
 	private String VERTICA_HOME = "";
+	
+	private String IMPALA_JDBC_SERVER = "";
+	private String IMPALA_HIVE_FILEFORMAT = "";
 	
 	private String KAFKA_HOME = "";
 	private String KAFKA_BROKER_LIST = "";
@@ -66,12 +77,28 @@ public class WorkflowInputFormat extends Config {
 		return HDFS_ROOT_DIR;
 	}
 	
+	public boolean getSkipPrepareTable() {
+		return SKIP_PREPARE_TABLE;
+	}
+	
 	public String getHiveHome() {
 		return HIVE_HOME;
 	}
 	
+	public String getHiveWareHouse() {
+		return HIVE_WAREHOUSE;
+	}
+	
 	public String getHiveJDBCServer() {
 		return HIVE_JDBC_SERVER;
+	}
+	
+	public String getHiveJDBCUserName() {
+		return HIVE_JDBC_USERNAME;
+	}
+	
+	public String getHiveJDBCPassword() {
+		return HIVE_JDBC_PASSWORD;
 	}
 	
 	public boolean getHiveORC() {
@@ -80,6 +107,14 @@ public class WorkflowInputFormat extends Config {
 	
 	public String getSharkHome() {
 		return SHARK_HOME;
+	}
+	
+	public boolean getSharkRC() {
+		return SHARK_RC;
+	}
+	
+	public boolean getSharkSnappy() {
+		return SHARK_SNAPPY;
 	}
 	
 	public String getSparkHome() {
@@ -142,6 +177,13 @@ public class WorkflowInputFormat extends Config {
 		return VERTICA_HOME;
 	}
 	
+	public String getImpalaJDBCServer() {
+		return IMPALA_JDBC_SERVER;
+	}
+	
+	public String getImpalaHiveFileFormat() {
+		return IMPALA_HIVE_FILEFORMAT;
+	}
 	
 	public String getKafkaHome() {
 		return KAFKA_HOME;
@@ -181,12 +223,29 @@ public class WorkflowInputFormat extends Config {
 				HDFS_ROOT_DIR = value;
 			}
 			
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_SKIP_PREPARE_TABLE)) {
+				SKIP_PREPARE_TABLE = Boolean.valueOf(value);
+			}
+			
 			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_HOME)) {
 				HIVE_HOME = value;
 			}
 			
+			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_WAREHOUSE)) {
+				HIVE_WAREHOUSE = value;
+			}
+			
 			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_JDBC_SERVER)) {
 				HIVE_JDBC_SERVER = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_JDBC_USERNAME)) {
+				HIVE_JDBC_USERNAME = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_JDBC_PASSWORD)) {
+				HIVE_JDBC_PASSWORD = value;
 			}
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_HIVE_ORC)) {
@@ -195,6 +254,15 @@ public class WorkflowInputFormat extends Config {
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_SHARK_HOME)) {
 				SHARK_HOME = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_SHARK_RC)) {
+				SHARK_RC = Boolean.valueOf(value);
+			}
+			
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_SHARK_ENABLE_SNAPPY)) {
+				SHARK_SNAPPY = Boolean.valueOf(value);
 			}
 			
 			
@@ -258,6 +326,14 @@ public class WorkflowInputFormat extends Config {
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_VERTICA_HOME)) {
 				VERTICA_HOME = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_IMPALA_JDBC_SERVER)) {
+				IMPALA_JDBC_SERVER = value;
+			}
+			
+			else if (key.equals(BigConfConstants.BIGFRAME_IMPALAHIVE_FILE_FORMAT)) {
+				IMPALA_HIVE_FILEFORMAT = value;
 			}
 			
 			else if (key.equals(BigConfConstants.BIGFRAME_KAFKA_HOME)) {

@@ -43,22 +43,36 @@ LogFactory.getLog(classOf[SparkEngineDriver])
 	
 	def init() {
 	  	readEnvVars()
+	  	
+	  	
+	  	System.setProperty("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+		System.setProperty("spark.kryo.registrator", "bigframe.avro.BigFrameKryoRegistrator")
+		val sc = new SparkContext(spark_connection_string, "BigFrame", 
+			spark_home_string, Seq(jar_path_string))
+	  	
+	  	LOG.info("Preparig Spark Queries");
+	  	for(query: SparkRunnable <- queries) {
+	  		query.prepareSpark(sc)
+	  	}
 	}
 	
 	def run() {	
-		init()
+		readEnvVars()
+		
 		LOG.info("Running Spark Query");
 		for(query: SparkRunnable <- queries) {
-			System.setProperty("spark.local.dir", spark_local_dir)
+			
 			System.setProperty("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+			System.setProperty("spark.kryo.registrator", "bigframe.avro.BigFrameKryoRegistrator")
 			// Following statement is ineffective, commenting it
 			// System.setProperty("spark.default.parallelism", spark_dop)
-			System.setProperty("spark.storage.memoryFraction", memory_fraction.toString())
-			System.setProperty("spark.rdd.compress", compress_memory.toString())
-			System.setProperty("spark.shuffle.compress", compress_memory.toString())
-			System.setProperty("spark.broadcast.compress", compress_memory.toString())
+//			System.setProperty("spark.storage.memoryFraction", memory_fraction.toString())
+//			System.setProperty("spark.rdd.compress", compress_memory.toString())
+//			System.setProperty("spark.shuffle.compress", compress_memory.toString())
+//			System.setProperty("spark.broadcast.compress", compress_memory.toString())
 			val sc = new SparkContext(spark_connection_string, "BigFrame", 
 						spark_home_string, Seq(jar_path_string))
+			
 			if(query.runSpark(sc)) {
 				LOG.info("Query Finished");
 			}
@@ -87,5 +101,7 @@ LogFactory.getLog(classOf[SparkEngineDriver])
 //		spark_dop = workIF.getSparkDop()
 		memory_fraction = workIF.getSparkMemoryFraction()
 		compress_memory = workIF.getSparkCompressMemory()
+		
+		System.setProperty("spark.local.dir", spark_local_dir)
 	}	
 }

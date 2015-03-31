@@ -44,12 +44,16 @@ CONF_DIR=$BASE_DIR/conf
 # Get the user-defined vertica parameters
 . "$BASE_DIR"/conf/vertica-env.sh
 
+# Get the user-defined vertica parameters
+. "$BASE_DIR"/conf/impala-env.sh
+
 
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.script=${TPCDS_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.updatescript=${TPCDS_UPDATE_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.singletblgen.script=${GEN_PROMTTBL_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.conf.dir=${CONF_DIR}"
 
+SCALA_VERSION="2.9.3"
 
 COMMON_JAR=`ls $BASE_DIR/common/target/scala-${SCALA_VERSION}/bigframe-common-assembly*.jar`
 

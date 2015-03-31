@@ -7,6 +7,7 @@ import java.util.Random;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.log4j.Logger;
 
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigDataInputFormat;
@@ -14,6 +15,7 @@ import bigframe.datagen.graph.kroneckerGraph.KroneckerGraphGen;
 import bigframe.datagen.relational.tpcds.CollectTPCDSstat;
 import bigframe.datagen.relational.tpcds.CollectTPCDSstatNaive;
 import bigframe.datagen.util.RandomSeeds;
+
 import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
 import cern.jet.random.sampling.RandomSampler;
@@ -24,6 +26,9 @@ import cern.jet.random.sampling.RandomSampler;
  *
  */
 public class TwitterMappingGenNaive extends TwitterMappingGen {
+	
+	private static final Logger LOG = Logger.getLogger(TwitterMappingGenNaive.class);
+	
 	private float tpcds_proportion;
 	private float twitter_graph_proportion;
 	
@@ -53,7 +58,7 @@ public class TwitterMappingGenNaive extends TwitterMappingGen {
 		//num_twitter_user = Constants.GRAPH_SF_MAP.get(twitter_graph_proportion);
 		
 		if(!valid()){
-			System.out.println("Set a smaller proportion for relational or set a larger proportion for graph!");
+			LOG.error("Set a smaller proportion for relational or set a larger proportion for graph!");
 			System.exit(-1);
 		}
 		
@@ -93,7 +98,7 @@ public class TwitterMappingGenNaive extends TwitterMappingGen {
 	
 	@Override
 	public void generate() {
-		System.out.println("Generating Twitter Mapping data");
+		LOG.info("Generating Twitter Mapping data");
 		
 		// TODO Auto-generated method stub
 		try {

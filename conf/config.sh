@@ -22,7 +22,7 @@ HADOOP_SLAVES=$HADOOP_HOME/conf/slaves
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hadoop.slaves=${HADOOP_SLAVES}"
 
 # Local Directory to store the temporary TPCDS generated files
-TPCDS_LOCAL=/home/shlee0605/tmp/tpcds_tmp
+TPCDS_LOCAL=~/tmp/tpcds_tmp
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.local=${TPCDS_LOCAL}"
 
 # Local Directory to store the itermediate data used for data refershing

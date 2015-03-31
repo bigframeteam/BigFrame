@@ -20,13 +20,9 @@
 	
 	<property>
 		<name>bigframe.datavolume</name>
-		<value>test</value>
+		<value>3</value>
 		<description>
-			tiny: around 10GB
-			small: around 100GB
-			medium: around 1TB
-			large: around 10TB
-			extra large: around 100TB 
+			size in GB.
 		</description>
 	</property>
 	
@@ -160,7 +156,7 @@
 	
 	<property>
 		<name>bigframe.queryengine.graph</name>
-		<value>hadoop</value>
+		<value>vertica</value>
 	</property>
 	
 	<property>

@@ -280,9 +280,9 @@ public class DataLoaderDriver {
 
 					
 					LOG.info("Begin loading the tweet data");
-//					dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
-					dataloader.load(new Path(line.getOptionValue(SRC)), "tweet");
-					dataloader.load(new Path(line.getOptionValue(SRC)), "entities");
+					dataloader.load(new Path(line.getOptionValue(SRC)), "tweetjson");
+//					dataloader.load(new Path(line.getOptionValue(SRC)), "tweet");
+//					dataloader.load(new Path(line.getOptionValue(SRC)), "entities");
 					LOG.info("End loading the tweet data");
 					
 					try {
@@ -297,7 +297,21 @@ public class DataLoaderDriver {
 				else if(line.getOptionValue(DATATYPE).equals(Constants.GRAPH)) {
 					VerticaDataLoader dataloader = new VerticaGraphLoader(workflowIF);
 					
+					try {
+						dataloader.prepareBaseTable();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 					dataloader.load(new Path(line.getOptionValue(SRC)), "twitter_graph");
+					
+					try {
+						dataloader.alterBaseTable();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				
 				else {

@@ -1,0 +1,9 @@
+@namespace("bigframe.avro")
+protocol SparkParquetAvro_TG {
+
+	record Twitter_Graph {
+		int friend_id;
+		int follower_id;
+	}
+
+}

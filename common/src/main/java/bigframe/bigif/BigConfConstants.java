@@ -16,6 +16,10 @@ import bigframe.util.Constants;
  */
 public class BigConfConstants {
 
+	// System Environment Constants
+	public static final String WORKFLOWS_JAR = "WORKFLOWS_JAR";
+	
+	
 	// Properties not related to data and query
 	public static final String BIGFRAME_CONF_DIR = "bigframe.conf.dir";
 	
@@ -23,23 +27,33 @@ public class BigConfConstants {
 	/**
 	 * Hadoop specific
 	 */
+	public static final String BIGFRAME_HADOOP_DISTRIBUTION = "bigframe.hadoop.distribution";
 	public static final String BIGFRAME_HADOOP_HOME = "bigframe.hadoop.home";
 	public static final String BIGFRAME_HDFS_ROOTDIR = "bigframe.hdfs.root.dir";
 	public static final String BIGFRAME_WEBHDFS_ROOTDIR = "bigframe.webhdfs.root.dir";
 	public static final String BIGFRAME_HADOOP_SLAVE = "bigframe.hadoop.slaves";
 	public static final String BIGFRAME_HADOOP_USERNAME = "bigframe.hadoop.username";
 	
+	
+	// SQL related
+	public static final String BIGFRAME_SKIP_PREPARE_TABLE = "bigframe.skip.prepare.table";
+	
 	/**
 	 * Hive specific
 	 */
 	public static final String BIGFRAME_HIVE_HOME = "bigframe.hive.home";
+	public static final String BIGFRAME_HIVE_WAREHOUSE = "bigframe.hive.warehouse";
 	public static final String BIGFRAME_HIVE_JDBC_SERVER = "bigframe.hive.jdbc.server";
+	public static final String BIGFRAME_HIVE_JDBC_USERNAME = "bigframe.hive.jdbc.username";
+	public static final String BIGFRAME_HIVE_JDBC_PASSWORD = "bigframe.hive.jdbc.password";
 	public static final String BIGFRAME_HIVE_ORC = "bigframe.hive.orc";
 
 	/**
 	 * Shark specific
 	 */
 	public static final String BIGFRAME_SHARK_HOME = "bigframe.shark.home";
+	public static final String BIGFRAME_SHARK_RC = "bigframe.shark.rc";
+	public static final String BIGFRAME_SHARK_ENABLE_SNAPPY = "bigframe.shark.enable.snappy";
 	
 	/**
 	 * Spark specific
@@ -63,6 +77,15 @@ public class BigConfConstants {
 	public static final String BIGFRAME_VERTICA_DATABASE = "bigframe.vertica.database";
 	public static final String BIGFRAME_VERTICA_JDBC_SERVER = "bigframe.vertica.jdbc.server";
 	public static final String BIGFRAME_VERTICA_HOME = "bigframe.vertica.home";
+	
+	/**
+	 * Impala specific
+	 * 
+	 */
+	public static final String BIGFRAME_IMPALA_JDBC_SERVER = "bigframe.impala.jdbc.server";
+	
+	public static final String BIGFRAME_IMPALAHIVE_FILE_FORMAT = "bigframe.impalahive.file.format";
+	
 	
 	/**
 	 * Kafka specific

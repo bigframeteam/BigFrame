@@ -2,17 +2,23 @@ import sbt._
 import Keys._
 import sbtassembly.Plugin._
 import AssemblyKeys._
+import sbtavro.SbtAvro
+//import com.twitter.scrooge.ScroogeSBT
+
+import scala.util.Properties.{ envOrNone => env } 
 
 object BigFrameBuild extends Build {
 	
 	// Hadoop version to build against.
-	val HADOOP_VERSION = "1.0.4"
+	val DEFAULT_HADOOP_VERSION = "1.0.4"
 
 	// Spark version to build againt.
 	val SPARK_VERSION = "1.0.1"
 
 	// Scala version
 	val SCALA_VERSION = "2.10.3"
+
+	lazy val cloudera_hadoop = env("CLOUDERA_HADOOP")
 	
 	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, workflows)
 
@@ -37,9 +43,15 @@ object BigFrameBuild extends Build {
 		fork := false,
 		javaOptions += "-Xmx1024m",
 
+		retrieveManaged := true,
+
     	resolvers ++= Seq(
 	    	"Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-			"spray" at "http://repo.spray.io/"
+			"spray" at "http://repo.spray.io/",
+			"JBoss Repository" at "http://repository.jboss.org/nexus/content/repositories/releases/",
+      		"Cloudera Repository" at "https://repository.cloudera.com/artifactory/cloudera-repos/",
+      		"Local Maven" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
+
 		),
 
 		libraryDependencies ++= Seq(
@@ -50,14 +62,37 @@ object BigFrameBuild extends Build {
 			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
-			"log4j" % "log4j" % "1.2.16" % "provided",
 			"org.slf4j" % "slf4j-log4j12" % "1.6.1",
 			"commons-configuration" % "commons-configuration" % "1.6" % "provided",
+			"org.apache.spark" % "spark-core_2.9.3" % "0.8.1-incubating" % "provided",
+     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.1-incubating" % "provided",
+			"edu.berkeley.cs.amplab" % "shark_2.9.3" % "0.8.1" excludeAll (
+				ExclusionRule(organization = "org.apache.thrift")
+			), // cannot make it "provided" when using sharkcontext
 			"commons-logging" % "commons-logging" % "1.1.1" % "provided",
 			"com.novocode" % "junit-interface" % "0.10-M2" % "test"
-		)
-										)
+		) ++ hadoopSettings
+
+		
+
+	)
 			
+	def hadoopSettings = {
+		
+		cloudera_hadoop match {
+		case Some("true") =>
+			Seq(
+	        	"org.apache.hadoop" % "hadoop-core" % "2.2.0-mr1-cdh5.0.0-beta-2" % "provided",
+	        	"org.apache.hadoop" % "hadoop-common" % "2.2.0-cdh5.0.0-beta-2" % "provided",
+				"net.java.dev.jets3t" % "jets3t" % "0.6.1" % "provided"
+			)
+		
+		case _ =>
+			Seq(
+	        	"org.apache.hadoop" % "hadoop-core" % DEFAULT_HADOOP_VERSION % "provided"
+			)
+		}
+	}
 
 	def rootSettings = sharedSettings ++ Seq(
 		publish := {}
@@ -92,13 +127,21 @@ object BigFrameBuild extends Build {
 		//	"repo.codahale.com" at "http://repo.codahale.com"
 		//),	
 
+
 		libraryDependencies ++= Seq(
 			"io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
 			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1", 
 			"org.apache.hive" % "hive-exec" % "0.12.0" % "provided",
-			"org.apache.hive" % "hive-common" % "0.12.0" % "provided"
+			"org.apache.hive" % "hive-common" % "0.12.0" % "provided",
+			"com.twitter" % "parquet-avro" % "1.3.2" % "provided"  excludeAll (
+				ExclusionRule(organization = "org.apache.hadoop")
+			),
+			"org.apache.avro" % "avro" % "1.7.4" % "provided"
+			//"com.twitter" % "scrooge-core_2.9.2" % "3.12.2",
+			//"org.apache.thrift" % "libthrift" % "0.9.0",
+			//"com.twitter" % "finagle-thrift_2.9.2" % "6.10.0"
 		)
-	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
+	) ++ extraAssemblySettings ++ excludeJARfromCOMMON // ++ sbtAvroSettings  //++ ScroogeSBT.newSettings
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-qgen",
@@ -108,7 +151,12 @@ object BigFrameBuild extends Build {
 				 case "giraph-*jar" => true
 				 case _  => false
 				}}
-		}
+		},
+		
+		mergeStrategy in assembly := {
+     		case m if m startsWith "org/apache/thrift" => MergeStrategy.discard
+      		case _ => MergeStrategy.first
+    	}
 
 		//libraryDependencies ++= Seq(
 		//	"org.apache.spark" % "spark-mllib_2.9.3" % "0.8.0-incubating"
@@ -126,6 +174,10 @@ object BigFrameBuild extends Build {
     	}
 	)
 
+	def sbtAvroSettings() = SbtAvro.avroSettings ++ Seq(
+		javaSource in sbtavro.SbtAvro.avroConfig <<= (sourceDirectory in Compile)(_ / "java")
+	)
+	
 	def excludeJARfromCOMMON() = Seq(
 		excludedJars in assembly <<= (fullClasspath in assembly) map { cp => 
 		  cp filter {_.data.getName == "hadoop-vertica-SNAPSHOT.jar"}

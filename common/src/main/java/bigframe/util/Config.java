@@ -12,6 +12,7 @@ import java.util.Map;
 public abstract class Config {
 	//private static final Logger LOG = Logger.getLogger(Configuration.class);
 	
+	
 	/**
 	 * A map contains a set of properties and their corresponding values.
 	 */
