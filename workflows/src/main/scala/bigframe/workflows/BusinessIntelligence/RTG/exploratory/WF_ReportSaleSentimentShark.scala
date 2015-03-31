@@ -315,9 +315,9 @@ class WF_ReportSaleSentimentShark(basePath: BaseTablePath, num_iter: Int, val us
 					"	SELECT promo_id, t.item_sk, totalsales, total_sentiment" +
 					"	FROM " +
 					"		(SELECT senAnalyse.item_sk, sum(rank_score * sentiment_score) as total_sentiment" +
-					"		FROM senAnalyse JOIN " + twitterRank +
-					"		ON senAnalyse.item_sk = " + twitterRank + ".item_sk " +
-					"		WHERE senAnalyse.user_id = " + twitterRank +".user_id" +
+					"		FROM senAnalyse JOIN  twitterRank "+
+					"		ON senAnalyse.item_sk = twitterRank.item_sk " +
+					"		AND senAnalyse.user_id = twitterRank.user_id" +
 					"		GROUP BY" +
 					"		senAnalyse.item_sk) t" +
 					"	JOIN RptSalesByProdCmpn " +
@@ -349,8 +349,6 @@ class WF_ReportSaleSentimentShark(basePath: BaseTablePath, num_iter: Int, val us
 	override def runShark(connection: Connection): Boolean = {
 		
 			return runSharkImpl1(connection)
-
 	}
 	
-		
 }
