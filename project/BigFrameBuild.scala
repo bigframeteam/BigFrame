@@ -2,8 +2,8 @@ import sbt._
 import Keys._
 import sbtassembly.Plugin._
 import AssemblyKeys._
-import sbtavro.SbtAvro
-//import com.twitter.scrooge.ScroogeSBT
+// import sbtavro.SbtAvro
+// import com.twitter.scrooge.ScroogeSBT
 
 import scala.util.Properties.{ envOrNone => env } 
 
@@ -57,18 +57,13 @@ object BigFrameBuild extends Build {
 		libraryDependencies ++= Seq(
 			"org.scalatest" %% "scalatest" % "1.9.1" % "test",
 			"org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-			"org.apache.spark" % "spark-core_2.10" % SPARK_VERSION,
-			"org.apache.spark" % "spark-hive_2.10" % SPARK_VERSION,
-			"org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
+			"org.apache.spark" % "spark-core_2.10" % SPARK_VERSION % "provided",
+			"org.apache.spark" % "spark-hive_2.10" % SPARK_VERSION % "provided",
+			"org.apache.hadoop" % "hadoop-core" % DEFAULT_HADOOP_VERSION % "provided",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
 			"org.slf4j" % "slf4j-log4j12" % "1.6.1",
 			"commons-configuration" % "commons-configuration" % "1.6" % "provided",
-			"org.apache.spark" % "spark-core_2.9.3" % "0.8.1-incubating" % "provided",
-     		"org.apache.spark" % "spark-bagel_2.9.3" % "0.8.1-incubating" % "provided",
-			"edu.berkeley.cs.amplab" % "shark_2.9.3" % "0.8.1" excludeAll (
-				ExclusionRule(organization = "org.apache.thrift")
-			), // cannot make it "provided" when using sharkcontext
 			"commons-logging" % "commons-logging" % "1.1.1" % "provided",
 			"com.novocode" % "junit-interface" % "0.10-M2" % "test"
 		) ++ hadoopSettings
@@ -108,7 +103,7 @@ object BigFrameBuild extends Build {
 		resolvers += "Apache repo" at "https://repository.apache.org/content/repositories/releases",
 
 		libraryDependencies ++= Seq(
-			"org.apache.kafka" % "kafka_2.9.2" % "0.8.0-beta1" exclude("com.sun.jmx","jmxri")
+			"org.apache.kafka" % "kafka_2.10" % "0.8.2.1" exclude("com.sun.jmx","jmxri")
 		 	exclude("com.sun.jdmk","jmxtools"),
 			"com.typesafe.akka" % "akka-actor" % "2.0.5",
 			"com.typesafe.akka" % "akka-kernel" % "2.0.5",
@@ -174,9 +169,9 @@ object BigFrameBuild extends Build {
     	}
 	)
 
-	def sbtAvroSettings() = SbtAvro.avroSettings ++ Seq(
-		javaSource in sbtavro.SbtAvro.avroConfig <<= (sourceDirectory in Compile)(_ / "java")
-	)
+	//def sbtAvroSettings() = SbtAvro.avroSettings ++ Seq(
+	//	javaSource in sbtavro.SbtAvro.avroConfig <<= (sourceDirectory in Compile)(_ / "java")
+	//)
 	
 	def excludeJARfromCOMMON() = Seq(
 		excludedJars in assembly <<= (fullClasspath in assembly) map { cp => 
