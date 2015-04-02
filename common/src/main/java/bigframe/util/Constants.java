@@ -25,6 +25,7 @@ public class Constants {
 	public static String SHARK = "shark";
 	public static String BAGEL = "bagel";
 	public static String SPARK = "spark";
+	public static String SPARKSQL = "sparkSQL";	
 	
 	public static String VERTICA = "vertica";
 	

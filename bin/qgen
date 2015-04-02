@@ -105,5 +105,7 @@ if [ "$SHARK_IN_USE" = true ]; then
 
 fi
 
+#echo $QGEN_CLASSPATH
+
 java -cp "$QGEN_CLASSPATH" -XX:MaxPermSize=128M bigframe.qgen.QGenDriver $BIGFRAME_OPTS "$@" 
 
