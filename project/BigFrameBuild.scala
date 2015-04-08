@@ -127,7 +127,7 @@ object BigFrameBuild extends Build {
 			//"org.apache.thrift" % "libthrift" % "0.9.0",
 			//"com.twitter" % "finagle-thrift_2.9.2" % "6.10.0"
 		)
-	) ++ extraAssemblySettings ++ excludeJARfromCOMMON ++ sbtAvroSettings  //++ ScroogeSBT.newSettings
+	) ++ extraAssemblySettings ++ excludeJARfromCOMMON  //++ ScroogeSBT.newSettings
 
 	def qgenSettings = assemblySettings ++ sharedSettings ++ Seq(
 		name := "bigframe-qgen",
@@ -159,10 +159,6 @@ object BigFrameBuild extends Build {
 
 	)
 
-	//def sbtAvroSettings() = SbtAvro.avroSettings ++ Seq(
-	//	javaSource in sbtavro.SbtAvro.avroConfig <<= (sourceDirectory in Compile)(_ / "java")
-	//)
-	
 	def excludeJARfromCOMMON() = Seq(
 		excludedJars in assembly <<= (fullClasspath in assembly) map { cp => 
 		  cp filter {_.data.getName == "hadoop-vertica-SNAPSHOT.jar"}
