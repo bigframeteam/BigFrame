@@ -56,8 +56,6 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.updatescript=${TPCDS_UPDATE_SCR
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.singletblgen.script=${GEN_PROMTTBL_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.conf.dir=${CONF_DIR}"
 
-SCALA_VERSION="2.9.3"
-
 COMMON_JAR=`ls $BASE_DIR/common/target/scala-${SCALA_VERSION}/bigframe-common-assembly*.jar`
 
 DATAGEN_JAR=`ls $BASE_DIR/datagen/target/scala-${SCALA_VERSION}/bigframe-datagen-assembly*.jar`
