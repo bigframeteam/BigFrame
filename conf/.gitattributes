@@ -2,3 +2,5 @@ bigframe-core.xml	merge=ours
 hadoop-env.sh	merge=ours
 vertica-env.sh	merge=ours
 spark-env.sh	merge=ours
+giraph-env.sh	merge=ours
+impala-env.sh	merge=ours
