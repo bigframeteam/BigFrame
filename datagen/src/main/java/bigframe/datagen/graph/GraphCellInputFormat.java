@@ -28,9 +28,7 @@ import bigframe.datagen.graph.kroneckerGraph.KronGraphInfoWritable;
  */
 public class GraphCellInputFormat extends
 InputFormat<NullWritable, KronGraphInfoWritable> {
-	/**
-	 * An input split consisting of a range of time.
-	 */
+
 	private static final Logger LOG = Logger
 			.getLogger(GraphCellInputFormat.class);
 
@@ -158,7 +156,6 @@ InputFormat<NullWritable, KronGraphInfoWritable> {
 	public RecordReader<NullWritable, KronGraphInfoWritable> createRecordReader(
 			InputSplit arg0, TaskAttemptContext arg1) throws IOException,
 			InterruptedException {
-		// TODO Auto-generated method stub
 		return new GraphCellRecordReader();
 	}
 
@@ -166,6 +163,8 @@ InputFormat<NullWritable, KronGraphInfoWritable> {
 		return Math.log(a) / Math.log(b);
 	}
 
+	// Generate all the possible cell paths.
+	// A path represents a sequence of chosen sub-regions when generating knongraph.
 	private List<InputSplit> getSplitRecursive(int k, List<int[]> path,
 			int steps_left) {
 

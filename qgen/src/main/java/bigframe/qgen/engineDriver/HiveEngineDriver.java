@@ -45,7 +45,7 @@ public class HiveEngineDriver extends EngineDriver {
 
 		try {
 			LOG.info("Connectiong to Hive JDBC server!!!");
-			connection = DriverManager.getConnection(workIF.getHiveJDBCServer(), "", "");
+			connection = DriverManager.getConnection(workIF().getHiveJDBCServer(), "", "");
 			if(connection == null) {
 				LOG.error("Cannot connect to JDBC server! " +
 						"Make sure the HiveServer is running!");
@@ -54,7 +54,7 @@ public class HiveEngineDriver extends EngineDriver {
 			else
 				LOG.info("Successful!!!");
 
-			String UDF_JAR = workIF.get().get(BigConfConstants.BIGFRAME_UDF_JAR);
+			String UDF_JAR = workIF().get().get(BigConfConstants.BIGFRAME_UDF_JAR);
 
 			Statement stmt = connection.createStatement();
 			stmt.execute("DELETE JAR " + UDF_JAR);
@@ -70,7 +70,7 @@ public class HiveEngineDriver extends EngineDriver {
 			}
 
 
-			if(!workIF.getSkipPrepareTable())
+			if(!workIF().getSkipPrepareTable())
 				for(HiveRunnable query : queries) {
 					LOG.info("Prepare tables...");
 					query.prepareHiveTables(connection);

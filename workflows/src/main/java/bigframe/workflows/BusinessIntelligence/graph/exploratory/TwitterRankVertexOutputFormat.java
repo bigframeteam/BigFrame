@@ -20,7 +20,6 @@ public class TwitterRankVertexOutputFormat extends
 		@Override
 		protected Text convertVertexToLine(
 				Vertex<Text, Text, DoubleWritable, ?> vertex) throws IOException {
-			// TODO Auto-generated method stub
 			Text line = new Text(vertex.getId().toString() + "|" + vertex.getValue().toString().split("\\|")[0]);
 			
 			return line;

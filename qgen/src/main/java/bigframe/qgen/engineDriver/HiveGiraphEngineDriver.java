@@ -51,7 +51,7 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 
 		try {
 			LOG.info("Connectiong to Hive JDBC server!!!");
-			connection = DriverManager.getConnection(workIF.getHiveJDBCServer(), "", "");
+			connection = DriverManager.getConnection(workIF().getHiveJDBCServer(), "", "");
 			if(connection == null) {
 				LOG.error("Cannot connect to JDBC server! " +
 						"Make sure the HiveServer is running!");
@@ -62,7 +62,7 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 			
 			
 			
-			String UDF_JAR = workIF.get().get(BigConfConstants.BIGFRAME_UDF_JAR);
+			String UDF_JAR = workIF().get().get(BigConfConstants.BIGFRAME_UDF_JAR);
 
 			Statement stmt = connection.createStatement();
 			stmt.execute("DELETE JAR " + UDF_JAR);
@@ -79,7 +79,7 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 			// HIVE will throw error when drop an nonexisting table
 			stmt.execute("set hive.exec.drop.ignorenonexistent = true");
 			
-			Map<String, String> properties = workIF.get();
+			Map<String, String> properties = workIF().get();
 			
 			for(Map.Entry<String, String> entry : properties.entrySet()) {
 				stmt.execute("set " + entry.getKey() + "=" + entry.getValue());
@@ -91,7 +91,7 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 //			stmt.execute("set hive.exec.reducers.max="+dop);
 //			stmt.execute("set mapred.job.reuse.jvm.num.tasks=10");
 			
-			if(!workIF.getSkipPrepareTable())
+			if(!workIF().getSkipPrepareTable())
 				for(HiveGiraphRunnable query : queries) {
 					LOG.info("Prepare tables...");
 					query.prepareHiveGiraphTables(connection);

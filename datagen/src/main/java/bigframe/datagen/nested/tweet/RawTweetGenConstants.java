@@ -26,7 +26,7 @@ public class RawTweetGenConstants {
 
 
 	public static final String TWEETGEN_NAME = "mapreduce.rawtweet.textgen";
-
+	public static final String TWEET_OUTPUT_PATH = "mapreduce.rawtweet.output.path";
 
 	public static final String TPCDS_TARGET_GB = "mapreduce.rawtweet.tpcds-target-GB";
 	public static final String GRAPH_TARGET_GB = "mapreduce.rawtweet.graph-target-GB";

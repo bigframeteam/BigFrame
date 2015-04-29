@@ -9,14 +9,12 @@ import java.util.Set;
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.appDomainInfo.BIDomainInfo;
-import bigframe.qgen.engineDriver.BagelEngineDriver;
 import bigframe.qgen.engineDriver.GiraphEngineDriver;
 import bigframe.qgen.engineDriver.HadoopEngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
 import bigframe.qgen.engineDriver.HiveGiraphEngineDriver;
 import bigframe.qgen.engineDriver.ImpalaEngineDriver;
 import bigframe.qgen.engineDriver.ImpalaHiveEngineDriver;
-import bigframe.qgen.engineDriver.SharkEngineDriver;
 import bigframe.qgen.engineDriver.SparkEngineDriver;
 import bigframe.qgen.engineDriver.SparkSQLEngineDriver;
 import bigframe.qgen.engineDriver.EngineDriver;
@@ -75,8 +73,6 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		GiraphEngineDriver giraphWorkflow = new GiraphEngineDriver(workflowIF);
 		HiveGiraphEngineDriver hivegiraphWorkflow = new HiveGiraphEngineDriver(workflowIF);
 		HadoopEngineDriver hadoopWorkflow = new HadoopEngineDriver(workflowIF);
-		SharkEngineDriver sharkWorkflow = new SharkEngineDriver(workflowIF);
-		BagelEngineDriver bagelWorkflow = new BagelEngineDriver(workflowIF);
 		SparkEngineDriver sparkWorkflow = new SparkEngineDriver(workflowIF);
 		VerticaEngineDriver verticaWorkflow = new VerticaEngineDriver(workflowIF);
 		SparkSQLEngineDriver sparkSQLWorkflow = new SparkSQLEngineDriver(workflowIF);
@@ -284,10 +280,6 @@ public class BIDomainWorkflow extends DomainWorkflow {
 
 		if(hadoopWorkflow.numOfQueries() > 0)
 			workflows.add(hadoopWorkflow);
-		if(sharkWorkflow.numOfQueries() > 0)
-			workflows.add(sharkWorkflow);
-		if(bagelWorkflow.numOfQueries() > 0)
-			workflows.add(bagelWorkflow);
 		if((Integer)sparkWorkflow.numOfQueries() > 0)
 			workflows.add(sparkWorkflow);
 		if((Integer)impalaWorkflow.numOfQueries() > 0)

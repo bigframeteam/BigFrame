@@ -18,14 +18,10 @@ public class TwitterRankVertex extends Vertex<Text, Text, DoubleWritable, Double
 	    		twitterRank += message.get();
 	    	}
 	   
-    		System.out.println("supperstep:" + getSuperstep());
     		String current_value = getValue().toString();
-    		System.out.println("Vertex id:" + getId());
-    		System.out.println("Vertex value:" + getValue());
     		String transit_prob = current_value.split("\\|")[1];
     		twitterRank = 0.85 * twitterRank + 0.15 * Double.parseDouble(transit_prob);
     		setValue(new Text(twitterRank + "|" + transit_prob));
-
 	    }
 
 	    /**

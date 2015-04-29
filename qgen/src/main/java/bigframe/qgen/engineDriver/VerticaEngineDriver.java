@@ -44,8 +44,8 @@ public class VerticaEngineDriver extends EngineDriver {
         }
 
 		try {
-			connection = DriverManager.getConnection(workIF.getVerticaJDBCServer(), 
-					workIF.getVerticaUserName(), workIF.getVerticaPassword());
+			connection = DriverManager.getConnection(workIF().getVerticaJDBCServer(), 
+					workIF().getVerticaUserName(), workIF().getVerticaPassword());
     	  
 			if(connection == null) {
 				LOG.error("Cannot connect to JDBC server! " +

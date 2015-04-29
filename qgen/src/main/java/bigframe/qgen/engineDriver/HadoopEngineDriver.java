@@ -32,7 +32,7 @@ public class HadoopEngineDriver extends EngineDriver {
 	@Override
 	public void init() {
 		// TODO Auto-generated method stub
-		mapred_config = MapRedConfig.getConfiguration(workIF);
+		mapred_config = MapRedConfig.getConfiguration(workIF());
 	}
 
 	@Override

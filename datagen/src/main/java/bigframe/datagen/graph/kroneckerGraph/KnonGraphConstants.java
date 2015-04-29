@@ -8,6 +8,10 @@ package bigframe.datagen.graph.kroneckerGraph;
  */
 public class KnonGraphConstants {
 
+  // Padding the node ID such that the size of each ID is the same.
+  // Notice: change this number will affect the size of the graph.
+  public static final long OFFSET = 1000000000000000L;
+  
 	public static final String NUM_MAPPERS = "mapreduce.graph.num-mappers";
 	public static final String NUM_STEPS = "mapreduce.graph.num-steps";
 	
@@ -36,7 +40,7 @@ public class KnonGraphConstants {
 //			};
 	
 	/**
-	 * The initial graph for knonecker graph generator with size 2
+	 * The initial graph for knonecker graph generator with size 2 
 	 */
 	public static final double[][] INITIAL_GRAPH2 = new double[][]{
 				{0.9999, 0.5413},
@@ -51,9 +55,9 @@ public class KnonGraphConstants {
 	
 	// size in GB for the minimum graph
 	public static final float arScaleVolume2 [] = 
-		{0.12f};
+		{0.25f};
 	
-	// 2^18 nodes
+	// 2^19 nodes for the minimum graph
 	public static final int arScaleNodeCount2 [] = 
 		{524288};
 	

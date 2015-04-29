@@ -9,6 +9,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.TaskID;
 
 import bigframe.datagen.util.RandomSeeds;
 
@@ -29,11 +30,7 @@ Mapper<NullWritable, KronGraphInfoWritable, NullWritable, Text> {
 	protected void map(NullWritable ignored,
 			KronGraphInfoWritable krongrap_gen_info, final Context context)
 					throws IOException, InterruptedException {
-		/*
-		 * LOG.info("Begin time: "+tweet_gen_info.begin+";" +"End time: " +
-		 * tweet_gen_info.end + ";" + "Tweets per day: " +
-		 * tweet_gen_info.tweets_per_day);
-		 */
+
 		Configuration mapreduce_config = context.getConfiguration();
 
 		int k = krongrap_gen_info.k;
@@ -46,19 +43,25 @@ Mapper<NullWritable, KronGraphInfoWritable, NullWritable, Text> {
 			current_path.add(path[i]);
 		}
 
-		int seed_offset = 12345;
-		for (int i = 0; i < length; i++) {
-			seed_offset = seed_offset * (path[i][0] - path[i][1]);
-		}
+		// Before each map split has a different random seed.
+		// But it is not easy to control the graph size, so we just make it the same.
+//		int init_offset = 234231781;
+		int seed_offset = 0;
+//		for (int i = 0; i < length; i++) {
+//			seed_offset += init_offset * (path[i][0] * 3 + path[i][1]);
+//			seed_offset = seed_offset % RandomSeeds.SEEDS_TABLE[1];
+//		}
 
+		
 		randnum = new Random();
-		randnum.setSeed(RandomSeeds.SEEDS_TABLE[0] + seed_offset
-				% RandomSeeds.SEEDS_TABLE[1]);
+		randnum.setSeed(seed_offset);
 		kronRecursiveGen(k, current_path, context);
 	}
 
 	/**
 	 * Generate the Stochastic Kronecker Graph recursively.
+	 * The implementation is following this paper:
+	 *   "Kronecker Graphs: An Approach to Modeling Networks"
 	 * 
 	 * @param k
 	 * @param path
@@ -72,29 +75,33 @@ Mapper<NullWritable, KronGraphInfoWritable, NullWritable, Text> {
 				for (int j = 0; j < KnonGraphConstants.NUM_COLUMNS; j++) {
 					double d = randnum.nextFloat();
 					if (d <= KnonGraphConstants.INITIAL_GRAPH2[i][j]) {
-						int real_row = i + 1;
-						int real_column = j + 1;
+						long real_row =  (i + 1);
+						long real_column = (j + 1);
 
 						// Get the real row and column number in the generated
-						// graph
-						// based on the path information
+						// graph  based on the path information.
+						// 
 						int exponent = steps - 1;
 						int base = KnonGraphConstants.NUM_ROWS;
 						for (int[] cell : path) {
 
-							real_row += cell[0]
-									* (int) Math.pow(base, exponent);
-							real_column += cell[1]
-									* (int) Math.pow(base, exponent);
-
+						  // TODO Overflow checking!!!
+							real_row += (long) (cell[0] * Math.pow(base, exponent)) ;
+							real_column += (long) (cell[1] * Math.pow(base, exponent));
+							
 							exponent--;
 						}
 						if (real_row == real_column)
 							continue;
+						
+					  // TODO Overflow checking!!!
+						// Offset the node ID such that the size of a node is consistent.
+            real_row += KnonGraphConstants.OFFSET;
+            real_column += KnonGraphConstants.OFFSET; 
+						
 						try {
 							context.write(null,
-									new Text(String.valueOf(real_row) + "|"
-											+ String.valueOf(real_column)));
+									new Text(real_row + "|" + real_column));
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -117,6 +124,7 @@ Mapper<NullWritable, KronGraphInfoWritable, NullWritable, Text> {
 					if (d <= KnonGraphConstants.INITIAL_GRAPH2[i][j]) {
 						List<int[]> new_path = new ArrayList<int[]>(path);
 						int[] cell = { i, j };
+						// Keep track of which sub-region we have selected.
 						new_path.add(cell);
 
 						kronRecursiveGen(k - 1, new_path, context);
