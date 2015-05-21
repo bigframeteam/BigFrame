@@ -95,11 +95,11 @@ public class RawTweetGenHadoop extends RawTweetGen {
 
 		Configuration mapred_config = new Configuration();
 		mapred_config.addResource(new Path(conf.getProp().get(
-				BigConfConstants.BIGFRAME_HADOOP_HOME)
-				+ "/conf/core-site.xml"));
+				BigConfConstants.BIGFRAME_HADOOP_CONF_DIR)
+				+ "/core-site.xml"));
 		mapred_config.addResource(new Path(conf.getProp().get(
-				BigConfConstants.BIGFRAME_HADOOP_HOME)
-				+ "/conf/mapred-site.xml"));
+				BigConfConstants.BIGFRAME_HADOOP_CONF_DIR)
+				+ "/mapred-site.xml"));
 
 		try {
 			DistributedCache.addCacheFile(new URI(RawTweetGenConstants.PROMOTION_TBL+".dat"), 

@@ -17,12 +17,15 @@
 HADOOP_HOME=$HADOOP_HOME
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hadoop.home=${HADOOP_HOME}"
 
+# HADOOP Conf Directory
+HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.haddop.conf.dir=${HADOOP_CONF_DIR}"
 # The Hadoop slave file
-HADOOP_SLAVES=$HADOOP_HOME/conf/slaves
+HADOOP_SLAVES=$HADOOP_HOME/etc/hadoop/slaves
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hadoop.slaves=${HADOOP_SLAVES}"
 
 # Local Directory to store the temporary TPCDS generated files
-TPCDS_LOCAL=/home/shlee0605/tmp/tpcds_tmp
+TPCDS_LOCAL=/home/hadoop/tmp/tpcds_tmp
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.local=${TPCDS_LOCAL}"
 
 # Local Directory to store the itermediate data used for data refershing

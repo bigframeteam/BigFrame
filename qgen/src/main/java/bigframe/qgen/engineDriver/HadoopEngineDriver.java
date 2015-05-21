@@ -33,10 +33,10 @@ public class HadoopEngineDriver extends EngineDriver {
 	public void init() {
 		// TODO Auto-generated method stub
 		mapred_config = new Configuration();
-		mapred_config.addResource(new Path(workIF.getHadoopHome()
-				+ "/conf/core-site.xml"));
-		mapred_config.addResource(new Path(workIF.getHadoopHome()
-				+ "/conf/mapred-site.xml"));
+		mapred_config.addResource(new Path(workIF.getHadoopConf()
+				+ "/core-site.xml"));
+		mapred_config.addResource(new Path(workIF.getHadoopConf()
+				+ "/mapred-site.xml"));
 	}
 
 	@Override

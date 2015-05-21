@@ -17,6 +17,7 @@ public class WorkflowInputFormat extends Config {
 	private String HDFS_ROOT_DIR = "";
 	private String WEBHDFS_ROOT_DIR = "";
 	private String HADOOP_USERNAME = "";
+	private String HADOOP_CONF_DIR="";
 	
 	private String HIVE_HOME = "";
 	private String HIVE_JDBC_SERVER = "";
@@ -57,6 +58,10 @@ public class WorkflowInputFormat extends Config {
 	
 	public String getHadoopHome() {
 		return HADOOP_HOME;
+	}
+
+	public String getHadoopConf() {
+		return HADOOP_CONF_DIR;
 	}
 	
 	public String getHadoopUserName() {
@@ -195,7 +200,9 @@ public class WorkflowInputFormat extends Config {
 			if (key.equals(BigConfConstants.BIGFRAME_HADOOP_HOME)) {
 				HADOOP_HOME = value;
 			}
-			
+			else if (key.equals(BigConfConstants.BIGFRAME_HADOOP_CONF_DIR)){
+				HADOOP_CONF_DIR = value;
+			}
 			else if (key.equals(BigConfConstants.BIGFRAME_WEBHDFS_ROOTDIR)) {
 				WEBHDFS_ROOT_DIR = value;
 			}

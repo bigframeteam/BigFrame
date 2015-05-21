@@ -79,10 +79,10 @@ public class VerticaGraphLoader extends VerticaDataLoader {
 		// TODO Auto-generated method stub
 //		Configuration mapred_config = new Configuration();
 //		
-//		mapred_config.addResource(new Path(workIF.getHadoopHome()
-//				+ "/conf/core-site.xml"));
-//		mapred_config.addResource(new Path(workIF.getHadoopHome()
-//				+ "/conf/mapred-site.xml"));
+//		mapred_config.addResource(new Path(workIF.getHadoopConf()
+//				+ "/core-site.xml"));
+//		mapred_config.addResource(new Path(workIF.getHadoopConf()
+//				+ "/mapred-site.xml"));
 //		
 //		mapred_config.set(MAPRED_VERTICA_DATABASE, workIF.getVerticaDatabase());
 //		mapred_config.set(MAPRED_VERTICA_USERNAME, workIF.getVerticaUserName());

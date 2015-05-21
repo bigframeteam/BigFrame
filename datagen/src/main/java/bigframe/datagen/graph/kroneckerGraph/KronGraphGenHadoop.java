@@ -47,8 +47,8 @@ public class KronGraphGenHadoop extends KroneckerGraphGen {
 		int num_Mappers = (int) (nodeCount / nodePerMapper) * (int) (nodeCount / nodePerMapper);
 
 		Configuration mapreduce_config = new Configuration();
-		mapreduce_config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
-		mapreduce_config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/mapred-site.xml"));
+		mapreduce_config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_CONF_DIR)+"/core-site.xml"));
+		mapreduce_config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_CONF_DIR)+"/mapred-site.xml"));
 		mapreduce_config.setInt(KnonGraphConstants.NUM_STEPS, steps);
 		mapreduce_config.setInt(KnonGraphConstants.NUM_MAPPERS, num_Mappers);
 

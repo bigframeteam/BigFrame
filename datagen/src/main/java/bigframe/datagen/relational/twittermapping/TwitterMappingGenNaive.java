@@ -99,7 +99,7 @@ public class TwitterMappingGenNaive extends TwitterMappingGen {
 		try {
 			Path path = new Path(hdfs_path);
 			Configuration config = new Configuration();
-			config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
+			config.addResource(new Path(conf.getProp().get(BigConfConstants.BIGFRAME_HADOOP_CONF_DIR)+"/core-site.xml"));
 			FileSystem fileSystem = FileSystem.get(config);
 			
 			if (!fileSystem.exists(path))

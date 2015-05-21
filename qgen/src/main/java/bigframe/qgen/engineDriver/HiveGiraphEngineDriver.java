@@ -29,10 +29,10 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 		super(workIF);
 		giraph_config = new GiraphConfiguration();
 		Configuration.addDefaultResource("giraph-site.xml");
-		giraph_config.addResource(new Path(workIF.getHadoopHome()
-				+ "/conf/core-site.xml"));
-		giraph_config.addResource(new Path(workIF.getHadoopHome()
-				+ "/conf/mapred-site.xml"));
+		giraph_config.addResource(new Path(workIF.getHadoopConf()
+				+ "/core-site.xml"));
+		giraph_config.addResource(new Path(workIF.getHadoopConf()
+				+ "/mapred-site.xml"));
 	}
 
 	@Override

@@ -59,8 +59,8 @@ public class TweetDataProducer extends DataProducer {
 		
 		Configuration mapred_config = new Configuration();
 		
-		mapred_config.addResource(new Path(bigdataIF.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
-		mapred_config.addResource(new Path(bigdataIF.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/mapred-site.xml"));	
+		mapred_config.addResource(new Path(bigdataIF.getProp().get(BigConfConstants.BIGFRAME_HADOOP_CONF_DIR)+"/core-site.xml"));
+		mapred_config.addResource(new Path(bigdataIF.getProp().get(BigConfConstants.BIGFRAME_HADOOP_CONF_DIR)+"/mapred-site.xml"));	
 		
 		TpcdsPromotionInfo promt_info = new TpcdsPromotionInfo();
 		TpcdsItemInfo item_info = new TpcdsItemInfo();

@@ -22,10 +22,10 @@ public class GiraphEngineDriver extends EngineDriver {
 	public GiraphEngineDriver(WorkflowInputFormat workIF) {
 		super(workIF);
 		Configuration.addDefaultResource("giraph-site.xml");
-		giraph_config.addResource(new Path(workIF.getHadoopHome()
-				+ "/conf/core-site.xml"));
-		giraph_config.addResource(new Path(workIF.getHadoopHome()
-				+ "/conf/mapred-site.xml"));
+		giraph_config.addResource(new Path(workIF.getHadoopConf()
+				+ "/core-site.xml"));
+		giraph_config.addResource(new Path(workIF.getHadoopConf()
+				+ "/mapred-site.xml"));
 	}
 
 	@Override

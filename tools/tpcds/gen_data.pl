@@ -96,8 +96,8 @@ if (!$ENV{'HADOOP_HOME'})
 }
 
 # Execute the hadoop-env.sh script for environmental variable definitions
-!system qq(. \$HADOOP_HOME/conf/hadoop-env.sh) or die $!;
-my $hadoop_home = $ENV{'HADOOP_HOME'};
+!system qq(. \$HADOOP_HOME/etc/hadoop/hadoop-env.sh) or die $!;
+my $HADOOP_HOME = $ENV{'HADOOP_HOME'};
 my $ssh_opts = ($ENV{'HADOOP_SSH_OPTS'}) ? $ENV{'HADOOP_SSH_OPTS'} : "";
 
 
@@ -120,69 +120,70 @@ if ($num_hosts <= 0)
 }
 
 # Create all the HDFS directories
-$status = system qq($hadoop_home/bin/hadoop fs -test -e $HDFS_DIR 2>&1);
+$status = system qq($HADOOP_HOME/bin/hadoop fs -test -e $HDFS_DIR 2>&1);
 if ($status == 0) {
    println qq(ERROR: The hdfs directory '$HDFS_DIR' already exists);
    exit(-1);
 }
 
 println qq(Creating all the HDFS directories);
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/call_center) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/catalog_page) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/catalog_returns) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/catalog_sales) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/customer_address) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/customer) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/customer_demographics) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/date_dim) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/dbgen_version) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/household_demographics) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/income_band) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/inventory) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/item) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/promotion) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/reason) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/ship_mode) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/store) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/store_returns) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/store_sales) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/time_dim) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/warehouse) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/web_page) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/web_returns) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/web_sales) or die $!;
-!system qq($hadoop_home/bin/hadoop fs -mkdir $HDFS_DIR/web_site) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/call_center) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/catalog_page) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/catalog_returns) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/catalog_sales) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/customer_address) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/customer) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/customer_demographics) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/date_dim) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/dbgen_version) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/household_demographics) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/income_band) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/inventory) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/item) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/promotion) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/reason) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/ship_mode) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/store) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/store_returns) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/store_sales) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/time_dim) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/warehouse) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/web_page) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/web_returns) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/web_sales) or die $!;
+!system qq($HADOOP_HOME/bin/hadoop fs -mkdir $HDFS_DIR/web_site) or die $!;
 println qq();
 
 # Create the execution script that will be sent to the hosts
 open OUTFILE, ">", "gen_and_load.sh" or die $!;
 print OUTFILE qq(unzip -n tpcds_data_gen.zip\n);
 print OUTFILE qq(perl tpcds_gen_data.pl data.properties\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/call_center*.dat $HDFS_DIR/call_center\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/catalog_page*.dat $HDFS_DIR/catalog_page\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/catalog_returns*.dat $HDFS_DIR/catalog_returns\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/catalog_sales*.dat $HDFS_DIR/catalog_sales\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/customer_address*.dat $HDFS_DIR/customer_address\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/customer_demographics*.dat $HDFS_DIR/customer_demographics\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/customer_[0-9]*.dat $HDFS_DIR/customer\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/date_dim*.dat $HDFS_DIR/date_dim\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/dbgen_version*.dat $HDFS_DIR/dbgen_version\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/household_demographics*.dat $HDFS_DIR/household_demographics\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/income_band*.dat $HDFS_DIR/income_band\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/inventory*.dat $HDFS_DIR/inventory\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/item*.dat $HDFS_DIR/item\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/promotion*.dat $HDFS_DIR/promotion\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/reason*.dat $HDFS_DIR/reason\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/ship_mode*.dat $HDFS_DIR/ship_mode\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/store_returns*.dat $HDFS_DIR/store_returns\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/store_sales*.dat $HDFS_DIR/store_sales\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/store_[0-9]*.dat $HDFS_DIR/store\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/time_dim*.dat $HDFS_DIR/time_dim\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/warehouse*.dat $HDFS_DIR/warehouse\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/web_page*.dat $HDFS_DIR/web_page\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/web_returns*.dat $HDFS_DIR/web_returns\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/web_sales*.dat $HDFS_DIR/web_sales\n);
-print OUTFILE qq($hadoop_home/bin/hadoop fs -put data/web_site*.dat $HDFS_DIR/web_site\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/call_center*.dat $HDFS_DIR/call_center\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/catalog_page*.dat $HDFS_DIR/catalog_page\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/catalog_returns*.dat $HDFS_DIR/catalog_returns\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/catalog_sales*.dat $HDFS_DIR/catalog_sales\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/customer_address*.dat $HDFS_DIR/customer_address\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/customer_demographics*.dat $HDFS_DIR/customer_demographics\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/customer_[0-9]*.dat $HDFS_DIR/customer\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/date_dim*.dat $HDFS_DIR/date_dim\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/dbgen_version*.dat $HDFS_DIR/dbgen_version\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/household_demographics*.dat $HDFS_DIR/household_demographics\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/income_band*.dat $HDFS_DIR/income_band\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/inventory*.dat $HDFS_DIR/inventory\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/item*.dat $HDFS_DIR/item\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/promotion*.dat $HDFS_DIR/promotion\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/reason*.dat $HDFS_DIR/reason\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/ship_mode*.dat $HDFS_DIR/ship_mode\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/store_returns*.dat $HDFS_DIR/store_returns\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/store_sales*.dat $HDFS_DIR/store_sales\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/store_[0-9]*.dat $HDFS_DIR/store\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/time_dim*.dat $HDFS_DIR/time_dim\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/warehouse*.dat $HDFS_DIR/warehouse\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/web_page*.dat $HDFS_DIR/web_page\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/web_returns*.dat $HDFS_DIR/web_returns\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/web_sales*.dat $HDFS_DIR/web_sales\n);
+print OUTFILE qq($HADOOP_HOME/bin/hadoop fs -put data/web_site*.dat $HDFS_DIR/web_site\n);
 print OUTFILE qq(rm -rf data/*.dat\n);
 close OUTFILE;
 chmod 0744, "gen_and_load.sh";
@@ -222,7 +223,7 @@ for ($host = 0; $host < $num_hosts; $host++)
    unless (fork)
    {
       system qq(ssh $ssh_opts $hosts[$host] ).
-             qq(\"cd $LOCAL_DIR; ./gen_and_load.sh >& gen_and_load.out\");
+             qq(\"cd $LOCAL_DIR; ./gen_and_load.sh >> gen_and_load.out 2>&1\");
       println qq(Data generation completed at host: $hosts[$host]\n);
       system qq(ssh $ssh_opts $hosts[$host] ).
              qq(\"cd ..; rm -r $LOCAL_DIR\");

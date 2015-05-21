@@ -193,8 +193,8 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 			Path hdfs_path = new Path(table_name + ".dat");
 			Configuration config = new Configuration();
 			config.addResource(new Path(conf.getProp().get(
-					BigConfConstants.BIGFRAME_HADOOP_HOME)
-					+ "/conf/core-site.xml"));
+					BigConfConstants.BIGFRAME_HADOOP_CONF_DIR)
+					+ "/core-site.xml"));
 			FileSystem fileSystem = FileSystem.get(config);
 			if (fileSystem.exists(hdfs_path)) {
 				fileSystem.delete(hdfs_path, true);

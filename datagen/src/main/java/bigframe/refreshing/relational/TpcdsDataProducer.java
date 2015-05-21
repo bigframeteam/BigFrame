@@ -264,8 +264,8 @@ public class TpcdsDataProducer extends DataProducer {
 		System.out.println("Loading the prepared data for TPCDS...");
 		
 		Configuration mapred_config = new Configuration();
-		mapred_config.addResource(new Path(bigdataIF.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/core-site.xml"));
-		mapred_config.addResource(new Path(bigdataIF.getProp().get(BigConfConstants.BIGFRAME_HADOOP_HOME)+"/conf/mapred-site.xml"));	
+		mapred_config.addResource(new Path(bigdataIF.getProp().get(BigConfConstants.BIGFRAME_HADOOP_CONF_DIR)+"/core-site.xml"));
+		mapred_config.addResource(new Path(bigdataIF.getProp().get(BigConfConstants.BIGFRAME_HADOOP_CONF_DIR)+"/mapred-site.xml"));	
 	
 		try {
 			FileSystem fs;

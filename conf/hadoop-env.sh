@@ -2,15 +2,15 @@
 
 ######################### HADOOP RELATED ##########################
 # The HDFS Root Directory to store the generated data
-HDFS_ROOT_DIR="hdfs://localhost:9000/bigframe_test"
+HDFS_ROOT_DIR="hdfs://localhost:9000/user/hadoop"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hdfs.root.dir=${HDFS_ROOT_DIR}"
 
 # The WebHDFS Root Directory to store the generated data
-WEBHDFS_ROOT_DIR="http://localhost:50070/webhdfs/v1/user/cszahe/"
+WEBHDFS_ROOT_DIR="http://localhost:50070/webhdfs/v1/user/hadoop/"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.webhdfs.root.dir=${WEBHDFS_ROOT_DIR}"
 
 # The username can access the HDFS_ROOT_DIR
-HADOOP_USERNAME="cszahe"
+HADOOP_USERNAME="hadoop"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hadoop.username=${HADOOP_USERNAME}"
 
 
