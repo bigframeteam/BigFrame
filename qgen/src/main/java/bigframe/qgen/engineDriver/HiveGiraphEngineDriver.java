@@ -23,7 +23,7 @@ public class HiveGiraphEngineDriver extends EngineDriver {
 	private List<HiveGiraphRunnable> queries = new ArrayList<HiveGiraphRunnable>();
 	
 	private Connection connection;
-	private static String driverName = "org.apache.hadoop.hive.jdbc.HiveDriver";
+	private static String driverName = "org.apache.hive.jdbc.HiveDriver";
 
 	public HiveGiraphEngineDriver(WorkflowInputFormat workIF) {
 		super(workIF);

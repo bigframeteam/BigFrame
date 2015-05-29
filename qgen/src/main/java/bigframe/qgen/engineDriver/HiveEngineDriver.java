@@ -25,7 +25,7 @@ public class HiveEngineDriver extends EngineDriver {
 	private Connection connection;
 	private Statement stmt;
 	private List<HiveRunnable> queries = new ArrayList<HiveRunnable>();
-	private static String driverName = "org.apache.hadoop.hive.jdbc.HiveDriver";
+	private static String driverName = "org.apache.hive.jdbc.HiveDriver";
 	
 	private static final Log LOG = LogFactory.getLog(HiveEngineDriver.class);
 	//private static int hiveServer_version = 1;

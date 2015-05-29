@@ -19,7 +19,7 @@ public class SharkEngineDriver extends EngineDriver {
 
 	private Connection connection;
 	private List<SharkRunnable> queries = new ArrayList<SharkRunnable>();
-	private static String driverName = "org.apache.hadoop.hive.jdbc.HiveDriver";
+	private static String driverName = "org.apache.hive.jdbc.HiveDriver";
 	
 	private static final Log LOG = LogFactory.getLog(SharkEngineDriver.class);
 	
