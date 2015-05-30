@@ -21,6 +21,7 @@ import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.graph.kroneckerGraph.KroneckerGraphGen;
 import bigframe.datagen.relational.tpcds.CollectTPCDSstatNaive;
+import bigframe.datagen.util.HDFSUtil;
 import bigframe.util.MapRedConfig;
 
 /**
@@ -31,6 +32,8 @@ import bigframe.util.MapRedConfig;
  */
 public class RawTweetGenHadoop extends RawTweetGen {
 	
+  public static int SINGLE_TWEET_INBYTES = 1379;
+  
 	private static final Log LOG = LogFactory.getLog(RawTweetGenHadoop.class);
 
 	public RawTweetGenHadoop(BigDataInputFormat conf, float targetGB) {
@@ -39,30 +42,14 @@ public class RawTweetGenHadoop extends RawTweetGen {
 	}
 
 	private void cleanUP(Configuration mapreduce_config) {
-		deleteFileOnHDFS(mapreduce_config, RawTweetGenConstants.PROMOTION_TBL + ".dat");
-		deleteFileOnHDFS(mapreduce_config, RawTweetGenConstants.ITEM_TBL + ".dat");
-	}
-
-	private void deleteFileOnHDFS(Configuration mapreduce_config, String filename) {
-		Path hdfs_path = new Path(filename);
-
-		try {
-			FileSystem fileSystem = FileSystem.get(mapreduce_config);
-			if (fileSystem.exists(hdfs_path)) {
-				fileSystem.delete(hdfs_path, true);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	  HDFSUtil.deleteFileOnHDFS(mapreduce_config, RawTweetGenConstants.PROMOTION_TBL + ".dat");
+	  HDFSUtil.deleteFileOnHDFS(mapreduce_config, RawTweetGenConstants.ITEM_TBL + ".dat");
 	}
 
 	@Override
 	public void generate() {
-		// TODO Auto-generated method stub
-		System.out.println("Generating raw tweets data!");
+	  LOG.info("Generating raw tweets data!");
 
-		//
 		// Calculate the number twitter account based on the graph volume in GB
 		float nested_proportion = conf.getDataScaleProportions().get(
 				BigConfConstants.BIGFRAME_DATAVOLUME_NESTED_PROPORTION);
@@ -78,6 +65,8 @@ public class RawTweetGenHadoop extends RawTweetGen {
 
 		CollectTPCDSstatNaive tpcds_stat_collecter = new CollectTPCDSstatNaive();
 		
+		// The numbers of promotion and items are decided by the scale of the tpcds data.
+		// This is calculated by the above proportion.
 		tpcds_stat_collecter.genTBLonHDFS(conf, tpcds_targetGB, RawTweetGenConstants.PROMOTION_TBL);
 		tpcds_stat_collecter.genTBLonHDFS(conf, tpcds_targetGB, RawTweetGenConstants.ITEM_TBL);
 
@@ -156,7 +145,34 @@ public class RawTweetGenHadoop extends RawTweetGen {
 		}
 	}
 
+	@Override
+	 public long getTotalNumTweets() {   
+	    long targetByte = (long) (targetGB*1024*1024*1024);
 
+	    return targetByte / SINGLE_TWEET_INBYTES;
+	  }
+	
+	@Override
+	 public long getNumTweetsBySize(int sizeInGB) {
+	    return sizeInGB*1024*1024*1024/SINGLE_TWEET_INBYTES; 
+	  }
+	  
+	@Override
+	  public long getTweetsPerDay(int days_between) {
+	    long tweets_per_day = 0;
+
+	    long targetByte = (long) (targetGB*1024*1024*1024);
+
+	    tweets_per_day = (long) (targetByte*1.0/days_between/SINGLE_TWEET_INBYTES);
+
+	    if(tweets_per_day <=0) {
+	      System.out.println("Tweets sent per day is less than 0, please increase the data volumn " +
+	          "or increase the proportion of nested data!");
+	      System.exit(-1);
+	    }
+
+	    return tweets_per_day;
+	  }
 
 	@Override
 	public int getAbsSizeBySF(int sf) {

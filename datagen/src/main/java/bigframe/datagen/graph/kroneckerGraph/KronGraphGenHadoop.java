@@ -34,7 +34,6 @@ public class KronGraphGenHadoop extends KroneckerGraphGen {
 	
 	@Override
 	public void generate() {
-		// TODO Auto-generated method stub
 
 		System.out.println("Generating graph data");
 

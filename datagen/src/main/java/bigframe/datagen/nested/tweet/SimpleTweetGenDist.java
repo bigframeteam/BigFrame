@@ -1,8 +1,6 @@
 package bigframe.datagen.nested.tweet;
 
 
-import java.text.SimpleDateFormat;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -11,9 +9,9 @@ import bigframe.datagen.relational.tpcds.TpcdsPromotionInfo;
 import bigframe.datagen.text.tweet.TweetTextGen;
 
 /**
- * A simple distribution to control tweet generation.
+ * A very simple distribution to control tweet generation.
  * Including:
- * 1. Which twitter user mention this tweet;
+ * 1. Which twitter user mention this tweet (customer/non-customer);
  * 2. If a product is mentioned in the tweet;
  * 3. If a promoted product is mentioned. 
  * 
@@ -60,14 +58,15 @@ public class SimpleTweetGenDist extends TweetGenDist {
 		
 	}
 	
+	/**
+	 * The dirty thing about this generating method is that, it fills all other attributes with a "null".  
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public String getNextTweet() {
 		
 		double ratio = cust_twitter_acc.length /(cust_twitter_acc.length + noncust_twitter_acc.length);
 		
-		SimpleDateFormat twitterDateFormat = new SimpleDateFormat(
-				"EEE MMM dd HH:mm:ss ZZZZZ yyyy");
 		//Random choose a time stamp
 //		long timestamp = time_begin + random.nextInt((int)(time_step - time_begin + 1));
 		
@@ -109,6 +108,7 @@ public class SimpleTweetGenDist extends TweetGenDist {
 				flip = random.nextDouble();
 				if(flip <= promoted_prod_men_prob_noncust) {
 					int p_index = random.nextInt(promt_info.getProductSK().size());
+					// Randomly select a promoted ProductSK. i.e. "ItemSK"
 					prod_id = promt_info.getProductSK().get(p_index);
 				}
 				else {
@@ -125,7 +125,7 @@ public class SimpleTweetGenDist extends TweetGenDist {
 
 		
 		String tweet = text_gen.getNextTweet(prod_id);
-		String date = twitterDateFormat.format(time_stamp*1000);
+		String date = RawTweetGenConstants.twitterDateFormat.format(time_stamp*1000);
 		time_stamp += time_step;
 		
 		tweet_json.put("created_at", date);
@@ -140,6 +140,7 @@ public class SimpleTweetGenDist extends TweetGenDist {
 			
 		if(prod_id != -1) {
 			 assert prod_id > 0;
+			 // The product name and the product id have one-to-one relationship
 			 String prod_name = item_info.getProdName().get(prod_id-1);
 			 JSONArray list = new JSONArray();
 			 list.add(prod_name);
@@ -162,14 +163,6 @@ public class SimpleTweetGenDist extends TweetGenDist {
 	public double getNonCustMenProb() {
 		return noncust_mention_prob;
 	}
-	
-//	public double getPromotionCustMenProb() {
-//		return promotion_cust_mention_prob;
-//	}
-//	
-//	public double getPromotionNonCustMenProb() {
-//		return promotion_non_cust_mention_prob;
-//	}
 	
 	public double getPromotedProdMenProbCust() {
 		return promoted_prod_men_prob_cust;

@@ -11,6 +11,7 @@ import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.DataGenDriver;
 import bigframe.datagen.nested.NestedDataGen;
+import bigframe.datagen.relational.tpcds.TpcdsConstants;
 
 
 
@@ -42,10 +43,9 @@ public abstract class RawTweetGen extends NestedDataGen {
 	}
 
 	protected  Date stringToDate(String date) {
-		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
 		try {
-			return formatter.parse(date);
+			return TpcdsConstants.dateformatter.parse(date);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -59,32 +59,11 @@ public abstract class RawTweetGen extends NestedDataGen {
 	}
 
 
-	public long getTotalNumTweets() {		
-		long targetByte = (long) (targetGB*1024*1024*1024);
-
-		return targetByte / RawTweetGenConstants.SINGLE_TWEET_INBYTES;
-	}
+	abstract public long getTotalNumTweets();
 	
-	public long getNumTweetsBySize(int sizeInGB) {
-		return sizeInGB*1024*1024*1024/RawTweetGenConstants.SINGLE_TWEET_INBYTES; 
-	}
-	
+	abstract public long getNumTweetsBySize(int sizeInGB);
 
-	public long getTweetsPerDay(int days_between) {
-		long tweets_per_day = 0;
-
-		long targetByte = (long) (targetGB*1024*1024*1024);
-
-		tweets_per_day = (long) (targetByte*1.0/days_between/RawTweetGenConstants.SINGLE_TWEET_INBYTES);
-
-		if(tweets_per_day <=0) {
-			System.out.println("Tweets sent per day is less than 0, please increase the data volumn " +
-					"or increase the proportion of nested data!");
-			System.exit(-1);
-		}
-
-		return tweets_per_day;
-	}
+	abstract public long getTweetsPerDay(int days_between);
 
 	public void setTextGenName(String name) {
 		textgen_name = name;

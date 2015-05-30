@@ -38,6 +38,14 @@ public abstract class Config {
 			return "";
 	}
 	
+	
+	public String get(String key, String defaultValue) {
+	   if (properties.containsKey(key))
+	      return properties.get(key);
+	    else
+	      return defaultValue;
+	}
+	
 	public Map<String,String> get() {
 		return properties;
 	}

@@ -24,7 +24,7 @@ import bigframe.datagen.graph.kroneckerGraph.KroneckerGraphGen;
 import bigframe.datagen.nested.tweet.RawTweetGenConstants;
 import bigframe.util.Config;
 import bigframe.util.MapRedConfig;
-import bigframe.datagen.util.RandomSeeds;
+import bigframe.datagen.util.RandomUtil;
 import cern.jet.random.engine.MersenneTwister;
 import cern.jet.random.engine.RandomEngine;
 import cern.jet.random.sampling.RandomSampler;
@@ -41,6 +41,9 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 	/**
 	 * Use to calculate the cardinality of TPCDS table given a targetGB. It is a
 	 * weight_set collected from the TPCDS generator.
+	 * 
+	 * It is hard to understand the meaning of these values behind. They are set by the
+	 * TPCDS distribution controller.
 	 */
 	private final int[][] TPCDS_ROWCOUNT_WEIGHTSET = {
 			{ 3, 11721, 11720, 11736, 11836, 11886, 31094, 104143, 111343,
@@ -150,6 +153,7 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		return null;
 	}
 
+	// Parse the TPCDS date string 
 	protected Date stringToDate(String date) {
 		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -162,12 +166,10 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		return null;
 	}
 
-	
+	// Generate a specific table of TPCDS and copy it to HDFS
 	public void genTBLonHDFS(Config conf, float targetGB, String table_name) {
 		String single_tbl_gen_script = conf.get().get(
 				BigConfConstants.BIGFRAME_GEN_SINGLETBL_SCRIPT);
-		// System.out.println("gen promotion tbl script:" +
-		// promt_tbl_gen_script);
 		String singleTBLgen_script_path = (new File(single_tbl_gen_script))
 				.getParentFile().getAbsolutePath();
 
@@ -183,8 +185,6 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 			e.printStackTrace();
 		}
 		
-		//genTable(conf, targetGB, table_name);
-
 		String tbl_file = singleTBLgen_script_path + "/" + "dsdgen" + "/"
 				+ table_name + ".dat";
 
@@ -257,19 +257,6 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 				if (promtSK.equals("") || promtID.equals("")
 						|| datebegSK.equals("") || dateendSK.equals("")
 						|| prodSK.equals("")) {
-					continue;
-				}
-
-				if (CollectTPCDSstat.getDateBySK(Integer.parseInt(dateendSK)) != null
-						&& CollectTPCDSstat
-						.getDateBySK(Integer.parseInt(dateendSK))
-						.before(stringToDate(RawTweetGenConstants.TWEET_BEGINDATE))) {
-					continue;
-				}
-
-				if (CollectTPCDSstat.getDateBySK(Integer.parseInt(datebegSK)) != null
-						&& CollectTPCDSstat.getDateBySK(Integer.parseInt(datebegSK))
-						.after(stringToDate(RawTweetGenConstants.TWEET_ENDDATE))) {
 					continue;
 				}
 
@@ -371,14 +358,7 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		}
 	}
 
-//	public PromotionInfo getPromotInfo(Config conf, int targetGB) {
-//		PromotionInfo promt_info = new PromotionInfo();
-//
-//		genPromtTBLlocal(conf, targetGB, promt_info);
-//
-//		return promt_info;
-//	}
-
+	// TPCDS-specific: get the scale slot for a particular target size.
 	private int getScaleSlot(float targetGB) {
 		int i = 0;
 
@@ -401,6 +381,7 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		return res;
 	}
 
+	 // TPCDS-specific: get the rows of a table for a particular target size.
 	private long logScale(int tableNum, float targetGB) {
 		long rowCount = 0;
 		int index = 1, delta;
@@ -429,8 +410,8 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 
 	/**
 	 * Get the number of row based on table ID and target size in GB.
-	 * Please refer to the tpcds source code to find the IDs corresponding to 
-	 * their table names.
+	 * Please refer to the tpcds source code to find out which table names 
+	 * the IDs correspond to.
 	 * 
 	 * @param table
 	 * @param targetGB
@@ -479,7 +460,7 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		int num_twitter_user = (int) KroneckerGraphGen
 				.getNodeCount(graph_targetGB);
 
-		RandomEngine twister = new MersenneTwister(RandomSeeds.SEEDS_TABLE[0]);
+		RandomEngine twister = new MersenneTwister(RandomUtil.SEEDS_TABLE[0]);
 
 		long[] customers = new long[num_customer / 2];
 		long[] customer_twitterAcc = new long[num_customer / 2];
@@ -504,22 +485,18 @@ public class CollectTPCDSstatNaive extends CollectTPCDSstat {
 		Set<Long> customer_twitterAcc_set = new HashSet<Long>();
 		for (int i = 0; i < customer_twitterAcc.length; i++) {
 			customer_twitterAcc_set.add(customer_twitterAcc[i]);
-			// System.out.println(customer_twitterAcc[i]);
 		}
 
 		/**
-		 * Here is dangerous. May cause overflow!
+		 * TODO: Here is dangerous. May cause overflow!
 		 */
 		long[] non_cust_acc = new long[num_twitter_user
 		                               - customer_twitterAcc.length];
-		// System.out.println(num_customer);
 		int index = 0;
 		for (Long i = 1L; i <= num_twitter_user; i++) {
 			if (!customer_twitterAcc_set.contains(i)) {
 				non_cust_acc[index] = i;
-				// System.out.println(i);
 				index++;
-
 			}
 		}
 

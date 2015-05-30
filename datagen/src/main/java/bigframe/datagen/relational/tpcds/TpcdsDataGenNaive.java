@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.relational.twittermapping.TwitterMappingGenNaive;
+import bigframe.util.Constants;
 
 /**
  * A naive parallel implementation of tpcds data generator. 
@@ -35,26 +36,28 @@ public class TpcdsDataGenNaive extends TpcdsDataGen {
 		super(conf, targetGB);
 		// TODO Auto-generated constructor stub
 		
-		if(targetGB < 1) {
-			LOG.error("The size of relational data cannot be less than 1GB. \n" +
-					"please modified the big data volume!");
-			System.exit(1);
-			
-		}
+		if (conf.getDataVariety().contains(Constants.RELATIONAL)) {
+  		if(targetGB < 1) {
+  			LOG.error("The size of relational data cannot be less than 1GB. \n" +
+  					"please modified the big data volume!");
+  			System.exit(1);
+  			
+  		}
 		
-		twitter_mapping = new TwitterMappingGenNaive(conf,targetGB);
-		
-		num_files = (int) (targetGB/2) + 1;
-		if (num_files < 2) {
-			num_files = 2;
-		}
-
-		hdfs_path = conf.getDataStoredPath().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_RELATIONAL);
-		local_dir = conf.get().get(BigConfConstants.BIGFRAME_TPCDS_LOCAL);
-		datagen_script = conf.get().get(BigConfConstants.BIGFRAME_TPCDS_SCRIPT);
-		hadoop_slaves = conf.get().get(BigConfConstants.BIGFRAME_HADOOP_SLAVE);
-		
-		datagen_script_path = (new File(datagen_script)).getParentFile().getAbsolutePath();
+  		twitter_mapping = new TwitterMappingGenNaive(conf,targetGB);
+  		
+  		num_files = (int) (targetGB/2) + 1;
+  		if (num_files < 2) {
+  			num_files = 2;
+  		}
+  
+  		hdfs_path = conf.getDataStoredPath().get(BigConfConstants.BIGFRAME_DATA_HDFSPATH_RELATIONAL);
+  		local_dir = conf.get().get(BigConfConstants.BIGFRAME_TPCDS_LOCAL);
+  		datagen_script = conf.get().get(BigConfConstants.BIGFRAME_TPCDS_SCRIPT);
+  		hadoop_slaves = conf.get().get(BigConfConstants.BIGFRAME_HADOOP_SLAVE);
+  		
+  		datagen_script_path = (new File(datagen_script)).getParentFile().getAbsolutePath();
+    }
 	}
 
 	public void setHDFSPATH(String path) {

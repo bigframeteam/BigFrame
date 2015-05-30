@@ -21,11 +21,13 @@ import bigframe.datagen.relational.tpcds.TpcdsItemInfo;
 import bigframe.datagen.relational.tpcds.TpcdsPromotionInfo;
 import bigframe.datagen.text.TextGenFactory;
 import bigframe.datagen.text.tweet.TweetTextGen;
-import bigframe.datagen.util.RandomSeeds;
+import bigframe.datagen.util.RandomUtil;
 import bigframe.util.parser.JsonParser;
 
 /**
  * Mapper for generating a specific time range of tweets.
+ * It uses @bigframe.datagen.nested.tweet.SimpleTweetGenDist to 
+ * generate random tweets.
  * 
  * @author andy
  * 
@@ -38,7 +40,6 @@ Mapper<NullWritable, RawTweetInfoWritable, NullWritable, Text> {
 			getClassLoader().getResourceAsStream("tweet_template.json");
 	// private static final Logger LOG = Logger
 	// .getLogger(RawTweetGenMapper.class);
-
 	
 	@Override
 	protected void map(NullWritable ignored,
@@ -75,12 +76,7 @@ Mapper<NullWritable, RawTweetInfoWritable, NullWritable, Text> {
 				tpcds_stat_collecter.setItemResult(in, item_info);
 			}
 		}
-//		tpcds_stat_collecter.collectHDFSPromtTBL(mapreduce_config,
-//				RawTweetGenConstants.PROMOTION_TBL+".dat", promt_info);
-//
-//		
-//		tpcds_stat_collecter.collectHDFSItemTBL(mapreduce_config, 
-//				RawTweetGenConstants.ITEM_TBL+".dat", item_info);
+
 		
 		long[] customer_twitterAcc = tpcds_stat_collecter
 				.getCustTwitterAcc(tpcds_targetGB, graph_targetGB);
@@ -100,11 +96,11 @@ Mapper<NullWritable, RawTweetInfoWritable, NullWritable, Text> {
 			System.exit(-1);
 		}
 
-		tweet_textGen.setRandomSeed(RandomSeeds.SEEDS_TABLE[0] + time_begin);
+		tweet_textGen.setRandomSeed(RandomUtil.SEEDS_TABLE[0] + time_begin);
 
 		double time_step = (time_end - time_begin) * 1.0 / tweets_per_mapper;
 
-		TweetGenDist tweet_gen_dist = new SimpleTweetGenDist(RandomSeeds.SEEDS_TABLE[0] 
+		TweetGenDist tweet_gen_dist = new SimpleTweetGenDist(RandomUtil.SEEDS_TABLE[0] 
 				+ time_begin, tweet_textGen, tweet_start_ID);
  
 		tweet_gen_dist.init(customer_twitterAcc, non_customer_acc, time_begin, 

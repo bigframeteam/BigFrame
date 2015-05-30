@@ -23,7 +23,6 @@ public abstract class TweetGenDist extends NestedGenDist {
 	
 	protected long[] cust_twitter_acc;
 	protected long[] noncust_twitter_acc;
-//	protected long time_begin;
 	protected double time_step;
 	protected double time_stamp;
 	protected TpcdsPromotionInfo promt_info;

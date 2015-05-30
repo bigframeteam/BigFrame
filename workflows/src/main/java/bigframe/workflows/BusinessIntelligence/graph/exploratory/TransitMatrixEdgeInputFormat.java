@@ -16,7 +16,6 @@ public class TransitMatrixEdgeInputFormat extends TextEdgeInputFormat<Text, Doub
 	@Override
 	public EdgeReader<Text, DoubleWritable> createEdgeReader(InputSplit split,
 			TaskAttemptContext context) throws IOException {
-		// TODO Auto-generated method stub
 		return new TransitMatrixEdgeReader();
 	}
 	

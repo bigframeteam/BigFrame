@@ -29,6 +29,7 @@ cd $CURRENT_DIR;
 TPCDS_SCRIPT=$BASE_DIR/tools/tpcds/gen_data.pl
 TPCDS_UPDATE_SCRIPT=$BASE_DIR/tools/tpcds/gen_update_data.pl
 GEN_PROMTTBL_SCRIPT=$BASE_DIR/tools/tpcds/gen_single_tbl.pl
+TWEET_SAMPLE_DATA=$BASE_DIR/contrib/datagen/sample_tweet.json
 SCALA_VERSION="2.10"
 CONF_DIR=$BASE_DIR/conf
 
@@ -55,6 +56,7 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.script=${TPCDS_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.tpcds.updatescript=${TPCDS_UPDATE_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.singletblgen.script=${GEN_PROMTTBL_SCRIPT}"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.conf.dir=${CONF_DIR}"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.sample.tweet.path=${TWEET_SAMPLE_DATA}"
 
 COMMON_JAR=`ls $BASE_DIR/common/target/scala-${SCALA_VERSION}/bigframe-common-assembly*.jar`
 

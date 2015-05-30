@@ -13,6 +13,7 @@ import bigframe.datagen.graph.GraphDataGen;
 import bigframe.datagen.graph.kroneckerGraph.KnonGraphConstants;
 import bigframe.datagen.graph.kroneckerGraph.KronGraphGenHadoop;
 import bigframe.datagen.nested.NestedDataGen;
+import bigframe.datagen.nested.tweet.RawTweetGenGiraph;
 import bigframe.datagen.nested.tweet.RawTweetGenHadoop;
 import bigframe.datagen.relational.RelationalDataGen;
 import bigframe.datagen.relational.tpcds.TpcdsDataGenNaive;
@@ -25,7 +26,7 @@ import bigframe.refreshing.relational.TpcdsDataProducer;
 import bigframe.util.Constants;
 
 /**
- * A class encapsulates all the data generation restraint for 
+ * A class encapsulates all the data generation constraints for 
  * the Business Intelligence application domain.  
  * 
  * @author andy
@@ -62,8 +63,10 @@ public class BIDomainDataInfo extends DomainDataInfo {
 				datainputformat.getDataTypeTargetGB(Constants.GRAPH));
 		datagen_map.put(Constants.GRAPH, twitter_graph);
 		
-		NestedDataGen tweets = new RawTweetGenHadoop(datainputformat,
-				datainputformat.getDataTypeTargetGB(Constants.NESTED));
+//		NestedDataGen tweets = new RawTweetGenHadoop(datainputformat,
+//				datainputformat.getDataTypeTargetGB(Constants.NESTED));
+  NestedDataGen tweets = new RawTweetGenGiraph(datainputformat,
+  datainputformat.getDataTypeTargetGB(Constants.NESTED));
 		datagen_map.put(Constants.NESTED, tweets);
 		
 		List<DataGenerator> datagen_list = new LinkedList<DataGenerator>();

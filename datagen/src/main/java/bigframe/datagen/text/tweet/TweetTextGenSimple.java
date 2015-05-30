@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Random;
 
 import bigframe.bigif.BigDataInputFormat;
-import bigframe.datagen.util.RandomSeeds;
+import bigframe.datagen.util.RandomUtil;
 
 
 
 /**
- * Generate Tweets with only sentiment words and product id.
+ * Generate Tweets with only sentiment words.
  * @author andy
  *
  */
@@ -26,13 +26,11 @@ public class TweetTextGenSimple extends TweetTextGen {
 
 	public TweetTextGenSimple(BigDataInputFormat conf, float targetGB) {
 		super(conf, targetGB);
-		// TODO Auto-generated constructor stub
 
-		//System.out.println(new File(".").getAbsolutePath());
 		InputStream dictionary_file = TweetTextGenSimple.class.getClassLoader().getResourceAsStream("AFINN-111.txt");
 		sentiment_words = new ArrayList<String>();
 		randnum = new Random();
-		randnum.setSeed(RandomSeeds.SEEDS_TABLE[0]);
+		randnum.setSeed(RandomUtil.SEEDS_TABLE[0]);
 
 		try {
 			BufferedReader br;
@@ -75,7 +73,8 @@ public class TweetTextGenSimple extends TweetTextGen {
 
 	@Override
 	public String getNextTweet(int product_id) {
-		// TODO Auto-generated method stub
+		// Currently, the product id doesn't appear in the text.
+	  // Instead, we mark the product name in the hashtags 
 		StringBuilder tweet = new StringBuilder();
 		try {
 			for (int i = 0; i < 10; i++) {

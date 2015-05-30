@@ -29,19 +29,6 @@ public class BigDataInputFormat extends Config {
 		super();
 	}
 
-	/*
-	public void addDataVariety(String type) {
-		dataVariety.add(type);
-	}
-
-	public void addDataVelocity(String type, Integer rate) {
-		dataVelocity.put(type, rate);
-	}
-
-	public void addDataScaleFactors(String type, Integer sf) {
-		dataScalePortions.put(type, sf);
-	}
-	 */
 	public String getAppDomain() {
 		return app_domain;
 	}
@@ -116,24 +103,6 @@ public class BigDataInputFormat extends Config {
 
 		return targetGB;
 	}
-
-	/*
-	public void setDataVariety(Set<String> dVariety) {
-		dataVariety = dVariety;
-	}
-
-	public void setDataVolumn(Integer dVolumn) {
-		dataVolumn = dVolumn;
-	}
-
-	public void setDataVelocity(Map<String, Integer> dVelocity) {
-		dataVelocity = dVelocity;
-	}
-
-	public void setDataScaleFactors(Map<String, Integer> dSF) {
-		dataScalePortions = dSF;
-	}
-	 */
 
 	private boolean containDataType(String property) {
 		boolean flag = false;

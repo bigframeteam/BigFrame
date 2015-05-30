@@ -14,7 +14,7 @@ import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.graph.kroneckerGraph.KroneckerGraphGen;
 import bigframe.datagen.relational.tpcds.CollectTPCDSstat;
 import bigframe.datagen.relational.tpcds.CollectTPCDSstatNaive;
-import bigframe.datagen.util.RandomSeeds;
+import bigframe.datagen.util.RandomUtil;
 import bigframe.util.MapRedConfig;
 
 import cern.jet.random.engine.MersenneTwister;
@@ -121,7 +121,7 @@ public class TwitterMappingGenNaive extends TwitterMappingGen {
 			long [] twitter_accounts = new long[num_customer/2];
 			
 			//Initialize seed 
-			RandomEngine twister = new MersenneTwister(RandomSeeds.SEEDS_TABLE[0]);
+			RandomEngine twister = new MersenneTwister(RandomUtil.SEEDS_TABLE[0]);
 			
 			/**
 			 * Sample a set of customer and twitter account respectively.

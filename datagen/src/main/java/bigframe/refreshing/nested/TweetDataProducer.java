@@ -29,7 +29,7 @@ import bigframe.datagen.relational.tpcds.TpcdsItemInfo;
 import bigframe.datagen.relational.tpcds.TpcdsPromotionInfo;
 import bigframe.datagen.text.TextGenFactory;
 import bigframe.datagen.text.tweet.TweetTextGen;
-import bigframe.datagen.util.RandomSeeds;
+import bigframe.datagen.util.RandomUtil;
 import bigframe.refreshing.DataProducer;
 import bigframe.util.parser.JsonParser;
 
@@ -96,11 +96,11 @@ public class TweetDataProducer extends DataProducer {
 
 		TweetTextGen tweet_textGen = TextGenFactory
 				.getTextGenByName("simple");
-		tweet_textGen.setRandomSeed(RandomSeeds.SEEDS_TABLE[0]);
+		tweet_textGen.setRandomSeed(RandomUtil.SEEDS_TABLE[0]);
 		
 		JSONObject tweet_json = JsonParser.parseJsonFromFile(TWEET_TEMPLATE_FILE);
 		
-		tweet_gen_dist = new SimpleTweetGenDist(RandomSeeds.SEEDS_TABLE[0], tweet_textGen, 1);
+		tweet_gen_dist = new SimpleTweetGenDist(RandomUtil.SEEDS_TABLE[0], tweet_textGen, 1);
 		
 		/**
 		 * The init function ask for time in seconds. 

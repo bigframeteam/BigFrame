@@ -25,15 +25,9 @@ public abstract class CollectTPCDSstat {
 
 	public abstract List<TpcdsPromotedProduct> getPromotedProds();
 
-	//public abstract void IntialCustTwitterAcc(String hdfs_path, DatagenConf conf);
-
-
-
 	public Date getTPCDSdateBegin() {
-		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
 		try {
-			return formatter.parse(TpcdsConstants.TPCDS_BEGINDATE);
+			return TpcdsConstants.dateformatter.parse(TpcdsConstants.TPCDS_BEGINDATE);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -42,10 +36,8 @@ public abstract class CollectTPCDSstat {
 	}
 
 	public Date getTPCDSdateEnd() {
-		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
 		try {
-			return formatter.parse(TpcdsConstants.TPCDS_ENDDATE);
+			return TpcdsConstants.dateformatter.parse(TpcdsConstants.TPCDS_ENDDATE);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
