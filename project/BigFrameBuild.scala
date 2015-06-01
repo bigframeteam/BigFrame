@@ -13,6 +13,9 @@ object BigFrameBuild extends Build {
 
 	// Scala version
 	val SCALA_VERSION = "2.10.3"
+
+	//akka_repo	
+	val akka_repo = "Akka Maven Repository" at "http://repo.akka.io/releases"
 	
 	lazy val root = Project(id = "root", base = file("."), settings = rootSettings) aggregate(common, datagen, qgen, workflows)
 
@@ -39,7 +42,7 @@ object BigFrameBuild extends Build {
 
     	resolvers ++= Seq(
 	    	"Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-			"spray" at "http://repo.spray.io/"
+			"spray" at "http://repo.spray.io/", akka_repo
 		),
 
 		libraryDependencies ++= Seq(
@@ -95,8 +98,8 @@ object BigFrameBuild extends Build {
 		libraryDependencies ++= Seq(
 			"io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
 			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1", 
-			"org.apache.hive" % "hive-exec" % "0.12.0" % "provided",
-			"org.apache.hive" % "hive-common" % "0.12.0" % "provided"
+			"org.apache.hive" % "hive-exec" % "0.13.1" % "provided",
+			"org.apache.hive" % "hive-common" % "0.13.1" % "provided"
 		)
 	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 

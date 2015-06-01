@@ -20,7 +20,7 @@
 	
 	<property>
 		<name>bigframe.datavolume</name>
-		<value>test</value>
+		<value>5</value>
 		<description>
 			tiny: around 10GB
 			small: around 100GB
@@ -155,22 +155,22 @@
 	
 	<property>
 		<name>bigframe.queryengine.relational</name>
-		<value>hadoop</value>
+		<value>hive</value>
 	</property>
 	
 	<property>
 		<name>bigframe.queryengine.graph</name>
-		<value>hadoop</value>
+		<value>hive</value>
 	</property>
 	
 	<property>
 		<name>bigframe.queryengine.nested</name>
-		<value>hadoop</value>
+		<value>hive</value>
 	</property>
 
 	<property>
 		<name>bigframe.queryengine.text</name>
-		<value>hadoop</value>
+		<value>hive</value>
 	</property>
 
 </configuration>
