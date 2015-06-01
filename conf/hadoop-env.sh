@@ -24,5 +24,9 @@ BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hive.orc=${ORC_SETTING}"
 
 
 # The Hive JDBC Server Address
-HIVE_JDBC_SERVER="jdbc:hive://localhost:10000/default"
+HIVE_JDBC_SERVER="jdbc:hive2://localhost:10000/default"
 BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hive.jdbc.server=${HIVE_JDBC_SERVER}"
+
+# The Hive UserName
+HIVE_USERNAME="hadoop"
+BIGFRAME_OPTS="${BIGFRAME_OPTS} -Dbigframe.hive.username=${HIVE_USERNAME}"

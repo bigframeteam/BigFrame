@@ -310,7 +310,7 @@ public class QGenDriver {
 		
 		// Hiveserver config
 		HiveServerCredentials.CONNECTION_STRING = config.getHiveJDBCServer();
-		HiveServerCredentials.USERNAME = "";
+		HiveServerCredentials.USERNAME = config.getHiveUserName();
 		HiveServerCredentials.PASSWORD = "";
 	}
 }
