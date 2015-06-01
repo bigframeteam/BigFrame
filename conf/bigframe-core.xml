@@ -20,7 +20,7 @@
 	
 	<property>
 		<name>bigframe.datavolume</name>
-		<value>5</value>
+		<value>10</value>
 		<description>
 			tiny: around 10GB
 			small: around 100GB
