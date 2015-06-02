@@ -27,7 +27,7 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 public class TweetGraphVertexInputFormat<E extends Writable, M extends Writable>
-    extends TextVertexValueInputFormat<LongWritable, Text, E, M> {
+    extends TextVertexValueInputFormat<LongWritable, Text, E> {
 
   @Override
   public TextVertexValueReader createVertexValueReader(InputSplit split,

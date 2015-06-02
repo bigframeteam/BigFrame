@@ -57,7 +57,7 @@ public class RawTweetGenGiraph extends RawTweetGen {
     GiraphConfiguration giraphConfig = new GiraphConfiguration(mapredConfig);
     Configuration.addDefaultResource("giraph-site.xml");
 
-    RawTweetGiraphJob tweetGenJob = new RawTweetGiraphJob(giraphConfig, conf);
+    RawTweetGiraphJob tweetGenJob = new RawTweetGiraphJob(giraphConfig, conf, targetGB);
     tweetGenJob.run();
   }
 

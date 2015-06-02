@@ -42,20 +42,17 @@ public class TweetGraphEdgeInputFormat extends
     @Override
     protected LongWritable getSourceVertexId(DirectEdge edge)
         throws IOException {
-//      System.out.println("getSrcNode: " + edge.getSrcNode());
       return edge.getSrcNode();
     }
 
     @Override
     protected LongWritable getTargetVertexId(DirectEdge edge)
         throws IOException {
-//      System.out.println("getDestNode: " + edge.getDestNode());
       return edge.getDestNode();
     }
 
     @Override
     protected NullWritable getValue(DirectEdge edge) throws IOException {
-//      System.out.println("NullWritable: " + NullWritable.get());
       return NullWritable.get();
     }
 

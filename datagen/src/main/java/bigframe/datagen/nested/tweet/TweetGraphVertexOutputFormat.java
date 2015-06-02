@@ -119,14 +119,6 @@ VertexOutputFormat<LongWritable, Text, NullWritable> {
    */
   private class TextVertexWriterToEachLine extends TextVertexWriter {
 
-    @Override
-    public final void writeVertex(Vertex<LongWritable, Text, NullWritable, ?> vertex) throws
-      IOException, InterruptedException {
-      // Note we are writing line as key with null value
-      if(convertVertexToLine(vertex) != null)
-        getRecordWriter().write(convertVertexToLine(vertex), null);
-    }
-
     /**
      * Writes a line for the given vertex.
      *
@@ -136,7 +128,7 @@ VertexOutputFormat<LongWritable, Text, NullWritable> {
      * @throws IOException
      *           exception that can be thrown while writing
      */
-    protected  Text convertVertexToLine(Vertex<LongWritable, Text, NullWritable, ?> vertex)
+    protected  Text convertVertexToLine(Vertex<LongWritable, Text, NullWritable> vertex)
       throws IOException {
       
 //      if (vertex.getValue()==null) {
@@ -147,6 +139,17 @@ VertexOutputFormat<LongWritable, Text, NullWritable> {
 //      }
 //      
       return vertex.getValue()==null ? null : vertex.getValue();
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.giraph.io.SimpleVertexWriter#writeVertex(org.apache.giraph.graph.Vertex)
+     */
+    @Override
+    public void writeVertex(Vertex<LongWritable, Text, NullWritable> vertex)
+        throws IOException, InterruptedException {
+      // Note we are writing line as key with null value
+      if(convertVertexToLine(vertex) != null)
+        getRecordWriter().write(convertVertexToLine(vertex), null);   
     }
   }
 

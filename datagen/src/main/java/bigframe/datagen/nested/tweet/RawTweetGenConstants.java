@@ -68,7 +68,7 @@ public class RawTweetGenConstants {
     twitterDateFormat.setTimeZone(TimeZone.getTimeZone("Europe/London"));
   }
   
-  public static float TWEET_PROB = 0.01f;
+  public static String TWEET_PROB = "giraph.tweet.prob";
   
   public static float INIT_PROB = 0.01f;
 }

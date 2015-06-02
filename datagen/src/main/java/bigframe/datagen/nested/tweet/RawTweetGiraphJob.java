@@ -33,24 +33,27 @@ import org.apache.giraph.io.formats.GiraphFileInputFormat;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.NullWritable;
 import org.json.simple.JSONObject;
 
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.BigDataInputFormat;
 import bigframe.datagen.DataGenDriver;
+import bigframe.datagen.graph.kroneckerGraph.KroneckerGraphGen;
 import bigframe.util.parser.JsonParser;
 
 public class RawTweetGiraphJob {
 
   private static final Log LOG = LogFactory.getLog(RawTweetGiraphJob.class);
 
+  private float targetGB;
+
+  public static final int sizePerPartitionInGB = 1;
+
   // The average size of a tweet.
-  public static float SINGLE_TWEET_INBYTES = 2789.6858369098713f;
-  
+  public static float SINGLE_TWEET_INBYTES = 2380.445410414828f;
+
   private BigDataInputFormat conf;
-  private GiraphConfiguration giraph_config;
-  private int numWorkers = 5;
+  private GiraphConfiguration giraphConfig;
   private Path tweetGraphPath;
   private Path tweetOutputPath;
 
@@ -76,29 +79,16 @@ public class RawTweetGiraphJob {
 
   }
 
-  public RawTweetGiraphJob(GiraphConfiguration config, BigDataInputFormat conf) {
-    giraph_config = config;
+  public RawTweetGiraphJob(GiraphConfiguration giraphConfig,
+      BigDataInputFormat conf, float targetGB) {
+    this.giraphConfig = giraphConfig;
     this.conf = conf;
+    this.targetGB = targetGB;
     this.tweetGraphPath = new Path(conf.getDataStoredPath().get(
         BigConfConstants.BIGFRAME_DATA_HDFSPATH_GRAPH));
     this.tweetOutputPath = new Path(conf.getDataStoredPath().get(
         BigConfConstants.BIGFRAME_DATA_HDFSPATH_NESTED));
 
-  }
-
-  /**
-   * @return the numWorkers
-   */
-  public int getNumWorkers() {
-    return numWorkers;
-  }
-
-  /**
-   * @param numWorkers
-   *          the numWorkers to set
-   */
-  public void setNumWorkers(int numWorkers) {
-    this.numWorkers = numWorkers;
   }
 
   public boolean run() {
@@ -108,11 +98,52 @@ public class RawTweetGiraphJob {
 
       GiraphJob job;
 
-      job = new GiraphJob(giraph_config, this.getClass().getName());
+      job = new GiraphJob(giraphConfig, this.getClass().getName());
 
       GiraphConfiguration giraphConfiguration = job.getConfiguration();
 
-      giraphConfiguration.setInt(RawTweetGenConstants.SUPERSTEP_COUNT, 1);
+      // We need to calculate how many tasks we need to spawn to generate the
+      // target size.
+
+      // There is a trade-off here: too many tasks will require a large number
+      // of
+      // map slots, but too few tasks will make each task quickly run out of
+      // memory.
+      float nestedProportion = conf.getDataScaleProportions().get(
+          BigConfConstants.BIGFRAME_DATAVOLUME_NESTED_PROPORTION);
+      float graphProportion = conf.getDataScaleProportions().get(
+          BigConfConstants.BIGFRAME_DATAVOLUME_GRAPH_PROPORTION);
+
+      float graphGB = graphProportion / nestedProportion * targetGB;
+
+      int numTwitterUser = (int) KroneckerGraphGen.getNodeCount(graphGB);
+
+      int maxNumberOfSupersteps = 20;
+
+      // In GB
+      float tweetSizeEachIteration = targetGB / maxNumberOfSupersteps;
+
+      float tweetProb = tweetSizeEachIteration * 1024 * 1024 * 1024
+          / (numTwitterUser * SINGLE_TWEET_INBYTES);
+
+      // Guarantee the prob <= 1.
+      while(tweetProb > 1) {
+        tweetProb /= 2;
+        maxNumberOfSupersteps *= 2;
+      }
+      
+      LOG.info("Tweet size per interation: " + tweetSizeEachIteration);
+      LOG.info("Tweet prob:" + tweetProb);
+
+      //
+      int numWorkers = (int) Math.ceil(targetGB + graphGB);
+
+      LOG.info("Number of workers: " + numWorkers);
+
+      // giraphConfiguration.setMaxNumberOfSupersteps(maxNumberOfSupersteps);
+      giraphConfiguration.setInt(RawTweetGenConstants.SUPERSTEP_COUNT,
+          maxNumberOfSupersteps);
+      giraphConfiguration.setFloat(RawTweetGenConstants.TWEET_PROB, tweetProb);
       /**
        * Initialize vertex and edge input
        */
@@ -140,9 +171,11 @@ public class RawTweetGiraphJob {
       /**
        * Set computation class
        */
-      giraphConfiguration.setVertexClass(TweetGraphVertex.class);
+      giraphConfiguration.setComputationClass(TweetGraphVertex.class);
       giraphConfiguration
           .setWorkerConfiguration(numWorkers, numWorkers, 100.0f);
+
+      giraphConfiguration.set("giraph.useOutOfCoreGraph", "true");
 
       return job.run(true) ? true : false;
 

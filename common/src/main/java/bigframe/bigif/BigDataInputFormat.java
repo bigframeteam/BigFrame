@@ -54,6 +54,7 @@ public class BigDataInputFormat extends Config {
 	}
 
 
+	// Get the size for each generated datatype.
 	public float getDataTypeTargetGB(String dataType) {
 
 		float targetGB;

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.giraph.edge.Edge;
+import org.apache.giraph.graph.BasicComputation;
 import org.apache.giraph.graph.Vertex;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
@@ -42,34 +43,59 @@ import bigframe.datagen.util.RandomUtil;
 //<V> Vertex data
 //<E> Edge data
 //<M> Message data
-public class TweetGraphVertex extends Vertex<LongWritable, Text, NullWritable, Text> {
+public class TweetGraphVertex extends
+    BasicComputation<LongWritable, Text, NullWritable, Text> {
 
-  public static enum Vertex {INITIALIZED, PORPOGATE, TWEET};
-  
+  public static enum Vertex {
+    INITIALIZED,
+    PORPOGATE,
+    TWEET
+  };
+
   // Set the seed as the vertex ID.
   // private Random random;
-  private Random random;
+  // private Random random;
   private String lastProductName;
   private String startDate;
   private String endDate;
   private int tweetID;
-  private int numSuperSteps;
+  // private int numSuperSteps;
   private float mentionInPeriodProb;
 
   private static TweetTextGen tweetGen = new TweetTextGenSimple(null, 0);
-  
-  @SuppressWarnings("unchecked")
+
+  public void sendMessageToAllEdges(
+      org.apache.giraph.graph.Vertex<LongWritable, Text, NullWritable> vertex,
+      Text message) {
+
+    Iterable<Edge<LongWritable, NullWritable>> edges = vertex.getEdges();
+
+    for (Edge<LongWritable, NullWritable> edge : edges) {
+      sendMessage(edge.getTargetVertexId(), message);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.giraph.graph.AbstractComputation#compute(org.apache.giraph.graph
+   * .Vertex, java.lang.Iterable)
+   */
   @Override
-  public void compute(Iterable<Text> messages) throws IOException {
-//     initialize the necessary parameters
-    //Random random =  new Random(getId().get() + getSuperstep());
+  public void compute(
+      org.apache.giraph.graph.Vertex<LongWritable, Text, NullWritable> vertex,
+      Iterable<Text> messages) throws IOException {
+    // initialize the necessary parameters
+    Random random = new Random(vertex.getId().get() + getSuperstep());
+    int numSuperSteps = getContext().getConfiguration().getInt(
+        RawTweetGenConstants.SUPERSTEP_COUNT, 1);
     if (getSuperstep() == 0) {
-      random = new Random(getId().get());
+      // random = new Random(vertex.getId().get());
       getContext().getCounter(Vertex.INITIALIZED).increment(1);
-      
-      String[] fields = getValue().toString().split("\\|");
-      numSuperSteps = getContext().getConfiguration().getInt(
-          RawTweetGenConstants.SUPERSTEP_COUNT, 1);
+
+      String[] fields = vertex.getValue().toString().split("\\|");
+
       mentionInPeriodProb = getContext().getConfiguration().getFloat(
           RawTweetGenConstants.BIGFRAME_TWEET_PROMOTION_PERIOD_PROB, 0.8f);
 
@@ -80,28 +106,29 @@ public class TweetGraphVertex extends Vertex<LongWritable, Text, NullWritable, T
       tweetID = random.nextInt(RawTweetGiraphJob.tweetJSONs.size());
 
       if (random.nextFloat() <= RawTweetGenConstants.INIT_PROB) {
-      // Pass this product to its followers.
+        // Pass this product to its followers.
         Text message = new Text(lastProductName + "|" + startDate + "|"
             + endDate);
-        sendMessageToAllEdges(message);
+        sendMessageToAllEdges(vertex, message);
       }
-      setValue(null);
-//      voteToHalt();
+      vertex.setValue(null);
+      // voteToHalt();
     }
-//    
-//     Begin to generate tweets.
+    //
+    // Begin to generate tweets.
     else if (getSuperstep() <= numSuperSteps) {
       getContext().getCounter(Vertex.PORPOGATE).increment(1);
 
       // Tweet about this product
-      if (random.nextFloat() <= RawTweetGenConstants.TWEET_PROB) {
-        
+      if (random.nextFloat() <= getContext().getConfiguration().getFloat(
+          RawTweetGenConstants.TWEET_PROB, 0.0001f)) {
+
         getContext().getCounter(Vertex.TWEET).increment(1);
-        
+
         List<String> products = new ArrayList<String>();
         List<String> startDates = new ArrayList<String>();
         List<String> endDates = new ArrayList<String>();
-        
+
         for (Text message : messages) {
           String[] fields = message.toString().split("\\|");
           products.add(fields[0]);
@@ -112,7 +139,7 @@ public class TweetGraphVertex extends Vertex<LongWritable, Text, NullWritable, T
         // This user has friends
         if (products.size() > 0) {
           // Randomly select a product tweet by his/her friends.
-          // For simplicity, we assume that friends have the same 
+          // For simplicity, we assume that friends have the same
           // influence on the same follower.
           int index = random.nextInt(products.size());
 
@@ -121,7 +148,7 @@ public class TweetGraphVertex extends Vertex<LongWritable, Text, NullWritable, T
           startDate = startDates.get(index);
           endDate = endDates.get(index);
         }
-        
+
         long startTime = 0;
         long endTime = 0;
         // Tweet this product in its specified period
@@ -133,8 +160,9 @@ public class TweetGraphVertex extends Vertex<LongWritable, Text, NullWritable, T
             e.printStackTrace();
           }
         }
-        
-        // Tweet this product in whatever timestamp between the predefined begin and end
+
+        // Tweet this product in whatever timestamp between the predefined begin
+        // and end
         else {
           try {
             startTime = TpcdsConstants.dateformatter.parse(
@@ -146,59 +174,48 @@ public class TweetGraphVertex extends Vertex<LongWritable, Text, NullWritable, T
           }
         }
 
-        
         // Begin to construct the tweet body
         long tweetTime = RandomUtil.randLong(random, startTime, endTime);
-        
+
         String date = RawTweetGenConstants.twitterDateFormat.format(tweetTime);
         // The product id is not used in the current implementation.
         String tweet = tweetGen.getNextTweet(0);
-        
+
         JSONObject tweetJSON = RawTweetGiraphJob.tweetJSONs.get(tweetID);
         JSONObject userJSON = (JSONObject) tweetJSON.get("user");
         JSONObject entitiesJSON = (JSONObject) tweetJSON.get("entities");
-        
+
         tweetJSON.put("created_at", date);
         tweetJSON.put("text", tweet);
-        
-        userJSON.put("id", getId().get());
-        userJSON.put("id_str", getId().toString());
+
+        userJSON.put("id", vertex.getId().get());
+        userJSON.put("id_str", vertex.getId().toString());
         tweetJSON.put("user", userJSON);
-        
+
         // TODO: Shall we tweet N products instead of one?
         JSONArray list = new JSONArray();
         list.add(lastProductName);
         entitiesJSON.put("hashtags", list);
-        
+
         tweetJSON.put("entities", entitiesJSON);
-          
+
         // Append to the value, which is a list of tweets by this user.
-        if(getValue() == null) {
-          setValue(new Text(tweetJSON.toString()));
+        if (vertex.getValue() == null) {
+          vertex.setValue(new Text(tweetJSON.toString()));
+        } else {
+          vertex.setValue(new Text(vertex.getValue().toString() + "\n"
+              + tweetJSON.toString()));
         }
-        else {
-          setValue(new Text(getValue().toString() + "\n" + tweetJSON.toString()));
-        }
-        
+
         // Pass this product to its followers.
         Text message = new Text(lastProductName + "|" + startDate + "|"
             + endDate);
 
-        sendMessageToAllEdges(message);
+        sendMessageToAllEdges(vertex, message);
       }
-    }
-    else
-      voteToHalt();
-  }
+    } else
+      vertex.voteToHalt();
 
-  @Override
-  public void sendMessageToAllEdges(Text message) {
-
-    Iterable<Edge<LongWritable, NullWritable>> edges = getEdges();
-
-    for (Edge<LongWritable, NullWritable> edge : edges) {
-      sendMessage(edge.getTargetVertexId(), message);
-    }
   }
 
 }
