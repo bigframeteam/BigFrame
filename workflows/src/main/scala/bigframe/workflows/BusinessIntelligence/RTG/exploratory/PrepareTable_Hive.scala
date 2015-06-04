@@ -307,7 +307,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 				"		source string," +
 				"		text string," +
 				"		truncated string," +
-				"		user struct<contributors_enabled:string, " +
+				"		`user` struct<contributors_enabled:string, " +
 				"					created_at:string, " +
 				"					description:string, " +
 				"					favourites_count:string, " +
@@ -660,7 +660,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 				"		source string," +
 				"		text string," +
 				"		truncated string," +
-				"		user struct<contributors_enabled:string, " +
+				"		`user` struct<contributors_enabled:string, " +
 				"					created_at:string, " +
 				"					description:string, " +
 				"					favourites_count:string, " +

@@ -157,7 +157,7 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 			val query_relevantTweet	= "	INSERT INTO TABLE relevantTweet" +
 					"		SELECT item_sk, user_id, text" +
 					"		FROM " +
-					"			(SELECT user.id as user_id, text, created_at, entities.hashtags[0] as hashtag" +
+					"			(SELECT `user`.id as user_id, text, created_at, entities.hashtags[0] as hashtag" +
 					"			FROM tweets" +
 					"			WHERE size(entities.hashtags) > 0 ) t1 " +
 					"		JOIN " +	
@@ -423,21 +423,26 @@ class WF_ReportSaleSentimentHive(basePath: BaseTablePath, num_iter: Int, val use
 					"	ON t.item_sk = RptSalesByProdCmpn.item_sk"				
 
 			eventBus.post(new QueryStartedEvent(query_RptSAProdCmpn, "hive"))
+      
+//      try {
+//        stmt.executeQuery(query_RptSAProdCmpn)
+//      }
+//      catch {
+//        case sqle :
+//        SQLException => sqle.printStackTrace()
+//        case e :
+//        Exception => e.printStackTrace()
+//      }
 			
-			if (stmt.execute(query_RptSAProdCmpn)) {
-				eventBus.post(new QueryCompletedEvent(query_RptSAProdCmpn, "hive"))
-				eventBus.post(new ComponentCompletedEvent("report generation", "hive"))
-				eventBus.post(new WorkflowCompletedEvent("Hive"));
-				stmt.close();
-				return true
-			}
-			else{ 
-				eventBus.post(new ComponentCompletedEvent("report generation", "hive"))
-				eventBus.post(new WorkflowCompletedEvent("Hive"));
-				stmt.close();
-				return false
-			}
-
+			stmt.execute(query_RptSAProdCmpn)
+				
+      eventBus.post(new QueryCompletedEvent(query_RptSAProdCmpn, "hive"))
+			eventBus.post(new ComponentCompletedEvent("report generation", "hive"))
+			eventBus.post(new WorkflowCompletedEvent("Hive"));
+			
+      stmt.close();
+			
+      return true
 		} catch {
 			case sqle :
 				SQLException => sqle.printStackTrace()
