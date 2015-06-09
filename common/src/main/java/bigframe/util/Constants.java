@@ -18,6 +18,7 @@ public class Constants {
 	
 	public static String HADOOP = "hadoop";
 	public static String HIVE = "hive";
+	public static String HIVETEZ = "hive-tez";
 	
 	public static String SHARK = "shark";
 	public static String SPARK = "spark";

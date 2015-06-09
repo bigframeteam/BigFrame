@@ -86,6 +86,10 @@ public class HiveEngineDriver extends EngineDriver {
 			if(stmt == null) {
 				stmt = connection.createStatement();
 			}
+			//TODO Set hive engine to mr
+			String setHiveOnTez = "set " + "hive.execution.engine" + "=" + "mr";
+			stmt.execute(setHiveOnTez);		
+			LOG.info("Setting Hive engine to MR");
 
 			for(HiveRunnable query : queries) {
 				LOG.info("Prepare tables...");

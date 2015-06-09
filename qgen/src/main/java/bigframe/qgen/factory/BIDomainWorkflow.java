@@ -15,12 +15,12 @@ import bigframe.qgen.engineDriver.GiraphEngineDriver;
 import bigframe.qgen.engineDriver.HadoopEngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
 import bigframe.qgen.engineDriver.HiveGiraphEngineDriver;
+import bigframe.qgen.engineDriver.HiveTezEngineDriver;
 import bigframe.qgen.engineDriver.MixedEngineDriver;
 import bigframe.qgen.engineDriver.SharkEngineDriver;
 import bigframe.qgen.engineDriver.SparkEngineDriver;
 import bigframe.qgen.engineDriver.SparkSQLEngineDriver;
 import bigframe.qgen.engineDriver.EngineDriver;
-
 import bigframe.qgen.engineDriver.VerticaEngineDriver;
 import bigframe.util.Constants;
 import bigframe.workflows.BaseTablePath;
@@ -71,6 +71,7 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		 * The currently supported engines
 		 */
 		HiveEngineDriver hiveWorkflow = new HiveEngineDriver(workflowIF);
+		HiveTezEngineDriver hiveTezWorkflow = new HiveTezEngineDriver(workflowIF);
 		HadoopEngineDriver hadoopWorkflow = new HadoopEngineDriver(workflowIF);
 		SharkEngineDriver sharkWorkflow = new SharkEngineDriver(workflowIF);
 		SparkEngineDriver sparkWorkflow = new SparkEngineDriver(workflowIF);
@@ -138,6 +139,10 @@ public class BIDomainWorkflow extends DomainWorkflow {
 						hiveWorkflow.addQuery(new 
 								bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSales(basePath));
 					}
+					else if (relationalEngine.equals(Constants.HIVETEZ)) {
+						hiveTezWorkflow.addQuery(new 
+								bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSales(basePath));
+					}
 					else if(relationalEngine.equals(Constants.SHARK)) {
 						sharkWorkflow.addQuery(new 
 								bigframe.workflows.BusinessIntelligence.relational.exploratory.WF_ReportSales(basePath));
@@ -180,6 +185,10 @@ public class BIDomainWorkflow extends DomainWorkflow {
 						hiveWorkflow.addQuery(new 
 								bigframe.workflows.BusinessIntelligence.text.exploratory.WF_SenAnalyze(basePath));
 					}
+					else if (relationalEngine.equals(Constants.HIVETEZ)) {
+						hiveTezWorkflow.addQuery(new 
+								bigframe.workflows.BusinessIntelligence.text.exploratory.WF_SenAnalyze(basePath));
+					}
 				}
 			}
 		}
@@ -216,6 +225,12 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					hiveWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10, workflowIF.getHiveORC()));
 				}
+				else if(relationalEngine.equals(Constants.HIVETEZ) && graphEngine.equals(Constants.HIVETEZ)&& 
+						nestedEngine.equals(Constants.HIVETEZ)) {
+					//same as hive, may need to change
+					hiveTezWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10, workflowIF.getHiveORC()));
+				}
 				else if(relationalEngine.equals(Constants.SPARKSQL) && graphEngine.equals(Constants.SPARKSQL)&& 
 						nestedEngine.equals(Constants.SPARKSQL)) {
 					sparkSQLWorkflow.addQuery(new 
@@ -226,6 +241,32 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					mixedWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "HHS"));
 				}
+				//The following modes are not tested
+//				else if(relationalEngine.equals(Constants.HIVETEZ) && graphEngine.equals(Constants.SPARKSQL)&& 
+//						nestedEngine.equals(Constants.HIVETEZ)) {
+//					mixedWorkflow.addQuery(new 
+//							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "HHS"));
+//				}
+//				else if(relationalEngine.equals(Constants.SPARKSQL) && graphEngine.equals(Constants.SPARKSQL)&& 
+//						nestedEngine.equals(Constants.HIVETEZ)) {
+//					mixedWorkflow.addQuery(new 
+//							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "HSS"));
+//				}
+//				else if(relationalEngine.equals(Constants.SPARKSQL) && graphEngine.equals(Constants.SPARKSQL)&& 
+//						nestedEngine.equals(Constants.HIVETEZ)) {
+//					mixedWorkflow.addQuery(new 
+//							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "HSS"));
+//				}
+//				else if(relationalEngine.equals(Constants.HIVETEZ) && graphEngine.equals(Constants.SPARKSQL)&& 
+//						nestedEngine.equals(Constants.SPARKSQL)) {
+//					mixedWorkflow.addQuery(new 
+//							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "SHS"));
+//				}
+//				else if(relationalEngine.equals(Constants.HIVETEZ) && graphEngine.equals(Constants.GIRAPH)&& 
+//						nestedEngine.equals(Constants.HIVETEZ)) {
+//					hivegiraphWorkflow.addQuery(new 
+//							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 10, workflowIF.getHiveORC()));
+//				}
 				else if(relationalEngine.equals(Constants.SPARKSQL) && graphEngine.equals(Constants.SPARKSQL)&& 
 						nestedEngine.equals(Constants.HIVE)) {
 					mixedWorkflow.addQuery(new 
@@ -376,6 +417,19 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		
 		for (Entry<String, String> entry : bigqueryIF.getQueryRunningEngine().entrySet()) {
 			if(entry.getValue().equals(Constants.HIVE)) {
+				if (workflowIF.getHiveHome().equals("")) {
+					LOG.error("Hive Home is needed, please set!");
+					return false;
+				}
+				else if (workflowIF.getHiveJDBCServer().equals("")) {
+					LOG.error("Hive JDBC Server Address is needed, please set!");
+					return false;
+				}
+			}
+		}
+		
+		for (Entry<String, String> entry : bigqueryIF.getQueryRunningEngine().entrySet()) {
+			if(entry.getValue().equals(Constants.HIVETEZ)) {
 				if (workflowIF.getHiveHome().equals("")) {
 					LOG.error("Hive Home is needed, please set!");
 					return false;

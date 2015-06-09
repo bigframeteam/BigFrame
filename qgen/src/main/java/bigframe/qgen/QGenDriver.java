@@ -22,12 +22,12 @@ import org.apache.commons.logging.LogFactory;
 import edu.duke.dbmsplus.datahooks.conf.HiveServerCredentials;
 import edu.duke.dbmsplus.datahooks.conf.MetadataDatabaseCredentials;
 import edu.duke.dbmsplus.datahooks.listener.BigFrameListenerImpl;
-
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.WorkflowInputFormat;
 import bigframe.qgen.engineDriver.EngineDriver;
 import bigframe.qgen.engineDriver.HiveEngineDriver;
+import bigframe.qgen.engineDriver.HiveTezEngineDriver;
 import bigframe.qgen.engineDriver.MixedEngineDriver;
 import bigframe.qgen.engineDriver.SparkSQLEngineDriver;
 import bigframe.qgen.factory.WorkflowFactory;
@@ -263,6 +263,12 @@ public class QGenDriver {
 						listener.addHiveExecHook();
 						listener.turnOffSemanticQuery();
 						((HiveEngineDriver) workflow).init(
+								listener.getHiveConnection());
+					} else if(addListener && workflow.getClass().getName().equals(
+							HiveTezEngineDriver.class.getName())) {
+						listener.addHiveExecHook();
+						listener.turnOffSemanticQuery();
+						((HiveTezEngineDriver) workflow).init(
 								listener.getHiveConnection());
 					} else if(addListener && workflow.getClass().getName().equals(
 							SparkSQLEngineDriver.class.getName())) {

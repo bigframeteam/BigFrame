@@ -22,6 +22,7 @@ public class BIDomainInfo extends DomainInfo {
 		Set<String> text_supportedEngine = new HashSet<String>();
 		
 		relational_supportedEngine.add(Constants.HIVE);
+		relational_supportedEngine.add(Constants.HIVETEZ);
 		relational_supportedEngine.add(Constants.SHARK);
 		relational_supportedEngine.add(Constants.HADOOP);
 		relational_supportedEngine.add(Constants.VERTICA);
@@ -29,6 +30,7 @@ public class BIDomainInfo extends DomainInfo {
 		relational_supportedEngine.add(Constants.SPARKSQL);
 
 		graph_supportedEngine.add(Constants.HIVE);
+		graph_supportedEngine.add(Constants.HIVETEZ);
 		graph_supportedEngine.add(Constants.HADOOP);
 		graph_supportedEngine.add(Constants.VERTICA);
 		graph_supportedEngine.add(Constants.SPARK);
@@ -37,6 +39,7 @@ public class BIDomainInfo extends DomainInfo {
 		graph_supportedEngine.add(Constants.SPARKSQL);
 		
 		nested_supportedEngine.add(Constants.HIVE);
+		nested_supportedEngine.add(Constants.HIVETEZ);
 		nested_supportedEngine.add(Constants.HADOOP);
 		nested_supportedEngine.add(Constants.VERTICA);
 		nested_supportedEngine.add(Constants.SPARK);
@@ -44,6 +47,7 @@ public class BIDomainInfo extends DomainInfo {
 		nested_supportedEngine.add(Constants.SPARKSQL);
 		
 		text_supportedEngine.add(Constants.HIVE);
+		text_supportedEngine.add(Constants.HIVETEZ);
 		text_supportedEngine.add(Constants.HADOOP);		
 		text_supportedEngine.add(Constants.VERTICA);		
 		text_supportedEngine.add(Constants.SPARK);	

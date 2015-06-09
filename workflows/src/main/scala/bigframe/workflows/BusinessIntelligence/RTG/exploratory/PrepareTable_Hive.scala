@@ -705,6 +705,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		stmt.execute(createDateDimTmp)
 		stmt.execute(createGraphTmp)
 		stmt.execute(createTweetsTmp)
+//    System.out.println("successfully createTweetsTmp!")
 		
 		
 		val dropWebSales = "DROP TABLE web_sales"
@@ -727,6 +728,7 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		stmt.execute(dropDateDim)
 		stmt.execute(dropGraph)
 		stmt.execute(dropTweets)
+//    System.out.println("successfully drop all tables!")
 		
 		val createWebSales = "CREATE TABLE web_sales STORED AS orc as select * from web_sales_tmp"
 		val createCatalogSales = "CREATE TABLE catalog_sales STORED AS orc as select * from catalog_sales_tmp"
@@ -737,19 +739,27 @@ class PrepareTable_Hive(basePath: BaseTablePath) {
 		val createDateDim = "CREATE TABLE date_dim STORED AS orc as select * from date_dim_tmp"
 		val createGraph = "CREATE TABLE twitter_graph STORED AS orc as select * from twitter_graph_tmp"
 		val createTweets = "CREATE TABLE tweets STORED AS orc as select * from tweets_tmp"
-	
-		stmt.execute(createTweets)
+    
+//		System.out.println("begin createTables!")
 		stmt.execute(createWebSales)
+//    System.out.println("successfully createWebSales!")
 		stmt.execute(createCatalogSales)
+//    System.out.println("successfully createCatalogSales!")
 		stmt.execute(createStoreSales)
+//    System.out.println("successfully createStoreSales!")
 		stmt.execute(createItem)
+//    System.out.println("successfully createItem!")
 		stmt.execute(createPromot)
+//    System.out.println("successfully createPromot!")
 		stmt.execute(createCust)
+//    System.out.println("successfully createCust!")
 		stmt.execute(createDateDim)
+//    System.out.println("successfully createDateDim!")
 		stmt.execute(createGraph)
+//    System.out.println("successfully createGraph!")
+    stmt.execute(createTweets)
+//    System.out.println("successfully createTweets!")
 
-		
-		
 		stmt.execute("create temporary function sentiment as \'bigframe.workflows.util.SenExtractorHive\'")
 		stmt.execute("create temporary function isWithinDate as \'bigframe.workflows.util.WithinDateHive\'")
 		stmt.execute("set hive.auto.convert.join=false")

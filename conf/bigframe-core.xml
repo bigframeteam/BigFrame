@@ -155,22 +155,22 @@
 	
 	<property>
 		<name>bigframe.queryengine.relational</name>
-		<value>hive</value>
+		<value>hive-tez</value>
 	</property>
 	
 	<property>
 		<name>bigframe.queryengine.graph</name>
-		<value>hive</value>
+		<value>hive-tez</value>
 	</property>
 	
 	<property>
 		<name>bigframe.queryengine.nested</name>
-		<value>hive</value>
+		<value>hive-tez</value>
 	</property>
 
 	<property>
 		<name>bigframe.queryengine.text</name>
-		<value>hive</value>
+		<value>hive-tez</value>
 	</property>
 
 </configuration>
