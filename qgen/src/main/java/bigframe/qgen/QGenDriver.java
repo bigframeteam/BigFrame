@@ -235,7 +235,6 @@ public class QGenDriver {
 
 		conf.printConf();
 
-
 		// Initialize a listener bus
 		Boolean addListener = conf.getWorkflowInputFormat().getAddListener();
 		BigFrameListenerBus eventBus = new BigFrameListenerBus();
@@ -246,16 +245,21 @@ public class QGenDriver {
 			eventBus.addListener(listener);
 		}
 		eventBus.start();
+		LOG.info("Listener bus started!");
 		
 		//If mode equals run-query, then collect the set of hard-coded queries and 
 		// delegate the job to their corresponding driver to run them
 		
 		if ( line.getOptionValue(MODE).equals(MODE_RUN_QUERY)) {
+			
 			WorkflowFactory workflowFactory = new WorkflowFactory(conf);
 			
 			List<EngineDriver> workflows = workflowFactory.createWorkflows();
-			if(workflows != null)
-				for(EngineDriver workflow : workflows) {
+			if(workflows != null) {
+				for(EngineDriver workflow: workflows) {
+					System.out.println(workflow.getClass().getName());
+					System.out.println(HiveTezEngineDriver.class.getName());
+					
 					// HACK: To make sure we have a single connection to hiveserver,
 					// the connection object is passed to Hive driver
 					if(addListener && workflow.getClass().getName().equals(
@@ -290,6 +294,7 @@ public class QGenDriver {
 					workflow.run(eventBus);
 					workflow.cleanup();
 				}
+			}
 		}
 		
 		// TODO: Only output the specifications of the set of queries to be run.

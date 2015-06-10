@@ -306,6 +306,8 @@ public class BIDomainWorkflow extends DomainWorkflow {
 		// Check if we have queries to run
 		if(hiveWorkflow.numOfQueries() > 0)
 			workflows.add(hiveWorkflow);
+		if(hiveTezWorkflow.numOfQueries() > 0)
+			workflows.add(hiveTezWorkflow);
 		if(sparkSQLWorkflow.numOfQueries() > 0)
 			workflows.add(sparkSQLWorkflow);
 		if(hadoopWorkflow.numOfQueries() > 0)

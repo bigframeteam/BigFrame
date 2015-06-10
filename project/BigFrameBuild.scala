@@ -54,8 +54,6 @@ object BigFrameBuild extends Build {
 			"org.apache.hadoop" % "hadoop-mapreduce-client-core" % "2.6.0",
 			"org.apache.hadoop" % "hadoop-mapreduce-client-common" % "2.6.0",
 			"org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % "2.6.0",
-			"org.apache.hadoop" % "hadoop-hdfs" % "2.6.0",
-			"org.apache.hadoop" % "hadoop-yarn" % "2.6.0",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
 			"log4j" % "log4j" % "1.2.16",
