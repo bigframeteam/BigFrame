@@ -42,7 +42,8 @@ object BigFrameBuild extends Build {
 
     	resolvers ++= Seq(
 	    	"Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-			"spray" at "http://repo.spray.io/", akka_repo
+			"spray" at "http://repo.spray.io/", akka_repo,
+			"conjars.org" at "http://conjars.org/repo"
 		),
 
 		libraryDependencies ++= Seq(
@@ -50,10 +51,12 @@ object BigFrameBuild extends Build {
 			"org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
 			"org.apache.spark" % "spark-core_2.10" % SPARK_VERSION,
 			"org.apache.spark" % "spark-hive_2.10" % SPARK_VERSION,
-			"org.apache.hadoop" % "hadoop-common" % "2.6.0",
-			"org.apache.hadoop" % "hadoop-mapreduce-client-core" % "2.6.0",
-			"org.apache.hadoop" % "hadoop-mapreduce-client-common" % "2.6.0",
-			"org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % "2.6.0",
+			// "org.apache.hadoop" % "hadoop-core" % HADOOP_VERSION % "provided",
+			// "org.apache.hadoop" % "hadoop-common" % "2.6.0",
+			"org.apache.hadoop" % "hadoop-client" % "2.6.0",
+			// "org.apache.hadoop" % "hadoop-mapreduce-client-core" % "2.6.0" % "provided",
+			// "org.apache.hadoop" % "hadoop-mapreduce-client-common" % "2.6.0" % "provided",
+			// "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % "2.6.0",
 			"commons-lang" % "commons-lang" % "2.4" % "provided",
 			"commons-cli" % "commons-cli" % "1.2" % "provided",
 			"log4j" % "log4j" % "1.2.16",
@@ -101,8 +104,9 @@ object BigFrameBuild extends Build {
 		libraryDependencies ++= Seq(
 			"io.backchat.jerkson" % "jerkson_2.9.2" % "0.7.0",
 			"org.apache.mrunit" % "mrunit" % "1.0.0" % "test" classifier "hadoop1", 
-			"org.apache.hive" % "hive-exec" % "0.13.1" % "provided",
-			"org.apache.hive" % "hive-common" % "0.13.1" % "provided"
+			"org.apache.hive" % "hive-exec" % "1.2.0",
+			"org.apache.hive" % "hive-common" % "1.2.0"
+			//"org.apache.hive" % "hive-shims" % "1.2.0"
 		)
 	) ++ extraAssemblySettings ++ excludeJARfromCOMMON
 

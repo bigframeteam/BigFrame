@@ -89,7 +89,7 @@ public class HiveTezEngineDriver extends EngineDriver {
 			//TODO Set hive engine to mr
 			String setHiveOnTez = "set " + "hive.execution.engine" + "=" + "tez";
 			stmt.execute(setHiveOnTez);		
-			LOG.info("Setting Hive engine to MR");
+			LOG.info("Setting Hive engine to Tez");
 
 			for(HiveRunnable query : queries) {
 				LOG.info("Prepare tables...");
