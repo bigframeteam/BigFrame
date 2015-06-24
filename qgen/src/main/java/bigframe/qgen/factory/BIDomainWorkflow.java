@@ -225,9 +225,9 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					hiveWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10, workflowIF.getHiveORC()));
 				}
+				//This mode is already tested.
 				else if(relationalEngine.equals(Constants.HIVETEZ) && graphEngine.equals(Constants.HIVETEZ)&& 
 						nestedEngine.equals(Constants.HIVETEZ)) {
-					//same as hive, may need to change
 					hiveTezWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHive(basePath, 10, workflowIF.getHiveORC()));
 				}
@@ -241,32 +241,18 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					mixedWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "HHS"));
 				}
-				//The following modes are not tested
-//				else if(relationalEngine.equals(Constants.HIVETEZ) && graphEngine.equals(Constants.SPARKSQL)&& 
-//						nestedEngine.equals(Constants.HIVETEZ)) {
-//					mixedWorkflow.addQuery(new 
-//							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "HHS"));
-//				}
-//				else if(relationalEngine.equals(Constants.SPARKSQL) && graphEngine.equals(Constants.SPARKSQL)&& 
-//						nestedEngine.equals(Constants.HIVETEZ)) {
-//					mixedWorkflow.addQuery(new 
-//							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "HSS"));
-//				}
-//				else if(relationalEngine.equals(Constants.SPARKSQL) && graphEngine.equals(Constants.SPARKSQL)&& 
-//						nestedEngine.equals(Constants.HIVETEZ)) {
-//					mixedWorkflow.addQuery(new 
-//							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "HSS"));
-//				}
-//				else if(relationalEngine.equals(Constants.HIVETEZ) && graphEngine.equals(Constants.SPARKSQL)&& 
-//						nestedEngine.equals(Constants.SPARKSQL)) {
-//					mixedWorkflow.addQuery(new 
-//							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "SHS"));
-//				}
-//				else if(relationalEngine.equals(Constants.HIVETEZ) && graphEngine.equals(Constants.GIRAPH)&& 
-//						nestedEngine.equals(Constants.HIVETEZ)) {
-//					hivegiraphWorkflow.addQuery(new 
-//							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 10, workflowIF.getHiveORC()));
-//				}
+				//This mode is not tested
+				else if(relationalEngine.equals(Constants.HIVETEZ) && graphEngine.equals(Constants.SPARKSQL)&& 
+						nestedEngine.equals(Constants.HIVETEZ)) {
+					mixedWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "HHS"));
+				}
+				//This mode is not tested
+				else if(relationalEngine.equals(Constants.SPARKSQL) && graphEngine.equals(Constants.SPARKSQL)&& 
+						nestedEngine.equals(Constants.HIVETEZ)) {
+					mixedWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "HSS"));
+				}
 				else if(relationalEngine.equals(Constants.SPARKSQL) && graphEngine.equals(Constants.SPARKSQL)&& 
 						nestedEngine.equals(Constants.HIVE)) {
 					mixedWorkflow.addQuery(new 
@@ -277,8 +263,20 @@ public class BIDomainWorkflow extends DomainWorkflow {
 					mixedWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "SHS"));
 				}
+				//This mode is not tested
+				else if(relationalEngine.equals(Constants.HIVETEZ) && graphEngine.equals(Constants.SPARKSQL)&& 
+						nestedEngine.equals(Constants.SPARKSQL)) {
+					mixedWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentMixed(basePath, 10, workflowIF.getHiveORC(), "SHS"));
+				}
 				else if(relationalEngine.equals(Constants.HIVE) && graphEngine.equals(Constants.GIRAPH)&& 
 						nestedEngine.equals(Constants.HIVE)) {
+					hivegiraphWorkflow.addQuery(new 
+							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 10, workflowIF.getHiveORC()));
+				}
+				//This mode is not tested
+				else if(relationalEngine.equals(Constants.HIVETEZ) && graphEngine.equals(Constants.GIRAPH)&& 
+						nestedEngine.equals(Constants.HIVETEZ)) {
 					hivegiraphWorkflow.addQuery(new 
 							bigframe.workflows.BusinessIntelligence.RTG.exploratory.WF_ReportSaleSentimentHiveGiraph(basePath, 10, workflowIF.getHiveORC()));
 				}
