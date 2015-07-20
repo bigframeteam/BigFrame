@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import edu.duke.dbmsplus.datahooks.conf.HiveServerCredentials;
 import edu.duke.dbmsplus.datahooks.conf.MetadataDatabaseCredentials;
 import edu.duke.dbmsplus.datahooks.listener.BigFrameListenerImpl;
+import edu.duke.dbmsplus.datahooks.yarnmetrics.listener.LaunchDaemons;
 import bigframe.bigif.BigFrameInputFormat;
 import bigframe.bigif.BigConfConstants;
 import bigframe.bigif.WorkflowInputFormat;
@@ -245,6 +246,8 @@ public class QGenDriver {
 			eventBus.addListener(listener);
 		}
 		eventBus.start();
+		LaunchDaemons yarnListener = new LaunchDaemons();
+		yarnListener.startDaemons();
 		LOG.info("Listener bus started!");
 		
 		//If mode equals run-query, then collect the set of hard-coded queries and 
@@ -305,6 +308,7 @@ public class QGenDriver {
 
 		// stop the listener bus
 		eventBus.stop();
+		yarnListener.stopDaemons();
 		if(addListener) {
 			// cleanup the listener
 			listener.cleanup();
