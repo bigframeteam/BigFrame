@@ -309,6 +309,7 @@ public class QGenDriver {
 		// stop the listener bus
 		eventBus.stop();
 		yarnListener.stopDaemons();
+		LOG.info("yarnListener stopped!");
 		if(addListener) {
 			// cleanup the listener
 			listener.cleanup();
